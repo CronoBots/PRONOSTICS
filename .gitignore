@@ -37,6 +37,7 @@ frontend/next-env.d.ts
 
 # Données copiées par prebuild (frontend/scripts/copy-predictions.js)
 frontend/public/data/predictions/
+frontend/public/data/history.json
 
 # IDE
 .vscode/

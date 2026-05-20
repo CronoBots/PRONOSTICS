@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
-import { MatchCard } from "@/components/MatchCard";
-import { SportFilter } from "@/components/SportFilter";
-import { fetchMatches } from "@/lib/dataSource";
-import { Match } from "@/lib/types";
+import { BankrollChart } from "@/components/BankrollChart";
+import { HistoryList } from "@/components/HistoryList";
+import { StakeSimulator } from "@/components/StakeSimulator";
+import { StatsGrid } from "@/components/StatsGrid";
+import { TodayPick } from "@/components/TodayPick";
+import { fetchDay, fetchHistory } from "@/lib/dataSource";
+import { DayPayload, History } from "@/lib/types";
 
-function today(): string {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString().substring(0, 10);
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
 export default function Home() {
-  const [activeSport, setActiveSport] = useState<string | null>(null);
-  const [date, setDate] = useState<string>(today());
-  const [minConfidence, setMinConfidence] = useState<number>(0);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [supportedSports, setSupportedSports] = useState<string[]>([]);
-  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [history, setHistory] = useState<History | null>(null);
+  const [day, setDay] = useState<DayPayload | null>(null);
+  const [date] = useState(todayIso());
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,12 +25,16 @@ export default function Home() {
     setLoading(true);
     setError(null);
 
-    fetchMatches(date, activeSport, minConfidence)
-      .then((res) => {
+    Promise.all([fetchHistory(), fetchDay(date)])
+      .then(([h, d]) => {
         if (cancelled) return;
-        setMatches(res.matches);
-        setSupportedSports(res.supportedSports);
-        setGeneratedAt(res.generatedAt);
+        setHistory(h);
+        setDay(d);
+        if (!h) {
+          setError(
+            "Aucun historique disponible. Le pipeline daily-update doit avoir tourné au moins une fois.",
+          );
+        }
       })
       .catch((e) => {
         if (!cancelled) setError(String(e));
@@ -44,88 +46,103 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [date, activeSport, minConfidence]);
+  }, [date]);
+
+  const stats = history?.stats;
+  const picks = history?.picks ?? [];
+  const startingBankroll = stats?.starting_bankroll ?? 1000;
 
   return (
     <>
       <Head>
-        <title>PRONOSTICS — Pronostics sportifs du jour</title>
+        <title>PRONOSTICS — Pick safe du jour & bankroll tracker</title>
         <meta
           name="description"
-          content="Pronostics sportifs quotidiens propulsés par l'analyse statistique"
+          content="1 pronostic value bet par jour, tracking de bankroll en temps réel, historique gagné/perdu."
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Pronostics du jour
-          </h1>
-          <p className="text-white/60 mt-1">
-            Analyse statistique des matchs : forme, classement, h2h, cotes — tous sports confondus.
-          </p>
-          {generatedAt && (
-            <p className="text-white/40 text-xs mt-2">
-              Dernière mise à jour : {new Date(generatedAt).toLocaleString("fr-FR")}
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
+        <header className="mb-6 md:mb-8 flex items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-accent-green" />
+              <h1 className="text-xl md:text-2xl font-semibold">PRONOSTICS</h1>
+            </div>
+            <p className="text-white/40 text-xs md:text-sm mt-1">
+              1 value bet par jour, cote ≥ 2.00 · bankroll tracker
             </p>
+          </div>
+          {history && (
+            <div className="text-right">
+              <div className="text-xs uppercase tracking-wider text-white/40">
+                Bankroll
+              </div>
+              <div
+                className={`text-xl md:text-2xl font-semibold ${
+                  (stats?.current_bankroll ?? 0) >= startingBankroll
+                    ? "text-accent-green"
+                    : "text-accent-red"
+                }`}
+              >
+                {stats?.current_bankroll.toFixed(2)} €
+              </div>
+            </div>
           )}
         </header>
 
-        <section className="space-y-4 mb-8">
-          <div className="flex flex-wrap items-center gap-4">
-            <label className="flex items-center gap-2 text-sm text-white/70">
-              Date
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="bg-white/5 border border-white/10 rounded-md px-2 py-1 text-sm"
-              />
-            </label>
-            <label className="flex items-center gap-2 text-sm text-white/70">
-              Confiance min
-              <input
-                type="range"
-                min="0"
-                max="0.9"
-                step="0.05"
-                value={minConfidence}
-                onChange={(e) => setMinConfidence(parseFloat(e.target.value))}
-              />
-              <span className="text-white/50 w-10">{(minConfidence * 100).toFixed(0)}%</span>
-            </label>
-          </div>
+        {loading && (
+          <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>
+        )}
 
-          <SportFilter
-            sports={supportedSports}
-            active={activeSport}
-            onChange={setActiveSport}
-          />
-        </section>
-
-        {loading && <p className="text-white/50">Chargement…</p>}
-        {error && <p className="text-rose-400">Erreur : {error}</p>}
-
-        {!loading && !error && matches.length === 0 && (
-          <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center text-white/60">
-            <p>Pas de pronostics pour cette date.</p>
-            <p className="text-sm mt-2">
-              Le workflow <code className="text-brand-100">daily-update</code> doit avoir
-              généré le fichier <code>data/predictions/{date}.json</code>. Tu peux le déclencher
-              manuellement depuis l'onglet Actions sur GitHub.
-            </p>
+        {error && !loading && (
+          <div className="bg-bg-card border border-accent-red/30 rounded-2xl p-6 text-white/70">
+            <p className="text-sm">{error}</p>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {matches.map((m) => (
-            <MatchCard key={m.id} match={m} />
-          ))}
-        </div>
+        {!loading && history && (
+          <div className="space-y-6 md:space-y-8">
+            <TodayPick pick={day?.safe_pick ?? null} date={date} />
 
-        <footer className="mt-12 pt-6 border-t border-white/10 text-xs text-white/40 text-center">
-          PRONOSTICS · données : API-Football, Football-Data.org, The Odds API — moteurs heuristiques v1
-        </footer>
+            {stats && <StatsGrid stats={stats} />}
+
+            <section className="bg-bg-card border border-white/5 rounded-2xl p-4 md:p-6 shadow-card">
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-base font-semibold">Évolution de la bankroll</h2>
+                <span className="text-xs text-white/40">
+                  Démarrée à {startingBankroll.toFixed(0)} €
+                </span>
+              </div>
+              <BankrollChart
+                picks={picks}
+                startingBankroll={startingBankroll}
+              />
+            </section>
+
+            <section>
+              <h2 className="text-base font-semibold mb-3 px-1">Historique</h2>
+              <HistoryList picks={picks} />
+            </section>
+
+            <StakeSimulator
+              picks={picks}
+              defaultStake={10}
+              defaultStartingBankroll={startingBankroll}
+            />
+
+            <footer className="pt-6 pb-2 text-xs text-white/30 text-center">
+              <p>
+                Mis à jour : {history.generated_at ? new Date(history.generated_at).toLocaleString("fr-FR") : "—"}
+              </p>
+              <p className="mt-2 max-w-md mx-auto">
+                Contenu informatif uniquement. Les paris sportifs comportent un risque
+                de perte ; ne pariez que ce que vous pouvez vous permettre de perdre.
+              </p>
+            </footer>
+          </div>
+        )}
       </main>
     </>
   );
