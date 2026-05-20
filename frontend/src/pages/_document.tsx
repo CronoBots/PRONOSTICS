@@ -28,12 +28,19 @@ export default function Document() {
         <meta property="og:title" content="WTF — Win The Future" />
         <meta property="og:description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/PRONOSTICS/icons/icon-512.svg" />
+        <meta property="og:image" content="/PRONOSTICS/icons/og-image.svg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="WTF — Win The Future · L'IA qui prédit, tu gagnes" />
         <meta property="og:site_name" content="Win The Future" />
+        <meta property="og:locale" content="fr_FR" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="WTF — Win The Future" />
         <meta name="twitter:description" content="L'IA qui prédit. Tu gagnes." />
+        <meta name="twitter:image" content="/PRONOSTICS/icons/og-image.svg" />
         <meta name="description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent, historique vérifiable." />
+        <meta name="keywords" content="paris sportifs, value bet, IA, pronostic, football, NBA, tennis, NHL, MLB, ROI, bankroll, bookmaker" />
+        <meta name="author" content="CronoBots" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
