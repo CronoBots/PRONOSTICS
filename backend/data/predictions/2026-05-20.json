@@ -1,0 +1,641 @@
+{
+  "date": "2026-05-20",
+  "generated_at": "2026-05-20T09:40:22.771268+00:00",
+  "matches": [
+    {
+      "id": 1,
+      "sport": "football",
+      "league": "Premier League",
+      "home_team": "Manchester City",
+      "away_team": "Liverpool",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Manchester City",
+        "confidence": 0.5693,
+        "expected_value": -0.18,
+        "probabilities": {
+          "Manchester City": 0.5693,
+          "Draw": 0.0922,
+          "Liverpool": 0.3385
+        },
+        "rationale": [
+          "Forme L5 : Manchester City LWWLW (0.60) vs Liverpool LDLLW (0.30)",
+          "Classement : 14 vs 13",
+          "H2H (10 matchs) : 1V / 2N / 4D",
+          "Rating : 1787 vs 1659 → P(home)=0.68",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Manchester City": 1.44,
+          "Liverpool": 2.32,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 9,
+      "sport": "basketball",
+      "league": "NBA",
+      "home_team": "Boston Celtics",
+      "away_team": "Los Angeles Lakers",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "basketball_heuristic@1.0",
+        "pick": "Boston Celtics",
+        "confidence": 0.6194,
+        "expected_value": 0.01,
+        "probabilities": {
+          "Boston Celtics": 0.6194,
+          "Los Angeles Lakers": 0.3806
+        },
+        "rationale": [
+          "Forme L5 : WWLDL vs LWWLL",
+          "Différentiel rating : +127",
+          "Avantage domicile (court bonus) : +0.06"
+        ],
+        "odds_snapshot": {
+          "Boston Celtics": 1.63,
+          "Los Angeles Lakers": 2.84
+        }
+      }
+    },
+    {
+      "id": 13,
+      "sport": "tennis",
+      "league": "ATP Masters",
+      "home_team": "Novak Djokovic",
+      "away_team": "Carlos Alcaraz",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Carlos Alcaraz",
+        "confidence": 0.6523,
+        "expected_value": 0.031,
+        "probabilities": {
+          "Novak Djokovic": 0.3477,
+          "Carlos Alcaraz": 0.6523
+        },
+        "rationale": [
+          "Classement ATP/WTA : #2 vs #2",
+          "Différentiel points : -93",
+          "Forme récente : LDLLL vs WWWWL"
+        ],
+        "odds_snapshot": {
+          "Novak Djokovic": 1.9,
+          "Carlos Alcaraz": 1.58
+        }
+      }
+    },
+    {
+      "id": 16,
+      "sport": "nfl",
+      "league": "NFL",
+      "home_team": "Kansas City Chiefs",
+      "away_team": "Buffalo Bills",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "nfl_heuristic@1.0",
+        "pick": "Kansas City Chiefs",
+        "confidence": 0.513,
+        "expected_value": -0.113,
+        "probabilities": {
+          "Kansas City Chiefs": 0.513,
+          "Buffalo Bills": 0.487
+        },
+        "rationale": [
+          "Forme L5 : DLLLW vs LLLWW",
+          "Avantage domicile : +0.07"
+        ],
+        "odds_snapshot": {
+          "Kansas City Chiefs": 1.73,
+          "Buffalo Bills": 2.92
+        }
+      }
+    },
+    {
+      "id": 18,
+      "sport": "mlb",
+      "league": "MLB",
+      "home_team": "New York Yankees",
+      "away_team": "Boston Red Sox",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "New York Yankees",
+        "confidence": 0.5226,
+        "expected_value": -0.112,
+        "probabilities": {
+          "New York Yankees": 0.5226,
+          "Boston Red Sox": 0.4774
+        },
+        "rationale": [
+          "Forme L5 : LDLLL vs LDDLL",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "New York Yankees": 1.7,
+          "Boston Red Sox": 2.34
+        }
+      }
+    },
+    {
+      "id": 20,
+      "sport": "nhl",
+      "league": "NHL",
+      "home_team": "Edmonton Oilers",
+      "away_team": "Toronto Maple Leafs",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "nhl_heuristic@1.0",
+        "pick": "Edmonton Oilers",
+        "confidence": 0.616,
+        "expected_value": -0.181,
+        "probabilities": {
+          "Edmonton Oilers": 0.616,
+          "Toronto Maple Leafs": 0.384
+        },
+        "rationale": [
+          "Forme L5 : WWWWW vs LDDWL",
+          "Avantage domicile : +0.05"
+        ],
+        "odds_snapshot": {
+          "Edmonton Oilers": 1.33,
+          "Toronto Maple Leafs": 1.9
+        }
+      }
+    },
+    {
+      "id": 2,
+      "sport": "football",
+      "league": "Premier League",
+      "home_team": "Arsenal",
+      "away_team": "Tottenham",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Arsenal",
+        "confidence": 0.6078,
+        "expected_value": -0.07,
+        "probabilities": {
+          "Arsenal": 0.6078,
+          "Draw": 0.0499,
+          "Tottenham": 0.3423
+        },
+        "rationale": [
+          "Forme L5 : Arsenal WWLWD (0.70) vs Tottenham WDLWW (0.70)",
+          "Classement : 6 vs 13",
+          "H2H (12 matchs) : 4V / 1N / 1D",
+          "Rating : 1763 vs 1603 → P(home)=0.72",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Arsenal": 1.53,
+          "Tottenham": 2.96,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 10,
+      "sport": "basketball",
+      "league": "NBA",
+      "home_team": "Denver Nuggets",
+      "away_team": "Phoenix Suns",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "basketball_heuristic@1.0",
+        "pick": "Phoenix Suns",
+        "confidence": 0.5131,
+        "expected_value": -0.025,
+        "probabilities": {
+          "Denver Nuggets": 0.4869,
+          "Phoenix Suns": 0.5131
+        },
+        "rationale": [
+          "Forme L5 : LLWLW vs WDWWD",
+          "Différentiel rating : +91",
+          "Avantage domicile (court bonus) : +0.06"
+        ],
+        "odds_snapshot": {
+          "Denver Nuggets": 1.37,
+          "Phoenix Suns": 1.9
+        }
+      }
+    },
+    {
+      "id": 14,
+      "sport": "tennis",
+      "league": "ATP Masters",
+      "home_team": "Jannik Sinner",
+      "away_team": "Daniil Medvedev",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Daniil Medvedev",
+        "confidence": 0.6017,
+        "expected_value": -0.14,
+        "probabilities": {
+          "Jannik Sinner": 0.3983,
+          "Daniil Medvedev": 0.6017
+        },
+        "rationale": [
+          "Classement ATP/WTA : #3 vs #9",
+          "Différentiel points : -109",
+          "Forme récente : WLWLL vs WLWWW"
+        ],
+        "odds_snapshot": {
+          "Jannik Sinner": 1.76,
+          "Daniil Medvedev": 1.43
+        }
+      }
+    },
+    {
+      "id": 17,
+      "sport": "nfl",
+      "league": "NFL",
+      "home_team": "San Francisco 49ers",
+      "away_team": "Dallas Cowboys",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "nfl_heuristic@1.0",
+        "pick": "San Francisco 49ers",
+        "confidence": 0.6492,
+        "expected_value": -0.163,
+        "probabilities": {
+          "San Francisco 49ers": 0.6492,
+          "Dallas Cowboys": 0.3508
+        },
+        "rationale": [
+          "Forme L5 : WWLLL vs DLDDL",
+          "Avantage domicile : +0.07"
+        ],
+        "odds_snapshot": {
+          "San Francisco 49ers": 1.29,
+          "Dallas Cowboys": 2.84
+        }
+      }
+    },
+    {
+      "id": 19,
+      "sport": "mlb",
+      "league": "MLB",
+      "home_team": "Los Angeles Dodgers",
+      "away_team": "San Francisco Giants",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "San Francisco Giants",
+        "confidence": 0.5614,
+        "expected_value": 0.011,
+        "probabilities": {
+          "Los Angeles Dodgers": 0.4386,
+          "San Francisco Giants": 0.5614
+        },
+        "rationale": [
+          "Forme L5 : LWLWL vs WLWDL",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Los Angeles Dodgers": 2.14,
+          "San Francisco Giants": 1.8
+        }
+      }
+    },
+    {
+      "id": 21,
+      "sport": "nhl",
+      "league": "NHL",
+      "home_team": "Florida Panthers",
+      "away_team": "Tampa Bay Lightning",
+      "kickoff": "2026-05-20T15:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "nhl_heuristic@1.0",
+        "pick": "Tampa Bay Lightning",
+        "confidence": 0.5112,
+        "expected_value": -0.167,
+        "probabilities": {
+          "Florida Panthers": 0.4888,
+          "Tampa Bay Lightning": 0.5112
+        },
+        "rationale": [
+          "Forme L5 : DDLWL vs WDLWW",
+          "Avantage domicile : +0.05"
+        ],
+        "odds_snapshot": {
+          "Florida Panthers": 1.48,
+          "Tampa Bay Lightning": 1.63
+        }
+      }
+    },
+    {
+      "id": 3,
+      "sport": "football",
+      "league": "La Liga",
+      "home_team": "Real Madrid",
+      "away_team": "Barcelona",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Barcelona",
+        "confidence": 0.3805,
+        "expected_value": -0.151,
+        "probabilities": {
+          "Real Madrid": 0.3754,
+          "Draw": 0.2441,
+          "Barcelona": 0.3805
+        },
+        "rationale": [
+          "Forme L5 : Real Madrid LWLWL (0.40) vs Barcelona LWWLL (0.40)",
+          "Classement : 10 vs 6",
+          "H2H (7 matchs) : 1V / 3N / 6D",
+          "Rating : 1739 vs 1669 → P(home)=0.60",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Real Madrid": 1.63,
+          "Barcelona": 2.23,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 11,
+      "sport": "basketball",
+      "league": "NBA",
+      "home_team": "Milwaukee Bucks",
+      "away_team": "Philadelphia 76ers",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "basketball_heuristic@1.0",
+        "pick": "Philadelphia 76ers",
+        "confidence": 0.5851,
+        "expected_value": -0.146,
+        "probabilities": {
+          "Milwaukee Bucks": 0.4149,
+          "Philadelphia 76ers": 0.5851
+        },
+        "rationale": [
+          "Forme L5 : LLDDL vs LWWLL",
+          "Différentiel rating : -85",
+          "Avantage domicile (court bonus) : +0.06"
+        ],
+        "odds_snapshot": {
+          "Milwaukee Bucks": 1.69,
+          "Philadelphia 76ers": 1.46
+        }
+      }
+    },
+    {
+      "id": 15,
+      "sport": "tennis",
+      "league": "WTA 1000",
+      "home_team": "Iga Swiatek",
+      "away_team": "Aryna Sabalenka",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Aryna Sabalenka",
+        "confidence": 0.5022,
+        "expected_value": 0.517,
+        "probabilities": {
+          "Iga Swiatek": 0.4978,
+          "Aryna Sabalenka": 0.5022
+        },
+        "rationale": [
+          "Classement ATP/WTA : #5 vs #3",
+          "Différentiel points : +52",
+          "Forme récente : LLLLW vs WLLLW"
+        ],
+        "odds_snapshot": {
+          "Iga Swiatek": 2.13,
+          "Aryna Sabalenka": 3.02
+        }
+      }
+    },
+    {
+      "id": 4,
+      "sport": "football",
+      "league": "La Liga",
+      "home_team": "Atletico Madrid",
+      "away_team": "Sevilla",
+      "kickoff": "2026-05-20T17:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Atletico Madrid",
+        "confidence": 0.5095,
+        "expected_value": 0.238,
+        "probabilities": {
+          "Atletico Madrid": 0.5095,
+          "Draw": 0.1142,
+          "Sevilla": 0.3763
+        },
+        "rationale": [
+          "Forme L5 : Atletico Madrid LDWWW (0.70) vs Sevilla LDWWD (0.60)",
+          "Classement : 10 vs 17",
+          "H2H (10 matchs) : 4V / 1N / 5D",
+          "Rating : 1616 vs 1670 → P(home)=0.42",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Atletico Madrid": 2.43,
+          "Sevilla": 2.23,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 12,
+      "sport": "basketball",
+      "league": "Euroleague",
+      "home_team": "Real Madrid",
+      "away_team": "Olympiacos",
+      "kickoff": "2026-05-20T17:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "basketball_heuristic@1.0",
+        "pick": "Olympiacos",
+        "confidence": 0.5369,
+        "expected_value": 0.428,
+        "probabilities": {
+          "Real Madrid": 0.4631,
+          "Olympiacos": 0.5369
+        },
+        "rationale": [
+          "Forme L5 : WWLLL vs WWLDL",
+          "Différentiel rating : +66",
+          "Avantage domicile (court bonus) : +0.06"
+        ],
+        "odds_snapshot": {
+          "Real Madrid": 1.87,
+          "Olympiacos": 2.66
+        }
+      }
+    },
+    {
+      "id": 5,
+      "sport": "football",
+      "league": "Ligue 1",
+      "home_team": "PSG",
+      "away_team": "Marseille",
+      "kickoff": "2026-05-20T18:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "PSG",
+        "confidence": 0.4365,
+        "expected_value": -0.083,
+        "probabilities": {
+          "PSG": 0.4365,
+          "Draw": 0.2006,
+          "Marseille": 0.363
+        },
+        "rationale": [
+          "Forme L5 : PSG WWWWD (0.90) vs Marseille WLWLW (0.60)",
+          "Classement : 19 vs 14",
+          "H2H (9 matchs) : 2V / 3N / 0D",
+          "Rating : 1655 vs 1774 → P(home)=0.34",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "PSG": 2.1,
+          "Marseille": 1.61,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 6,
+      "sport": "football",
+      "league": "Serie A",
+      "home_team": "Inter",
+      "away_team": "Juventus",
+      "kickoff": "2026-05-20T19:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Juventus",
+        "confidence": 0.4005,
+        "expected_value": -0.391,
+        "probabilities": {
+          "Inter": 0.3533,
+          "Draw": 0.2462,
+          "Juventus": 0.4005
+        },
+        "rationale": [
+          "Forme L5 : Inter LLLDW (0.30) vs Juventus WWLLL (0.40)",
+          "Classement : 17 vs 14",
+          "H2H (9 matchs) : 6V / 3N / 4D",
+          "Rating : 1619 vs 1796 → P(home)=0.27",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Inter": 2.41,
+          "Juventus": 1.52,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 7,
+      "sport": "football",
+      "league": "Bundesliga",
+      "home_team": "Bayern Munich",
+      "away_team": "Dortmund",
+      "kickoff": "2026-05-20T20:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Bayern Munich",
+        "confidence": 0.5402,
+        "expected_value": -0.211,
+        "probabilities": {
+          "Bayern Munich": 0.5402,
+          "Draw": 0.178,
+          "Dortmund": 0.2818
+        },
+        "rationale": [
+          "Forme L5 : Bayern Munich LWLLL (0.20) vs Dortmund LLLWL (0.20)",
+          "Classement : 18 vs 20",
+          "H2H (12 matchs) : 1V / 0N / 1D",
+          "Rating : 1782 vs 1708 → P(home)=0.61",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Bayern Munich": 1.46,
+          "Dortmund": 1.95,
+          "Draw": 3.7
+        }
+      }
+    },
+    {
+      "id": 8,
+      "sport": "football",
+      "league": "Champions League",
+      "home_team": "Real Madrid",
+      "away_team": "Manchester City",
+      "kickoff": "2026-05-20T21:00:00",
+      "stage": "Regular season",
+      "source": "mock",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "Real Madrid",
+        "confidence": 0.5724,
+        "expected_value": -0.262,
+        "probabilities": {
+          "Real Madrid": 0.5724,
+          "Draw": 0.0573,
+          "Manchester City": 0.3703
+        },
+        "rationale": [
+          "Forme L5 : Real Madrid WWWWD (0.90) vs Manchester City LLDWW (0.50)",
+          "Classement : 13 vs 9",
+          "H2H (7 matchs) : 0V / 1N / 4D",
+          "Rating : 1834 vs 1598 → P(home)=0.80",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Real Madrid": 1.29,
+          "Manchester City": 3.03,
+          "Draw": 3.7
+        }
+      }
+    }
+  ]
+}
