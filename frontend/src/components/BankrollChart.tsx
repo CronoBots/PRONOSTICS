@@ -96,6 +96,50 @@ function buildSeries(
   return series;
 }
 
+function HeroTooltip({
+  active,
+  payload,
+  label,
+  mode,
+}: {
+  active?: boolean;
+  payload?: Array<{ value: number | null; dataKey: string; payload: Point }>;
+  label?: string;
+  mode: ChartMode;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  // Dédupliquer : si plusieurs séries pointent vers la même valeur,
+  // on ne montre qu'une entrée (avec un nom adapté).
+  const seen = new Set<string>();
+  const lines: Array<{ name: string; value: number }> = [];
+  for (const entry of payload) {
+    const v = entry.value;
+    if (v === null || v === undefined) continue;
+    const key = `${entry.dataKey}-${v.toFixed(2)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    let name = mode === "capital" ? "Capital" : "Bénéfice";
+    if (entry.dataKey === "ifWin") name = "Si gagné";
+    else if (entry.dataKey === "ifLoss") name = "Si perdu";
+    // Évite le doublon "Capital 25 / Si gagné 25 / Si perdu 25" — on dédup par valeur
+    if (lines.find((l) => l.value === v)) continue;
+    lines.push({ name, value: v });
+  }
+  if (lines.length === 0) return null;
+  const dateLabel = payload[0].payload?.label || label;
+  return (
+    <div className="bg-bg-card border border-white/15 rounded-lg p-2.5 text-xs shadow-xl">
+      {dateLabel && <div className="text-white/60 mb-1">{dateLabel}</div>}
+      {lines.map((l, i) => (
+        <div key={i} className="text-white">
+          <span className="text-white/70">{l.name} :</span>{" "}
+          <span className="font-semibold">{l.value.toFixed(2)} €</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function BankrollChart({
   picks,
   startingBankroll,
@@ -127,18 +171,8 @@ export function BankrollChart({
               tickCount={8}
             />
             <Tooltip
-              contentStyle={{
-                background: "rgba(10,11,30,0.95)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                borderRadius: 8,
-                fontSize: 12,
-                color: "#fff",
-              }}
-              labelStyle={{ color: "rgba(255,255,255,0.7)" }}
-              formatter={(v: number) => {
-                if (v === null || v === undefined) return ["", ""];
-                return [`${v.toFixed(2)} €`, mode === "capital" ? "Capital" : "Bénéfice"];
-              }}
+              content={<HeroTooltip mode={mode} />}
+              cursor={{ stroke: "rgba(255,255,255,0.5)", strokeWidth: 1 }}
             />
             <Line
               type="monotone"
@@ -155,7 +189,7 @@ export function BankrollChart({
                   position="top"
                   fill="#ffffff"
                   fontSize={11}
-                  formatter={(v: number) => (v !== null ? `${v.toFixed(0)}€` : "")}
+                  formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
                 />
               )}
             </Line>
@@ -167,20 +201,40 @@ export function BankrollChart({
                   stroke="#ffffff"
                   strokeWidth={3}
                   strokeDasharray="6 5"
-                  dot={false}
+                  dot={showValues ? { fill: "#fff", r: 4 } : false}
                   connectNulls={false}
                   isAnimationActive={false}
-                />
+                >
+                  {showValues && (
+                    <LabelList
+                      dataKey="ifWin"
+                      position="top"
+                      fill="#ffffff"
+                      fontSize={11}
+                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
+                    />
+                  )}
+                </Line>
                 <Line
                   type="monotone"
                   dataKey="ifLoss"
                   stroke="#ffffff"
                   strokeWidth={3}
                   strokeDasharray="6 5"
-                  dot={false}
+                  dot={showValues ? { fill: "#fff", r: 4 } : false}
                   connectNulls={false}
                   isAnimationActive={false}
-                />
+                >
+                  {showValues && (
+                    <LabelList
+                      dataKey="ifLoss"
+                      position="bottom"
+                      fill="#ffffff"
+                      fontSize={11}
+                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
+                    />
+                  )}
+                </Line>
               </>
             )}
           </LineChart>

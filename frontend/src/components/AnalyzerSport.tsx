@@ -16,8 +16,19 @@ interface Props {
   picks: HistoryPick[];
 }
 
+const TOOLTIP_STYLE = {
+  background: "#14172c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 8,
+  fontSize: 12,
+};
+
 export function AnalyzerSport({ picks }: Props) {
   const rows = statsBySport(picks);
+  const successRows = rows.map((r) => ({
+    ...r,
+    success_rate: r.won + r.lost > 0 ? Math.round((r.won / (r.won + r.lost)) * 100) : 0,
+  }));
 
   return (
     <div className="space-y-5">
@@ -100,21 +111,54 @@ export function AnalyzerSport({ picks }: Props) {
                 tickFormatter={(v) => `${v}€`}
               />
               <Tooltip
-                contentStyle={{
-                  background: "#111827",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
+                contentStyle={TOOLTIP_STYLE}
                 formatter={(v: number) => [`${v.toFixed(2)} €`, "Bénéfice"]}
               />
               <Bar dataKey="profit" radius={[4, 4, 0, 0]}>
                 {rows.map((r) => (
-                  <Cell
-                    key={r.sport}
-                    fill={r.profit >= 0 ? "#26e0a4" : "#ff5470"}
-                  />
+                  <Cell key={r.sport} fill={r.profit >= 0 ? "#10d9a3" : "#ff4d6d"} />
                 ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
+
+      {/* NEW: Taux de réussite par sport */}
+      <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-4 md:p-5 shadow-card">
+        <h3 className="text-center text-sm font-semibold text-white/80 mb-3">
+          Taux de réussite par sport
+        </h3>
+        <div className="h-56 w-full">
+          <ResponsiveContainer>
+            <BarChart data={successRows} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="label"
+                stroke="rgba(255,255,255,0.35)"
+                tick={{ fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke="rgba(255,255,255,0.35)"
+                tick={{ fontSize: 10 }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(v) => `${v}%`}
+                domain={[0, 100]}
+              />
+              <Tooltip
+                contentStyle={TOOLTIP_STYLE}
+                formatter={(v: number) => [`${v}%`, "Réussite"]}
+              />
+              <Bar dataKey="success_rate" radius={[4, 4, 0, 0]}>
+                {successRows.map((r) => {
+                  let color = "#10d9a3";
+                  if (r.success_rate < 50) color = "#ff4d6d";
+                  else if (r.success_rate < 70) color = "#fcd34d";
+                  return <Cell key={r.sport} fill={color} />;
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>

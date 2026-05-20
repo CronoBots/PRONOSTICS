@@ -39,7 +39,7 @@ export default function AnalyzerPage() {
   return (
     <>
       <Head>
-        <title>Analyzer — PRONOSTICS</title>
+        <title>Analyses — PRONOSTICS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -52,7 +52,7 @@ export default function AnalyzerPage() {
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Analyzer</h1>
+          <h1 className="text-lg font-bold tracking-tight">Analyses</h1>
         </div>
 
         {/* Tabs */}

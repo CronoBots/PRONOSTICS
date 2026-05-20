@@ -258,3 +258,74 @@ function round2(n: number): number {
 }
 
 export const WEEKDAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
+
+// ============== Nouvelles stats Analyses ==============
+
+export interface ProfitFactorStats {
+  factor: number;        // gains / pertes
+  totalGains: number;
+  totalLosses: number;   // valeur absolue
+}
+
+export function computeProfitFactor(picks: HistoryPick[]): ProfitFactorStats {
+  let gains = 0;
+  let losses = 0;
+  for (const p of picks) {
+    if (p.outcome === "win") gains += p.profit;
+    else if (p.outcome === "loss") losses += Math.abs(p.profit);
+  }
+  const factor = losses > 0 ? gains / losses : gains > 0 ? Infinity : 0;
+  return { factor, totalGains: round2(gains), totalLosses: round2(losses) };
+}
+
+export interface StakeRatioStats {
+  ratio: number;        // mise totale / |profit|
+  totalStake: number;
+  profit: number;
+}
+
+export function computeStakeRatio(picks: HistoryPick[]): StakeRatioStats {
+  const settled = picks.filter((p) => p.outcome === "win" || p.outcome === "loss");
+  const totalStake = settled.reduce((s, p) => s + p.stake, 0);
+  const profit = settled.reduce((s, p) => s + p.profit, 0);
+  const ratio = profit !== 0 ? Math.abs(totalStake / profit) : 0;
+  return { ratio, totalStake: round2(totalStake), profit: round2(profit) };
+}
+
+const STAKE_BUCKETS: [number, number, string][] = [
+  [0, 2.99, "0.00 - 2.99 €"],
+  [3, 5.99, "3.00 - 5.99 €"],
+  [6, 8.99, "6.00 - 8.99 €"],
+  [9, 11.99, "9.00 - 11.99 €"],
+  [12, 50, "12.00 - 50.00 €"],
+  [50, 999999, "50.00 € +"],
+];
+
+export interface StakeBucketStats {
+  label: string;
+  count: number;
+  totalStake: number;
+  profit: number;
+  pending: number;
+  won: number;
+  lost: number;
+}
+
+export function statsByStakeBucket(picks: HistoryPick[]): StakeBucketStats[] {
+  return STAKE_BUCKETS.map(([min, max, label]) => {
+    const inBucket = picks.filter((p) => p.stake >= min && p.stake <= max);
+    return {
+      label,
+      count: inBucket.length,
+      totalStake: round2(inBucket.reduce((s, p) => s + p.stake, 0)),
+      profit: round2(
+        inBucket
+          .filter((p) => p.outcome === "win" || p.outcome === "loss")
+          .reduce((s, p) => s + p.profit, 0),
+      ),
+      pending: inBucket.filter((p) => p.outcome === "pending").length,
+      won: inBucket.filter((p) => p.outcome === "win").length,
+      lost: inBucket.filter((p) => p.outcome === "loss").length,
+    };
+  }).filter((b) => b.count > 0);
+}

@@ -25,7 +25,7 @@ export default function Home() {
   const [opts, setOpts] = useState<ChartOptions>({
     mode: "capital",
     showCLV: false,
-    showValues: false,
+    showValues: true,  // par défaut ON — meilleure lisibilité des points
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasFilters, setHasFilters] = useState(false);
@@ -181,7 +181,7 @@ export default function Home() {
                   <circle cx="12" cy="12" r="9" />
                   <path strokeLinecap="round" d="M12 3v9l6 4" />
                 </svg>
-                <span className="font-medium">Analyzer</span>
+                <span className="font-medium">Analyses</span>
               </Link>
               <Link
                 href="/calendrier"
