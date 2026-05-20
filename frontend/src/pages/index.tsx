@@ -76,13 +76,13 @@ export default function Home() {
                   ⋯
                 </button>
               </div>
-              {/* Filter pills */}
-              <div className="absolute bottom-3 left-3 right-3 flex gap-2 overflow-x-auto">
+              {/* Filter pills — même taille, répartis sur toute la largeur */}
+              <div className="absolute bottom-3 left-3 right-3 grid grid-cols-5 gap-2">
                 {PERIODS.map((p) => (
                   <button
                     key={p}
                     onClick={() => setPeriod(p)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition ${
+                    className={`py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition text-center ${
                       period === p
                         ? "bg-white text-accent-green border-white"
                         : "bg-transparent text-white border-white/60 hover:bg-white/10"
@@ -93,7 +93,7 @@ export default function Home() {
                 ))}
                 <Link
                   href="/filtres"
-                  className="px-4 py-1.5 rounded-full text-xs font-medium border bg-transparent text-white border-white/60 hover:bg-white/10 whitespace-nowrap"
+                  className="py-1.5 rounded-full text-xs font-medium border bg-transparent text-white border-white/60 hover:bg-white/10 text-center"
                 >
                   Filtres
                 </Link>
@@ -124,23 +124,23 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* 4 stat tiles */}
+            {/* 4 stat tiles — pas de signe +/- : seule la couleur indique gain/perte */}
             {stats && (
               <div className="grid grid-cols-2 gap-3">
                 <StatTile label="PARIS" value={`${settledCount}`} tone="blue" />
                 <StatTile
                   label="BÉNÉFICE"
-                  value={`${stats.profit > 0 ? "+" : ""}${stats.profit.toFixed(2)}€`}
+                  value={`${Math.abs(stats.profit).toFixed(2)}€`}
                   tone={stats.profit >= 0 ? "green" : "red"}
                 />
                 <StatTile
                   label="ROI"
-                  value={`${stats.roi_percent > 0 ? "+" : ""}${stats.roi_percent.toFixed(2)}%`}
+                  value={`${Math.abs(stats.roi_percent).toFixed(2)}%`}
                   tone={stats.roi_percent >= 0 ? "green" : "red"}
                 />
                 <StatTile
                   label="PROGRESSION"
-                  value={`${stats.progression_percent > 0 ? "+" : ""}${stats.progression_percent.toFixed(2)}%`}
+                  value={`${Math.abs(stats.progression_percent).toFixed(2)}%`}
                   tone={stats.progression_percent >= 0 ? "green" : "red"}
                 />
               </div>

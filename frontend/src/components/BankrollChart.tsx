@@ -99,7 +99,7 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 8 }}>
             <CartesianGrid
-              stroke="rgba(255,255,255,0.22)"
+              stroke="rgba(255,255,255,0.25)"
               strokeWidth={1}
               vertical={false}
             />
@@ -116,18 +116,16 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
             />
             <Tooltip
               contentStyle={{
-                background: "rgba(10,15,26,0.95)",
+                background: "rgba(10,11,30,0.95)",
                 border: "1px solid rgba(255,255,255,0.2)",
                 borderRadius: 8,
                 fontSize: 12,
                 color: "#fff",
               }}
               labelStyle={{ color: "rgba(255,255,255,0.7)" }}
-              formatter={(v: number, name: string) => {
+              formatter={(v: number) => {
                 if (v === null || v === undefined) return ["", ""];
-                const label =
-                  name === "bankroll" ? "Bankroll" : name === "ifWin" ? "Si gagné" : "Si perdu";
-                return [`${v.toFixed(2)} €`, label];
+                return [`${v.toFixed(2)} €`, "Bankroll"];
               }}
             />
             <Line
@@ -141,23 +139,25 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
             />
             {hasProjection && (
               <>
+                {/* Continuation pointillée vers le haut (si gagné) */}
                 <Line
                   type="monotone"
                   dataKey="ifWin"
-                  stroke="rgba(255,255,255,0.95)"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  dot={{ fill: "#ffffff", r: 4 }}
+                  stroke="#ffffff"
+                  strokeWidth={3}
+                  strokeDasharray="6 5"
+                  dot={false}
                   connectNulls={false}
                   isAnimationActive={false}
                 />
+                {/* Continuation pointillée vers le bas (si perdu) */}
                 <Line
                   type="monotone"
                   dataKey="ifLoss"
-                  stroke="rgba(10,15,26,0.55)"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  dot={{ fill: "rgba(10,15,26,0.8)", r: 4 }}
+                  stroke="#ffffff"
+                  strokeWidth={3}
+                  strokeDasharray="6 5"
+                  dot={false}
                   connectNulls={false}
                   isAnimationActive={false}
                 />
@@ -165,36 +165,6 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
             )}
           </LineChart>
         </ResponsiveContainer>
-
-        {hasProjection && (
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5 text-[11px] text-white pointer-events-none">
-            <div className="flex items-center gap-1.5">
-              <span className="inline-block w-4 h-[2px] bg-white" /> Bankroll réelle
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span
-                className="inline-block w-4 h-[2px]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, white 50%, transparent 50%)",
-                  backgroundSize: "6px 100%",
-                }}
-              />{" "}
-              Si pari du jour gagné
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span
-                className="inline-block w-4 h-[2px]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to right, rgba(10,15,26,0.55) 50%, transparent 50%)",
-                  backgroundSize: "6px 100%",
-                }}
-              />{" "}
-              Si pari du jour perdu
-            </div>
-          </div>
-        )}
       </div>
     );
   }

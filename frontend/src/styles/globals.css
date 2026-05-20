@@ -3,16 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --bg-base: #0a0f1a;
-  --bg-card: #111827;
-  --bg-elevated: #1a2230;
-  --accent-green: #26e0a4;
-  --foreground: #e6e9f5;
+  --bg-base: #0a0b1e;
+  --bg-card: #14172c;
+  --bg-elevated: #1f2240;
+  --accent-green: #10d9a3;
+  --accent-blue: #7c5cff;
+  --accent-red: #ff4d6d;
+  --accent-gold: #fcd34d;
+  --foreground: #e7e9f3;
 }
 
 html,
 body {
-  background: var(--bg-base);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124, 92, 255, 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(16, 217, 163, 0.06), transparent 70%),
+    var(--bg-base);
+  background-attachment: fixed;
   color: var(--foreground);
   min-height: 100vh;
 }

@@ -1,10 +1,5 @@
 /**
- * Source de données statique (lue depuis les JSON copiés dans /public/data).
- *
- * Fichiers servis :
- *   - /data/history.json              → historique global + stats
- *   - /data/predictions/<date>.json   → pick + matchs du jour
- *   - /data/predictions/index.json    → liste des dates disponibles
+ * Source de données statique avec cache busting agressif.
  */
 
 import { DayPayload, History } from "./types";
@@ -12,8 +7,13 @@ import { DayPayload, History } from "./types";
 const BASE_PATH = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
 
 async function fetchJson<T>(path: string): Promise<T | null> {
+  // Bust de cache via query string : force CDN + navigateur à revalider
+  const bust = Date.now();
   try {
-    const res = await fetch(`${BASE_PATH}${path}`, { cache: "no-store" });
+    const res = await fetch(`${BASE_PATH}${path}?v=${bust}`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
+    });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
