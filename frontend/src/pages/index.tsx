@@ -91,9 +91,12 @@ export default function Home() {
                     {p}
                   </button>
                 ))}
-                <button className="px-4 py-1.5 rounded-full text-xs font-medium border bg-transparent text-white border-white/60 hover:bg-white/10 whitespace-nowrap">
+                <Link
+                  href="/filtres"
+                  className="px-4 py-1.5 rounded-full text-xs font-medium border bg-transparent text-white border-white/60 hover:bg-white/10 whitespace-nowrap"
+                >
                   Filtres
-                </button>
+                </Link>
               </div>
             </section>
 
