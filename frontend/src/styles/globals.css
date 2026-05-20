@@ -11,6 +11,10 @@
   --accent-red: #ff4d6d;
   --accent-gold: #fcd34d;
   --foreground: #e7e9f3;
+  /* Safe-area iOS — capturé au load et pinné via JS dans _app.tsx
+     pour éviter les recalculs intempestifs (clavier, transitions, etc.) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 html,
@@ -18,7 +22,9 @@ body {
   /* Couleur UNIFORME pour matcher le theme-color iOS PWA */
   background: var(--bg-base);
   color: var(--foreground);
-  min-height: 100vh;
+  /* 100svh = small viewport height (stable même quand clavier
+     apparaît ou que iOS recalcule). Évite les jump de margins. */
+  min-height: 100svh;
   /* Interdit le zoom pinch */
   touch-action: manipulation;
   -webkit-touch-callout: none;
@@ -45,9 +51,9 @@ body {
   /* Edge-to-edge : la couleur s'étend dans les safe-areas iOS */
   background-color: var(--bg-base);
   margin: 0;
-  /* Padding top = hauteur du status bar iOS PWA (env. 47px sur iPhone 14)
-     pour que le header de l'app ne soit pas caché derrière l'heure/wifi */
-  padding-top: env(safe-area-inset-top);
+  /* Padding top via CSS variable pinnée (pas env() direct) pour
+     éviter le recalcul lors des interactions (clavier, modals) */
+  padding-top: var(--safe-top);
   padding-left: 0;
   padding-right: 0;
   padding-bottom: 0;

@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
@@ -14,6 +15,25 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const showNav = !HIDE_NAV.has(router.pathname);
 
+  // Pin les valeurs safe-area iOS au premier load pour éviter les
+  // recalculs intempestifs (clavier qui s'affiche, transitions, etc.)
+  useEffect(() => {
+    const root = document.documentElement;
+    const computed = getComputedStyle(root);
+    // Lecture des env() résolus initialement
+    const probe = document.createElement("div");
+    probe.style.cssText =
+      "position:fixed;top:0;left:0;visibility:hidden;" +
+      "padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);";
+    document.body.appendChild(probe);
+    const cs = getComputedStyle(probe);
+    const top = cs.paddingTop;
+    const bottom = cs.paddingBottom;
+    document.body.removeChild(probe);
+    if (top && top !== "0px") root.style.setProperty("--safe-top", top);
+    if (bottom && bottom !== "0px") root.style.setProperty("--safe-bottom", bottom);
+  }, []);
+
   return (
     <I18nProvider>
       <AuthProvider>
@@ -21,7 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
           className={showNav ? "" : ""}
           style={
             showNav
-              ? { paddingBottom: "calc(env(safe-area-inset-bottom) + 5.5rem)" }
+              ? { paddingBottom: "calc(var(--safe-bottom) + 5.5rem)" }
               : undefined
           }
         >

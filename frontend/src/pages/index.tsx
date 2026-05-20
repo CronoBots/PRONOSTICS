@@ -159,8 +159,9 @@ export default function Home() {
       <main
         className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col"
         style={{
-          height:
-            "calc(100dvh - 6.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
+          // 100svh = small viewport height (stable, ne change pas avec
+          // l'apparition du clavier). Variables --safe-* pinnées au load.
+          height: "calc(100svh - 6.5rem - var(--safe-top) - var(--safe-bottom))",
         }}
       >
         {/* Header compact */}

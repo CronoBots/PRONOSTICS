@@ -75,8 +75,8 @@ export function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
       <div
         className="max-w-md mx-auto grid grid-cols-5 relative items-end"
-        // Zone morte = safe-area iOS + 12px supplémentaires pour respiration
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
+        // Variable CSS pinée (capturée au load) = pas de recalcul intempestif
+        style={{ paddingBottom: "calc(var(--safe-bottom) + 0.75rem)" }}
       >
         {leftTabs.map(renderTab)}
 
