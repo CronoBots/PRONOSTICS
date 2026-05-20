@@ -41,7 +41,7 @@ export default function PlusPage() {
           <div className="space-y-6">
             <StakeSimulator
               picks={picks}
-              defaultStake={10}
+              defaultStake={5}
               defaultStartingBankroll={startingBankroll}
             />
 
