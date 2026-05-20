@@ -88,15 +88,15 @@ function PremiumGate() {
       <h2 className="text-2xl font-bold mb-3">Pick du jour réservé Premium</h2>
       <p className="text-white/60 text-sm leading-relaxed max-w-md mx-auto mb-6">
         L'historique de nos paris est <strong>100% public</strong> pour que tu puisses
-        vérifier la qualité. Le pick du jour, son analyse complète (14+ points) et les
-        sources sont l'abonnement.
+        vérifier la qualité avant de payer. Le pick du jour, son analyse complète
+        (45+ points) et les sources web sont réservés aux abonnés Premium.
       </p>
       <div className="space-y-3 max-w-sm mx-auto">
         <Link
           href="/premium"
           className="block py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-bold"
         >
-          👑 Passer en Premium — à partir de 7,99€/mois
+          👑 Passer en Premium — à partir de 7,99€/mois*
         </Link>
         <Link
           href="/paris"
@@ -105,6 +105,9 @@ function PremiumGate() {
           Voir l'historique des paris →
         </Link>
       </div>
+      <p className="text-[10px] text-white/30 mt-4">
+        *7,99€/mois avec l'abonnement annuel (95,88€/an, soit −20%). Mensuel : 9,99€.
+      </p>
     </div>
   );
 }

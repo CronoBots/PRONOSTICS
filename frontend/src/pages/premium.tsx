@@ -181,6 +181,18 @@ export default function PremiumPage() {
           en Phase 2.
         </p>
 
+        {/* Jeu responsable */}
+        <div className="mt-6 p-3 rounded-xl bg-accent-red/[0.06] border border-accent-red/20">
+          <p className="text-[11px] text-white/70 leading-relaxed text-center">
+            <strong className="text-accent-red">⚠️ Jeu responsable.</strong> Les paris
+            sportifs comportent un risque de perte et d'addiction. Interdit aux moins de
+            18 ans. Ne misez que ce que vous pouvez perdre.
+          </p>
+          <p className="text-[10px] text-white/50 text-center mt-2">
+            🆘 BE 0800 35 777 · FR 09 74 75 13 13 · <Link href="/plus" className="text-accent-blue hover:underline">en savoir plus</Link>
+          </p>
+        </div>
+
         {/* FAQ rapide */}
         <div className="mt-8">
           <h3 className="text-xs uppercase tracking-wider text-white/40 font-semibold mb-3 px-1">

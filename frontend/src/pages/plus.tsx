@@ -16,6 +16,7 @@ type SheetKey =
   | "embed"
   | "lexique"
   | "howto"
+  | "responsible"
   | "legal"
   | "privacy";
 
@@ -89,6 +90,7 @@ export default function PlusPage() {
             <Section title="Infos">
               <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
               <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
+              <Row icon="🆘" label="Jeu responsable" onClick={() => setOpen("responsible")} />
               <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
               <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
             </Section>
@@ -205,6 +207,39 @@ export default function PlusPage() {
           <li>L'historique est mis à jour quotidiennement avec les résultats.</li>
           <li>Premium débloque le pick du jour + l'analyse complète.</li>
         </ol>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Jeu responsable"
+        open={open === "responsible"}
+        onClose={() => setOpen(null)}
+      >
+        <p className="text-sm font-semibold text-white/90 mb-2">
+          Les paris sportifs sont un loisir, pas un revenu.
+        </p>
+        <ul className="space-y-2 text-xs text-white/70 leading-relaxed">
+          <li>✅ <strong>Ne mise que ce que tu peux perdre</strong> sans impacter ton budget vital (loyer, factures, alimentation).</li>
+          <li>✅ <strong>Fixe-toi une limite</strong> hebdomadaire ou mensuelle stricte et tiens-la.</li>
+          <li>✅ <strong>Ne chasse jamais tes pertes</strong> — si tu perds, accepte et arrête pour la journée.</li>
+          <li>✅ <strong>Prends des pauses régulières</strong> (1 jour sans pari par semaine minimum).</li>
+          <li>⛔ <strong>Interdit aux moins de 18 ans</strong> (21 ans dans certains pays).</li>
+          <li>⛔ Ne parie pas si tu as bu, fumé, ou si tu te sens stressé / triste.</li>
+        </ul>
+        <div className="mt-4 p-3 rounded-xl bg-accent-red/10 border border-accent-red/20">
+          <p className="text-xs font-semibold text-accent-red mb-2">
+            Besoin d'aide ? Tu n'es pas seul.
+          </p>
+          <ul className="text-xs text-white/70 space-y-1.5">
+            <li>🇫🇷 <strong>Joueurs Info Service</strong> : 09 74 75 13 13 (8h-2h, 7j/7, anonyme)</li>
+            <li>🇧🇪 <strong>BeGambleAware</strong> : 0800 35 777 (gratuit, 24h/24)</li>
+            <li>🇧🇪 <strong>Cliniques du jeu</strong> : <a href="https://www.cliniquedujeu.be" target="_blank" rel="noopener noreferrer" className="text-accent-blue underline">cliniquedujeu.be</a></li>
+            <li>🇨🇦 <strong>Jeu : aide et référence</strong> : 1 800 461-0140</li>
+          </ul>
+        </div>
+        <p className="text-[10px] text-white/40 mt-4 italic">
+          WTF est un service d'analyse statistique informatif. Nous ne prenons aucun pari
+          et ne touchons aucune commission sur les mises placées chez les bookmakers.
+        </p>
       </InfoSheet>
 
       <InfoSheet

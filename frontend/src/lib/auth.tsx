@@ -26,6 +26,7 @@ interface AuthContextType {
   ) => Promise<{ ok: boolean; error?: string }>;
   logout: () => void;
   upgradeTo: (plan: "monthly" | "yearly") => void;
+  cancelSubscription: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -100,8 +101,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function cancelSubscription() {
+    if (!user) return;
+    persist({
+      ...user,
+      isPremium: false,
+      plan: "free",
+      subscriptionEnd: null,
+    });
+  }
+
   return (
-    <AuthContext.Provider value={{ user, ready, login, register, logout, upgradeTo }}>
+    <AuthContext.Provider
+      value={{ user, ready, login, register, logout, upgradeTo, cancelSubscription }}
+    >
       {children}
     </AuthContext.Provider>
   );

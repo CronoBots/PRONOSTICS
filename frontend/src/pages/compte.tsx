@@ -7,9 +7,14 @@ import { useAuth } from "@/lib/auth";
 import { LANG_LABELS, useI18n } from "@/lib/i18n";
 
 export default function ComptePage() {
-  const { user, ready, logout } = useAuth();
+  const { user, ready, logout, cancelSubscription } = useAuth();
   const { lang, setLang, t } = useI18n();
   const router = useRouter();
+
+  function handleCancel() {
+    if (!confirm("Résilier ton abonnement Premium ? Le mois en cours reste actif jusqu'à expiration.")) return;
+    cancelSubscription();
+  }
 
   if (!ready) {
     return <div className="text-white/50 text-sm py-12 text-center">…</div>;
@@ -90,6 +95,36 @@ export default function ComptePage() {
             </span>
             <span>›</span>
           </Link>
+        )}
+
+        {/* Gestion abonnement Premium */}
+        {user.isPremium && user.subscriptionEnd && (
+          <div className="bg-bg-card border border-accent-green/20 rounded-2xl p-4 mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs uppercase tracking-wider text-accent-green font-bold">
+                Abonnement actif
+              </span>
+              <span className="text-[10px] text-white/40">
+                {user.plan === "yearly" ? "Annuel −20%" : "Mensuel"}
+              </span>
+            </div>
+            <p className="text-xs text-white/60 mb-3">
+              Renouvellement le{" "}
+              <strong className="text-white/80">
+                {new Date(user.subscriptionEnd).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </strong>
+            </p>
+            <button
+              onClick={handleCancel}
+              className="w-full py-2 rounded-lg border border-white/10 text-xs text-white/60 hover:text-accent-red hover:border-accent-red/30 transition"
+            >
+              Résilier l'abonnement
+            </button>
+          </div>
         )}
 
         <Row icon="📧" label={t("auth.email")} value={user.email} />
