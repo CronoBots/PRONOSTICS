@@ -4,9 +4,63 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
+import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
+
+type StatKey = "paris" | "benefice" | "roi" | "progression";
+
+const STAT_INFOS: Record<
+  StatKey,
+  { title: string; body: React.ReactNode; note?: string }
+> = {
+  paris: {
+    title: "Nombre de paris",
+    body: <>Nombre total de paris que vous avez réalisés.</>,
+    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas comptabilisés.",
+  },
+  benefice: {
+    title: "Bénéfice",
+    body: (
+      <>
+        Calcul du bénéfice de votre bankroll :
+        <br />
+        <span className="text-accent-green font-semibold">
+          (Total de vos gains − Total de vos mises) = Bénéfice
+        </span>
+      </>
+    ),
+    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas comptabilisés.",
+  },
+  roi: {
+    title: "ROI",
+    body: (
+      <>
+        Le ROI (Return On Investment) mesure le rapport entre les bénéfices réalisés
+        et le montant total des mises.
+        <br />
+        <span className="text-accent-green font-semibold">
+          (Bénéfices / Mises totales) × 100 = ROI
+        </span>
+      </>
+    ),
+    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas pris en compte.",
+  },
+  progression: {
+    title: "Progression / ROC",
+    body: (
+      <>
+        La progression est calculée selon le rapport entre les bénéfices réalisés et
+        le capital de départ de la bankroll.
+        <br />
+        <span className="text-accent-green font-semibold">
+          (Bénéfices / Capital de départ) × 100 = Progression
+        </span>
+      </>
+    ),
+  },
+};
 
 type Period = "1j" | "1s" | "1m" | "1a";
 
@@ -30,6 +84,7 @@ export default function Home() {
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasFilters, setHasFilters] = useState(false);
+  const [infoOpen, setInfoOpen] = useState<StatKey | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -216,27 +271,49 @@ export default function Home() {
             {/* 4 stat tiles — pas de signe +/- */}
             {stats && (
               <div className="grid grid-cols-2 gap-3">
-                <StatTile label="PARIS" value={`${settledCount}`} tone="blue" />
+                <StatTile
+                  label="PARIS"
+                  value={`${settledCount}`}
+                  tone="blue"
+                  onInfo={() => setInfoOpen("paris")}
+                />
                 <StatTile
                   label="BÉNÉFICE"
                   value={`${Math.abs(stats.profit).toFixed(2)}€`}
                   tone={stats.profit >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("benefice")}
                 />
                 <StatTile
                   label="ROI"
                   value={`${Math.abs(stats.roi_percent).toFixed(2)}%`}
                   tone={stats.roi_percent >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("roi")}
                 />
                 <StatTile
                   label="PROGRESSION"
                   value={`${Math.abs(stats.progression_percent).toFixed(2)}%`}
                   tone={stats.progression_percent >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("progression")}
                 />
               </div>
             )}
           </div>
         )}
       </main>
+
+      {/* InfoSheet pour les ? des stats */}
+      {infoOpen && (
+        <InfoSheet
+          title={STAT_INFOS[infoOpen].title}
+          open={!!infoOpen}
+          onClose={() => setInfoOpen(null)}
+        >
+          <p>{STAT_INFOS[infoOpen].body}</p>
+          {STAT_INFOS[infoOpen].note && (
+            <p className="text-white/50 text-xs">{STAT_INFOS[infoOpen].note}</p>
+          )}
+        </InfoSheet>
+      )}
 
       {/* Chip flottante × Filtres (si filtres actifs) */}
       {hasFilters && (
@@ -256,18 +333,26 @@ function StatTile({
   label,
   value,
   tone,
+  onInfo,
 }: {
   label: string;
   value: string;
   tone: "blue" | "green" | "red";
+  onInfo?: () => void;
 }) {
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
     <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 relative">
-      <div className="absolute top-3 right-3 w-5 h-5 rounded-full border border-white/15 text-white/30 text-[10px] flex items-center justify-center">
-        ?
-      </div>
+      {onInfo && (
+        <button
+          onClick={onInfo}
+          className="absolute top-3 right-3 w-6 h-6 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-xs flex items-center justify-center transition"
+          aria-label={`Aide ${label}`}
+        >
+          ?
+        </button>
+      )}
       <div className="text-xs uppercase tracking-wider text-white/50 text-center mt-1">
         {label}
       </div>

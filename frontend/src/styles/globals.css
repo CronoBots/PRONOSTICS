@@ -34,6 +34,15 @@ body {
   100% { background-position: -200% 0; }
 }
 
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Scrollbar discret */
 ::-webkit-scrollbar {
   width: 8px;
