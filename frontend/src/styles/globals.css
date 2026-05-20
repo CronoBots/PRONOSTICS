@@ -31,8 +31,13 @@ body {
   -webkit-font-smoothing: antialiased;
   /* Edge-to-edge : la couleur s'étend dans les safe-areas iOS */
   background-color: var(--bg-base);
-  padding: 0;
   margin: 0;
+  /* Padding top = hauteur du status bar iOS PWA (env. 47px sur iPhone 14)
+     pour que le header de l'app ne soit pas caché derrière l'heure/wifi */
+  padding-top: env(safe-area-inset-top);
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
 }
 
 /* Empêche double-tap zoom sur boutons */

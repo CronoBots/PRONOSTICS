@@ -150,7 +150,10 @@ export default function Home() {
 
       <main
         className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col"
-        style={{ height: "calc(100dvh - 6.5rem - env(safe-area-inset-bottom))" }}
+        style={{
+          height:
+            "calc(100dvh - 6.5rem - env(safe-area-inset-top) - env(safe-area-inset-bottom))",
+        }}
       >
         {/* Header compact */}
         <header className="flex items-center justify-between mb-3 shrink-0">
