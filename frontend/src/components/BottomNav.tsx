@@ -29,7 +29,7 @@ const tabs: Tab[] = [
   },
   {
     href: "/stats",
-    label: "Statistiques",
+    label: "Stats",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 20V10M9 20V4M15 20v-8M21 20v-4" />
@@ -37,13 +37,12 @@ const tabs: Tab[] = [
     ),
   },
   {
-    href: "/plus",
-    label: "Plus",
+    href: "/compte",
+    label: "Compte",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-        <circle cx="19" cy="12" r="1.5" fill="currentColor" />
+        <circle cx="12" cy="8" r="4" />
+        <path strokeLinecap="round" d="M4 21c0-4 4-7 8-7s8 3 8 7" />
       </svg>
     ),
   },

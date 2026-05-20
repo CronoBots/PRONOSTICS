@@ -1,8 +1,70 @@
+import Link from "next/link";
+
+import { useAuth } from "@/lib/auth";
 import { SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 interface Props {
   pick: SafePick | null;
   date: string;
+}
+
+function PremiumLock({ pick }: { pick: SafePick }) {
+  return (
+    <>
+      <div className="text-sm text-white/50 mb-3 flex items-center gap-2 flex-wrap">
+        <span className="text-lg">🔒</span>
+        <span className="font-medium text-white/70">Sport masqué</span>
+        <span className="text-white/20">·</span>
+        <span>Match du jour</span>
+      </div>
+
+      <div className="text-2xl md:text-3xl font-bold leading-tight mb-1 text-white/30 select-none">
+        ████████ <span className="text-white/20 font-normal">vs</span> ████████
+      </div>
+      <div className="text-xs text-white/30 mb-5 select-none">Match masqué — Premium requis</div>
+
+      <div className="bg-gradient-to-r from-yellow-500/80 to-yellow-400/80 text-bg-base rounded-2xl p-4 md:p-5 mb-4 shadow-lg">
+        <div className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 mb-1">
+          👑 Premium requis
+        </div>
+        <div className="text-xl md:text-2xl font-black leading-tight">
+          Débloque le pick safe du jour
+        </div>
+        <div className="text-xs md:text-sm mt-1 opacity-80">
+          14+ points d'analyse · sources vérifiées · équipes &amp; cote
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4">
+        <div className="bg-bg-base/60 backdrop-blur rounded-xl p-3 md:p-4 border border-white/5">
+          <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
+            Cote
+          </div>
+          <div className="text-base md:text-xl font-semibold mt-1">{pick.odds.toFixed(2)}</div>
+        </div>
+        <div className="bg-bg-base/60 backdrop-blur rounded-xl p-3 md:p-4 border border-white/5">
+          <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
+            Edge (EV)
+          </div>
+          <div className="text-base md:text-xl font-semibold text-accent-green mt-1">
+            +{(pick.expected_value * 100).toFixed(1)}%
+          </div>
+        </div>
+      </div>
+
+      <Link
+        href="/premium"
+        className="block w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-bold text-center"
+      >
+        👑 Passer en Premium — à partir de 7,99€/mois
+      </Link>
+
+      <p className="text-[11px] text-white/40 text-center mt-3">
+        L'historique reste accessible gratuitement. Premium débloque le pick du jour et
+        l'analyse complète.
+      </p>
+    </>
+  );
 }
 
 function fmtKickoff(iso: string) {
@@ -24,6 +86,11 @@ function fmtDate(iso: string) {
 }
 
 export function TodayPick({ pick, date }: Props) {
+  const { user, ready } = useAuth();
+  // Lock par défaut : tant qu'on ne sait pas si premium, on masque le pick.
+  // Évite le flash du pick complet avant hydration localStorage.
+  const showPremium = !!pick && (!ready || !user || !user.isPremium);
+
   return (
     <div className="relative overflow-hidden rounded-3xl border border-accent-green/40 shadow-card">
       <div className="absolute inset-0 bg-gradient-to-br from-accent-green/20 via-bg-card to-bg-card pointer-events-none" />
@@ -51,6 +118,8 @@ export function TodayPick({ pick, date }: Props) {
               à celle du bookmaker. Reviens demain pour un nouveau pick.
             </p>
           </div>
+        ) : showPremium ? (
+          <PremiumLock pick={pick} />
         ) : (
           <>
             <div className="text-sm text-white/50 mb-3 flex items-center gap-2 flex-wrap">
