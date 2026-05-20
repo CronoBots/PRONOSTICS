@@ -1,24 +1,29 @@
 import { ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
+import Link from "next/link";
 
-import { Header } from "@/components/Header";
+import { InfoSheet } from "@/components/InfoSheet";
 import { KellyCalculator } from "@/components/KellyCalculator";
 import { StakeSimulator } from "@/components/StakeSimulator";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
-function LexEntry({ term, children }: { term: string; children: ReactNode }) {
-  return (
-    <div className="border-l-2 border-accent-green/40 pl-3">
-      <dt className="font-semibold text-white/90 text-sm">{term}</dt>
-      <dd className="text-white/55 text-[13px] leading-relaxed mt-0.5">{children}</dd>
-    </div>
-  );
-}
+type SheetKey =
+  | "simulateur"
+  | "kelly"
+  | "notes"
+  | "share"
+  | "embed"
+  | "lexique"
+  | "howto"
+  | "legal"
+  | "privacy";
 
 export default function PlusPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState<SheetKey | null>(null);
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -27,137 +32,307 @@ export default function PlusPage() {
       setHistory(h);
       setLoading(false);
     });
+    try {
+      setNotes(localStorage.getItem("pronostics.notes") || "");
+    } catch {
+      /* ignore */
+    }
     return () => {
       cancelled = true;
     };
   }, []);
 
+  function saveNotes(v: string) {
+    setNotes(v);
+    try {
+      localStorage.setItem("pronostics.notes", v);
+    } catch {
+      /* ignore */
+    }
+  }
+
   const picks = history?.picks ?? [];
-  const startingBankroll = history?.stats?.starting_bankroll ?? 1000;
+  const startingBankroll = history?.stats?.starting_bankroll ?? 5;
 
   return (
     <>
       <Head>
         <title>Plus — PRONOSTICS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-
-      <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
-        <Header title="Plus" stats={history?.stats} />
+      <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Link
+            href="/"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            aria-label="Retour"
+          >
+            ←
+          </Link>
+          <h1 className="text-lg font-bold tracking-tight">Plus</h1>
+        </div>
 
         {loading && <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>}
 
-        {!loading && history && (
-          <div className="space-y-6">
-            <StakeSimulator
-              picks={picks}
-              defaultStake={5}
-              defaultStartingBankroll={startingBankroll}
-            />
+        {!loading && (
+          <>
+            <Section title="Outils">
+              <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
+              <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
+              <Row icon="📝" label="Bloc notes" onClick={() => setOpen("notes")} />
+            </Section>
 
-            <KellyCalculator />
+            <Section title="Partager">
+              <Row icon="🔗" label="Partager la plateforme" onClick={() => setOpen("share")} />
+              <Row icon="</>" label="Code d'intégration" onClick={() => setOpen("embed")} />
+            </Section>
 
-            <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-3">
-                Comment ça marche
-              </h3>
-              <ul className="text-sm text-white/60 space-y-2 list-disc list-inside">
-                <li>
-                  1 pick safe par jour, analysé manuellement par Claude (recherche web,
-                  croisement de sources, identification du value bet le plus fiable).
-                </li>
-                <li>Cible : cote ≥ 2.00 + probabilité estimée &gt; probabilité bookmaker.</li>
-                <li>
-                  Site statique GitHub Pages → entièrement gratuit, mis à jour à chaque push.
-                </li>
-                <li>Source : github.com/CronoBots/PRONOSTICS</li>
-              </ul>
-            </section>
+            <Section title="Infos">
+              <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
+              <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
+              <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
+              <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
+            </Section>
 
-            <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-4">
-                Lexique pour débutant
-              </h3>
-              <dl className="space-y-3 text-sm">
-                <LexEntry term="Cote (décimale)">
-                  Multiplicateur du gain. Cote 2.73 = pour 1€ misé tu récupères 2.73€ si
-                  tu gagnes (donc 1.73€ de profit net + ta mise).
-                </LexEntry>
-                <LexEntry term="Cote boostée">
-                  Promo du bookmaker qui augmente la cote normale (ex. bwin booste 2.10 →
-                  2.73). Souvent limité à une petite mise et 1 fois par client.
-                </LexEntry>
-                <LexEntry term="Mise / Stake">
-                  Combien tu paries (en €). Si tu perds, tu perds la mise. Si tu gagnes, tu
-                  récupères mise × cote.
-                </LexEntry>
-                <LexEntry term="Gain potentiel">
-                  Combien tu récupères au total si le pari gagne = mise × cote. Sur 5€ à
-                  2.73 = 13.65€ retour (dont 8.65€ de profit net).
-                </LexEntry>
-                <LexEntry term="EV (Expected Value)">
-                  Espérance de gain en %. EV +50% = sur 100€ misés au long terme tu
-                  encaisses 50€ de profit. Positive = pari rentable statistiquement.
-                </LexEntry>
-                <LexEntry term="Value bet">
-                  Pari où notre estimation de probabilité est plus haute que celle du
-                  bookmaker. C'est là que se cache la rentabilité long-terme.
-                </LexEntry>
-                <LexEntry term="Probabilité bookmaker">
-                  Déduite de la cote : 1 / cote. Cote 2.73 → 36.6%. Si la cote était
-                  équitable cette probabilité serait juste, mais le bookmaker prend une
-                  marge.
-                </LexEntry>
-                <LexEntry term="Bankroll">
-                  Ton capital total dédié aux paris. À gérer comme un compte d'investissement
-                  — ne JAMAIS y mettre l'argent du loyer.
-                </LexEntry>
-                <LexEntry term="ROI">
-                  Return on Investment. (Bénéfice / Total misé) × 100. Mesure ton rendement
-                  par euro misé.
-                </LexEntry>
-                <LexEntry term="Progression">
-                  Variation de la bankroll par rapport au départ. 5€ → 25€ = +400%.
-                </LexEntry>
-                <LexEntry term="Drawdown">
-                  Plus grosse baisse depuis un pic. Si ta bankroll passe de 25€ à 18€ puis
-                  remonte à 30€, le drawdown max est 7€.
-                </LexEntry>
-                <LexEntry term="ERA (baseball)">
-                  Earned Run Average. Points encaissés par un lanceur sur 9 manches. Plus
-                  c'est bas mieux c'est. Élite &lt; 2.50, bon &lt; 3.50, mauvais &gt; 4.50.
-                </LexEntry>
-                <LexEntry term="WHIP (baseball)">
-                  Walks + Hits per Inning Pitched. Combien de batteurs adverses arrivent
-                  sur base par manche. Élite &lt; 1.10, mauvais &gt; 1.30.
-                </LexEntry>
-                <LexEntry term="H2H">
-                  Head-to-Head. Historique des confrontations directes entre deux équipes
-                  ou joueurs.
-                </LexEntry>
-              </dl>
-            </section>
+            <Section title="Compte">
+              <RowLink icon="👤" label="Mon compte" href="/compte" />
+              <RowLink icon="👑" label="Passer en Premium" href="/premium" />
+            </Section>
 
-            <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-3">
-                Mentions
-              </h3>
-              <p className="text-xs text-white/50 leading-relaxed">
-                Contenu informatif uniquement. Les paris sportifs comportent un risque
-                de perte financière ; ne pariez que ce que vous pouvez vous permettre
-                de perdre. Mineurs interdits. Pour de l'aide : Joueurs Info Service 09 74 75 13 13
-                (appel non surtaxé).
-              </p>
-              <p className="text-[11px] text-white/30 mt-3">
-                Dernière mise à jour :{" "}
-                {history.generated_at
-                  ? new Date(history.generated_at).toLocaleString("fr-FR")
-                  : "—"}
-              </p>
-            </section>
-          </div>
+            <div className="text-center text-[10px] text-white/30 mt-8">
+              PRONOSTICS · v0.2 · {new Date().getFullYear()}
+            </div>
+          </>
         )}
       </main>
+
+      {/* Sheets */}
+      <InfoSheet
+        title="Simulateur de mise"
+        open={open === "simulateur"}
+        onClose={() => setOpen(null)}
+      >
+        <StakeSimulator
+          picks={picks}
+          defaultStake={5}
+          defaultStartingBankroll={startingBankroll}
+        />
+      </InfoSheet>
+
+      <InfoSheet
+        title="Calculateur Kelly"
+        open={open === "kelly"}
+        onClose={() => setOpen(null)}
+      >
+        <KellyCalculator />
+      </InfoSheet>
+
+      <InfoSheet title="Bloc notes" open={open === "notes"} onClose={() => setOpen(null)}>
+        <p className="text-xs text-white/50">
+          Tes notes personnelles (stratégies, hypothèses, contraintes). Sauvegardées
+          localement sur ce navigateur.
+        </p>
+        <textarea
+          value={notes}
+          onChange={(e) => saveNotes(e.target.value)}
+          placeholder="Ex: ne pas miser le dimanche soir, max 3% bankroll par pari…"
+          className="w-full h-40 mt-2 bg-bg-elevated border border-white/10 rounded-xl p-3 text-sm focus:outline-none focus:border-accent-green/40 resize-none"
+        />
+        <div className="text-[11px] text-white/40 mt-1 text-right">
+          {notes.length} caractères · sauvegarde automatique
+        </div>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Partager la plateforme"
+        open={open === "share"}
+        onClose={() => setOpen(null)}
+      >
+        <p>Diffuse le lien pour faire connaître l'app :</p>
+        <ShareBox text="https://cronobots.github.io/PRONOSTICS/" />
+        <p className="text-xs text-white/50 mt-3">
+          Plus d'utilisateurs = plus de données, plus de confiance dans le track record
+          public.
+        </p>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Code d'intégration"
+        open={open === "embed"}
+        onClose={() => setOpen(null)}
+      >
+        <p>Embarque la page d'historique sur ton site :</p>
+        <ShareBox text='<iframe src="https://cronobots.github.io/PRONOSTICS/paris" width="100%" height="600" frameborder="0"></iframe>' />
+      </InfoSheet>
+
+      <InfoSheet title="Lexique" open={open === "lexique"} onClose={() => setOpen(null)}>
+        <Lex term="Cote (décimale)">
+          Multiplicateur du gain. Cote 2.73 = pour 1€ misé tu touches 2.73€.
+        </Lex>
+        <Lex term="Cote boostée">
+          Promo du bookmaker qui augmente la cote normale temporairement.
+        </Lex>
+        <Lex term="Mise">Combien tu paries. Si tu perds, tu perds la mise.</Lex>
+        <Lex term="EV (Expected Value)">
+          Espérance de gain en %. Positive = pari statistiquement rentable.
+        </Lex>
+        <Lex term="Value bet">
+          Pari où notre estimation de probabilité dépasse celle du bookmaker.
+        </Lex>
+        <Lex term="ROI">(Bénéfice / Mises totales) × 100. Rendement par euro misé.</Lex>
+        <Lex term="Bankroll">Capital total dédié aux paris (à gérer comme un compte de trading).</Lex>
+        <Lex term="Drawdown">Plus grosse baisse depuis un pic de bankroll.</Lex>
+        <Lex term="ERA (baseball)">
+          Points encaissés par lanceur sur 9 manches. Élite &lt; 2.50.
+        </Lex>
+        <Lex term="WHIP (baseball)">
+          Coureurs adverses sur base par manche. Élite &lt; 1.10.
+        </Lex>
+        <Lex term="H2H">Historique des confrontations directes.</Lex>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Comment ça marche"
+        open={open === "howto"}
+        onClose={() => setOpen(null)}
+      >
+        <ol className="space-y-2 list-decimal list-inside text-sm">
+          <li>Chaque jour, Claude analyse les matchs disponibles (foot, NBA, NHL, MLB, ATP/WTA).</li>
+          <li>Sources croisées : forme récente, blessures, H2H, statistiques avancées.</li>
+          <li>
+            Identification du <strong>value bet</strong> du jour : cote ≥ 2.00 + probabilité estimée supérieure à celle du bookmaker.
+          </li>
+          <li>Le pick est publié avant le match, avec rationale détaillée et sources.</li>
+          <li>L'historique est mis à jour quotidiennement avec les résultats.</li>
+          <li>Premium débloque le pick du jour + l'analyse complète.</li>
+        </ol>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Mentions légales"
+        open={open === "legal"}
+        onClose={() => setOpen(null)}
+      >
+        <p className="text-xs">
+          <strong>Éditeur</strong> : CronoBots
+          <br />
+          <strong>Hébergement</strong> : GitHub Pages
+          <br />
+          <strong>Contact</strong> : via la page Compte
+        </p>
+        <p className="text-xs text-white/50 mt-3">
+          Contenu informatif uniquement. Les paris sportifs comportent un risque de perte
+          financière et d'addiction. Ne pariez que ce que vous pouvez perdre. Interdit
+          aux mineurs.
+        </p>
+        <p className="text-xs text-white/50 mt-2">
+          🆘 Joueurs Info Service (FR) : 09 74 75 13 13 — BeGambleAware (BE) : 0800 35 777
+        </p>
+      </InfoSheet>
+
+      <InfoSheet
+        title="Politique de confidentialité"
+        open={open === "privacy"}
+        onClose={() => setOpen(null)}
+      >
+        <p className="text-xs">
+          Données collectées : email + pseudo + abonnement (Phase 2 via Supabase). Aucun
+          tracking publicitaire, aucune revente de données.
+        </p>
+        <p className="text-xs text-white/50 mt-2">
+          Tu peux supprimer ton compte à tout moment depuis la page Compte. Toutes les
+          données associées sont effacées sous 30 jours.
+        </p>
+      </InfoSheet>
     </>
+  );
+}
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="mb-6">
+      <h3 className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-semibold mb-2 px-1">
+        {title}
+      </h3>
+      <div className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden divide-y divide-white/5">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function Row({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: string;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-white/[0.02] text-left transition"
+    >
+      <span className="text-xl w-6 text-center">{icon}</span>
+      <span className="flex-1 text-sm">{label}</span>
+      <span className="text-white/30">›</span>
+    </button>
+  );
+}
+
+function RowLink({
+  icon,
+  label,
+  href,
+}: {
+  icon: string;
+  label: string;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-white/[0.02] text-left transition"
+    >
+      <span className="text-xl w-6 text-center">{icon}</span>
+      <span className="flex-1 text-sm">{label}</span>
+      <span className="text-white/30">›</span>
+    </Link>
+  );
+}
+
+function ShareBox({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+  return (
+    <div className="flex gap-2 mt-2">
+      <input
+        type="text"
+        value={text}
+        readOnly
+        className="flex-1 bg-bg-elevated border border-white/10 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none truncate"
+      />
+      <button
+        onClick={copy}
+        className="px-4 py-2 rounded-lg bg-accent-blue text-white text-xs font-semibold hover:opacity-90"
+      >
+        {copied ? "✓" : "Copier"}
+      </button>
+    </div>
+  );
+}
+
+function Lex({ term, children }: { term: string; children: ReactNode }) {
+  return (
+    <div className="border-l-2 border-accent-green/40 pl-3 mb-2">
+      <div className="font-semibold text-white/90 text-sm">{term}</div>
+      <div className="text-white/55 text-[13px] leading-relaxed mt-0.5">{children}</div>
+    </div>
   );
 }

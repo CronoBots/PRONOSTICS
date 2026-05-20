@@ -155,7 +155,7 @@ export function BankrollChart({
 
   if (variant === "hero") {
     return (
-      <div className="h-72 md:h-80 w-full rounded-3xl overflow-hidden bg-accent-green relative">
+      <div className="h-full min-h-[180px] w-full rounded-2xl overflow-hidden bg-accent-green relative">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 8 }}>
             <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />

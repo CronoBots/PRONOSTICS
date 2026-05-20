@@ -148,9 +148,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
+      <main className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col h-[calc(100dvh-5rem)]">
         {/* Header compact */}
-        <header className="flex items-center justify-between mb-5">
+        <header className="flex items-center justify-between mb-3 shrink-0">
           <button className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5">
             ←
           </button>
@@ -174,11 +174,11 @@ export default function Home() {
         {loading && <HomeSkeleton />}
 
         {!loading && history && (
-          <div className="space-y-4">
-            {/* Badge streak — visible si série gagnante ou perdante */}
+          <div className="flex-1 flex flex-col gap-2.5 min-h-0">
+            {/* Badge streak compact */}
             {stats && stats.current_streak !== 0 && (
               <div
-                className={`flex items-center justify-center gap-2 py-2 px-4 rounded-full text-sm font-semibold ${
+                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-semibold shrink-0 ${
                   stats.current_streak > 0
                     ? "bg-accent-green/15 text-accent-green border border-accent-green/30"
                     : "bg-accent-red/15 text-accent-red border border-accent-red/30"
@@ -192,8 +192,8 @@ export default function Home() {
                 </span>
               </div>
             )}
-            {/* Chart + bouton ⋯ */}
-            <section className="relative">
+            {/* Chart + bouton ⋯ — flex-1 prend l'espace restant */}
+            <section className="relative flex-1 min-h-[180px]">
               <BankrollChart
                 picks={picks}
                 startingBankroll={startingBankroll}
@@ -221,16 +221,16 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Filter pills SOUS le chart */}
-            <div className="grid grid-cols-5 gap-2">
+            {/* Filter pills */}
+            <div className="grid grid-cols-5 gap-1.5 shrink-0">
               {PERIODS.map((p) => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
-                  className={`py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition text-center ${
+                  className={`py-1 rounded-full text-[11px] font-medium border transition text-center ${
                     period === p
                       ? "bg-bg-card text-accent-green border-accent-green"
-                      : "bg-bg-card/60 text-white/70 border-white/10 hover:bg-bg-card"
+                      : "bg-bg-card/60 text-white/70 border-white/10"
                   }`}
                 >
                   {p}
@@ -238,39 +238,39 @@ export default function Home() {
               ))}
               <Link
                 href="/filtres"
-                className="py-1.5 rounded-full text-xs font-medium border bg-bg-card/60 text-white/70 border-white/10 hover:bg-bg-card text-center"
+                className="py-1 rounded-full text-[11px] font-medium border bg-bg-card/60 text-white/70 border-white/10 text-center"
               >
                 Filtres
               </Link>
             </div>
 
-            {/* 2 boutons Analyzer / Calendrier */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Analyses / Calendrier */}
+            <div className="grid grid-cols-2 gap-2 shrink-0">
               <Link
                 href="/analyzer"
-                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-blue/30 transition"
+                className="bg-bg-card border border-white/[0.06] rounded-xl py-2.5 flex items-center justify-center gap-1.5"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-accent-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
                   <circle cx="12" cy="12" r="9" />
                   <path strokeLinecap="round" d="M12 3v9l6 4" />
                 </svg>
-                <span className="font-medium">Analyses</span>
+                <span className="text-sm font-medium">Analyses</span>
               </Link>
               <Link
                 href="/calendrier"
-                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-blue/30 transition"
+                className="bg-bg-card border border-white/[0.06] rounded-xl py-2.5 flex items-center justify-center gap-1.5"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-accent-blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
                   <rect x="3" y="4" width="18" height="17" rx="2" />
                   <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
                 </svg>
-                <span className="font-medium">Calendrier</span>
+                <span className="text-sm font-medium">Calendrier</span>
               </Link>
             </div>
 
             {/* 4 stat tiles — pas de signe +/- */}
             {stats && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 shrink-0">
                 <StatTile
                   label="PARIS"
                   value={`${settledCount}`}
@@ -343,20 +343,20 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 relative">
+    <div className="bg-bg-card border border-white/[0.06] rounded-xl px-3 py-2.5 relative">
       {onInfo && (
         <button
           onClick={onInfo}
-          className="absolute top-3 right-3 w-6 h-6 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-xs flex items-center justify-center transition"
+          className="absolute top-2 right-2 w-5 h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[10px] flex items-center justify-center transition"
           aria-label={`Aide ${label}`}
         >
           ?
         </button>
       )}
-      <div className="text-xs uppercase tracking-wider text-white/50 text-center mt-1">
+      <div className="text-[10px] uppercase tracking-wider text-white/50 text-center">
         {label}
       </div>
-      <div className={`text-3xl md:text-4xl font-bold tabular-nums text-center mt-3 ${colorClass}`}>
+      <div className={`text-xl md:text-2xl font-bold tabular-nums text-center mt-1 ${colorClass}`}>
         {value}
       </div>
     </div>
