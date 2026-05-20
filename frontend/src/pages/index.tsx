@@ -152,7 +152,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>PRONOSTICS — Pick safe du jour</title>
+        <title>WTF — Win The Future</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
 
@@ -170,7 +170,9 @@ export default function Home() {
             ←
           </button>
           <Link href="/today" className="flex items-center gap-1.5 font-bold">
-            <span>Claude IA</span>
+            <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
+              WTF
+            </span>
             <span className="w-5 h-5 rounded-full bg-accent-blue/20 text-accent-blue flex items-center justify-center text-xs">
               ›
             </span>

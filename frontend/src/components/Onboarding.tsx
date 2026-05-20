@@ -10,19 +10,19 @@ interface Slide {
 
 const SLIDES: Slide[] = [
   {
-    icon: "🎯",
-    title: "1 pari safe par jour",
-    body: "Chaque matin, Claude analyse les matchs du jour (multi-sports : football, NBA, NHL, MLB, ATP/WTA) et identifie le value bet le plus fiable. Cote ≥ 2.00 obligatoire.",
+    icon: "🤖",
+    title: "WTF · Win The Future",
+    body: "L'IA qui analyse 30+ matchs par jour (football, NBA, NHL, MLB, ATP/WTA) et identifie LE value bet à cote ≥ 2.00 le plus fiable du jour.",
   },
   {
     icon: "📊",
-    title: "Tracking transparent",
-    body: "Historique complet visible publiquement : tous les picks passés, les résultats, le ROI cumulé. Aucun pick caché, aucune triche.",
+    title: "Tracking 100% transparent",
+    body: "Historique complet visible publiquement : tous les picks passés, les résultats, le ROI cumulé. Aucun pick caché, aucune triche. Vérifie toi-même avant de t'abonner.",
   },
   {
     icon: "👑",
     title: "Premium pour le pick du jour",
-    body: "L'historique est gratuit pour vérifier la qualité. Le pick du jour et l'analyse complète (14+ points avec sources) sont réservés aux abonnés Premium.",
+    body: "L'historique reste gratuit. Le pick du jour et l'analyse complète (45-60 points avec sources web vérifiables) sont réservés aux abonnés Premium.",
   },
 ];
 

@@ -29,16 +29,17 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>{t("auth.login")} — PRONOSTICS</title>
+        <title>{t("auth.login")} — WTF</title>
       </Head>
       <main className="min-h-screen flex flex-col">
         {/* Hero vert */}
         <div className="bg-accent-green flex-1 flex items-center justify-center py-16 min-h-[280px]">
           <div className="text-center">
             <div className="w-16 h-16 rounded-2xl bg-white/20 ring-2 ring-white/40 mx-auto mb-3 flex items-center justify-center">
-              <span className="text-white text-3xl font-bold">P</span>
+              <span className="text-white text-xl font-extrabold tracking-tighter">WTF</span>
             </div>
-            <div className="text-white font-bold text-2xl tracking-tight">PRONOSTICS</div>
+            <div className="text-white font-bold text-2xl tracking-tight">WTF</div>
+            <div className="text-white/80 text-xs mt-1 tracking-wider">Win The Future</div>
           </div>
         </div>
 

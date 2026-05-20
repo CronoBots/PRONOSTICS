@@ -5,7 +5,6 @@ import Link from "next/link";
 import { AnalyzerGeneral } from "@/components/AnalyzerGeneral";
 import { AnalyzerPeriode } from "@/components/AnalyzerPeriode";
 import { AnalyzerSport } from "@/components/AnalyzerSport";
-import { Header } from "@/components/Header";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
@@ -39,7 +38,7 @@ export default function AnalyzerPage() {
   return (
     <>
       <Head>
-        <title>Analyses — PRONOSTICS</title>
+        <title>Analyses — WTF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
 

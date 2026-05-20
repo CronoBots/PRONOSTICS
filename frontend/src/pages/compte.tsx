@@ -19,7 +19,7 @@ export default function ComptePage() {
     return (
       <>
         <Head>
-          <title>{t("account.title")} — PRONOSTICS</title>
+          <title>{t("account.title")} — WTF</title>
         </Head>
         <main className="max-w-md mx-auto px-4 py-10 text-center">
           <Header title={t("account.title")} stats={null} />
@@ -50,7 +50,7 @@ export default function ComptePage() {
   return (
     <>
       <Head>
-        <title>{t("account.title")} — PRONOSTICS</title>
+        <title>{t("account.title")} — WTF</title>
       </Head>
       <main className="max-w-md mx-auto px-4 md:px-6 py-6 md:py-10">
         <h1 className="text-center text-base font-semibold text-white/80 mb-6">
@@ -119,7 +119,7 @@ export default function ComptePage() {
         </button>
 
         <div className="text-center text-xs text-white/30 mt-6">
-          PRONOSTICS v0.1 · {new Date().getFullYear()}
+          WTF · Win The Future · v0.2 · {new Date().getFullYear()}
         </div>
       </main>
     </>

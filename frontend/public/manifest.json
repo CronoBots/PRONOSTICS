@@ -1,7 +1,7 @@
 {
-  "name": "PRONOSTICS — Pick safe du jour",
-  "short_name": "PRONOSTICS",
-  "description": "1 value bet par jour analysé manuellement par Claude. Cote ≥ 2.00, tracking bankroll, historique transparent.",
+  "name": "Win The Future — L'IA qui prédit, tu gagnes",
+  "short_name": "WTF",
+  "description": "L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking transparent, ROI suivi en temps réel.",
   "start_url": "/PRONOSTICS/",
   "scope": "/PRONOSTICS/",
   "display": "standalone",

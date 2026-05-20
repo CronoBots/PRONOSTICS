@@ -21,15 +21,19 @@ export default function Document() {
         <link rel="apple-touch-icon" href="/PRONOSTICS/icons/icon-192.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="PRONOSTICS" />
+        <meta name="apple-mobile-web-app-title" content="WTF" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="PRONOSTICS — Pick safe du jour" />
-        <meta property="og:description" content="1 value bet par jour analysé manuellement. Cote ≥ 2.00, ROI suivi en temps réel." />
+        <meta property="og:title" content="WTF — Win The Future" />
+        <meta property="og:description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/PRONOSTICS/icons/icon-512.svg" />
+        <meta property="og:site_name" content="Win The Future" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="WTF — Win The Future" />
+        <meta name="twitter:description" content="L'IA qui prédit. Tu gagnes." />
+        <meta name="description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent, historique vérifiable." />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

@@ -70,7 +70,7 @@ export default function FiltresPage() {
   return (
     <>
       <Head>
-        <title>Filtres — PRONOSTICS</title>
+        <title>Filtres — WTF</title>
       </Head>
       <main className="max-w-md mx-auto px-4 pt-6 pb-32">
         <div className="flex items-center gap-3 mb-6">
@@ -134,7 +134,7 @@ export default function FiltresPage() {
           <FieldSelect
             label="Tipster"
             value={form.tipster}
-            options={["Claude IA", "Moi-même"]}
+            options={["WTF (Win The Future)", "Moi-même"]}
             onChange={(v) => update("tipster", v)}
           />
           <FieldText

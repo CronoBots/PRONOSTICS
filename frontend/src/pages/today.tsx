@@ -39,7 +39,7 @@ export default function TodayPage() {
   return (
     <>
       <Head>
-        <title>Pick du jour — PRONOSTICS</title>
+        <title>Pick du jour — WTF</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
 

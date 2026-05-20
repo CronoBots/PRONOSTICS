@@ -57,7 +57,7 @@ export default function PlusPage() {
   return (
     <>
       <Head>
-        <title>Plus — PRONOSTICS</title>
+        <title>Plus — WTF</title>
       </Head>
       <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
         <div className="flex items-center gap-3 mb-6">
@@ -99,7 +99,7 @@ export default function PlusPage() {
             </Section>
 
             <div className="text-center text-[10px] text-white/30 mt-8">
-              PRONOSTICS · v0.2 · {new Date().getFullYear()}
+              WTF · Win The Future · v0.2 · {new Date().getFullYear()}
             </div>
           </>
         )}
@@ -196,12 +196,12 @@ export default function PlusPage() {
         onClose={() => setOpen(null)}
       >
         <ol className="space-y-2 list-decimal list-inside text-sm">
-          <li>Chaque jour, Claude analyse les matchs disponibles (foot, NBA, NHL, MLB, ATP/WTA).</li>
+          <li>Chaque jour, <strong>WTF (l'IA)</strong> analyse les matchs disponibles (foot, NBA, NHL, MLB, ATP/WTA).</li>
           <li>Sources croisées : forme récente, blessures, H2H, statistiques avancées.</li>
           <li>
             Identification du <strong>value bet</strong> du jour : cote ≥ 2.00 + probabilité estimée supérieure à celle du bookmaker.
           </li>
-          <li>Le pick est publié avant le match, avec rationale détaillée et sources.</li>
+          <li>Le pick est publié avant le match, avec rationale détaillée (45-60 points) et sources vérifiables.</li>
           <li>L'historique est mis à jour quotidiennement avec les résultats.</li>
           <li>Premium débloque le pick du jour + l'analyse complète.</li>
         </ol>
@@ -213,6 +213,8 @@ export default function PlusPage() {
         onClose={() => setOpen(null)}
       >
         <p className="text-xs">
+          <strong>Service</strong> : WTF · Win The Future
+          <br />
           <strong>Éditeur</strong> : CronoBots
           <br />
           <strong>Hébergement</strong> : GitHub Pages

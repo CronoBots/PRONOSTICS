@@ -10,6 +10,6 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="108" fill="url(#bg)"/>
-  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#accent)" stroke-width="16" opacity="0.4"/>
-  <text x="256" y="332" font-family="Inter, system-ui, sans-serif" font-size="246" font-weight="800" text-anchor="middle" fill="url(#accent)">P</text>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#accent)" stroke-width="14" opacity="0.3"/>
+  <text x="256" y="312" font-family="Inter, system-ui, sans-serif" font-size="155" font-weight="900" text-anchor="middle" fill="url(#accent)" letter-spacing="-5">WTF</text>
 </svg>

@@ -12,13 +12,15 @@ export function Header({ title, stats }: Props) {
   return (
     <header className="flex items-center justify-between gap-4 mb-6 md:mb-8">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-accent-green/15 ring-1 ring-accent-green/30 flex items-center justify-center">
-          <span className="text-accent-green text-lg md:text-xl font-bold">P</span>
+        <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-accent-green/20 to-accent-blue/20 ring-1 ring-white/10 flex items-center justify-center">
+          <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent text-xs md:text-sm font-extrabold tracking-tighter">
+            WTF
+          </span>
         </div>
         <div>
           <h1 className="text-lg md:text-xl font-bold tracking-tight">{title}</h1>
           <p className="text-white/40 text-[11px] md:text-xs">
-            1 value bet par jour · cote ≥ 2.00
+            L'IA qui prédit · tu gagnes
           </p>
         </div>
       </div>
