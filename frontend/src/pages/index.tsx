@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { BankrollChart } from "@/components/BankrollChart";
+import { BankrollChart, ChartMode } from "@/components/BankrollChart";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
@@ -10,10 +11,25 @@ type Period = "1j" | "1s" | "1m" | "1a";
 
 const PERIODS: Period[] = ["1j", "1s", "1m", "1a"];
 
+interface ChartOptions {
+  mode: ChartMode;
+  showCLV: boolean;
+  showValues: boolean;
+}
+
 export default function Home() {
+  const router = useRouter();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<Period>("1m");
+  const [opts, setOpts] = useState<ChartOptions>({
+    mode: "capital",
+    showCLV: false,
+    showValues: false,
+  });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hasFilters, setHasFilters] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,11 +43,46 @@ export default function Home() {
     };
   }, []);
 
+  // Détecte si des filtres sont actifs (sauvegardés en localStorage)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("pronostics.filters");
+      if (!raw) return;
+      const obj = JSON.parse(raw);
+      const active = Object.entries(obj).some(([k, v]) => {
+        if (k === "live" || k === "free") return v !== "tous";
+        return v && v !== "";
+      });
+      setHasFilters(active);
+    } catch {
+      /* ignore */
+    }
+  }, [router.asPath]);
+
+  // Ferme le menu sur click extérieur
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    window.addEventListener("mousedown", onClick);
+    return () => window.removeEventListener("mousedown", onClick);
+  }, [menuOpen]);
+
+  function clearFilters() {
+    try {
+      localStorage.removeItem("pronostics.filters");
+    } catch {
+      /* ignore */
+    }
+    setHasFilters(false);
+  }
+
   const stats = history?.stats;
   const picks = history?.picks ?? [];
   const startingBankroll = stats?.starting_bankroll ?? 5;
-
-  // Stats à afficher : ne compter que les paris RÉGLÉS (pas le pending)
   const settledCount = stats ? stats.won + stats.lost : 0;
 
   return (
@@ -42,7 +93,7 @@ export default function Home() {
       </Head>
 
       <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
-        {/* Header compact style bet-analytix */}
+        {/* Header compact */}
         <header className="flex items-center justify-between mb-5">
           <button className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5">
             ←
@@ -68,43 +119,63 @@ export default function Home() {
 
         {!loading && history && (
           <div className="space-y-4">
-            {/* Chart hero vert avec filtres temporels intégrés */}
+            {/* Chart + bouton ⋯ */}
             <section className="relative">
-              <BankrollChart picks={picks} startingBankroll={startingBankroll} variant="hero" />
-              <div className="absolute top-3 right-3">
-                <button className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white">
+              <BankrollChart
+                picks={picks}
+                startingBankroll={startingBankroll}
+                variant="hero"
+                mode={opts.mode}
+                showValues={opts.showValues}
+              />
+
+              {/* Bouton ⋯ */}
+              <div className="absolute top-3 right-3" ref={menuRef}>
+                <button
+                  onClick={() => setMenuOpen((o) => !o)}
+                  className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white"
+                  aria-label="Options du graphique"
+                >
                   ⋯
                 </button>
-              </div>
-              {/* Filter pills — même taille, répartis sur toute la largeur */}
-              <div className="absolute bottom-3 left-3 right-3 grid grid-cols-5 gap-2">
-                {PERIODS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPeriod(p)}
-                    className={`py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition text-center ${
-                      period === p
-                        ? "bg-white text-accent-green border-white"
-                        : "bg-transparent text-white border-white/60 hover:bg-white/10"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
-                <Link
-                  href="/filtres"
-                  className="py-1.5 rounded-full text-xs font-medium border bg-transparent text-white border-white/60 hover:bg-white/10 text-center"
-                >
-                  Filtres
-                </Link>
+                {menuOpen && (
+                  <ChartOptionsMenu
+                    opts={opts}
+                    onChange={(next) => setOpts(next)}
+                    onClose={() => setMenuOpen(false)}
+                  />
+                )}
               </div>
             </section>
+
+            {/* Filter pills SOUS le chart */}
+            <div className="grid grid-cols-5 gap-2">
+              {PERIODS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPeriod(p)}
+                  className={`py-1.5 rounded-full text-xs font-medium border whitespace-nowrap transition text-center ${
+                    period === p
+                      ? "bg-bg-card text-accent-green border-accent-green"
+                      : "bg-bg-card/60 text-white/70 border-white/10 hover:bg-bg-card"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+              <Link
+                href="/filtres"
+                className="py-1.5 rounded-full text-xs font-medium border bg-bg-card/60 text-white/70 border-white/10 hover:bg-bg-card text-center"
+              >
+                Filtres
+              </Link>
+            </div>
 
             {/* 2 boutons Analyzer / Calendrier */}
             <div className="grid grid-cols-2 gap-3">
               <Link
                 href="/analyzer"
-                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-green/30 transition"
+                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-blue/30 transition"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-accent-blue">
                   <circle cx="12" cy="12" r="9" />
@@ -114,7 +185,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/calendrier"
-                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-green/30 transition"
+                className="bg-bg-card border border-white/[0.06] rounded-2xl py-4 flex items-center justify-center gap-2 hover:border-accent-blue/30 transition"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-accent-blue">
                   <rect x="3" y="4" width="18" height="17" rx="2" />
@@ -124,7 +195,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* 4 stat tiles — pas de signe +/- : seule la couleur indique gain/perte */}
+            {/* 4 stat tiles — pas de signe +/- */}
             {stats && (
               <div className="grid grid-cols-2 gap-3">
                 <StatTile label="PARIS" value={`${settledCount}`} tone="blue" />
@@ -148,6 +219,17 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* Chip flottante × Filtres (si filtres actifs) */}
+      {hasFilters && (
+        <button
+          onClick={clearFilters}
+          className="fixed bottom-24 right-4 z-30 bg-accent-red/90 text-white rounded-full pl-3 pr-4 py-2 shadow-lg flex items-center gap-1.5 hover:bg-accent-red"
+        >
+          <span className="text-sm">✕</span>
+          <span className="text-sm font-semibold">Filtres</span>
+        </button>
+      )}
     </>
   );
 }
@@ -171,11 +253,93 @@ function StatTile({
       <div className="text-xs uppercase tracking-wider text-white/50 text-center mt-1">
         {label}
       </div>
-      <div
-        className={`text-3xl md:text-4xl font-bold tabular-nums text-center mt-3 ${colorClass}`}
-      >
+      <div className={`text-3xl md:text-4xl font-bold tabular-nums text-center mt-3 ${colorClass}`}>
         {value}
       </div>
     </div>
+  );
+}
+
+interface MenuProps {
+  opts: ChartOptions;
+  onChange: (next: ChartOptions) => void;
+  onClose: () => void;
+}
+
+function ChartOptionsMenu({ opts, onChange }: MenuProps) {
+  return (
+    <div className="absolute top-11 right-0 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
+      <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold">
+        Données du graphique
+      </div>
+      <MenuItem
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+            <circle cx="9" cy="12" r="6" />
+            <path strokeLinecap="round" d="M15 12h6M18 9l3 3-3 3" />
+          </svg>
+        }
+        label="Bénéfice"
+        active={opts.mode === "benefice"}
+        onClick={() => onChange({ ...opts, mode: "benefice" })}
+      />
+      <MenuItem
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8" />
+          </svg>
+        }
+        label="Capital"
+        active={opts.mode === "capital"}
+        onClick={() => onChange({ ...opts, mode: "capital" })}
+      />
+      <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold border-t border-white/5 mt-1">
+        Options
+      </div>
+      <MenuItem
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" />
+          </svg>
+        }
+        label="CLV"
+        active={opts.showCLV}
+        onClick={() => onChange({ ...opts, showCLV: !opts.showCLV })}
+      />
+      <MenuItem
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+            <path strokeLinecap="round" d="M4 9h16M4 15h16M10 3l-4 18M18 3l-4 18" />
+          </svg>
+        }
+        label="Valeurs"
+        active={opts.showValues}
+        onClick={() => onChange({ ...opts, showValues: !opts.showValues })}
+      />
+    </div>
+  );
+}
+
+function MenuItem({
+  icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-2.5 transition text-left ${
+        active ? "bg-white/[0.06] text-white" : "text-white/70 hover:bg-white/[0.04]"
+      }`}
+    >
+      <span className={active ? "text-accent-green" : "text-white/50"}>{icon}</span>
+      <span className="text-sm font-medium">{label}</span>
+    </button>
   );
 }

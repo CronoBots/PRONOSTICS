@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import {
   CartesianGrid,
+  LabelList,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -11,41 +12,49 @@ import {
 
 import { HistoryPick } from "@/lib/types";
 
+export type ChartMode = "benefice" | "capital";
+
 interface Props {
   picks: HistoryPick[];
   startingBankroll: number;
   variant?: "default" | "hero";
+  mode?: ChartMode;
+  showValues?: boolean;
 }
 
 interface Point {
   date: string;
   label: string;
-  bankroll: number | null;
+  value: number | null;
   ifWin?: number | null;
   ifLoss?: number | null;
 }
 
-function buildSeries(picks: HistoryPick[], starting: number): Point[] {
+function buildSeries(
+  picks: HistoryPick[],
+  starting: number,
+  mode: ChartMode,
+): Point[] {
   const sorted = [...picks].sort((a, b) => a.date.localeCompare(b.date));
   const settled = sorted.filter((p) => p.outcome === "win" || p.outcome === "loss");
   const pendings = sorted.filter((p) => p.outcome === "pending");
 
+  const toY = (bankroll: number) => (mode === "capital" ? bankroll : bankroll - starting);
+
   const series: Point[] = [];
 
-  // Point de départ
   if (settled.length > 0) {
     const firstDate = new Date(settled[0].date);
     firstDate.setDate(firstDate.getDate() - 1);
     series.push({
       date: firstDate.toISOString().slice(0, 10),
       label: "",
-      bankroll: starting,
+      value: toY(starting),
     });
   } else {
-    series.push({ date: "start", label: "Départ", bankroll: starting });
+    series.push({ date: "start", label: "Départ", value: toY(starting) });
   }
 
-  // Picks réglés
   for (const p of settled) {
     series.push({
       date: p.date,
@@ -53,44 +62,51 @@ function buildSeries(picks: HistoryPick[], starting: number): Point[] {
         day: "2-digit",
         month: "short",
       }),
-      bankroll: p.bankroll_after,
+      value: toY(p.bankroll_after),
     });
   }
 
-  // Projection si pari en cours
   if (pendings.length > 0 && series.length > 0) {
-    const lastBankroll = series[series.length - 1].bankroll ?? starting;
-    // Dernier pari pending = projection
+    const lastBankroll =
+      mode === "capital"
+        ? series[series.length - 1].value ?? starting
+        : (series[series.length - 1].value ?? 0) + starting;
     const p = pendings[pendings.length - 1];
-    const ifWin = Math.round((lastBankroll + p.stake * (p.odds - 1)) * 100) / 100;
-    const ifLoss = Math.round((lastBankroll - p.stake) * 100) / 100;
+    const ifWinBankroll = Math.round((lastBankroll + p.stake * (p.odds - 1)) * 100) / 100;
+    const ifLossBankroll = Math.round((lastBankroll - p.stake) * 100) / 100;
 
-    // Ancrage : dernier point réglé = mêmes valeurs ifWin/ifLoss pour que les lignes
-    // partent du même endroit que la courbe principale
     series[series.length - 1] = {
       ...series[series.length - 1],
-      ifWin: lastBankroll,
-      ifLoss: lastBankroll,
+      ifWin: series[series.length - 1].value,
+      ifLoss: series[series.length - 1].value,
     };
 
-    // Point de projection (au-delà du dernier pari réglé)
     series.push({
       date: p.date,
       label: new Date(p.date).toLocaleDateString("fr-FR", {
         day: "2-digit",
         month: "short",
       }),
-      bankroll: null,
-      ifWin,
-      ifLoss,
+      value: null,
+      ifWin: toY(ifWinBankroll),
+      ifLoss: toY(ifLossBankroll),
     });
   }
 
   return series;
 }
 
-export function BankrollChart({ picks, startingBankroll, variant = "default" }: Props) {
-  const data = useMemo(() => buildSeries(picks, startingBankroll), [picks, startingBankroll]);
+export function BankrollChart({
+  picks,
+  startingBankroll,
+  variant = "default",
+  mode = "capital",
+  showValues = false,
+}: Props) {
+  const data = useMemo(
+    () => buildSeries(picks, startingBankroll, mode),
+    [picks, startingBankroll, mode],
+  );
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
@@ -98,11 +114,7 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
       <div className="h-72 md:h-80 w-full rounded-3xl overflow-hidden bg-accent-green relative">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 8 }}>
-            <CartesianGrid
-              stroke="rgba(255,255,255,0.25)"
-              strokeWidth={1}
-              vertical={false}
-            />
+            <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
             <XAxis dataKey="label" hide />
             <YAxis
               stroke="rgba(255,255,255,0.85)"
@@ -125,21 +137,30 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
               labelStyle={{ color: "rgba(255,255,255,0.7)" }}
               formatter={(v: number) => {
                 if (v === null || v === undefined) return ["", ""];
-                return [`${v.toFixed(2)} €`, "Bankroll"];
+                return [`${v.toFixed(2)} €`, mode === "capital" ? "Capital" : "Bénéfice"];
               }}
             />
             <Line
               type="monotone"
-              dataKey="bankroll"
+              dataKey="value"
               stroke="#ffffff"
               strokeWidth={3}
-              dot={false}
+              dot={showValues ? { fill: "#fff", r: 4 } : false}
               connectNulls={false}
               isAnimationActive={false}
-            />
+            >
+              {showValues && (
+                <LabelList
+                  dataKey="value"
+                  position="top"
+                  fill="#ffffff"
+                  fontSize={11}
+                  formatter={(v: number) => (v !== null ? `${v.toFixed(0)}€` : "")}
+                />
+              )}
+            </Line>
             {hasProjection && (
               <>
-                {/* Continuation pointillée vers le haut (si gagné) */}
                 <Line
                   type="monotone"
                   dataKey="ifWin"
@@ -150,7 +171,6 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
                   connectNulls={false}
                   isAnimationActive={false}
                 />
-                {/* Continuation pointillée vers le bas (si perdu) */}
                 <Line
                   type="monotone"
                   dataKey="ifLoss"
@@ -169,9 +189,11 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
     );
   }
 
-  // Default: theme sombre
-  const positive = data.length > 0 && (data[data.length - 1].bankroll ?? 0) >= startingBankroll;
-  const color = positive ? "#26e0a4" : "#ff5470";
+  // Variant default (theme sombre)
+  const lastVal = data[data.length - 1]?.value ?? 0;
+  const baseline = mode === "capital" ? startingBankroll : 0;
+  const positive = lastVal >= baseline;
+  const color = positive ? "#10d9a3" : "#ff4d6d";
 
   return (
     <div className="h-64 md:h-80 w-full">
@@ -198,17 +220,17 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
           />
           <Tooltip
             contentStyle={{
-              background: "#111827",
+              background: "#14172c",
               border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: 8,
               fontSize: 12,
             }}
             labelStyle={{ color: "rgba(255,255,255,0.6)" }}
-            formatter={(v: number) => [`${v.toFixed(2)} €`, "Bankroll"]}
+            formatter={(v: number) => [`${v.toFixed(2)} €`, mode === "capital" ? "Capital" : "Bénéfice"]}
           />
           <Line
             type="monotone"
-            dataKey="bankroll"
+            dataKey="value"
             stroke={color}
             strokeWidth={2}
             dot={false}
@@ -219,19 +241,19 @@ export function BankrollChart({ picks, startingBankroll, variant = "default" }: 
               <Line
                 type="monotone"
                 dataKey="ifWin"
-                stroke="#26e0a4"
+                stroke={color}
                 strokeWidth={2}
                 strokeDasharray="5 4"
-                dot={{ fill: "#26e0a4", r: 3 }}
+                dot={false}
                 connectNulls={false}
               />
               <Line
                 type="monotone"
                 dataKey="ifLoss"
-                stroke="#ff5470"
+                stroke={color}
                 strokeWidth={2}
                 strokeDasharray="5 4"
-                dot={{ fill: "#ff5470", r: 3 }}
+                dot={false}
                 connectNulls={false}
               />
             </>
