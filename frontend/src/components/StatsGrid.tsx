@@ -7,7 +7,7 @@ interface Props {
 interface Tile {
   label: string;
   value: string;
-  hint?: string;
+  hint: string;
   tone: "neutral" | "green" | "red" | "blue";
 }
 
@@ -40,7 +40,7 @@ export function StatsGrid({ stats }: Props) {
     {
       label: "Bénéfice",
       value: `${fmtSigned(stats.profit)} €`,
-      hint: `Avg cote ${stats.average_odds.toFixed(2)}`,
+      hint: `Cote moy. ${stats.average_odds.toFixed(2)}`,
       tone: tone(stats.profit),
     },
     {
@@ -52,7 +52,7 @@ export function StatsGrid({ stats }: Props) {
     {
       label: "Progression",
       value: `${fmtSigned(stats.progression_percent, "%")}`,
-      hint: `Bankroll ${stats.current_bankroll.toFixed(2)} €`,
+      hint: `Bankroll ${stats.current_bankroll.toFixed(0)} €`,
       tone: tone(stats.progression_percent),
     },
   ];
@@ -62,13 +62,17 @@ export function StatsGrid({ stats }: Props) {
       {tiles.map((t) => (
         <div
           key={t.label}
-          className="bg-bg-card border border-white/5 rounded-2xl p-4 md:p-5 shadow-card"
+          className="bg-bg-card border border-white/[0.06] rounded-2xl p-4 md:p-5 shadow-card relative overflow-hidden group hover:border-white/10 transition"
         >
-          <div className="text-xs uppercase tracking-wider text-white/40">{t.label}</div>
-          <div className={`text-2xl md:text-3xl font-semibold mt-2 ${toneClass[t.tone]}`}>
+          <div className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-white/40 font-medium">
+            {t.label}
+          </div>
+          <div
+            className={`text-2xl md:text-4xl font-bold mt-2 md:mt-3 tabular-nums ${toneClass[t.tone]}`}
+          >
             {t.value}
           </div>
-          {t.hint && <div className="text-xs text-white/40 mt-1">{t.hint}</div>}
+          <div className="text-[11px] text-white/40 mt-1.5 md:mt-2">{t.hint}</div>
         </div>
       ))}
     </div>
