@@ -267,7 +267,9 @@ interface Props {
 }
 
 export function HistoryList({ picks }: Props) {
-  const months = useMemo(() => groupHierarchical(picks), [picks]);
+  // Masquer les paris en attente : ils sont affichés sur la page /today (Premium)
+  const settled = picks.filter((p) => p.outcome !== "pending");
+  const months = useMemo(() => groupHierarchical(settled), [settled]);
   const currentMonthKey = (() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;

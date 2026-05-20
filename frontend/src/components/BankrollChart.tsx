@@ -13,6 +13,7 @@ import { HistoryPick } from "@/lib/types";
 interface Props {
   picks: HistoryPick[];
   startingBankroll: number;
+  variant?: "default" | "hero";
 }
 
 interface Point {
@@ -30,7 +31,6 @@ function buildSeries(picks: HistoryPick[], starting: number): Point[] {
   if (settled.length === 0) {
     return [{ date: "start", label: "Départ", bankroll: starting }];
   }
-  // Point de départ avant le premier pari
   const firstDate = new Date(settled[0].date);
   firstDate.setDate(firstDate.getDate() - 1);
   series.push({
@@ -52,8 +52,51 @@ function buildSeries(picks: HistoryPick[], starting: number): Point[] {
   return series;
 }
 
-export function BankrollChart({ picks, startingBankroll }: Props) {
+export function BankrollChart({ picks, startingBankroll, variant = "default" }: Props) {
   const data = useMemo(() => buildSeries(picks, startingBankroll), [picks, startingBankroll]);
+
+  if (variant === "hero") {
+    // Style bet-analytix : fond vert plein, ligne blanche, axes blanches
+    return (
+      <div className="h-72 md:h-80 w-full rounded-3xl overflow-hidden bg-accent-green relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 18, right: 12, left: 8, bottom: 8 }}>
+            <XAxis dataKey="label" hide />
+            <YAxis
+              stroke="rgba(255,255,255,0.85)"
+              tick={{ fontSize: 12, fill: "#ffffff" }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(v) => `${v} €`}
+              domain={["dataMin - 5", "dataMax + 5"]}
+              width={44}
+            />
+            <Tooltip
+              contentStyle={{
+                background: "rgba(10,15,26,0.95)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                borderRadius: 8,
+                fontSize: 12,
+                color: "#fff",
+              }}
+              labelStyle={{ color: "rgba(255,255,255,0.7)" }}
+              formatter={(v: number) => [`${v.toFixed(2)} €`, "Bankroll"]}
+            />
+            <Area
+              type="monotone"
+              dataKey="bankroll"
+              stroke="#ffffff"
+              strokeWidth={3}
+              fill="transparent"
+              dot={false}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+
+  // Default: theme sombre
   const positive = data.length > 0 && data[data.length - 1].bankroll >= startingBankroll;
   const color = positive ? "#26e0a4" : "#ff5470";
 
