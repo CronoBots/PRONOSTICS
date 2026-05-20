@@ -181,13 +181,27 @@ export function PickDetail({ pick, variant = "today" }: Props) {
           appelle un <span className="text-accent-green">value bet</span> — la cote est
           plus élevée que la probabilité réelle.
         </div>
-        <ul className="space-y-2 text-sm text-white/70">
-          {pick.rationale.map((r, i) => (
-            <li key={i} className="leading-relaxed">
-              {r}
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-2 text-sm text-white/70">
+          {pick.rationale.map((r, i) => {
+            // Détection des sections (lignes préfixées par ##)
+            if (r.startsWith("##")) {
+              return (
+                <h4
+                  key={i}
+                  className="text-accent-green text-[11px] uppercase tracking-[0.2em] font-bold mt-4 first:mt-2 pb-1 border-b border-accent-green/20"
+                >
+                  {r.replace(/^##\s*/, "")}
+                </h4>
+              );
+            }
+            return (
+              <div key={i} className="leading-relaxed pl-1 flex gap-2">
+                <span className="text-accent-green/60 shrink-0">•</span>
+                <span>{r}</span>
+              </div>
+            );
+          })}
+        </div>
       </ExpandableSection>
 
       {/* Guide pour débutants */}
