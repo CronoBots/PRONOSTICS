@@ -66,6 +66,7 @@ export interface HistoryPick {
 }
 
 export interface HistoryStats {
+  // Coeur
   total_picks: number;
   won: number;
   lost: number;
@@ -74,12 +75,24 @@ export interface HistoryStats {
   roi_percent: number;
   average_odds: number;
   win_rate: number;
-  current_streak: number;
-  best_streak: number;
-  worst_streak: number;
+  // Bankroll
   starting_bankroll: number;
   current_bankroll: number;
   progression_percent: number;
+  drawdown_max: number;
+  // Streaks
+  current_streak: number;
+  best_streak: number;
+  worst_streak: number;
+  // Mises
+  total_stake_played: number;
+  pending_stake: number;
+  avg_stake: number;
+  max_stake: number;
+  // Performances extrêmes
+  max_odds_won: number;
+  max_profit_single: number;
+  max_loss_single: number;
 }
 
 export interface History {

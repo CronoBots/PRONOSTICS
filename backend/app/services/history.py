@@ -148,14 +148,32 @@ def recompute_stats(history: dict) -> dict:
 
     settled_picks = [p for p in picks if p["outcome"] in ("win", "loss")]
     avg_odds = (
-        round(sum(p["odds"] for p in settled_picks) / len(settled_picks), 2)
+        round(sum(p["odds"] for p in settled_picks) / len(settled_picks), 3)
         if settled_picks
         else 0.0
     )
     win_rate = round((won / settled) * 100, 2) if settled else 0.0
 
-    # Bankroll cumulée pas-à-pas
+    # Stats détaillées ----------------------------------------------------
+    won_picks = [p for p in picks if p["outcome"] == "win"]
+    lost_picks = [p for p in picks if p["outcome"] == "loss"]
+
+    max_odds_won = round(max((p["odds"] for p in won_picks), default=0.0), 2)
+    max_profit_single = round(max((p["profit"] for p in won_picks), default=0.0), 2)
+    max_loss_single = round(min((p["profit"] for p in lost_picks), default=0.0), 2)
+
+    all_stakes = [p["stake"] for p in picks]
+    avg_stake = round(sum(all_stakes) / len(all_stakes), 2) if all_stakes else 0.0
+    max_stake = round(max(all_stakes, default=0.0), 2)
+    total_stake_played = round(sum(all_stakes), 2)
+    pending_stake = round(
+        sum(p["stake"] for p in picks if p["outcome"] == "pending"), 2
+    )
+
+    # Bankroll cumulée pas-à-pas (+ drawdown depuis le pic)
     bankroll = starting
+    peak = starting
+    drawdown_max = 0.0  # plus grosse baisse depuis un pic (en €, positif)
     current_streak = 0
     best_streak = 0
     worst_streak = 0
@@ -164,6 +182,9 @@ def recompute_stats(history: dict) -> dict:
     for p in sorted(picks, key=lambda x: x["date"]):
         if p["outcome"] in ("win", "loss"):
             bankroll = round(bankroll + p["profit"], 2)
+            peak = max(peak, bankroll)
+            drawdown = round(peak - bankroll, 2)
+            drawdown_max = max(drawdown_max, drawdown)
             if p["outcome"] == "win":
                 running_streak = max(running_streak + 1, 1)
                 best_streak = max(best_streak, running_streak)
@@ -176,6 +197,7 @@ def recompute_stats(history: dict) -> dict:
     progression = round(((bankroll - starting) / starting) * 100, 2) if starting else 0.0
 
     history["stats"] = {
+        # Coeur
         "total_picks": total,
         "won": won,
         "lost": lost,
@@ -184,12 +206,24 @@ def recompute_stats(history: dict) -> dict:
         "roi_percent": roi,
         "average_odds": avg_odds,
         "win_rate": win_rate,
-        "current_streak": current_streak,
-        "best_streak": best_streak,
-        "worst_streak": worst_streak,
+        # Bankroll
         "starting_bankroll": starting,
         "current_bankroll": bankroll,
         "progression_percent": progression,
+        "drawdown_max": drawdown_max,
+        # Streaks
+        "current_streak": current_streak,
+        "best_streak": best_streak,
+        "worst_streak": worst_streak,
+        # Mises
+        "total_stake_played": total_stake_played,
+        "pending_stake": pending_stake,
+        "avg_stake": avg_stake,
+        "max_stake": max_stake,
+        # Performances extrêmes
+        "max_odds_won": max_odds_won,
+        "max_profit_single": max_profit_single,
+        "max_loss_single": max_loss_single,
     }
     return history
 
