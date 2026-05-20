@@ -1,0 +1,1654 @@
+{
+  "date": "2026-05-20",
+  "generated_at": "2026-05-20T11:42:52.085174+00:00",
+  "safe_pick": {
+    "match_id": 19,
+    "sport": "tennis",
+    "league": "Tennis Wta French Open",
+    "home_team": "Irina-Camelia Begu",
+    "away_team": "Suzan Lamens",
+    "kickoff": "2026-05-20T08:00:00",
+    "pick": "Irina-Camelia Begu",
+    "odds": 18.5,
+    "model_probability": 0.5,
+    "book_probability": 0.0541,
+    "expected_value": 8.25,
+    "confidence": 0.5,
+    "engine": "tennis_heuristic@1.0",
+    "rationale": [
+      "Forme récente : ? vs ?"
+    ]
+  },
+  "value_picks": [
+    {
+      "match_id": 19,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Irina-Camelia Begu",
+      "away_team": "Suzan Lamens",
+      "kickoff": "2026-05-20T08:00:00",
+      "pick": "Irina-Camelia Begu",
+      "odds": 18.5,
+      "model_probability": 0.5,
+      "book_probability": 0.0541,
+      "expected_value": 8.25,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 3,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Ugo Blanchet",
+      "away_team": "Pablo Llamas Ruiz",
+      "kickoff": "2026-05-20T10:00:00",
+      "pick": "Ugo Blanchet",
+      "odds": 12.08,
+      "model_probability": 0.5,
+      "book_probability": 0.0828,
+      "expected_value": 5.04,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 4,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Alejandro Moro Canas",
+      "away_team": "Lukas Neumayer",
+      "kickoff": "2026-05-20T12:00:00",
+      "pick": "Alejandro Moro Canas",
+      "odds": 8.37,
+      "model_probability": 0.5,
+      "book_probability": 0.1195,
+      "expected_value": 3.185,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 1,
+      "sport": "football",
+      "league": "Soccer Uefa Europa League",
+      "home_team": "SC Freiburg",
+      "away_team": "Aston Villa",
+      "kickoff": "2026-05-20T19:00:00",
+      "pick": "SC Freiburg",
+      "odds": 6.0,
+      "model_probability": 0.4424,
+      "book_probability": 0.1667,
+      "expected_value": 1.6544,
+      "confidence": 0.4424,
+      "engine": "football_heuristic@1.0",
+      "rationale": [
+        "Forme L5 : SC Freiburg ? (0.50) vs Aston Villa ? (0.50)",
+        "Avantage domicile appliqué : +0.10"
+      ]
+    },
+    {
+      "match_id": 21,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Kathinka Von Deichmann",
+      "away_team": "Himeno Sakatsume",
+      "kickoff": "2026-05-20T10:00:00",
+      "pick": "Kathinka Von Deichmann",
+      "odds": 5.12,
+      "model_probability": 0.5,
+      "book_probability": 0.1953,
+      "expected_value": 1.56,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 27,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Viktoria Hruncakova",
+      "away_team": "Bianca Andreescu",
+      "kickoff": "2026-05-20T12:00:00",
+      "pick": "Viktoria Hruncakova",
+      "odds": 4.66,
+      "model_probability": 0.5,
+      "book_probability": 0.2146,
+      "expected_value": 1.33,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 36,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Maria Lourdes Carle",
+      "away_team": "Maria Timofeeva",
+      "kickoff": "2026-05-20T14:00:00",
+      "pick": "Maria Lourdes Carle",
+      "odds": 4.39,
+      "model_probability": 0.5,
+      "book_probability": 0.2278,
+      "expected_value": 1.195,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 37,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Storm Hunter",
+      "away_team": "Xiyu Wang",
+      "kickoff": "2026-05-20T14:00:00",
+      "pick": "Storm Hunter",
+      "odds": 4.24,
+      "model_probability": 0.5,
+      "book_probability": 0.2358,
+      "expected_value": 1.12,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 30,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Marina Bassols Ribera",
+      "away_team": "Karolina Pliskova",
+      "kickoff": "2026-05-20T12:00:00",
+      "pick": "Marina Bassols Ribera",
+      "odds": 3.94,
+      "model_probability": 0.5,
+      "book_probability": 0.2538,
+      "expected_value": 0.97,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    },
+    {
+      "match_id": 20,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Kaja Juvan",
+      "away_team": "Guiomar Maristany",
+      "kickoff": "2026-05-20T10:00:00",
+      "pick": "Kaja Juvan",
+      "odds": 3.72,
+      "model_probability": 0.5,
+      "book_probability": 0.2688,
+      "expected_value": 0.86,
+      "confidence": 0.5,
+      "engine": "tennis_heuristic@1.0",
+      "rationale": [
+        "Forme récente : ? vs ?"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "id": 19,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Irina-Camelia Begu",
+      "away_team": "Suzan Lamens",
+      "kickoff": "2026-05-20T08:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Irina-Camelia Begu",
+        "confidence": 0.5,
+        "expected_value": 8.25,
+        "probabilities": {
+          "Irina-Camelia Begu": 0.5,
+          "Suzan Lamens": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Irina-Camelia Begu": 18.5,
+          "Suzan Lamens": 1.08
+        }
+      }
+    },
+    {
+      "id": 2,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Gonzalo Bueno",
+      "away_team": "Vitaliy Sachko",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Gonzalo Bueno",
+        "confidence": 0.5,
+        "expected_value": -0.28,
+        "probabilities": {
+          "Gonzalo Bueno": 0.5,
+          "Vitaliy Sachko": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Gonzalo Bueno": 1.44,
+          "Vitaliy Sachko": 4.95
+        }
+      }
+    },
+    {
+      "id": 3,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Ugo Blanchet",
+      "away_team": "Pablo Llamas Ruiz",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Ugo Blanchet",
+        "confidence": 0.5,
+        "expected_value": 5.04,
+        "probabilities": {
+          "Ugo Blanchet": 0.5,
+          "Pablo Llamas Ruiz": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Pablo Llamas Ruiz": 1.07,
+          "Ugo Blanchet": 12.08
+        }
+      }
+    },
+    {
+      "id": 20,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Kaja Juvan",
+      "away_team": "Guiomar Maristany",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Kaja Juvan",
+        "confidence": 0.5,
+        "expected_value": 0.86,
+        "probabilities": {
+          "Kaja Juvan": 0.5,
+          "Guiomar Maristany": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Guiomar Maristany": 1.99,
+          "Kaja Juvan": 3.72
+        }
+      }
+    },
+    {
+      "id": 21,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Kathinka Von Deichmann",
+      "away_team": "Himeno Sakatsume",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Kathinka Von Deichmann",
+        "confidence": 0.5,
+        "expected_value": 1.56,
+        "probabilities": {
+          "Kathinka Von Deichmann": 0.5,
+          "Himeno Sakatsume": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Himeno Sakatsume": 1.21,
+          "Kathinka Von Deichmann": 5.12
+        }
+      }
+    },
+    {
+      "id": 22,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Teodora Kostovic",
+      "away_team": "Kaitlin Quevedo",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Teodora Kostovic",
+        "confidence": 0.5,
+        "expected_value": 0.235,
+        "probabilities": {
+          "Teodora Kostovic": 0.5,
+          "Kaitlin Quevedo": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Kaitlin Quevedo": 1.61,
+          "Teodora Kostovic": 2.47
+        }
+      }
+    },
+    {
+      "id": 23,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Mayar Sherif",
+      "away_team": "Martina Trevisan",
+      "kickoff": "2026-05-20T10:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Mayar Sherif",
+        "confidence": 0.5,
+        "expected_value": -0.075,
+        "probabilities": {
+          "Mayar Sherif": 0.5,
+          "Martina Trevisan": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Martina Trevisan": 2.08,
+          "Mayar Sherif": 1.85
+        }
+      }
+    },
+    {
+      "id": 4,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Alejandro Moro Canas",
+      "away_team": "Lukas Neumayer",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Alejandro Moro Canas",
+        "confidence": 0.5,
+        "expected_value": 3.185,
+        "probabilities": {
+          "Alejandro Moro Canas": 0.5,
+          "Lukas Neumayer": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Alejandro Moro Canas": 8.37,
+          "Lukas Neumayer": 1.11
+        }
+      }
+    },
+    {
+      "id": 5,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Pedro Boscardin Dias",
+      "away_team": "Alexis Galarneau",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Pedro Boscardin Dias",
+        "confidence": 0.5,
+        "expected_value": -0.16,
+        "probabilities": {
+          "Pedro Boscardin Dias": 0.5,
+          "Alexis Galarneau": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Alexis Galarneau": 2.25,
+          "Pedro Boscardin Dias": 1.68
+        }
+      }
+    },
+    {
+      "id": 6,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Henrique Rocha",
+      "away_team": "Borna Gojo",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Henrique Rocha",
+        "confidence": 0.5,
+        "expected_value": -0.165,
+        "probabilities": {
+          "Henrique Rocha": 0.5,
+          "Borna Gojo": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Borna Gojo": 2.32,
+          "Henrique Rocha": 1.67
+        }
+      }
+    },
+    {
+      "id": 7,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Chak Lam Coleman Wong",
+      "away_team": "Zdenek Kolar",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Chak Lam Coleman Wong",
+        "confidence": 0.5,
+        "expected_value": 0.3,
+        "probabilities": {
+          "Chak Lam Coleman Wong": 0.5,
+          "Zdenek Kolar": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Chak Lam Coleman Wong": 2.6,
+          "Zdenek Kolar": 1.53
+        }
+      }
+    },
+    {
+      "id": 8,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Jaime Faria",
+      "away_team": "Colton Smith",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Jaime Faria",
+        "confidence": 0.5,
+        "expected_value": -0.36,
+        "probabilities": {
+          "Jaime Faria": 0.5,
+          "Colton Smith": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Colton Smith": 3.91,
+          "Jaime Faria": 1.28
+        }
+      }
+    },
+    {
+      "id": 9,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Gustavo Heide",
+      "away_team": "Jurij Rodionov",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Gustavo Heide",
+        "confidence": 0.5,
+        "expected_value": -0.275,
+        "probabilities": {
+          "Gustavo Heide": 0.5,
+          "Jurij Rodionov": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Gustavo Heide": 1.45,
+          "Jurij Rodionov": 2.85
+        }
+      }
+    },
+    {
+      "id": 24,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Aliaksandra Sasnovich",
+      "away_team": "Oceane Dodin",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Aliaksandra Sasnovich",
+        "confidence": 0.5,
+        "expected_value": -0.45,
+        "probabilities": {
+          "Aliaksandra Sasnovich": 0.5,
+          "Oceane Dodin": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Aliaksandra Sasnovich": 1.1,
+          "Oceane Dodin": 7.54
+        }
+      }
+    },
+    {
+      "id": 25,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Alina Korneeva",
+      "away_team": "Jazmin Ortenzi",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Alina Korneeva",
+        "confidence": 0.5,
+        "expected_value": 0.125,
+        "probabilities": {
+          "Alina Korneeva": 0.5,
+          "Jazmin Ortenzi": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Alina Korneeva": 2.25,
+          "Jazmin Ortenzi": 1.71
+        }
+      }
+    },
+    {
+      "id": 26,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Ashlyn Krueger",
+      "away_team": "Luisina Giovannini",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Ashlyn Krueger",
+        "confidence": 0.5,
+        "expected_value": -0.19,
+        "probabilities": {
+          "Ashlyn Krueger": 0.5,
+          "Luisina Giovannini": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Ashlyn Krueger": 1.62,
+          "Luisina Giovannini": 2.44
+        }
+      }
+    },
+    {
+      "id": 27,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Viktoria Hruncakova",
+      "away_team": "Bianca Andreescu",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Viktoria Hruncakova",
+        "confidence": 0.5,
+        "expected_value": 1.33,
+        "probabilities": {
+          "Viktoria Hruncakova": 0.5,
+          "Bianca Andreescu": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Bianca Andreescu": 1.29,
+          "Viktoria Hruncakova": 4.66
+        }
+      }
+    },
+    {
+      "id": 28,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Dominika Šalková",
+      "away_team": "Susan Bandecchi",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Dominika Šalková",
+        "confidence": 0.5,
+        "expected_value": -0.295,
+        "probabilities": {
+          "Dominika Šalková": 0.5,
+          "Susan Bandecchi": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Dominika Šalková": 1.41,
+          "Susan Bandecchi": 3.36
+        }
+      }
+    },
+    {
+      "id": 29,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Julia Riera",
+      "away_team": "Robin Montgomery",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Julia Riera",
+        "confidence": 0.5,
+        "expected_value": 0.8,
+        "probabilities": {
+          "Julia Riera": 0.5,
+          "Robin Montgomery": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Julia Riera": 3.6,
+          "Robin Montgomery": 1.32
+        }
+      }
+    },
+    {
+      "id": 30,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Marina Bassols Ribera",
+      "away_team": "Karolina Pliskova",
+      "kickoff": "2026-05-20T12:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Marina Bassols Ribera",
+        "confidence": 0.5,
+        "expected_value": 0.97,
+        "probabilities": {
+          "Marina Bassols Ribera": 0.5,
+          "Karolina Pliskova": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Karolina Pliskova": 1.27,
+          "Marina Bassols Ribera": 3.94
+        }
+      }
+    },
+    {
+      "id": 10,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Alex Molcan",
+      "away_team": "Felix Gill",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Alex Molcan",
+        "confidence": 0.5,
+        "expected_value": -0.345,
+        "probabilities": {
+          "Alex Molcan": 0.5,
+          "Felix Gill": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Alex Molcan": 1.31,
+          "Felix Gill": 3.87
+        }
+      }
+    },
+    {
+      "id": 11,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Gianluca Cadenasso",
+      "away_team": "Leandro Riedi",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Gianluca Cadenasso",
+        "confidence": 0.5,
+        "expected_value": 0.195,
+        "probabilities": {
+          "Gianluca Cadenasso": 0.5,
+          "Leandro Riedi": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Gianluca Cadenasso": 2.39,
+          "Leandro Riedi": 1.61
+        }
+      }
+    },
+    {
+      "id": 12,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Nerman Fatic",
+      "away_team": "Kyrian Jacquet",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Nerman Fatic",
+        "confidence": 0.5,
+        "expected_value": 0.205,
+        "probabilities": {
+          "Nerman Fatic": 0.5,
+          "Kyrian Jacquet": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Kyrian Jacquet": 1.69,
+          "Nerman Fatic": 2.41
+        }
+      }
+    },
+    {
+      "id": 31,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Claire Liu",
+      "away_team": "Katarzyna Kawa",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Claire Liu",
+        "confidence": 0.5,
+        "expected_value": -0.09,
+        "probabilities": {
+          "Claire Liu": 0.5,
+          "Katarzyna Kawa": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Claire Liu": 1.82,
+          "Katarzyna Kawa": 2.17
+        }
+      }
+    },
+    {
+      "id": 32,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Darja Semenistaja",
+      "away_team": "Katarina Zavatska",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Darja Semenistaja",
+        "confidence": 0.5,
+        "expected_value": -0.23,
+        "probabilities": {
+          "Darja Semenistaja": 0.5,
+          "Katarina Zavatska": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Darja Semenistaja": 1.54,
+          "Katarina Zavatska": 2.7
+        }
+      }
+    },
+    {
+      "id": 33,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Xinyu Gao",
+      "away_team": "Harmony Tan",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Xinyu Gao",
+        "confidence": 0.5,
+        "expected_value": -0.11,
+        "probabilities": {
+          "Xinyu Gao": 0.5,
+          "Harmony Tan": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Harmony Tan": 2.31,
+          "Xinyu Gao": 1.78
+        }
+      }
+    },
+    {
+      "id": 34,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Linda Fruhvirtova",
+      "away_team": "Jessika Ponchet",
+      "kickoff": "2026-05-20T12:30:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Linda Fruhvirtova",
+        "confidence": 0.5,
+        "expected_value": 0.14,
+        "probabilities": {
+          "Linda Fruhvirtova": 0.5,
+          "Jessika Ponchet": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Jessika Ponchet": 1.76,
+          "Linda Fruhvirtova": 2.28
+        }
+      }
+    },
+    {
+      "id": 13,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Arthur Fery",
+      "away_team": "Pedro Martinez",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Arthur Fery",
+        "confidence": 0.5,
+        "expected_value": 0.025,
+        "probabilities": {
+          "Arthur Fery": 0.5,
+          "Pedro Martinez": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Arthur Fery": 2.05,
+          "Pedro Martinez": 1.83
+        }
+      }
+    },
+    {
+      "id": 14,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Emilio Nava",
+      "away_team": "Thiago Seyboth Wild",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Emilio Nava",
+        "confidence": 0.5,
+        "expected_value": -0.26,
+        "probabilities": {
+          "Emilio Nava": 0.5,
+          "Thiago Seyboth Wild": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Emilio Nava": 1.48,
+          "Thiago Seyboth Wild": 2.8
+        }
+      }
+    },
+    {
+      "id": 15,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Francesco Maestrelli",
+      "away_team": "Roberto Carballes Baena",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Francesco Maestrelli",
+        "confidence": 0.5,
+        "expected_value": 0.39,
+        "probabilities": {
+          "Francesco Maestrelli": 0.5,
+          "Roberto Carballes Baena": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Francesco Maestrelli": 2.78,
+          "Roberto Carballes Baena": 1.5
+        }
+      }
+    },
+    {
+      "id": 16,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Jan Choinski",
+      "away_team": "Pierre-Hugues Herbert",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Jan Choinski",
+        "confidence": 0.5,
+        "expected_value": -0.26,
+        "probabilities": {
+          "Jan Choinski": 0.5,
+          "Pierre-Hugues Herbert": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Jan Choinski": 1.48,
+          "Pierre-Hugues Herbert": 2.8
+        }
+      }
+    },
+    {
+      "id": 35,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Lulu Sun",
+      "away_team": "Aoi Ito",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Lulu Sun",
+        "confidence": 0.5,
+        "expected_value": -0.355,
+        "probabilities": {
+          "Lulu Sun": 0.5,
+          "Aoi Ito": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Aoi Ito": 4.01,
+          "Lulu Sun": 1.29
+        }
+      }
+    },
+    {
+      "id": 36,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Maria Lourdes Carle",
+      "away_team": "Maria Timofeeva",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Maria Lourdes Carle",
+        "confidence": 0.5,
+        "expected_value": 1.195,
+        "probabilities": {
+          "Maria Lourdes Carle": 0.5,
+          "Maria Timofeeva": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Maria Lourdes Carle": 4.39,
+          "Maria Timofeeva": 1.29
+        }
+      }
+    },
+    {
+      "id": 37,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Storm Hunter",
+      "away_team": "Xiyu Wang",
+      "kickoff": "2026-05-20T14:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Storm Hunter",
+        "confidence": 0.5,
+        "expected_value": 1.12,
+        "probabilities": {
+          "Storm Hunter": 0.5,
+          "Xiyu Wang": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Storm Hunter": 4.24,
+          "Xiyu Wang": 1.27
+        }
+      }
+    },
+    {
+      "id": 17,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Tristan Schoolkate",
+      "away_team": "Darwin Blanch",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Tristan Schoolkate",
+        "confidence": 0.5,
+        "expected_value": 0.505,
+        "probabilities": {
+          "Tristan Schoolkate": 0.5,
+          "Darwin Blanch": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Darwin Blanch": 1.47,
+          "Tristan Schoolkate": 3.01
+        }
+      }
+    },
+    {
+      "id": 18,
+      "sport": "tennis",
+      "league": "Tennis Atp French Open",
+      "home_team": "Luka Pavlovic",
+      "away_team": "Marcelo Tomas Barrios Vera",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Luka Pavlovic",
+        "confidence": 0.5,
+        "expected_value": 0.64,
+        "probabilities": {
+          "Luka Pavlovic": 0.5,
+          "Marcelo Tomas Barrios Vera": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Luka Pavlovic": 3.28,
+          "Marcelo Tomas Barrios Vera": 1.35
+        }
+      }
+    },
+    {
+      "id": 38,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Rebecca Sramkova",
+      "away_team": "Francisca Jorge",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Rebecca Sramkova",
+        "confidence": 0.5,
+        "expected_value": -0.385,
+        "probabilities": {
+          "Rebecca Sramkova": 0.5,
+          "Francisca Jorge": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Francisca Jorge": 4.59,
+          "Rebecca Sramkova": 1.23
+        }
+      }
+    },
+    {
+      "id": 39,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Lucia Bronzetti",
+      "away_team": "Lucrezia Stefanini",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Lucia Bronzetti",
+        "confidence": 0.5,
+        "expected_value": -0.24,
+        "probabilities": {
+          "Lucia Bronzetti": 0.5,
+          "Lucrezia Stefanini": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Lucia Bronzetti": 1.52,
+          "Lucrezia Stefanini": 2.75
+        }
+      }
+    },
+    {
+      "id": 40,
+      "sport": "tennis",
+      "league": "Tennis Wta French Open",
+      "home_team": "Polina Kudermetova",
+      "away_team": "Viktoriya Tomova",
+      "kickoff": "2026-05-20T16:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "tennis_heuristic@1.0",
+        "pick": "Polina Kudermetova",
+        "confidence": 0.5,
+        "expected_value": -0.285,
+        "probabilities": {
+          "Polina Kudermetova": 0.5,
+          "Viktoriya Tomova": 0.5
+        },
+        "rationale": [
+          "Forme récente : ? vs ?"
+        ],
+        "odds_snapshot": {
+          "Polina Kudermetova": 1.43,
+          "Viktoriya Tomova": 3.39
+        }
+      }
+    },
+    {
+      "id": 41,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Philadelphia Phillies",
+      "away_team": "Cincinnati Reds",
+      "kickoff": "2026-05-20T17:06:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Philadelphia Phillies",
+        "confidence": 0.5192,
+        "expected_value": -0.086,
+        "probabilities": {
+          "Philadelphia Phillies": 0.5192,
+          "Cincinnati Reds": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Cincinnati Reds": 2.3,
+          "Philadelphia Phillies": 1.76
+        }
+      }
+    },
+    {
+      "id": 42,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Tampa Bay Rays",
+      "away_team": "Baltimore Orioles",
+      "kickoff": "2026-05-20T17:11:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Tampa Bay Rays",
+        "confidence": 0.5192,
+        "expected_value": -0.055,
+        "probabilities": {
+          "Tampa Bay Rays": 0.5192,
+          "Baltimore Orioles": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Baltimore Orioles": 2.22,
+          "Tampa Bay Rays": 1.82
+        }
+      }
+    },
+    {
+      "id": 43,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Minnesota Twins",
+      "away_team": "Houston Astros",
+      "kickoff": "2026-05-20T17:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Minnesota Twins",
+        "confidence": 0.5192,
+        "expected_value": -0.107,
+        "probabilities": {
+          "Minnesota Twins": 0.5192,
+          "Houston Astros": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Houston Astros": 2.39,
+          "Minnesota Twins": 1.72
+        }
+      }
+    },
+    {
+      "id": 1,
+      "sport": "football",
+      "league": "Soccer Uefa Europa League",
+      "home_team": "SC Freiburg",
+      "away_team": "Aston Villa",
+      "kickoff": "2026-05-20T19:00:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "football_heuristic@1.0",
+        "pick": "SC Freiburg",
+        "confidence": 0.4424,
+        "expected_value": 1.654,
+        "probabilities": {
+          "SC Freiburg": 0.4424,
+          "Draw": 0.1921,
+          "Aston Villa": 0.3654
+        },
+        "rationale": [
+          "Forme L5 : SC Freiburg ? (0.50) vs Aston Villa ? (0.50)",
+          "Avantage domicile appliqué : +0.10"
+        ],
+        "odds_snapshot": {
+          "Aston Villa": 1.72,
+          "SC Freiburg": 6.0,
+          "Draw": 4.0
+        }
+      }
+    },
+    {
+      "id": 44,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Colorado Rockies",
+      "away_team": "Texas Rangers",
+      "kickoff": "2026-05-20T19:10:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Colorado Rockies",
+        "confidence": 0.5192,
+        "expected_value": 0.142,
+        "probabilities": {
+          "Colorado Rockies": 0.5192,
+          "Texas Rangers": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Colorado Rockies": 2.2,
+          "Texas Rangers": 1.83
+        }
+      }
+    },
+    {
+      "id": 45,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Arizona Diamondbacks",
+      "away_team": "San Francisco Giants",
+      "kickoff": "2026-05-20T19:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Arizona Diamondbacks",
+        "confidence": 0.5192,
+        "expected_value": -0.034,
+        "probabilities": {
+          "Arizona Diamondbacks": 0.5192,
+          "San Francisco Giants": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Arizona Diamondbacks": 1.86,
+          "San Francisco Giants": 2.2
+        }
+      }
+    },
+    {
+      "id": 46,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Seattle Mariners",
+      "away_team": "Chicago White Sox",
+      "kickoff": "2026-05-20T20:11:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Seattle Mariners",
+        "confidence": 0.5192,
+        "expected_value": -0.107,
+        "probabilities": {
+          "Seattle Mariners": 0.5192,
+          "Chicago White Sox": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Chicago White Sox": 2.37,
+          "Seattle Mariners": 1.72
+        }
+      }
+    },
+    {
+      "id": 47,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Miami Marlins",
+      "away_team": "Atlanta Braves",
+      "kickoff": "2026-05-20T22:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Miami Marlins",
+        "confidence": 0.5192,
+        "expected_value": 0.428,
+        "probabilities": {
+          "Miami Marlins": 0.5192,
+          "Atlanta Braves": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Atlanta Braves": 1.58,
+          "Miami Marlins": 2.75
+        }
+      }
+    },
+    {
+      "id": 48,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Detroit Tigers",
+      "away_team": "Cleveland Guardians",
+      "kickoff": "2026-05-20T22:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Detroit Tigers",
+        "confidence": 0.5192,
+        "expected_value": 0.142,
+        "probabilities": {
+          "Detroit Tigers": 0.5192,
+          "Cleveland Guardians": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Cleveland Guardians": 1.8,
+          "Detroit Tigers": 2.2
+        }
+      }
+    },
+    {
+      "id": 49,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Washington Nationals",
+      "away_team": "New York Mets",
+      "kickoff": "2026-05-20T22:46:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Washington Nationals",
+        "confidence": 0.5192,
+        "expected_value": 0.101,
+        "probabilities": {
+          "Washington Nationals": 0.5192,
+          "New York Mets": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "New York Mets": 1.84,
+          "Washington Nationals": 2.12
+        }
+      }
+    },
+    {
+      "id": 50,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "New York Yankees",
+      "away_team": "Toronto Blue Jays",
+      "kickoff": "2026-05-20T23:06:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "New York Yankees",
+        "confidence": 0.5192,
+        "expected_value": -0.143,
+        "probabilities": {
+          "New York Yankees": 0.5192,
+          "Toronto Blue Jays": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "New York Yankees": 1.65,
+          "Toronto Blue Jays": 2.55
+        }
+      }
+    },
+    {
+      "id": 51,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Kansas City Royals",
+      "away_team": "Boston Red Sox",
+      "kickoff": "2026-05-20T23:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Kansas City Royals",
+        "confidence": 0.5192,
+        "expected_value": -0.014,
+        "probabilities": {
+          "Kansas City Royals": 0.5192,
+          "Boston Red Sox": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Boston Red Sox": 2.06,
+          "Kansas City Royals": 1.9
+        }
+      }
+    },
+    {
+      "id": 52,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "Chicago Cubs",
+      "away_team": "Milwaukee Brewers",
+      "kickoff": "2026-05-20T23:41:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "Chicago Cubs",
+        "confidence": 0.5192,
+        "expected_value": 0.007,
+        "probabilities": {
+          "Chicago Cubs": 0.5192,
+          "Milwaukee Brewers": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Chicago Cubs": 1.94,
+          "Milwaukee Brewers": 2.05
+        }
+      }
+    },
+    {
+      "id": 53,
+      "sport": "mlb",
+      "league": "Baseball Mlb",
+      "home_team": "St. Louis Cardinals",
+      "away_team": "Pittsburgh Pirates",
+      "kickoff": "2026-05-20T23:46:00",
+      "stage": null,
+      "source": "odds_api",
+      "prediction": {
+        "engine": "mlb_heuristic@1.0",
+        "pick": "St. Louis Cardinals",
+        "confidence": 0.5192,
+        "expected_value": -0.008,
+        "probabilities": {
+          "St. Louis Cardinals": 0.5192,
+          "Pittsburgh Pirates": 0.4808
+        },
+        "rationale": [
+          "Forme L5 : ? vs ?",
+          "Avantage domicile : +0.04"
+        ],
+        "odds_snapshot": {
+          "Pittsburgh Pirates": 2.07,
+          "St. Louis Cardinals": 1.91
+        }
+      }
+    }
+  ]
+}
