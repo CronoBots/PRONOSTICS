@@ -12,6 +12,11 @@ on:
         required: false
         default: ""
 
+# Empêche deux runs en parallèle de se courir l'un l'autre au push
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -46,7 +51,18 @@ jobs:
           git add backend/data/predictions/ backend/data/history.json
           if git diff --staged --quiet; then
             echo "Pas de nouveaux pronostics à committer."
-          else
-            git commit -m "chore: pronostics + historique du jour"
-            git push
+            exit 0
           fi
+          git commit -m "chore: pronostics + historique du jour"
+          # Retry avec rebase si un autre run a poussé entre-temps
+          for attempt in 1 2 3 4; do
+            if git push; then
+              echo "Push OK (tentative $attempt)"
+              exit 0
+            fi
+            echo "Push rejeté, rebase puis retry ($attempt/4)..."
+            git pull --rebase origin main
+            sleep $((attempt * 2))
+          done
+          echo "::error::Push échoué après 4 tentatives"
+          exit 1
