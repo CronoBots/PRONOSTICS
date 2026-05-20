@@ -4,10 +4,10 @@ import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
 import { BottomNav } from "@/components/BottomNav";
+import { Onboarding } from "@/components/Onboarding";
 import { AuthProvider } from "@/lib/auth";
 import { I18nProvider } from "@/lib/i18n";
 
-// Routes sans BottomNav (auth pages, full-screen)
 const HIDE_NAV = new Set(["/login", "/register", "/forgot-password"]);
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -21,6 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </div>
         {showNav && <BottomNav />}
+        {showNav && <Onboarding />}
       </AuthProvider>
     </I18nProvider>
   );

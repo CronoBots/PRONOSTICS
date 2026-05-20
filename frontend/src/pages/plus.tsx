@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
 
 import { Header } from "@/components/Header";
+import { KellyCalculator } from "@/components/KellyCalculator";
 import { StakeSimulator } from "@/components/StakeSimulator";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
@@ -53,6 +54,8 @@ export default function PlusPage() {
               defaultStake={5}
               defaultStartingBankroll={startingBankroll}
             />
+
+            <KellyCalculator />
 
             <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-3">

@@ -29,6 +29,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Scrollbar discret */
 ::-webkit-scrollbar {
   width: 8px;

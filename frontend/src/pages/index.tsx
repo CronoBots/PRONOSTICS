@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
+import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
@@ -115,10 +116,27 @@ export default function Home() {
           </Link>
         </header>
 
-        {loading && <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>}
+        {loading && <HomeSkeleton />}
 
         {!loading && history && (
           <div className="space-y-4">
+            {/* Badge streak — visible si série gagnante ou perdante */}
+            {stats && stats.current_streak !== 0 && (
+              <div
+                className={`flex items-center justify-center gap-2 py-2 px-4 rounded-full text-sm font-semibold ${
+                  stats.current_streak > 0
+                    ? "bg-accent-green/15 text-accent-green border border-accent-green/30"
+                    : "bg-accent-red/15 text-accent-red border border-accent-red/30"
+                }`}
+              >
+                <span>{stats.current_streak > 0 ? "🔥" : "❄️"}</span>
+                <span>
+                  {Math.abs(stats.current_streak)} pari
+                  {Math.abs(stats.current_streak) > 1 ? "s" : ""}{" "}
+                  {stats.current_streak > 0 ? "gagnés" : "perdus"} d'affilée
+                </span>
+              </div>
+            )}
             {/* Chart + bouton ⋯ */}
             <section className="relative">
               <BankrollChart

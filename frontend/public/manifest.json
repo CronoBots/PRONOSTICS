@@ -1,0 +1,27 @@
+{
+  "name": "PRONOSTICS — Pick safe du jour",
+  "short_name": "PRONOSTICS",
+  "description": "1 value bet par jour analysé manuellement par Claude. Cote ≥ 2.00, tracking bankroll, historique transparent.",
+  "start_url": "/PRONOSTICS/",
+  "scope": "/PRONOSTICS/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0b1e",
+  "theme_color": "#0a0b1e",
+  "lang": "fr",
+  "categories": ["sports", "finance", "entertainment"],
+  "icons": [
+    {
+      "src": "/PRONOSTICS/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/PRONOSTICS/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
