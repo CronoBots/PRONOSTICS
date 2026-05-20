@@ -80,7 +80,7 @@ export default function Home() {
   const [opts, setOpts] = useState<ChartOptions>({
     mode: "capital",
     showCLV: false,
-    showValues: true,  // par défaut ON — meilleure lisibilité des points
+    showValues: false,  // chart clean par défaut, activable via menu ⋯
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasFilters, setHasFilters] = useState(false);
@@ -174,24 +174,7 @@ export default function Home() {
         {loading && <HomeSkeleton />}
 
         {!loading && history && (
-          <div className="flex-1 flex flex-col gap-2.5 min-h-0">
-            {/* Badge streak compact */}
-            {stats && stats.current_streak !== 0 && (
-              <div
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-semibold shrink-0 ${
-                  stats.current_streak > 0
-                    ? "bg-accent-green/15 text-accent-green border border-accent-green/30"
-                    : "bg-accent-red/15 text-accent-red border border-accent-red/30"
-                }`}
-              >
-                <span>{stats.current_streak > 0 ? "🔥" : "❄️"}</span>
-                <span>
-                  {Math.abs(stats.current_streak)} pari
-                  {Math.abs(stats.current_streak) > 1 ? "s" : ""}{" "}
-                  {stats.current_streak > 0 ? "gagnés" : "perdus"} d'affilée
-                </span>
-              </div>
-            )}
+          <div className="flex-1 flex flex-col gap-3 min-h-0">
             {/* Chart + bouton ⋯ — flex-1 prend l'espace restant */}
             <section className="relative flex-1 min-h-[180px]">
               <BankrollChart
@@ -343,20 +326,20 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border border-white/[0.06] rounded-xl px-3 py-2.5 relative">
+    <div className="bg-bg-card border border-white/[0.06] rounded-2xl px-4 py-4 relative flex flex-col justify-center items-center">
       {onInfo && (
         <button
           onClick={onInfo}
-          className="absolute top-2 right-2 w-5 h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[10px] flex items-center justify-center transition"
+          className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[10px] flex items-center justify-center transition"
           aria-label={`Aide ${label}`}
         >
           ?
         </button>
       )}
-      <div className="text-[10px] uppercase tracking-wider text-white/50 text-center">
+      <div className="text-[11px] uppercase tracking-wider text-white/50 text-center">
         {label}
       </div>
-      <div className={`text-xl md:text-2xl font-bold tabular-nums text-center mt-1 ${colorClass}`}>
+      <div className={`text-2xl md:text-3xl font-bold tabular-nums text-center mt-1.5 ${colorClass}`}>
         {value}
       </div>
     </div>
