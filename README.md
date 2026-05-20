@@ -30,24 +30,48 @@ PRONOSTICS/
 
 ## Démarrage rapide
 
-### Backend
+### Backend (génération des pronostics)
 
 ```bash
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # remplir les clés API (optionnel — mock par défaut)
-python scripts/daily_update.py  # ingestion + prédictions du jour
-uvicorn app.main:app --reload   # GraphQL → http://localhost:8000/graphql
+cp ../.env.example ../.env      # remplir les clés API (optionnel — mock par défaut)
+python scripts/daily_update.py  # ingestion + prédictions → backend/data/predictions/<date>.json
+uvicorn app.main:app --reload   # (optionnel) GraphQL → http://localhost:8000/graphql
 ```
 
-### Frontend
+### Frontend (site statique)
 
 ```bash
 cd frontend
 npm install
 npm run dev                     # http://localhost:3000
 ```
+
+Le frontend lit les JSON générés par le backend (`backend/data/predictions/`).
+Avant `next build`, un script copie ces JSON dans `frontend/public/data/predictions/`.
+
+## Déploiement GitHub Pages
+
+Le site se déploie automatiquement sur GitHub Pages — aucune infra à héberger.
+
+**Setup initial** (une seule fois) :
+1. Sur GitHub → `Settings` → `Pages` → `Source` : **GitHub Actions**
+2. (Optionnel) `Settings` → `Secrets and variables` → `Actions` → ajouter
+   `API_FOOTBALL_KEY`, `FOOTBALL_DATA_TOKEN`, `ODDS_API_KEY` si tu as les clés
+3. Merge cette branche sur `main`
+
+**Flux automatique** :
+- `.github/workflows/daily-update.yml` tourne chaque jour à 06:00 UTC :
+  génère les pronostics et commit le JSON sur `main`
+- `.github/workflows/deploy-pages.yml` se déclenche au push sur `main` :
+  rebuild le site et le déploie
+
+**URL du site** : `https://<ton-user>.github.io/PRONOSTICS/`
+
+**Déclenchement manuel** : onglet `Actions` → `Daily predictions update` →
+`Run workflow` (tu peux saisir une date précise).
 
 ## Configuration des sources de données
 

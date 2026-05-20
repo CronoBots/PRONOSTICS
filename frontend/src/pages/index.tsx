@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import { useQuery } from "@apollo/client";
 
 import { MatchCard } from "@/components/MatchCard";
 import { SportFilter } from "@/components/SportFilter";
-import { GET_DAILY_MATCHES } from "@/lib/queries";
+import { fetchMatches } from "@/lib/dataSource";
 import { Match } from "@/lib/types";
 
 function today(): string {
@@ -17,29 +16,44 @@ export default function Home() {
   const [activeSport, setActiveSport] = useState<string | null>(null);
   const [date, setDate] = useState<string>(today());
   const [minConfidence, setMinConfidence] = useState<number>(0);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [supportedSports, setSupportedSports] = useState<string[]>([]);
+  const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const { data, loading, error, refetch } = useQuery<{
-    matches: Match[];
-    supportedSports: string[];
-  }>(GET_DAILY_MATCHES, {
-    variables: { onDate: date, sport: activeSport, minConfidence },
-  });
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
 
-  const matches = data?.matches ?? [];
-  const sortedMatches = useMemo(
-    () => [...matches].sort((a, b) => {
-      const ca = a.prediction?.confidence ?? 0;
-      const cb = b.prediction?.confidence ?? 0;
-      return cb - ca;
-    }),
-    [matches],
-  );
+    fetchMatches(date, activeSport, minConfidence)
+      .then((res) => {
+        if (cancelled) return;
+        setMatches(res.matches);
+        setSupportedSports(res.supportedSports);
+        setGeneratedAt(res.generatedAt);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(String(e));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [date, activeSport, minConfidence]);
 
   return (
     <>
       <Head>
         <title>PRONOSTICS — Pronostics sportifs du jour</title>
-        <meta name="description" content="Pronostics sportifs quotidiens propulsés par l'analyse statistique" />
+        <meta
+          name="description"
+          content="Pronostics sportifs quotidiens propulsés par l'analyse statistique"
+        />
       </Head>
 
       <main className="max-w-6xl mx-auto px-6 py-10">
@@ -50,6 +64,11 @@ export default function Home() {
           <p className="text-white/60 mt-1">
             Analyse statistique des matchs : forme, classement, h2h, cotes — tous sports confondus.
           </p>
+          {generatedAt && (
+            <p className="text-white/40 text-xs mt-2">
+              Dernière mise à jour : {new Date(generatedAt).toLocaleString("fr-FR")}
+            </p>
+          )}
         </header>
 
         <section className="space-y-4 mb-8">
@@ -75,41 +94,31 @@ export default function Home() {
               />
               <span className="text-white/50 w-10">{(minConfidence * 100).toFixed(0)}%</span>
             </label>
-            <button
-              onClick={() => refetch()}
-              className="px-3 py-1.5 rounded-md bg-brand-600 hover:bg-brand-500 text-sm"
-            >
-              Rafraîchir
-            </button>
           </div>
 
           <SportFilter
-            sports={data?.supportedSports ?? []}
+            sports={supportedSports}
             active={activeSport}
             onChange={setActiveSport}
           />
         </section>
 
         {loading && <p className="text-white/50">Chargement…</p>}
-        {error && (
-          <p className="text-rose-400">
-            Erreur : {error.message}. Vérifie que le backend tourne sur{" "}
-            <code>http://localhost:8000/graphql</code>.
-          </p>
-        )}
+        {error && <p className="text-rose-400">Erreur : {error}</p>}
 
-        {!loading && !error && sortedMatches.length === 0 && (
+        {!loading && !error && matches.length === 0 && (
           <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center text-white/60">
-            <p>Pas de matchs pour cette sélection.</p>
+            <p>Pas de pronostics pour cette date.</p>
             <p className="text-sm mt-2">
-              Lance <code className="text-brand-100">python backend/scripts/daily_update.py</code>{" "}
-              pour ingérer les pronostics du jour.
+              Le workflow <code className="text-brand-100">daily-update</code> doit avoir
+              généré le fichier <code>data/predictions/{date}.json</code>. Tu peux le déclencher
+              manuellement depuis l'onglet Actions sur GitHub.
             </p>
           </div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {sortedMatches.map((m) => (
+          {matches.map((m) => (
             <MatchCard key={m.id} match={m} />
           ))}
         </div>
