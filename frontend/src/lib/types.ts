@@ -47,6 +47,14 @@ export interface DayPayload {
 
 export type Outcome = "win" | "loss" | "pending" | "void";
 
+export interface PickResult {
+  score_home?: number | string;
+  score_away?: number | string;
+  score_text?: string;
+  summary?: string;
+  bet_outcome?: string;
+}
+
 export interface HistoryPick {
   date: string;
   match: {
@@ -63,10 +71,12 @@ export interface HistoryPick {
   expected_value: number;
   engine: string;
   rationale: string[];
+  sources?: string[];
   stake: number;
   outcome: Outcome;
   profit: number;
   bankroll_after: number;
+  result?: PickResult | null;
 }
 
 export interface HistoryStats {

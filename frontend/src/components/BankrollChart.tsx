@@ -194,48 +194,26 @@ export function BankrollChart({
               )}
             </Line>
             {hasProjection && (
-              <>
-                <Line
-                  type="monotone"
-                  dataKey="ifWin"
-                  stroke="#ffffff"
-                  strokeWidth={3}
-                  strokeDasharray="6 5"
-                  dot={showValues ? { fill: "#fff", r: 4 } : false}
-                  connectNulls={false}
-                  isAnimationActive={false}
-                >
-                  {showValues && (
-                    <LabelList
-                      dataKey="ifWin"
-                      position="top"
-                      fill="#ffffff"
-                      fontSize={11}
-                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
-                    />
-                  )}
-                </Line>
-                <Line
-                  type="monotone"
-                  dataKey="ifLoss"
-                  stroke="#ffffff"
-                  strokeWidth={3}
-                  strokeDasharray="6 5"
-                  dot={showValues ? { fill: "#fff", r: 4 } : false}
-                  connectNulls={false}
-                  isAnimationActive={false}
-                >
-                  {showValues && (
-                    <LabelList
-                      dataKey="ifLoss"
-                      position="bottom"
-                      fill="#ffffff"
-                      fontSize={11}
-                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
-                    />
-                  )}
-                </Line>
-              </>
+              <Line
+                type="monotone"
+                dataKey="ifWin"
+                stroke="#ffffff"
+                strokeWidth={3}
+                strokeDasharray="6 5"
+                dot={showValues ? { fill: "#fff", r: 4 } : false}
+                connectNulls={false}
+                isAnimationActive={false}
+              >
+                {showValues && (
+                  <LabelList
+                    dataKey="ifWin"
+                    position="top"
+                    fill="#ffffff"
+                    fontSize={11}
+                    formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
+                  />
+                )}
+              </Line>
             )}
           </LineChart>
         </ResponsiveContainer>
@@ -291,26 +269,15 @@ export function BankrollChart({
             connectNulls={false}
           />
           {hasProjection && (
-            <>
-              <Line
-                type="monotone"
-                dataKey="ifWin"
-                stroke={color}
-                strokeWidth={2}
-                strokeDasharray="5 4"
-                dot={false}
-                connectNulls={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="ifLoss"
-                stroke={color}
-                strokeWidth={2}
-                strokeDasharray="5 4"
-                dot={false}
-                connectNulls={false}
-              />
-            </>
+            <Line
+              type="monotone"
+              dataKey="ifWin"
+              stroke={color}
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              dot={false}
+              connectNulls={false}
+            />
           )}
         </LineChart>
       </ResponsiveContainer>

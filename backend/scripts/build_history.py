@@ -68,6 +68,7 @@ def build_history() -> dict:
             "outcome": outcome,
             "profit": profit,
             "bankroll_after": bankroll,
+            "result": p.get("result"),
         })
 
     history = {

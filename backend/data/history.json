@@ -27,7 +27,14 @@
       "stake": 5.0,
       "outcome": "win",
       "profit": 6.5,
-      "bankroll_after": 11.5
+      "bankroll_after": 11.5,
+      "result": {
+        "score_home": "4-6",
+        "score_away": "6-4 7-6(3) 6-2",
+        "score_text": "Svitolina d. Gauff 6-4, 6-7(3), 6-2",
+        "summary": "Match en 3 sets de 2h45. Svitolina dominante au 1er set, Gauff revient au tie-break du 2e, puis Svitolina écrase la finale en 6-2.",
+        "bet_outcome": "✅ Svitolina remporte le titre WTA Rome — pari gagné, gain net +6.50€"
+      }
     },
     {
       "date": "2026-05-18",
@@ -56,7 +63,14 @@
       "stake": 5.0,
       "outcome": "win",
       "profit": 8.5,
-      "bankroll_after": 20.0
+      "bankroll_after": 20.0,
+      "result": {
+        "score_home": 115,
+        "score_away": 122,
+        "score_text": "Spurs 122 - Thunder 115 (2 prolongations)",
+        "summary": "Instant classic en double OT à Oklahoma City. Wembanyama monstrueux : 41 pts, 24 rebonds, 3 contres. Dylan Harper en soutien (24 pts, 11 reb, 6 ast, 7 interceptions). SGA limité à 31 pts pour OKC. Spurs prennent l'avantage 1-0 dans la série.",
+        "bet_outcome": "✅ Spurs gagnent en outsider — pari gagné, gain net +8.50€"
+      }
     },
     {
       "date": "2026-05-19",
@@ -84,7 +98,14 @@
       "stake": 5.0,
       "outcome": "win",
       "profit": 5.0,
-      "bankroll_after": 25.0
+      "bankroll_after": 25.0,
+      "result": {
+        "score_home": 115,
+        "score_away": 104,
+        "score_text": "Knicks 115 - Cavaliers 104",
+        "summary": "Comeback historique des Knicks au Madison Square Garden : menés de 22 points en début de 4e quart-temps, ils renversent le match dans les 7 dernières minutes + prolongation. Brunson 38 pts, série de 44-11 sur la fin. 1-0 dans l'Eastern Conference Finals.",
+        "bet_outcome": "✅ Comeback victorieux des Knicks — pari gagné, gain net +5.00€"
+      }
     },
     {
       "date": "2026-05-20",
@@ -125,7 +146,8 @@
       "stake": 5.0,
       "outcome": "pending",
       "profit": 0.0,
-      "bankroll_after": 25.0
+      "bankroll_after": 25.0,
+      "result": null
     }
   ],
   "stats": {
@@ -152,5 +174,5 @@
     "max_profit_single": 8.5,
     "max_loss_single": 0.0
   },
-  "generated_at": "2026-05-20T13:06:55.470371+00:00"
+  "generated_at": "2026-05-20T18:45:54.282970+00:00"
 }

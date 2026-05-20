@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
+import { PickDetail, pickFromHistory } from "@/components/PickDetail";
 import { HistoryPick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 const MONTH_NAMES = [
@@ -175,7 +176,7 @@ function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
   );
 }
 
-function BetRow({ pick }: { pick: HistoryPick }) {
+function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const time = pick.match.kickoff
     ? new Date(pick.match.kickoff).toLocaleTimeString("fr-FR", {
@@ -185,7 +186,10 @@ function BetRow({ pick }: { pick: HistoryPick }) {
     : "—";
 
   return (
-    <div className="flex items-stretch bg-bg-elevated/40 border border-white/[0.06] rounded-xl overflow-hidden">
+    <button
+      onClick={onClick}
+      className="w-full flex items-stretch bg-bg-elevated/40 border border-white/[0.06] rounded-xl overflow-hidden text-left hover:border-accent-green/30 transition"
+    >
       <div className="flex items-center justify-center px-2 text-white/30 text-lg">⋮</div>
       <div className="flex-1 py-3 pr-2 min-w-0">
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
@@ -209,11 +213,11 @@ function BetRow({ pick }: { pick: HistoryPick }) {
         </div>
       </div>
       <StatusBar outcome={pick.outcome} />
-    </div>
+    </button>
   );
 }
 
-function DayCard({ day }: { day: DayBucket }) {
+function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: HistoryPick) => void }) {
   return (
     <div className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
@@ -224,14 +228,20 @@ function DayCard({ day }: { day: DayBucket }) {
       </div>
       <div className="p-3 space-y-2">
         {day.picks.map((p, i) => (
-          <BetRow key={`${p.date}-${i}`} pick={p} />
+          <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => onPickClick(p)} />
         ))}
       </div>
     </div>
   );
 }
 
-function WeekSection({ week }: { week: WeekBucket }) {
+function WeekSection({
+  week,
+  onPickClick,
+}: {
+  week: WeekBucket;
+  onPickClick: (p: HistoryPick) => void;
+}) {
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between px-1 mb-2">
@@ -240,7 +250,7 @@ function WeekSection({ week }: { week: WeekBucket }) {
       </div>
       <div className="space-y-3">
         {week.days.map((d) => (
-          <DayCard key={d.date} day={d} />
+          <DayCard key={d.date} day={d} onPickClick={onPickClick} />
         ))}
       </div>
     </div>
@@ -270,6 +280,7 @@ export function HistoryList({ picks }: Props) {
   // Masquer les paris en attente : ils sont affichés sur la page /today (Premium)
   const settled = picks.filter((p) => p.outcome !== "pending");
   const months = useMemo(() => groupHierarchical(settled), [settled]);
+  const [openPick, setOpenPick] = useState<HistoryPick | null>(null);
   const currentMonthKey = (() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
@@ -289,10 +300,41 @@ export function HistoryList({ picks }: Props) {
         <section key={m.key} className="mb-6">
           <MonthHeader month={m} current={m.key === currentMonthKey} />
           {m.weeks.map((w) => (
-            <WeekSection key={w.num} week={w} />
+            <WeekSection key={w.num} week={w} onPickClick={setOpenPick} />
           ))}
         </section>
       ))}
+
+      {/* Modal détail */}
+      {openPick && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto"
+          onClick={() => setOpenPick(null)}
+        >
+          <div className="min-h-screen px-4 py-6 md:py-10 flex items-start justify-center">
+            <div
+              className="w-full max-w-2xl bg-bg-base border border-white/10 rounded-3xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/5 sticky top-0 bg-bg-base z-10 rounded-t-3xl">
+                <span className="text-sm font-semibold text-white/70">
+                  Analyse du pari
+                </span>
+                <button
+                  onClick={() => setOpenPick(null)}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:bg-white/5"
+                  aria-label="Fermer"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-4 md:p-6">
+                <PickDetail pick={pickFromHistory(openPick)} variant="past" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

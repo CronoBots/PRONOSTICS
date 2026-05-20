@@ -18,6 +18,14 @@ from typing import Literal, TypedDict
 Outcome = Literal["win", "loss", "pending", "void"]
 
 
+class Result(TypedDict, total=False):
+    score_home: int | str    # score final équipe domicile (ou "6-4 6-4" pour tennis)
+    score_away: int | str
+    score_text: str          # ex "Tigers 5 - Guardians 2"
+    summary: str             # narration courte du match
+    bet_outcome: str         # ce qui s'est passé pour notre pari
+
+
 class Pick(TypedDict, total=False):
     date: str                      # ISO YYYY-MM-DD
     sport: str                     # football | basketball | tennis | nfl | mlb | nhl
@@ -32,6 +40,7 @@ class Pick(TypedDict, total=False):
     sources: list[str]             # URLs des sources web consultées
     stake: float                   # mise en €
     outcome: Outcome               # win/loss/pending
+    result: Result                 # score final + narration (pour picks réglés)
 
 
 STAKE = 5.0
@@ -60,6 +69,13 @@ PICKS: list[Pick] = [
         ],
         "stake": STAKE,
         "outcome": "win",
+        "result": {
+            "score_home": "4-6",
+            "score_away": "6-4 7-6(3) 6-2",
+            "score_text": "Svitolina d. Gauff 6-4, 6-7(3), 6-2",
+            "summary": "Match en 3 sets de 2h45. Svitolina dominante au 1er set, Gauff revient au tie-break du 2e, puis Svitolina écrase la finale en 6-2.",
+            "bet_outcome": "✅ Svitolina remporte le titre WTA Rome — pari gagné, gain net +6.50€",
+        },
     },
     {
         "date": "2026-05-18",
@@ -82,6 +98,13 @@ PICKS: list[Pick] = [
         ],
         "stake": STAKE,
         "outcome": "win",
+        "result": {
+            "score_home": 115,
+            "score_away": 122,
+            "score_text": "Spurs 122 - Thunder 115 (2 prolongations)",
+            "summary": "Instant classic en double OT à Oklahoma City. Wembanyama monstrueux : 41 pts, 24 rebonds, 3 contres. Dylan Harper en soutien (24 pts, 11 reb, 6 ast, 7 interceptions). SGA limité à 31 pts pour OKC. Spurs prennent l'avantage 1-0 dans la série.",
+            "bet_outcome": "✅ Spurs gagnent en outsider — pari gagné, gain net +8.50€",
+        },
     },
     {
         "date": "2026-05-19",
@@ -103,6 +126,13 @@ PICKS: list[Pick] = [
         ],
         "stake": STAKE,
         "outcome": "win",
+        "result": {
+            "score_home": 115,
+            "score_away": 104,
+            "score_text": "Knicks 115 - Cavaliers 104",
+            "summary": "Comeback historique des Knicks au Madison Square Garden : menés de 22 points en début de 4e quart-temps, ils renversent le match dans les 7 dernières minutes + prolongation. Brunson 38 pts, série de 44-11 sur la fin. 1-0 dans l'Eastern Conference Finals.",
+            "bet_outcome": "✅ Comeback victorieux des Knicks — pari gagné, gain net +5.00€",
+        },
     },
     # === Pick du jour (20/05/2026) — curé manuellement, analyse web Claude ===
     {
