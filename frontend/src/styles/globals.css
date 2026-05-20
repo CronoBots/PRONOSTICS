@@ -15,18 +15,30 @@
 
 html,
 body {
-  background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(124, 92, 255, 0.12), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(16, 217, 163, 0.06), transparent 70%),
-    var(--bg-base);
-  background-attachment: fixed;
+  /* Couleur UNIFORME (pas de gradient) pour matcher le theme-color iOS
+     et éviter la zone du dessus avec teinte différente. */
+  background: var(--bg-base);
   color: var(--foreground);
   min-height: 100vh;
+  /* Interdit le zoom pinch sur navigateurs WebKit */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Edge-to-edge : la couleur s'étend dans les safe-areas iOS */
+  background-color: var(--bg-base);
+  padding: 0;
+  margin: 0;
+}
+
+/* Empêche double-tap zoom sur boutons */
+button,
+a {
+  touch-action: manipulation;
 }
 
 @keyframes shimmer {

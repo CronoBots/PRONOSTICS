@@ -4,6 +4,12 @@ export default function Document() {
   return (
     <Html lang="fr">
       <Head>
+        {/* Viewport : zoom désactivé + viewport-fit cover pour bords écran iOS */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        />
+
         {/* Cache busting agressif */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
@@ -18,7 +24,7 @@ export default function Document() {
         <meta name="apple-mobile-web-app-title" content="PRONOSTICS" />
         <meta name="mobile-web-app-capable" content="yes" />
 
-        {/* Open Graph (preview sur réseaux sociaux) */}
+        {/* Open Graph */}
         <meta property="og:title" content="PRONOSTICS — Pick safe du jour" />
         <meta property="og:description" content="1 value bet par jour analysé manuellement. Cote ≥ 2.00, ROI suivi en temps réel." />
         <meta property="og:type" content="website" />

@@ -164,7 +164,7 @@ export default function StatsPage() {
     <>
       <Head>
         <title>Statistiques — PRONOSTICS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
 
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">

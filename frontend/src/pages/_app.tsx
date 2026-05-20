@@ -17,7 +17,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <I18nProvider>
       <AuthProvider>
-        <div className={showNav ? "pb-20" : ""}>
+        <div
+          className={showNav ? "" : ""}
+          style={
+            showNav
+              ? { paddingBottom: "calc(env(safe-area-inset-bottom) + 5.5rem)" }
+              : undefined
+          }
+        >
           <Component {...pageProps} />
         </div>
         {showNav && <BottomNav />}

@@ -145,10 +145,13 @@ export default function Home() {
     <>
       <Head>
         <title>PRONOSTICS — Pick safe du jour</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
 
-      <main className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col h-[calc(100dvh-5rem)]">
+      <main
+        className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col"
+        style={{ height: "calc(100dvh - 6.5rem - env(safe-area-inset-bottom))" }}
+      >
         {/* Header compact */}
         <header className="flex items-center justify-between mb-3 shrink-0">
           <button className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5">
