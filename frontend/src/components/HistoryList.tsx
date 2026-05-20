@@ -66,10 +66,10 @@ function fmtSigned(n: number) {
 
 function ProfitBadge({ profit, outcome }: { profit: number; outcome: HistoryPick["outcome"] }) {
   if (outcome === "pending")
-    return <span className="text-white/40 text-sm font-medium">À venir</span>;
+    return <span className="text-white/40 text-xs font-medium">À venir</span>;
   const cls =
     profit > 0 ? "text-accent-green" : profit < 0 ? "text-accent-red" : "text-white/40";
-  return <span className={`text-sm font-semibold tabular-nums ${cls}`}>{fmtSigned(profit)}</span>;
+  return <span className={`text-sm font-bold tabular-nums ${cls}`}>{fmtSigned(profit)}</span>;
 }
 
 export function HistoryList({ picks }: Props) {
@@ -78,7 +78,6 @@ export function HistoryList({ picks }: Props) {
     [picks],
   );
   const months = Array.from(grouped.keys());
-  // Auto-déplie tous les mois par défaut
   const [openMonths, setOpenMonths] = useState<Set<string>>(new Set(months));
 
   function toggle(m: string) {
@@ -130,9 +129,11 @@ export function HistoryList({ picks }: Props) {
                 {monthPicks.map((p) => (
                   <div
                     key={p.date}
-                    className="flex items-center gap-3 px-4 md:px-5 py-3.5 border-b border-white/5 last:border-b-0 hover:bg-white/[0.02]"
+                    className="flex items-center gap-3 px-3 md:px-5 py-3.5 border-b border-white/5 last:border-b-0 hover:bg-white/[0.02]"
                   >
                     {outcomeBadge(p.outcome)}
+
+                    {/* Match + meta */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 text-[11px] text-white/40 mb-0.5">
                         <span className="text-sm">{SPORT_EMOJIS[p.match.sport] || ""}</span>
@@ -154,20 +155,38 @@ export function HistoryList({ picks }: Props) {
                         <span className="text-white/30 font-normal">vs</span>{" "}
                         {p.match.away_team}
                       </div>
-                      <div className="text-[11px] text-white/50 mt-0.5">
+                      <div className="text-[11px] text-white/50 mt-0.5 truncate">
                         Pick{" "}
-                        <span className="text-white/80 font-medium">{p.pick}</span>
-                        <span className="text-white/30"> · </span>
-                        Cote {p.odds.toFixed(2)}
-                        <span className="text-white/30"> · </span>
-                        Mise {p.stake.toFixed(0)} €
+                        <span className="text-white/90 font-medium">{p.pick}</span>
                       </div>
                     </div>
+
+                    {/* Cote — bien visible */}
                     <div className="text-right shrink-0">
-                      <ProfitBadge profit={p.profit} outcome={p.outcome} />
-                      <div className="text-[10px] text-white/30 mt-0.5 tabular-nums">
-                        {p.bankroll_after.toFixed(0)} €
+                      <div className="text-[10px] uppercase tracking-wider text-white/40">
+                        Cote
                       </div>
+                      <div className="text-base md:text-lg font-bold tabular-nums text-white">
+                        {p.odds.toFixed(2)}
+                      </div>
+                    </div>
+
+                    {/* Mise */}
+                    <div className="text-right shrink-0 hidden md:block">
+                      <div className="text-[10px] uppercase tracking-wider text-white/40">
+                        Mise
+                      </div>
+                      <div className="text-sm font-medium tabular-nums text-white/70">
+                        {p.stake.toFixed(0)} €
+                      </div>
+                    </div>
+
+                    {/* Profit + bankroll */}
+                    <div className="text-right shrink-0 min-w-[72px]">
+                      <div className="text-[10px] uppercase tracking-wider text-white/40">
+                        Gain
+                      </div>
+                      <ProfitBadge profit={p.profit} outcome={p.outcome} />
                     </div>
                   </div>
                 ))}
