@@ -64,21 +64,31 @@ export function TodayPick({ pick, date }: Props) {
 
             <div className="text-xs text-white/50 mb-3">{pick.league}</div>
 
-            <div className="text-2xl md:text-4xl font-bold leading-tight mb-2">
+            <div className="text-xl md:text-2xl font-medium text-white/70 leading-tight mb-1">
               <span>{pick.home_team}</span>{" "}
-              <span className="text-white/30 text-xl md:text-2xl font-normal">vs</span>{" "}
+              <span className="text-white/30 font-normal">vs</span>{" "}
               <span>{pick.away_team}</span>
             </div>
+            <div className="text-xs text-white/40 mb-5">
+              Match à <span className="text-white/70 font-medium">{pick.home_team}</span>{" "}
+              (le {pick.home_team.split(" ")[0]} reçoit)
+            </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3 md:gap-5">
-              <div className="bg-bg-base/60 backdrop-blur rounded-xl p-3 md:p-4 border border-white/5">
-                <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
-                  Pari
-                </div>
-                <div className="text-base md:text-xl font-semibold text-accent-green mt-1 truncate">
-                  {pick.pick}
-                </div>
+            {/* ⚡ Le pari à jouer : énorme, en couleur, impossible à rater */}
+            <div className="bg-accent-green text-bg-base rounded-2xl p-4 md:p-5 mb-4 shadow-lg shadow-accent-green/20">
+              <div className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold opacity-70 mb-1">
+                ⚡ Pari à placer
               </div>
+              <div className="text-2xl md:text-4xl font-black leading-none">
+                {pick.pick}{" "}
+                <span className="opacity-60 font-bold text-xl md:text-2xl">VAINQUEUR</span>
+              </div>
+              <div className="text-xs md:text-sm mt-2 opacity-80 font-medium">
+                Cote {pick.odds.toFixed(2)} · {(pick.model_probability * 100).toFixed(0)}% de chances estimées
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               <div className="bg-bg-base/60 backdrop-blur rounded-xl p-3 md:p-4 border border-white/5">
                 <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
                   Cote
@@ -89,7 +99,7 @@ export function TodayPick({ pick, date }: Props) {
               </div>
               <div className="bg-bg-base/60 backdrop-blur rounded-xl p-3 md:p-4 border border-white/5">
                 <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
-                  EV
+                  Edge (EV)
                 </div>
                 <div className="text-base md:text-xl font-semibold text-accent-green mt-1">
                   +{(pick.expected_value * 100).toFixed(1)}%
