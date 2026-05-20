@@ -7,18 +7,21 @@
         "league": "ATP Masters 1000 — Rome",
         "home_team": "Jannik Sinner",
         "away_team": "Casper Ruud",
-        "kickoff": "2026-05-17T19:00:00+00:00"
+        "kickoff": "2026-05-17T15:00:00+00:00"
       },
       "pick": "Jannik Sinner",
       "odds": 1.5,
       "model_probability": 0.75,
       "book_probability": 0.6667,
       "expected_value": 0.125,
-      "engine": "curated_demo@1.0",
+      "engine": "claude_curated@1.0",
       "rationale": [
         "Sinner n°1 mondial, finale à domicile devant le président italien",
         "Ruud 8 finales Masters 1000 jouées, 1 seule gagnée",
         "Sinner invaincu sur ses 5 dernières confrontations directes"
+      ],
+      "sources": [
+        "https://www.olympics.com/en/news/italian-open-2026-jannik-sinner-ends-50-year-wait-complete-career-golden-masters"
       ],
       "stake": 10.0,
       "outcome": "win",
@@ -32,18 +35,21 @@
         "league": "NBA — Western Conference Finals (G1)",
         "home_team": "Oklahoma City Thunder",
         "away_team": "San Antonio Spurs",
-        "kickoff": "2026-05-18T19:00:00+00:00"
+        "kickoff": "2026-05-18T20:30:00+00:00"
       },
       "pick": "San Antonio Spurs",
       "odds": 3.4,
       "model_probability": 0.32,
       "book_probability": 0.2941,
       "expected_value": 0.088,
-      "engine": "curated_demo@1.0",
+      "engine": "claude_curated@1.0",
       "rationale": [
         "Value bet : Spurs cotés 3.40 alors que notre modèle leur donne 32%",
         "Wembanyama monstrueux en playoffs (moyenne 28pts/14reb/4blocks)",
         "Thunder fatigué après G7 face à Denver, repos minimal"
+      ],
+      "sources": [
+        "https://www.espn.com/nba/game/_/gameId/401873197/spurs-thunder"
       ],
       "stake": 10.0,
       "outcome": "win",
@@ -57,18 +63,21 @@
         "league": "NBA — Eastern Conference Finals (G1)",
         "home_team": "New York Knicks",
         "away_team": "Cleveland Cavaliers",
-        "kickoff": "2026-05-19T19:00:00+00:00"
+        "kickoff": "2026-05-19T20:00:00+00:00"
       },
       "pick": "New York Knicks",
       "odds": 1.95,
       "model_probability": 0.58,
       "book_probability": 0.5128,
       "expected_value": 0.131,
-      "engine": "curated_demo@1.0",
+      "engine": "claude_curated@1.0",
       "rationale": [
         "Madison Square Garden : Knicks 32V-9D à domicile cette saison",
         "Brunson en feu : 34.5 pts/match dans les playoffs",
         "Cavaliers sans Mitchell à 100% (épaule)"
+      ],
+      "sources": [
+        "https://www.espn.com/nba/game/_/gameId/401873341/cavaliers-knicks"
       ],
       "stake": 10.0,
       "outcome": "win",
@@ -78,22 +87,28 @@
     {
       "date": "2026-05-20",
       "match": {
-        "sport": "tennis",
-        "league": "Tennis Atp French Open",
-        "home_team": "Arthur Fery",
-        "away_team": "Pedro Martinez",
-        "kickoff": "2026-05-20T14:00:00"
+        "sport": "mlb",
+        "league": "MLB — AL Central",
+        "home_team": "Detroit Tigers",
+        "away_team": "Cleveland Guardians",
+        "kickoff": "2026-05-20T23:10:00+00:00"
       },
-      "pick": "Arthur Fery",
-      "odds": 2.0,
-      "model_probability": 0.5,
-      "book_probability": 0.5,
-      "expected_value": 0.0,
-      "engine": "tennis_heuristic@1.0",
+      "pick": "Detroit Tigers",
+      "odds": 2.12,
+      "model_probability": 0.55,
+      "book_probability": 0.4717,
+      "expected_value": 0.166,
+      "engine": "claude_curated@1.0",
       "rationale": [
-        "Mode favori safe : pas assez de données équipes pour un vrai value bet.",
-        "Cote 2.00 = match équilibré côté bookmaker (~50%).",
-        "Modèle aligné sur les cotes du bookmaker (pas de données équipes)"
+        "Tanner Bibee (Cleveland) : 0-6, 4.15 ERA, 1.35 WHIP sur la route cette saison",
+        "Tigers à domicile à Comerica Park, motivés à briser une série de 2 défaites",
+        "Lineup Cleveland sous-performe en déplacement (B+ value grade Lineups.com)",
+        "Plus-money value play : cote 2.12 sous-évalue les Tigers à domicile face à un starter en difficulté"
+      ],
+      "sources": [
+        "https://www.lineups.com/betting/san-antonio-spurs-vs-oklahoma-city-thunder-game-2-preview-picks-odds-for-may-20-2026/",
+        "https://www.bleachernation.com/picks/2026/05/16/detroit-tigers-vs-cleveland-guardians-series-may-18-21-odds-starting-pitchers-predictions/",
+        "https://pickdawgz.com/mlb-picks/guardians-vs-tigers-prediction-5-20-2026-todays-mlb-picks/"
       ],
       "stake": 10.0,
       "outcome": "pending",
@@ -117,5 +132,5 @@
     "current_bankroll": 1038.5,
     "progression_percent": 3.85
   },
-  "generated_at": "2026-05-20T11:57:38.235215+00:00"
+  "generated_at": "2026-05-20T12:24:57.115918+00:00"
 }

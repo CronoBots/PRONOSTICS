@@ -1,10 +1,9 @@
-name: Daily predictions update
+name: Daily predictions update (backup auto)
 
+# Le workflow auto est désactivé : les picks sont curés manuellement par
+# Claude via la conversation, puis poussés via `scripts/build_history.py`.
+# Ce workflow reste disponible en `workflow_dispatch` au cas où.
 on:
-  # Tous les jours à 06:00 UTC (08:00 Paris en été, 07:00 en hiver)
-  schedule:
-    - cron: "0 6 * * *"
-  # Permet le déclenchement manuel depuis l'onglet Actions
   workflow_dispatch:
     inputs:
       date:
