@@ -104,6 +104,9 @@ def build_today_payload(history: dict) -> tuple[str, dict] | None:
         "engine": pick["engine"],
         "rationale": pick["rationale"],
         "sources": pick.get("sources", []),
+        "stake": pick["stake"],
+        "potential_profit": round(pick["stake"] * (pick["odds"] - 1), 2),
+        "potential_return": round(pick["stake"] * pick["odds"], 2),
         "kind": "value_bet" if pick["expected_value"] > 0.05 else "safe_favorite",
     }
 

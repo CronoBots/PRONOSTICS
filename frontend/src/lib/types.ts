@@ -31,6 +31,10 @@ export interface SafePick {
   confidence: number;
   engine: string;
   rationale: string[];
+  sources?: string[];
+  stake?: number;
+  potential_profit?: number;
+  potential_return?: number;
   kind?: "value_bet" | "safe_favorite";
 }
 
