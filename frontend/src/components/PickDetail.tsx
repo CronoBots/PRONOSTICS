@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 
-import { HistoryPick, PickResult, SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
+import { HistoryPick, PickComparison, PickResult, SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 interface UnifiedPick {
   date: string;
@@ -14,12 +14,15 @@ interface UnifiedPick {
   model_probability: number;
   book_probability: number;
   expected_value: number;
+  headline?: string;
   rationale: string[];
   sources?: string[];
   stake?: number;
   outcome?: "win" | "loss" | "pending" | "void";
   profit?: number;
   result?: PickResult | null;
+  comparison?: PickComparison | null;
+  profile_tags?: string[];
 }
 
 interface Props {
@@ -56,6 +59,16 @@ export function PickDetail({ pick, variant = "today" }: Props) {
 
   return (
     <div className="space-y-5">
+      {/* Headline punchy en haut */}
+      {pick.headline && (
+        <div className="bg-accent-green/10 border-l-4 border-accent-green rounded-r-xl px-4 py-3">
+          <div className="text-[10px] uppercase tracking-wider text-accent-green/80 font-semibold mb-1">
+            💡 En 1 phrase
+          </div>
+          <p className="text-sm md:text-base font-medium leading-relaxed">{pick.headline}</p>
+        </div>
+      )}
+
       {/* Header */}
       <div>
         <div className="text-sm text-white/50 flex items-center gap-2 flex-wrap">
@@ -256,6 +269,82 @@ export function PickDetail({ pick, variant = "today" }: Props) {
         </ol>
       </ExpandableSection>
 
+      {/* Pourquoi celui-ci ? — comparaison avec autres candidats */}
+      {pick.comparison && (
+        <ExpandableSection
+          title="Pourquoi celui-ci ?"
+          icon="🎯"
+          subtitle={`${pick.comparison.matches_analyzed} matchs analysés aujourd'hui`}
+          defaultOpen={false}
+        >
+          <p className="text-xs text-white/50 mb-3">
+            Les top alternatives écartées et pourquoi :
+          </p>
+          <div className="space-y-2.5">
+            {pick.comparison.top_alternatives.map((alt) => (
+              <div
+                key={alt.rank}
+                className="bg-bg-elevated/40 border border-white/5 rounded-lg p-3"
+              >
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white/40 text-xs font-mono">#{alt.rank}</span>
+                    <span className="font-semibold text-sm">{alt.label}</span>
+                  </div>
+                  <span className="text-xs text-white/50 tabular-nums">
+                    @ {alt.odds.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-white/50 mb-1.5">
+                  <span className="bg-white/5 px-1.5 py-0.5 rounded">
+                    edge {alt.edge}
+                  </span>
+                  <span
+                    className={`px-1.5 py-0.5 rounded ${
+                      alt.confidence === "High"
+                        ? "bg-accent-green/15 text-accent-green"
+                        : alt.confidence === "Medium"
+                          ? "bg-accent-blue/15 text-accent-blue"
+                          : "bg-white/5"
+                    }`}
+                  >
+                    confidence {alt.confidence}
+                  </span>
+                </div>
+                <p className="text-xs text-white/60 italic">↳ {alt.why_not}</p>
+              </div>
+            ))}
+          </div>
+        </ExpandableSection>
+      )}
+
+      {/* Boutons "Parier sur..." (pour pending uniquement) */}
+      {isPending && (
+        <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
+          <div className="text-[10px] uppercase tracking-wider text-white/40 mb-3 text-center">
+            ⚡ Placer ce pari
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <BookmakerButton
+              name="bwin"
+              url="https://sports.bwin.fr/fr/sports/baseball-23"
+            />
+            <BookmakerButton
+              name="Winamax"
+              url="https://www.winamax.fr/paris-sportifs/sports"
+            />
+            <BookmakerButton
+              name="Unibet"
+              url="https://www.unibet.fr/sport/baseball"
+            />
+          </div>
+          <p className="text-[10px] text-white/30 text-center mt-2 leading-relaxed">
+            Liens vers les bookmakers — cherche le match{" "}
+            <em>{pick.home_team} vs {pick.away_team}</em> et place ton pari.
+          </p>
+        </section>
+      )}
+
       {/* Sources */}
       {pick.sources && pick.sources.length > 0 && (
         <ExpandableSection
@@ -423,6 +512,19 @@ function ExpandableSection({
   );
 }
 
+function BookmakerButton({ name, url }: { name: string; url: string }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-bg-elevated border border-white/10 hover:border-accent-green/40 rounded-lg py-2.5 text-center text-sm font-semibold transition"
+    >
+      {name} ↗
+    </a>
+  );
+}
+
 // Adapter une HistoryPick au type unifié
 export function pickFromHistory(p: HistoryPick): UnifiedPick {
   return {
@@ -437,12 +539,15 @@ export function pickFromHistory(p: HistoryPick): UnifiedPick {
     model_probability: p.model_probability,
     book_probability: p.book_probability,
     expected_value: p.expected_value,
+    headline: p.headline,
     rationale: p.rationale,
     sources: p.sources,
     stake: p.stake,
     outcome: p.outcome,
     profit: p.profit,
     result: p.result ?? undefined,
+    comparison: p.comparison,
+    profile_tags: p.profile_tags,
   };
 }
 
@@ -460,9 +565,12 @@ export function pickFromSafe(p: SafePick): UnifiedPick {
     model_probability: p.model_probability,
     book_probability: p.book_probability,
     expected_value: p.expected_value,
+    headline: p.headline,
     rationale: p.rationale,
     sources: p.sources,
     stake: p.stake,
     outcome: "pending",
+    comparison: p.comparison,
+    profile_tags: p.profile_tags,
   };
 }

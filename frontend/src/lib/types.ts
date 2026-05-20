@@ -30,12 +30,15 @@ export interface SafePick {
   expected_value: number;
   confidence: number;
   engine: string;
+  headline?: string;
   rationale: string[];
   sources?: string[];
   stake?: number;
   potential_profit?: number;
   potential_return?: number;
   kind?: "value_bet" | "safe_favorite";
+  comparison?: PickComparison | null;
+  profile_tags?: string[];
 }
 
 export interface DayPayload {
@@ -55,6 +58,21 @@ export interface PickResult {
   bet_outcome?: string;
 }
 
+export interface PickAlternative {
+  rank: number;
+  label: string;
+  sport: string;
+  odds: number;
+  edge: string;
+  confidence: string;
+  why_not: string;
+}
+
+export interface PickComparison {
+  matches_analyzed: number;
+  top_alternatives: PickAlternative[];
+}
+
 export interface HistoryPick {
   date: string;
   match: {
@@ -70,6 +88,7 @@ export interface HistoryPick {
   book_probability: number;
   expected_value: number;
   engine: string;
+  headline?: string;
   rationale: string[];
   sources?: string[];
   stake: number;
@@ -77,6 +96,8 @@ export interface HistoryPick {
   profit: number;
   bankroll_after: number;
   result?: PickResult | null;
+  comparison?: PickComparison | null;
+  profile_tags?: string[];
 }
 
 export interface HistoryStats {

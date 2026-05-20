@@ -62,6 +62,7 @@ def build_history() -> dict:
             "book_probability": book_prob,
             "expected_value": ev,
             "engine": "claude_curated@1.0",
+            "headline": p.get("headline"),
             "rationale": p["rationale"],
             "sources": p.get("sources", []),
             "stake": stake,
@@ -69,6 +70,8 @@ def build_history() -> dict:
             "profit": profit,
             "bankroll_after": bankroll,
             "result": p.get("result"),
+            "comparison": p.get("comparison"),
+            "profile_tags": p.get("profile_tags", []),
         })
 
     history = {
@@ -103,12 +106,15 @@ def build_today_payload(history: dict) -> tuple[str, dict] | None:
         "expected_value": pick["expected_value"],
         "confidence": pick["model_probability"],
         "engine": pick["engine"],
+        "headline": pick.get("headline"),
         "rationale": pick["rationale"],
         "sources": pick.get("sources", []),
         "stake": pick["stake"],
         "potential_profit": round(pick["stake"] * (pick["odds"] - 1), 2),
         "potential_return": round(pick["stake"] * pick["odds"], 2),
         "kind": "value_bet" if pick["expected_value"] > 0.05 else "safe_favorite",
+        "comparison": pick.get("comparison"),
+        "profile_tags": pick.get("profile_tags", []),
     }
 
     payload = {

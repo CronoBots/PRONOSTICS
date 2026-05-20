@@ -26,21 +26,29 @@ class Result(TypedDict, total=False):
     bet_outcome: str         # ce qui s'est passé pour notre pari
 
 
+class Comparison(TypedDict, total=False):
+    matches_analyzed: int        # nombre total de candidats analysés
+    top_alternatives: list[dict] # autres picks sérieux écartés
+
+
 class Pick(TypedDict, total=False):
     date: str                      # ISO YYYY-MM-DD
-    sport: str                     # football | basketball | tennis | nfl | mlb | nhl
-    league: str                    # nom lisible
+    sport: str
+    league: str
     home_team: str
     away_team: str
-    kickoff: str                   # ISO datetime avec timezone
-    pick: str                      # l'équipe/joueur choisi
-    odds: float                    # cote décimale
-    model_probability: float       # probabilité estimée par l'analyse (0-1)
-    rationale: list[str]           # arguments clés (3-5 points)
-    sources: list[str]             # URLs des sources web consultées
-    stake: float                   # mise en €
-    outcome: Outcome               # win/loss/pending
-    result: Result                 # score final + narration (pour picks réglés)
+    kickoff: str
+    pick: str
+    odds: float
+    model_probability: float
+    headline: str                  # 1 phrase punchy en haut de l'analyse
+    rationale: list[str]
+    sources: list[str]
+    stake: float
+    outcome: Outcome
+    result: Result
+    comparison: Comparison         # comparatif vs autres matchs du jour
+    profile_tags: list[str]        # ex: ["mlb", "home_underdog", "starter_road_struggle"]
 
 
 STAKE = 5.0
@@ -297,6 +305,40 @@ PICKS: list[Pick] = [
         "pick": "Detroit Tigers",
         "odds": 2.73,  # cote BOOSTÉE bwin (cote normale 2.10)
         "model_probability": 0.55,
+        "headline": "Cleveland a un lanceur qui n'a JAMAIS gagné à l'extérieur cette saison (0-6, ERA 4.15). On parie contre lui à cote 2.73 boostée. EV +50%.",
+        "profile_tags": ["mlb", "home_underdog", "starter_road_struggle", "revenge_spot"],
+        "comparison": {
+            "matches_analyzed": 17,
+            "top_alternatives": [
+                {
+                    "rank": 2,
+                    "label": "Avalanche -1.5 puckline vs Vegas",
+                    "sport": "nhl",
+                    "odds": 2.10,
+                    "edge": "+8 pts",
+                    "confidence": "Medium",
+                    "why_not": "Bonne value mais le puckline (handicap) ajoute du risque inutile vs un simple ML safe.",
+                },
+                {
+                    "rank": 3,
+                    "label": "Spurs ML @ Thunder G2",
+                    "sport": "basketball",
+                    "odds": 2.95,
+                    "edge": "+6 pts",
+                    "confidence": "Low",
+                    "why_not": "Thunder réaction attendue après G1 perdu, road game pour Spurs = risque maximal.",
+                },
+                {
+                    "rank": 4,
+                    "label": "Phillies ML @ home vs Reds",
+                    "sport": "mlb",
+                    "odds": 1.65,
+                    "edge": "+3 pts",
+                    "confidence": "Medium",
+                    "why_not": "Cote trop basse (< 2.00), edge marginal.",
+                },
+            ],
+        },
         "rationale": [
             "##🎯 Le match",
             "Detroit Tigers reçoivent les Cleveland Guardians ce soir à 19h10 ET (1h10 du matin France) pour le 3e match d'une série de 4.",

@@ -1,6 +1,6 @@
 {
   "date": "2026-05-20",
-  "generated_at": "2026-05-20T19:28:57.563858+00:00",
+  "generated_at": "2026-05-20T19:55:03.433989+00:00",
   "safe_pick": {
     "match_id": 1,
     "sport": "mlb",
@@ -15,6 +15,7 @@
     "expected_value": 0.5015,
     "confidence": 0.55,
     "engine": "claude_curated@1.0",
+    "headline": "Cleveland a un lanceur qui n'a JAMAIS gagné à l'extérieur cette saison (0-6, ERA 4.15). On parie contre lui à cote 2.73 boostée. EV +50%.",
     "rationale": [
       "##🎯 Le match",
       "Detroit Tigers reçoivent les Cleveland Guardians ce soir à 19h10 ET (1h10 du matin France) pour le 3e match d'une série de 4.",
@@ -84,7 +85,45 @@
     "stake": 5.0,
     "potential_profit": 8.65,
     "potential_return": 13.65,
-    "kind": "value_bet"
+    "kind": "value_bet",
+    "comparison": {
+      "matches_analyzed": 17,
+      "top_alternatives": [
+        {
+          "rank": 2,
+          "label": "Avalanche -1.5 puckline vs Vegas",
+          "sport": "nhl",
+          "odds": 2.1,
+          "edge": "+8 pts",
+          "confidence": "Medium",
+          "why_not": "Bonne value mais le puckline (handicap) ajoute du risque inutile vs un simple ML safe."
+        },
+        {
+          "rank": 3,
+          "label": "Spurs ML @ Thunder G2",
+          "sport": "basketball",
+          "odds": 2.95,
+          "edge": "+6 pts",
+          "confidence": "Low",
+          "why_not": "Thunder réaction attendue après G1 perdu, road game pour Spurs = risque maximal."
+        },
+        {
+          "rank": 4,
+          "label": "Phillies ML @ home vs Reds",
+          "sport": "mlb",
+          "odds": 1.65,
+          "edge": "+3 pts",
+          "confidence": "Medium",
+          "why_not": "Cote trop basse (< 2.00), edge marginal."
+        }
+      ]
+    },
+    "profile_tags": [
+      "mlb",
+      "home_underdog",
+      "starter_road_struggle",
+      "revenge_spot"
+    ]
   },
   "value_picks": [
     {
@@ -101,6 +140,7 @@
       "expected_value": 0.5015,
       "confidence": 0.55,
       "engine": "claude_curated@1.0",
+      "headline": "Cleveland a un lanceur qui n'a JAMAIS gagné à l'extérieur cette saison (0-6, ERA 4.15). On parie contre lui à cote 2.73 boostée. EV +50%.",
       "rationale": [
         "##🎯 Le match",
         "Detroit Tigers reçoivent les Cleveland Guardians ce soir à 19h10 ET (1h10 du matin France) pour le 3e match d'une série de 4.",
@@ -170,7 +210,45 @@
       "stake": 5.0,
       "potential_profit": 8.65,
       "potential_return": 13.65,
-      "kind": "value_bet"
+      "kind": "value_bet",
+      "comparison": {
+        "matches_analyzed": 17,
+        "top_alternatives": [
+          {
+            "rank": 2,
+            "label": "Avalanche -1.5 puckline vs Vegas",
+            "sport": "nhl",
+            "odds": 2.1,
+            "edge": "+8 pts",
+            "confidence": "Medium",
+            "why_not": "Bonne value mais le puckline (handicap) ajoute du risque inutile vs un simple ML safe."
+          },
+          {
+            "rank": 3,
+            "label": "Spurs ML @ Thunder G2",
+            "sport": "basketball",
+            "odds": 2.95,
+            "edge": "+6 pts",
+            "confidence": "Low",
+            "why_not": "Thunder réaction attendue après G1 perdu, road game pour Spurs = risque maximal."
+          },
+          {
+            "rank": 4,
+            "label": "Phillies ML @ home vs Reds",
+            "sport": "mlb",
+            "odds": 1.65,
+            "edge": "+3 pts",
+            "confidence": "Medium",
+            "why_not": "Cote trop basse (< 2.00), edge marginal."
+          }
+        ]
+      },
+      "profile_tags": [
+        "mlb",
+        "home_underdog",
+        "starter_road_struggle",
+        "revenge_spot"
+      ]
     }
   ],
   "matches": []

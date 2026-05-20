@@ -15,6 +15,7 @@
       "book_probability": 0.4348,
       "expected_value": 0.15,
       "engine": "claude_curated@1.0",
+      "headline": null,
       "rationale": [
         "##🎯 Le match",
         "Finale du WTA Italian Open (WTA 1000), tournoi de Rome. Le 2e plus prestigieux après Roland-Garros sur terre battue.",
@@ -76,7 +77,9 @@
         "score_text": "Svitolina d. Gauff 6-4, 6-7(3), 6-2",
         "summary": "Match en 3 sets de 2h45. Svitolina dominante au 1er set, Gauff revient au tie-break du 2e, puis Svitolina écrase la finale en 6-2.",
         "bet_outcome": "✅ Svitolina remporte le titre WTA Rome — pari gagné, gain net +6.50€"
-      }
+      },
+      "comparison": null,
+      "profile_tags": []
     },
     {
       "date": "2026-05-18",
@@ -93,6 +96,7 @@
       "book_probability": 0.3704,
       "expected_value": 0.08,
       "engine": "claude_curated@1.0",
+      "headline": null,
       "rationale": [
         "##🎯 Le match",
         "Game 1 des Western Conference Finals 2026 NBA. Format série best-of-7, le vainqueur file en finales NBA.",
@@ -155,7 +159,9 @@
         "score_text": "Spurs 122 - Thunder 115 (2 prolongations)",
         "summary": "Instant classic en double OT à Oklahoma City. Wembanyama monstrueux : 41 pts, 24 rebonds, 3 contres. Dylan Harper en soutien (24 pts, 11 reb, 6 ast, 7 interceptions). SGA limité à 31 pts pour OKC. Spurs prennent l'avantage 1-0 dans la série.",
         "bet_outcome": "✅ Spurs gagnent en outsider — pari gagné, gain net +8.50€"
-      }
+      },
+      "comparison": null,
+      "profile_tags": []
     },
     {
       "date": "2026-05-19",
@@ -172,6 +178,7 @@
       "book_probability": 0.5,
       "expected_value": 0.1,
       "engine": "claude_curated@1.0",
+      "headline": null,
       "rationale": [
         "##🎯 Le match",
         "Game 1 des Eastern Conference Finals 2026 NBA. Knicks reçoivent Cavaliers, série best-of-7.",
@@ -233,7 +240,9 @@
         "score_text": "Knicks 115 - Cavaliers 104",
         "summary": "Comeback historique des Knicks au Madison Square Garden : menés de 22 points en début de 4e quart-temps, ils renversent le match dans les 7 dernières minutes + prolongation. Brunson 38 pts, série de 44-11 sur la fin. 1-0 dans l'Eastern Conference Finals.",
         "bet_outcome": "✅ Comeback victorieux des Knicks — pari gagné, gain net +5.00€"
-      }
+      },
+      "comparison": null,
+      "profile_tags": []
     },
     {
       "date": "2026-05-20",
@@ -250,6 +259,7 @@
       "book_probability": 0.3663,
       "expected_value": 0.5015,
       "engine": "claude_curated@1.0",
+      "headline": "Cleveland a un lanceur qui n'a JAMAIS gagné à l'extérieur cette saison (0-6, ERA 4.15). On parie contre lui à cote 2.73 boostée. EV +50%.",
       "rationale": [
         "##🎯 Le match",
         "Detroit Tigers reçoivent les Cleveland Guardians ce soir à 19h10 ET (1h10 du matin France) pour le 3e match d'une série de 4.",
@@ -320,7 +330,45 @@
       "outcome": "pending",
       "profit": 0.0,
       "bankroll_after": 25.0,
-      "result": null
+      "result": null,
+      "comparison": {
+        "matches_analyzed": 17,
+        "top_alternatives": [
+          {
+            "rank": 2,
+            "label": "Avalanche -1.5 puckline vs Vegas",
+            "sport": "nhl",
+            "odds": 2.1,
+            "edge": "+8 pts",
+            "confidence": "Medium",
+            "why_not": "Bonne value mais le puckline (handicap) ajoute du risque inutile vs un simple ML safe."
+          },
+          {
+            "rank": 3,
+            "label": "Spurs ML @ Thunder G2",
+            "sport": "basketball",
+            "odds": 2.95,
+            "edge": "+6 pts",
+            "confidence": "Low",
+            "why_not": "Thunder réaction attendue après G1 perdu, road game pour Spurs = risque maximal."
+          },
+          {
+            "rank": 4,
+            "label": "Phillies ML @ home vs Reds",
+            "sport": "mlb",
+            "odds": 1.65,
+            "edge": "+3 pts",
+            "confidence": "Medium",
+            "why_not": "Cote trop basse (< 2.00), edge marginal."
+          }
+        ]
+      },
+      "profile_tags": [
+        "mlb",
+        "home_underdog",
+        "starter_road_struggle",
+        "revenge_spot"
+      ]
     }
   ],
   "stats": {
@@ -347,5 +395,5 @@
     "max_profit_single": 8.5,
     "max_loss_single": 0.0
   },
-  "generated_at": "2026-05-20T19:28:57.563376+00:00"
+  "generated_at": "2026-05-20T19:55:03.433336+00:00"
 }
