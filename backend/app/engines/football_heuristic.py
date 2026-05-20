@@ -19,6 +19,10 @@ class FootballHeuristicEngine(BasePredictionEngine):
     RATING_WEIGHT = 0.25
 
     def predict(self, match: MatchInput) -> PredictionOutput:
+        # Pas de données équipes : on s'aligne sur les cotes (pas de value hallu)
+        if not self._has_input_data(match):
+            return self._book_aligned(match)
+
         rationale: list[str] = []
 
         # 1) Force "brute" tirée de la forme

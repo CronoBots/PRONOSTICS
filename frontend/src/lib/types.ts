@@ -31,6 +31,7 @@ export interface SafePick {
   confidence: number;
   engine: string;
   rationale: string[];
+  kind?: "value_bet" | "safe_favorite";
 }
 
 export interface DayPayload {

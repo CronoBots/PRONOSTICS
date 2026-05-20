@@ -74,36 +74,13 @@
       "outcome": "win",
       "profit": 9.5,
       "bankroll_after": 1038.5
-    },
-    {
-      "date": "2026-05-20",
-      "match": {
-        "sport": "tennis",
-        "league": "Tennis Wta French Open",
-        "home_team": "Irina-Camelia Begu",
-        "away_team": "Suzan Lamens",
-        "kickoff": "2026-05-20T08:00:00"
-      },
-      "pick": "Irina-Camelia Begu",
-      "odds": 18.5,
-      "model_probability": 0.5,
-      "book_probability": 0.0541,
-      "expected_value": 8.25,
-      "engine": "tennis_heuristic@1.0",
-      "rationale": [
-        "Forme récente : ? vs ?"
-      ],
-      "stake": 10.0,
-      "outcome": "pending",
-      "profit": 0.0,
-      "bankroll_after": 1038.5
     }
   ],
   "stats": {
-    "total_picks": 4,
+    "total_picks": 3,
     "won": 3,
     "lost": 0,
-    "pending": 1,
+    "pending": 0,
     "profit": 38.5,
     "roi_percent": 128.33,
     "average_odds": 2.28,
@@ -115,5 +92,5 @@
     "current_bankroll": 1038.5,
     "progression_percent": 3.85
   },
-  "generated_at": "2026-05-20T11:42:52.087970+00:00"
+  "generated_at": "2026-05-20T11:56:12.284884+00:00"
 }

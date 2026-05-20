@@ -17,6 +17,9 @@ class TennisHeuristicEngine(BasePredictionEngine):
     RATING_WEIGHT = 0.50
 
     def predict(self, match: MatchInput) -> PredictionOutput:
+        if not self._has_input_data(match):
+            return self._book_aligned(match)
+
         rationale: list[str] = []
 
         home_form = self._form_strength(match.home_form.last_5)

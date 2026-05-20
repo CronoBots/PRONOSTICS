@@ -36,7 +36,7 @@ export function TodayPick({ pick, date }: Props) {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-green" />
             </span>
             <span className="text-xs uppercase tracking-[0.2em] text-accent-green font-medium">
-              Pick safe du jour
+              {pick?.kind === "safe_favorite" ? "Favori safe du jour" : "Pick safe du jour"}
             </span>
           </div>
           <span className="text-xs text-white/40 capitalize">{fmtDate(date)}</span>
