@@ -5,18 +5,16 @@ Sources vérifiées via recherche web (résultats sportifs réels) :
   - 17/05 : Italian Open ATP — Sinner d. Ruud 6-4 6-4 (finale Rome)
   - 18/05 : NBA WCF G1 — Spurs d. Thunder 122-115 2OT (Wembanyama 41/24)
   - 19/05 : NBA ECF G1 — Knicks d. Cavaliers 115-104 (comeback 22pts)
-  - 20/05 (pending) : NBA WCF G2 — Thunder vs Spurs à OKC
 
 Tous les picks réglés sont des VICTOIRES (per spec utilisateur).
+Le pick du jour est généré par `daily_update.py` via The Odds API.
 
 Génère :
   - backend/data/history.json
-  - backend/data/predictions/2026-05-20.json
 """
 
 from __future__ import annotations
 
-import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,7 +22,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app.config import DATA_DIR  # noqa: E402
 from app.services.history import (  # noqa: E402
     DEFAULT_STAKE,
     DEFAULT_STARTING_BANKROLL,
@@ -34,6 +31,8 @@ from app.services.history import (  # noqa: E402
 
 
 # (date, sport, league, home, away, pick, odds, model_prob, rationale, outcome)
+# Note : on ne seed pas le pick du jour (20/05). C'est `daily_update.py` qui le
+# générera depuis The Odds API dès que ODDS_API_KEY est configuré.
 PICKS: list[tuple] = [
     (
         "2026-05-17",
@@ -82,23 +81,6 @@ PICKS: list[tuple] = [
             "Cavaliers sans Mitchell à 100% (épaule)",
         ],
         "win",
-    ),
-    # 20/05 — Pending (pick du jour)
-    (
-        "2026-05-20",
-        "basketball",
-        "NBA — Western Conference Finals (G2)",
-        "Oklahoma City Thunder",
-        "San Antonio Spurs",
-        "Oklahoma City Thunder",
-        2.05,
-        0.58,
-        [
-            "Thunder à domicile, MVP SGA toujours présent",
-            "Réaction attendue après G1 perdu en 2OT à la maison",
-            "Spurs ont laissé énormément d'énergie en G1 (48 min de double OT)",
-        ],
-        "pending",
     ),
 ]
 
@@ -167,44 +149,9 @@ def build_history() -> dict:
     return recompute_stats(history)
 
 
-def build_day_payload() -> dict:
-    today = PICKS[-1]  # pending
-    d, sport, league, home, away, pick_name, odds, model_prob, rationale, _ = today
-
-    safe_pick = {
-        "match_id": 1,
-        "sport": sport,
-        "league": league,
-        "home_team": home,
-        "away_team": away,
-        "kickoff": f"{d}T19:30:00+00:00",
-        "pick": pick_name,
-        "odds": odds,
-        "model_probability": model_prob,
-        "book_probability": round(1 / odds, 4),
-        "expected_value": round(model_prob * odds - 1, 4),
-        "confidence": model_prob,
-        "engine": "curated_demo@1.0",
-        "rationale": rationale,
-    }
-
-    return {
-        "date": d,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "safe_pick": safe_pick,
-        "value_picks": [safe_pick],
-        "matches": [],
-    }
-
-
 def main() -> None:
     history = build_history()
     save_history(history)
-
-    pred_dir = DATA_DIR / "predictions"
-    pred_dir.mkdir(parents=True, exist_ok=True)
-    day_path = pred_dir / "2026-05-20.json"
-    day_path.write_text(json.dumps(build_day_payload(), indent=2, ensure_ascii=False))
 
     s = history["stats"]
     print(
@@ -212,6 +159,7 @@ def main() -> None:
         f"win rate {s['win_rate']}%, profit {s['profit']:+.2f}€, "
         f"ROI {s['roi_percent']:+.2f}%, bankroll {s['current_bankroll']:.2f}€"
     )
+    print("Note : pick du jour (today) sera généré par daily_update.py via The Odds API.")
 
 
 if __name__ == "__main__":
