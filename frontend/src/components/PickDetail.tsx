@@ -345,6 +345,9 @@ export function PickDetail({ pick, variant = "today" }: Props) {
         </section>
       )}
 
+      {/* Bouton de partage (toujours visible) */}
+      <ShareButton pick={pick} />
+
       {/* Sources */}
       {pick.sources && pick.sources.length > 0 && (
         <ExpandableSection
@@ -509,6 +512,60 @@ function ExpandableSection({
       </button>
       {open && <div className="px-4 pb-4 pt-1">{children}</div>}
     </section>
+  );
+}
+
+function ShareButton({ pick }: { pick: UnifiedPick }) {
+  const [shared, setShared] = useState(false);
+
+  function build(): { title: string; text: string; url: string } {
+    const title = `WTF · Pick du ${new Date(pick.date).toLocaleDateString("fr-FR")}`;
+    let text = "";
+    if (pick.outcome === "win" && pick.result) {
+      text = `✅ Pari gagné : ${pick.pick} (cote ${pick.odds.toFixed(2)}). ${pick.result.score_text || ""} Profit +${(pick.profit ?? 0).toFixed(2)}€. WTF — l'IA qui prédit, tu gagnes.`;
+    } else if (pick.outcome === "loss") {
+      text = `Pick du ${new Date(pick.date).toLocaleDateString("fr-FR")} : ${pick.pick} @ ${pick.odds.toFixed(2)} — perdu cette fois. Mais transparence 100% : suis tous nos picks sur WTF.`;
+    } else {
+      text = `🎯 Pari du jour WTF : ${pick.pick} @ ${pick.odds.toFixed(2)} · EV +${(pick.expected_value * 100).toFixed(0)}%. L'IA qui prédit. Découvre l'analyse complète.`;
+    }
+    return {
+      title,
+      text,
+      url: typeof window !== "undefined" ? window.location.href : "",
+    };
+  }
+
+  async function onShare() {
+    const data = build();
+    if (typeof navigator !== "undefined" && (navigator as Navigator & { share?: (d: ShareData) => Promise<void> }).share) {
+      try {
+        await (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share(data);
+      } catch {
+        /* user cancelled */
+      }
+    } else {
+      // Fallback : copie dans le presse-papier
+      const combined = `${data.text}\n${data.url}`;
+      try {
+        await navigator.clipboard.writeText(combined);
+        setShared(true);
+        setTimeout(() => setShared(false), 2000);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  return (
+    <button
+      onClick={onShare}
+      className="w-full py-3 rounded-2xl bg-bg-card border border-white/[0.06] hover:border-accent-green/40 transition flex items-center justify-center gap-2 text-sm font-medium"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-green">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
+      </svg>
+      <span>{shared ? "✓ Lien copié" : "Partager ce pick"}</span>
+    </button>
   );
 }
 
