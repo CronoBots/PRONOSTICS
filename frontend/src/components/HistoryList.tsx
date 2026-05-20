@@ -1,200 +1,296 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { HistoryPick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
+
+const MONTH_NAMES = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
+
+const DAY_NAMES = [
+  "Dimanche",
+  "Lundi",
+  "Mardi",
+  "Mercredi",
+  "Jeudi",
+  "Vendredi",
+  "Samedi",
+];
+
+function getISOWeek(date: Date): number {
+  const target = new Date(date.getTime());
+  target.setHours(0, 0, 0, 0);
+  target.setDate(target.getDate() + 3 - ((target.getDay() + 6) % 7));
+  const firstThursday = new Date(target.getFullYear(), 0, 4);
+  return (
+    1 +
+    Math.round(
+      (target.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000),
+    )
+  );
+}
+
+interface DayBucket {
+  date: string;
+  dayName: string;
+  dayNum: number;
+  profit: number;
+  picks: HistoryPick[];
+}
+
+interface WeekBucket {
+  num: number;
+  profit: number;
+  days: DayBucket[];
+}
+
+interface MonthBucket {
+  key: string;
+  label: string;
+  profit: number;
+  weeks: WeekBucket[];
+}
+
+function groupHierarchical(picks: HistoryPick[]): MonthBucket[] {
+  const monthsMap = new Map<string, MonthBucket>();
+
+  const sorted = [...picks].sort((a, b) => b.date.localeCompare(a.date));
+
+  for (const p of sorted) {
+    const d = new Date(p.date + "T12:00:00Z");
+    const monthKey = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+    const monthLabel = `${MONTH_NAMES[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    const weekNum = getISOWeek(d);
+    const dayName = DAY_NAMES[d.getUTCDay()];
+    const dayNum = d.getUTCDate();
+
+    const settled = p.outcome === "win" || p.outcome === "loss";
+    const profit = settled ? p.profit : 0;
+
+    let m = monthsMap.get(monthKey);
+    if (!m) {
+      m = { key: monthKey, label: monthLabel, profit: 0, weeks: [] };
+      monthsMap.set(monthKey, m);
+    }
+    m.profit += profit;
+
+    let w = m.weeks.find((x) => x.num === weekNum);
+    if (!w) {
+      w = { num: weekNum, profit: 0, days: [] };
+      m.weeks.push(w);
+    }
+    w.profit += profit;
+
+    let day = w.days.find((x) => x.date === p.date);
+    if (!day) {
+      day = { date: p.date, dayName, dayNum, profit: 0, picks: [] };
+      w.days.push(day);
+    }
+    day.profit += profit;
+    day.picks.push(p);
+  }
+
+  // Round profits + sort
+  const months = Array.from(monthsMap.values());
+  for (const m of months) {
+    m.profit = round2(m.profit);
+    m.weeks.sort((a, b) => b.num - a.num);
+    for (const w of m.weeks) {
+      w.profit = round2(w.profit);
+      w.days.sort((a, b) => b.date.localeCompare(a.date));
+      for (const d of w.days) {
+        d.profit = round2(d.profit);
+      }
+    }
+  }
+  return months;
+}
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+function fmtSigned(n: number): string {
+  if (n === 0) return "0.00 €";
+  return `${n > 0 ? "+" : ""}${n.toFixed(2)} €`;
+}
+
+function ProfitChip({ profit, outcome }: { profit: number; outcome?: HistoryPick["outcome"] }) {
+  let cls = "text-white/40 bg-white/5 border-white/10";
+  if (profit > 0) cls = "text-accent-green bg-accent-green/10 border-accent-green/30";
+  else if (profit < 0) cls = "text-accent-red bg-accent-red/10 border-accent-red/30";
+  else if (outcome === "pending") cls = "text-white/40 bg-white/5 border-white/10";
+  else cls = "text-accent-red bg-accent-red/5 border-accent-red/20";
+  return (
+    <span
+      className={`text-xs font-semibold tabular-nums px-2.5 py-1 rounded-md border ${cls}`}
+    >
+      {fmtSigned(profit)}
+    </span>
+  );
+}
+
+function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
+  let bg = "bg-white/5";
+  let text = "text-white/40";
+  let label = "—";
+  if (outcome === "win") {
+    bg = "bg-accent-green/15";
+    text = "text-accent-green";
+    label = "Gagné";
+  } else if (outcome === "loss") {
+    bg = "bg-accent-red/15";
+    text = "text-accent-red";
+    label = "Perdu";
+  } else if (outcome === "pending") {
+    bg = "bg-white/[0.07]";
+    text = "text-white/50";
+    label = "En attente";
+  } else if (outcome === "void") {
+    bg = "bg-accent-blue/15";
+    text = "text-accent-blue";
+    label = "Remboursé";
+  }
+  return (
+    <div
+      className={`${bg} ${text} flex items-center justify-center px-2 rounded-r-xl self-stretch min-w-[28px]`}
+    >
+      <span
+        className="text-[10px] font-semibold tracking-wider uppercase"
+        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function BetRow({ pick }: { pick: HistoryPick }) {
+  const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
+  const time = pick.match.kickoff
+    ? new Date(pick.match.kickoff).toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "—";
+
+  return (
+    <div className="flex items-stretch bg-bg-elevated/40 border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="flex items-center justify-center px-2 text-white/30 text-lg">⋮</div>
+      <div className="flex-1 py-3 pr-2 min-w-0">
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span className="text-[11px] font-mono text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
+            {time}
+          </span>
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-accent-blue bg-accent-blue/10 border border-accent-blue/20 px-2 py-0.5 rounded">
+            Simple
+          </span>
+          <span className="text-[11px] font-bold italic bg-bg-base text-white px-2 py-0.5 rounded">
+            b<span className="relative">w<span className="absolute -top-0.5 right-0 w-1 h-1 rounded-full bg-yellow-400" /></span>in
+          </span>
+        </div>
+        <div className="text-sm font-medium truncate flex items-center gap-1.5">
+          <span>{emoji}</span>
+          <span>{pick.pick}</span>
+          <span className="text-white/40 text-xs ml-1">@ {pick.odds.toFixed(2)}</span>
+        </div>
+        <div className="text-[11px] text-white/40 truncate mt-0.5">
+          {pick.match.home_team} vs {pick.match.away_team}
+        </div>
+      </div>
+      <StatusBar outcome={pick.outcome} />
+    </div>
+  );
+}
+
+function DayCard({ day }: { day: DayBucket }) {
+  return (
+    <div className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
+        <div className="font-semibold">
+          <span className="capitalize">{day.dayName}</span> {day.dayNum}
+        </div>
+        <ProfitChip profit={day.profit} />
+      </div>
+      <div className="p-3 space-y-2">
+        {day.picks.map((p, i) => (
+          <BetRow key={`${p.date}-${i}`} pick={p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WeekSection({ week }: { week: WeekBucket }) {
+  return (
+    <div className="mb-5">
+      <div className="flex items-center justify-between px-1 mb-2">
+        <span className="text-white/50 text-sm">Semaine {week.num}</span>
+        <ProfitChip profit={week.profit} />
+      </div>
+      <div className="space-y-3">
+        {week.days.map((d) => (
+          <DayCard key={d.date} day={d} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MonthHeader({ month, current }: { month: MonthBucket; current: boolean }) {
+  return (
+    <div
+      className={`flex items-center justify-between px-4 py-3.5 rounded-2xl border mb-5 ${
+        current ? "border-accent-blue/50" : "border-white/[0.06]"
+      }`}
+    >
+      <span className={`font-semibold capitalize ${current ? "text-accent-blue" : "text-white/80"}`}>
+        {month.label}
+      </span>
+      <ProfitChip profit={month.profit} />
+    </div>
+  );
+}
 
 interface Props {
   picks: HistoryPick[];
 }
 
-const MONTH_FORMAT = new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" });
-
-function groupByMonth(picks: HistoryPick[]): Map<string, HistoryPick[]> {
-  const out = new Map<string, HistoryPick[]>();
-  for (const p of picks) {
-    const month = MONTH_FORMAT.format(new Date(p.date));
-    const key = month.charAt(0).toUpperCase() + month.slice(1);
-    if (!out.has(key)) out.set(key, []);
-    out.get(key)!.push(p);
-  }
-  return out;
-}
-
-function monthProfit(picks: HistoryPick[]): number {
-  return picks.reduce(
-    (acc, p) => acc + (p.outcome === "win" || p.outcome === "loss" ? p.profit : 0),
-    0,
-  );
-}
-
-function monthRecord(picks: HistoryPick[]): { w: number; l: number } {
-  return picks.reduce(
-    (acc, p) => {
-      if (p.outcome === "win") acc.w++;
-      else if (p.outcome === "loss") acc.l++;
-      return acc;
-    },
-    { w: 0, l: 0 },
-  );
-}
-
-function outcomeBadge(outcome: HistoryPick["outcome"]) {
-  if (outcome === "win") {
-    return (
-      <span className="inline-flex items-center justify-center text-xs font-bold w-7 h-7 rounded-lg bg-accent-green/20 text-accent-green ring-1 ring-accent-green/30 shrink-0">
-        V
-      </span>
-    );
-  }
-  if (outcome === "loss") {
-    return (
-      <span className="inline-flex items-center justify-center text-xs font-bold w-7 h-7 rounded-lg bg-accent-red/20 text-accent-red ring-1 ring-accent-red/30 shrink-0">
-        D
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center justify-center text-xs font-medium w-7 h-7 rounded-lg bg-white/10 text-white/50 ring-1 ring-white/10 shrink-0">
-      ⋯
-    </span>
-  );
-}
-
-function fmtSigned(n: number) {
-  const sign = n > 0 ? "+" : "";
-  return `${sign}${n.toFixed(2)} €`;
-}
-
-function ProfitBadge({ profit, outcome }: { profit: number; outcome: HistoryPick["outcome"] }) {
-  if (outcome === "pending")
-    return <span className="text-white/40 text-xs font-medium">À venir</span>;
-  const cls =
-    profit > 0 ? "text-accent-green" : profit < 0 ? "text-accent-red" : "text-white/40";
-  return <span className={`text-sm font-bold tabular-nums ${cls}`}>{fmtSigned(profit)}</span>;
-}
-
 export function HistoryList({ picks }: Props) {
-  const grouped = useMemo(
-    () => groupByMonth([...picks].sort((a, b) => b.date.localeCompare(a.date))),
-    [picks],
-  );
-  const months = Array.from(grouped.keys());
-  const [openMonths, setOpenMonths] = useState<Set<string>>(new Set(months));
+  const months = useMemo(() => groupHierarchical(picks), [picks]);
+  const currentMonthKey = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  })();
 
-  function toggle(m: string) {
-    setOpenMonths((prev) => {
-      const next = new Set(prev);
-      if (next.has(m)) next.delete(m);
-      else next.add(m);
-      return next;
-    });
+  if (months.length === 0) {
+    return (
+      <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-8 text-center text-white/50">
+        Aucun pari pour le moment
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-3">
-      {months.map((m) => {
-        const monthPicks = grouped.get(m)!;
-        const profit = monthProfit(monthPicks);
-        const record = monthRecord(monthPicks);
-        const open = openMonths.has(m);
-        const profitClass =
-          profit > 0
-            ? "text-accent-green"
-            : profit < 0
-              ? "text-accent-red"
-              : "text-white/40";
-
-        return (
-          <div
-            key={m}
-            className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-card"
-          >
-            <button
-              className="w-full flex items-center justify-between px-4 md:px-5 py-3.5 text-left hover:bg-white/[0.02] transition"
-              onClick={() => toggle(m)}
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <span className="text-white/40 text-xs">{open ? "▾" : "▸"}</span>
-                <span className="font-semibold capitalize">{m}</span>
-                <span className="text-xs text-white/40 hidden sm:inline">
-                  {monthPicks.length} paris · {record.w}V {record.l}D
-                </span>
-              </div>
-              <span className={`text-sm font-bold tabular-nums ${profitClass}`}>
-                {fmtSigned(profit)}
-              </span>
-            </button>
-
-            {open && (
-              <div className="border-t border-white/5">
-                {monthPicks.map((p) => (
-                  <div
-                    key={p.date}
-                    className="flex items-center gap-3 px-3 md:px-5 py-3.5 border-b border-white/5 last:border-b-0 hover:bg-white/[0.02]"
-                  >
-                    {outcomeBadge(p.outcome)}
-
-                    {/* Match + meta */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-[11px] text-white/40 mb-0.5">
-                        <span className="text-sm">{SPORT_EMOJIS[p.match.sport] || ""}</span>
-                        <span className="font-medium">
-                          {SPORT_LABELS[p.match.sport] || p.match.sport}
-                        </span>
-                        <span className="text-white/20">·</span>
-                        <span className="truncate">{p.match.league}</span>
-                        <span className="text-white/20">·</span>
-                        <span>
-                          {new Date(p.date).toLocaleDateString("fr-FR", {
-                            day: "numeric",
-                            month: "short",
-                          })}
-                        </span>
-                      </div>
-                      <div className="text-sm truncate font-medium">
-                        {p.match.home_team}{" "}
-                        <span className="text-white/30 font-normal">vs</span>{" "}
-                        {p.match.away_team}
-                      </div>
-                      <div className="text-[11px] text-white/50 mt-0.5 truncate">
-                        Pick{" "}
-                        <span className="text-white/90 font-medium">{p.pick}</span>
-                      </div>
-                    </div>
-
-                    {/* Cote — bien visible */}
-                    <div className="text-right shrink-0">
-                      <div className="text-[10px] uppercase tracking-wider text-white/40">
-                        Cote
-                      </div>
-                      <div className="text-base md:text-lg font-bold tabular-nums text-white">
-                        {p.odds.toFixed(2)}
-                      </div>
-                    </div>
-
-                    {/* Mise */}
-                    <div className="text-right shrink-0 hidden md:block">
-                      <div className="text-[10px] uppercase tracking-wider text-white/40">
-                        Mise
-                      </div>
-                      <div className="text-sm font-medium tabular-nums text-white/70">
-                        {p.stake.toFixed(0)} €
-                      </div>
-                    </div>
-
-                    {/* Profit + bankroll */}
-                    <div className="text-right shrink-0 min-w-[72px]">
-                      <div className="text-[10px] uppercase tracking-wider text-white/40">
-                        Gain
-                      </div>
-                      <ProfitBadge profit={p.profit} outcome={p.outcome} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
+    <div>
+      {months.map((m) => (
+        <section key={m.key} className="mb-6">
+          <MonthHeader month={m} current={m.key === currentMonthKey} />
+          {m.weeks.map((w) => (
+            <WeekSection key={w.num} week={w} />
+          ))}
+        </section>
+      ))}
     </div>
   );
 }
