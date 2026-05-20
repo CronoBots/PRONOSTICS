@@ -15,15 +15,28 @@
 
 html,
 body {
-  /* Couleur UNIFORME (pas de gradient) pour matcher le theme-color iOS
-     et éviter la zone du dessus avec teinte différente. */
+  /* Couleur UNIFORME pour matcher le theme-color iOS PWA */
   background: var(--bg-base);
   color: var(--foreground);
   min-height: 100vh;
-  /* Interdit le zoom pinch sur navigateurs WebKit */
+  /* Interdit le zoom pinch */
   touch-action: manipulation;
   -webkit-touch-callout: none;
   -webkit-text-size-adjust: 100%;
+  /* Désactive le rubber-band elastic scroll iOS */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+/* Quand .lock-scroll est appliqué au body (Home page no-scroll),
+   verrouille complètement le défilement */
+body.lock-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }
 
 body {

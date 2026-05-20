@@ -99,6 +99,14 @@ export default function Home() {
     };
   }, []);
 
+  // Verrouille le scroll sur la Home (no-scroll par design)
+  useEffect(() => {
+    document.body.classList.add("lock-scroll");
+    return () => {
+      document.body.classList.remove("lock-scroll");
+    };
+  }, []);
+
   // Détecte si des filtres sont actifs (sauvegardés en localStorage)
   useEffect(() => {
     try {
