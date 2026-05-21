@@ -446,6 +446,47 @@ async def main() -> None:
             writer.writerow(row)
     logger.info("CSV écrit : %s (%d lignes)", out_path, len(rows))
 
+    # En parallèle, écrit un résumé Markdown lisible du top 20
+    md_path = out_dir / f"{target_date.isoformat()}.md"
+    md_lines = [
+        f"# Candidats picks safe — {target_date.isoformat()}",
+        "",
+        f"_Auto-généré par `daily_candidates.py`. {len(rows)} candidats analysés._",
+        "",
+        "## Top 20 par safety_score",
+        "",
+        "| # | Sport | Match | Pick | Cote book | Fair % | Edge | n_books | Safety |",
+        "|---:|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for i, row in enumerate(rows[:20], 1):
+        kickoff = row["kickoff"][:16].replace("T", " ") if row["kickoff"] else "?"
+        sport_short = row["sport_title"][:18] if row["sport_title"] else row["sport_key"][:18]
+        match = f"{row['home_team']} vs {row['away_team']}"[:50]
+        cote = f"{row['book_cote']:.2f} ({row['book_used']})" if row["book_cote"] else "—"
+        edge = f"{row['edge_vs_book_pct']:+.1f}%" if row["edge_vs_book_pct"] else "0%"
+        md_lines.append(
+            f"| {i} | {sport_short} | {match} | **{row['fav_pick']}** | "
+            f"{cote} | {row['combined_prob_pct']:.1f}% | {edge} | "
+            f"{row['n_books']} | **{row['safety_score']:.1f}** |"
+        )
+    md_lines += [
+        "",
+        "## Légende",
+        "- **Fair %** = probabilité estimée après dévigging multi-books",
+        "- **Edge** = (cote_book × proba) − 1. Positif = book sous-cote (value).",
+        "- **n_books** = nombre de bookmakers cotant le marché (≥ 8 = consensus fort)",
+        "- **Safety score** = composite proba × confiance edge × consensus, pénalité outliers",
+        "",
+        "## Critères de sélection recommandés",
+        "1. Safety score ≥ 50 (= proba ~70%+ avec consensus correct)",
+        "2. n_books ≥ 8 si possible (évite outliers)",
+        "3. Croiser avec analyses Tier 2 spécifiques au sport (FanGraphs, TennisAbstract...)",
+        "",
+        "Voir `backend/scripts/METHODOLOGY.md` pour le process complet.",
+    ]
+    md_path.write_text("\n".join(md_lines), encoding="utf-8")
+    logger.info("Markdown écrit : %s", md_path)
+
     # 6. Top 5 dans le log pour visibilité dans le run GH Action
     logger.info("=== TOP 5 candidats par safety_score ===")
     for i, row in enumerate(rows[:5], 1):
