@@ -41,6 +41,8 @@ export interface SafePick {
   kind?: "value_bet" | "safe_favorite";
   comparison?: PickComparison | null;
   profile_tags?: string[];
+  legs?: ComboLeg[];
+  odds_unboosted?: number;
 }
 
 export interface DayPayload {
@@ -58,6 +60,19 @@ export interface PickResult {
   score_text?: string;
   summary?: string;
   bet_outcome?: string;
+}
+
+export interface ComboLeg {
+  sport: string;
+  league: string;
+  home_team: string;
+  away_team: string;
+  pick: string;
+  kickoff: string;
+  odds: number;
+  outcome: Outcome;
+  result?: PickResult | null;
+  notes?: string;
 }
 
 export interface PickAlternative {
@@ -100,6 +115,10 @@ export interface HistoryPick {
   result?: PickResult | null;
   comparison?: PickComparison | null;
   profile_tags?: string[];
+  // Pour les paris combinés : détail des jambes individuelles
+  legs?: ComboLeg[];
+  // Cote sans boost (pour afficher l'avantage promotionnel)
+  odds_unboosted?: number;
 }
 
 export interface HistoryStats {

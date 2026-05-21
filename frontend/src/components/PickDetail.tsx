@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 
-import { HistoryPick, PickComparison, PickResult, SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
+import { ComboLeg, HistoryPick, PickComparison, PickResult, SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 interface UnifiedPick {
   date: string;
@@ -11,6 +11,7 @@ interface UnifiedPick {
   kickoff: string;
   pick: string;
   odds: number;
+  odds_unboosted?: number;
   model_probability: number;
   book_probability: number;
   expected_value: number;
@@ -23,6 +24,7 @@ interface UnifiedPick {
   result?: PickResult | null;
   comparison?: PickComparison | null;
   profile_tags?: string[];
+  legs?: ComboLeg[];
 }
 
 interface Props {
@@ -177,6 +179,11 @@ export function PickDetail({ pick, variant = "today" }: Props) {
           )}
         </div>
       </div>
+
+      {/* Détail des jambes du combiné (si applicable) */}
+      {pick.legs && pick.legs.length > 0 && (
+        <ComboLegs legs={pick.legs} unboostedOdds={pick.odds_unboosted} boostedOdds={pick.odds} />
+      )}
 
       {/* Résumé en 1 phrase + analyse complète */}
       <ExpandableSection
@@ -441,6 +448,129 @@ function LossBanner({ pick }: { pick: UnifiedPick }) {
   );
 }
 
+function ComboLegs({
+  legs,
+  unboostedOdds,
+  boostedOdds,
+}: {
+  legs: ComboLeg[];
+  unboostedOdds?: number;
+  boostedOdds: number;
+}) {
+  const boostDelta =
+    unboostedOdds && unboostedOdds > 0
+      ? ((boostedOdds - unboostedOdds) / unboostedOdds) * 100
+      : 0;
+
+  return (
+    <div className="bg-bg-card border border-yellow-400/20 rounded-2xl overflow-hidden">
+      <div className="bg-yellow-400/10 px-4 py-2.5 border-b border-yellow-400/20 flex items-center justify-between">
+        <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-yellow-400">
+          🎯 Combiné · {legs.length} jambes
+        </div>
+        <div className="text-[10px] text-white/50 tabular-nums">
+          {unboostedOdds ? (
+            <>
+              <span className="line-through text-white/30">{unboostedOdds.toFixed(2)}</span>
+              {" → "}
+              <span className="text-yellow-400 font-bold">{boostedOdds.toFixed(2)}</span>
+              {boostDelta > 0 && (
+                <span className="text-yellow-400 ml-1">+{boostDelta.toFixed(0)}%</span>
+              )}
+            </>
+          ) : (
+            <span className="text-yellow-400 font-bold">{boostedOdds.toFixed(2)}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="divide-y divide-white/5">
+        {legs.map((leg, i) => (
+          <LegRow key={i} leg={leg} index={i + 1} />
+        ))}
+      </div>
+
+      <div className="bg-bg-base/40 px-4 py-2 text-[10px] text-white/40 text-center">
+        Les 2 jambes doivent gagner pour valider le combiné
+      </div>
+    </div>
+  );
+}
+
+function LegRow({ leg, index }: { leg: ComboLeg; index: number }) {
+  const isWin = leg.outcome === "win";
+  const isLoss = leg.outcome === "loss";
+  const isPending = leg.outcome === "pending" || !leg.outcome;
+  const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
+  const kickoffDate = new Date(leg.kickoff);
+  const time = kickoffDate.toLocaleTimeString("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const day = kickoffDate.toLocaleDateString("fr-FR", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+
+  let outcomeColor = "text-white/40 bg-white/5 border-white/10";
+  let outcomeLabel = "En attente";
+  if (isWin) {
+    outcomeColor = "text-accent-green bg-accent-green/10 border-accent-green/30";
+    outcomeLabel = "✓ Gagné";
+  } else if (isLoss) {
+    outcomeColor = "text-accent-red bg-accent-red/10 border-accent-red/30";
+    outcomeLabel = "✕ Perdu";
+  } else if (isPending) {
+    outcomeColor = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
+    outcomeLabel = "En attente";
+  }
+
+  return (
+    <div className="px-4 py-3">
+      <div className="flex items-start gap-3">
+        <div className="w-7 h-7 rounded-full bg-yellow-400/15 border border-yellow-400/30 flex items-center justify-center text-yellow-400 text-xs font-bold shrink-0">
+          {index}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="text-base">{emoji}</span>
+            <span className="text-[10px] uppercase tracking-wider text-white/50">
+              {leg.league}
+            </span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${outcomeColor}`}>
+              {outcomeLabel}
+            </span>
+          </div>
+          <div className="text-sm font-semibold mb-1">{leg.pick}</div>
+          <div className="text-[11px] text-white/40 mb-1.5">
+            {leg.home_team} vs {leg.away_team}
+          </div>
+          <div className="flex items-center gap-3 text-[11px]">
+            <span className="text-white/50">
+              {day} · {time}
+            </span>
+            <span className="text-white/30">·</span>
+            <span className="text-yellow-400 font-bold tabular-nums">
+              cote {leg.odds.toFixed(2)}
+            </span>
+          </div>
+          {leg.notes && (
+            <div className="text-[11px] text-white/55 mt-2 leading-relaxed border-l-2 border-white/10 pl-2">
+              {leg.notes}
+            </div>
+          )}
+          {leg.result?.score_text && (
+            <div className="text-[11px] text-white/70 mt-2 font-medium tabular-nums">
+              Score : {leg.result.score_text}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function KeyStat({
   label,
   value,
@@ -593,6 +723,7 @@ export function pickFromHistory(p: HistoryPick): UnifiedPick {
     kickoff: p.match.kickoff,
     pick: p.pick,
     odds: p.odds,
+    odds_unboosted: p.odds_unboosted,
     model_probability: p.model_probability,
     book_probability: p.book_probability,
     expected_value: p.expected_value,
@@ -605,6 +736,7 @@ export function pickFromHistory(p: HistoryPick): UnifiedPick {
     result: p.result ?? undefined,
     comparison: p.comparison,
     profile_tags: p.profile_tags,
+    legs: p.legs,
   };
 }
 
@@ -619,6 +751,7 @@ export function pickFromSafe(p: SafePick): UnifiedPick {
     kickoff: p.kickoff,
     pick: p.pick,
     odds: p.odds,
+    odds_unboosted: p.odds_unboosted,
     model_probability: p.model_probability,
     book_probability: p.book_probability,
     expected_value: p.expected_value,
@@ -629,5 +762,6 @@ export function pickFromSafe(p: SafePick): UnifiedPick {
     outcome: "pending",
     comparison: p.comparison,
     profile_tags: p.profile_tags,
+    legs: p.legs,
   };
 }

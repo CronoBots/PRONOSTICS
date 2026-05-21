@@ -200,7 +200,7 @@ function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
 
 function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
-  const isCombo = pick.match.sport === "combo";
+  const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
   const time = pick.match.kickoff
     ? new Date(pick.match.kickoff).toLocaleTimeString("fr-FR", {
         hour: "2-digit",
@@ -226,23 +226,75 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                 : "text-accent-blue bg-accent-blue/10 border-accent-blue/20"
             }`}
           >
-            {isCombo ? "Combiné" : "Simple"}
+            {isCombo ? `Combiné ${pick.legs!.length} jambes` : "Simple"}
           </span>
           <span className="text-[11px] font-bold italic bg-bg-base text-white px-2 py-0.5 rounded">
             b<span className="relative">w<span className="absolute -top-0.5 right-0 w-1 h-1 rounded-full bg-yellow-400" /></span>in
           </span>
+          {isCombo && pick.odds_unboosted && (
+            <span className="text-[10px] text-yellow-400/80 font-semibold">
+              boost <span className="line-through text-white/30">{pick.odds_unboosted.toFixed(2)}</span> → {pick.odds.toFixed(2)}
+            </span>
+          )}
         </div>
-        <div className="text-sm font-medium truncate flex items-center gap-1.5">
-          <span>{emoji}</span>
-          <span>{pick.pick}</span>
-          <span className="text-white/40 text-xs ml-1">@ {pick.odds.toFixed(2)}</span>
-        </div>
-        <div className="text-[11px] text-white/40 truncate mt-0.5">
-          {pick.match.home_team} vs {pick.match.away_team}
-        </div>
+
+        {/* Affichage différent pour combos */}
+        {isCombo ? (
+          <div className="space-y-1.5 mt-1">
+            {pick.legs!.map((leg, i) => (
+              <ComboLegMini key={i} leg={leg} index={i + 1} />
+            ))}
+            <div className="text-[10px] text-white/40 mt-1.5 flex items-center gap-2">
+              <span className="text-yellow-400 font-bold tabular-nums">
+                Cote totale {pick.odds.toFixed(2)}
+              </span>
+              <span>·</span>
+              <span>Les 2 doivent gagner</span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="text-sm font-medium truncate flex items-center gap-1.5">
+              <span>{emoji}</span>
+              <span>{pick.pick}</span>
+              <span className="text-white/40 text-xs ml-1">@ {pick.odds.toFixed(2)}</span>
+            </div>
+            <div className="text-[11px] text-white/40 truncate mt-0.5">
+              {pick.match.home_team} vs {pick.match.away_team}
+            </div>
+          </>
+        )}
       </div>
       <StatusBar outcome={pick.outcome} />
     </button>
+  );
+}
+
+function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; index: number }) {
+  const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
+  const isWin = leg.outcome === "win";
+  const isLoss = leg.outcome === "loss";
+
+  let statusDot = "bg-yellow-400";
+  let statusText = "text-white/70";
+  if (isWin) {
+    statusDot = "bg-accent-green";
+    statusText = "text-accent-green";
+  } else if (isLoss) {
+    statusDot = "bg-accent-red";
+    statusText = "text-accent-red";
+  }
+
+  return (
+    <div className="flex items-center gap-2 text-[11px]">
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
+      <span className="text-white/50 tabular-nums">#{index}</span>
+      <span className="text-base shrink-0">{emoji}</span>
+      <span className={`font-medium truncate ${statusText}`}>{leg.pick}</span>
+      <span className="text-white/40 ml-auto tabular-nums shrink-0">
+        @ {leg.odds.toFixed(2)}
+      </span>
+    </div>
   );
 }
 

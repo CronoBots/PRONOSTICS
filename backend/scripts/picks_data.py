@@ -31,6 +31,19 @@ class Comparison(TypedDict, total=False):
     top_alternatives: list[dict] # autres picks sérieux écartés
 
 
+class ComboLeg(TypedDict, total=False):
+    sport: str
+    league: str
+    home_team: str
+    away_team: str
+    pick: str                      # ce qu'on parie sur cette jambe
+    kickoff: str
+    odds: float                    # cote individuelle de cette jambe
+    outcome: Outcome
+    result: Result
+    notes: str                     # 1 phrase de contexte
+
+
 class Pick(TypedDict, total=False):
     date: str                      # ISO YYYY-MM-DD
     sport: str
@@ -40,6 +53,7 @@ class Pick(TypedDict, total=False):
     kickoff: str
     pick: str
     odds: float
+    odds_unboosted: float          # cote sans boost (si applicable)
     model_probability: float
     headline: str                  # 1 phrase punchy en haut de l'analyse
     rationale: list[str]
@@ -49,6 +63,7 @@ class Pick(TypedDict, total=False):
     result: Result
     comparison: Comparison         # comparatif vs autres matchs du jour
     profile_tags: list[str]        # ex: ["mlb", "home_underdog", "starter_road_struggle"]
+    legs: list[ComboLeg]           # pour les combinés : détail des jambes
 
 
 STAKE = 5.0
@@ -584,6 +599,31 @@ PICKS: list[Pick] = [
             "https://tennistonic.com/tennis-news/1000399/h2h-prediction-of-casper-ruud-vs-alexei-popyrin-in-geneva-with-odds-preview-pick-21st-may-2026/",
         ],
         "stake": 10.0,  # mise doublée (10€ au lieu du standard 5€) — décision confiance sur cote boostée
+        "odds_unboosted": 1.82,    # cote normale combinée (1.28 × 1.42)
         "outcome": "pending",
+        "legs": [
+            {
+                "sport": "tennis",
+                "league": "ATP 250 — Geneva Open (quart de finale, terre battue)",
+                "home_team": "Alexei Popyrin (AUS)",
+                "away_team": "Casper Ruud (NOR)",
+                "pick": "Casper Ruud vainqueur du match",
+                "kickoff": "2026-05-21T13:15:00+00:00",
+                "odds": 1.28,
+                "outcome": "pending",
+                "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%.",
+            },
+            {
+                "sport": "basketball",
+                "league": "NBA Eastern Conference Finals — Game 2",
+                "home_team": "New York Knicks",
+                "away_team": "Cleveland Cavaliers",
+                "pick": "New York Knicks vainqueurs du match",
+                "kickoff": "2026-05-22T00:10:00+00:00",
+                "odds": 1.42,
+                "outcome": "pending",
+                "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%.",
+            },
+        ],
     },
 ]

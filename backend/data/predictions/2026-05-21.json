@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "generated_at": "2026-05-21T07:15:01.628023+00:00",
+  "generated_at": "2026-05-21T14:51:53.685879+00:00",
   "safe_pick": {
     "match_id": 1,
     "sport": "combo",
@@ -10,6 +10,7 @@
     "kickoff": "2026-05-21T13:15:00+00:00",
     "pick": "Combiné Ruud + Knicks (boosté bwin)",
     "odds": 2.36,
+    "odds_unboosted": 1.82,
     "model_probability": 0.63,
     "book_probability": 0.4237,
     "expected_value": 0.4868,
@@ -157,6 +158,30 @@
       "safe_pick",
       "double_favorites",
       "credibility_first"
+    ],
+    "legs": [
+      {
+        "sport": "tennis",
+        "league": "ATP 250 — Geneva Open (quart de finale, terre battue)",
+        "home_team": "Alexei Popyrin (AUS)",
+        "away_team": "Casper Ruud (NOR)",
+        "pick": "Casper Ruud vainqueur du match",
+        "kickoff": "2026-05-21T13:15:00+00:00",
+        "odds": 1.28,
+        "outcome": "pending",
+        "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%."
+      },
+      {
+        "sport": "basketball",
+        "league": "NBA Eastern Conference Finals — Game 2",
+        "home_team": "New York Knicks",
+        "away_team": "Cleveland Cavaliers",
+        "pick": "New York Knicks vainqueurs du match",
+        "kickoff": "2026-05-22T00:10:00+00:00",
+        "odds": 1.42,
+        "outcome": "pending",
+        "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%."
+      }
     ]
   },
   "value_picks": [
@@ -169,6 +194,7 @@
       "kickoff": "2026-05-21T13:15:00+00:00",
       "pick": "Combiné Ruud + Knicks (boosté bwin)",
       "odds": 2.36,
+      "odds_unboosted": 1.82,
       "model_probability": 0.63,
       "book_probability": 0.4237,
       "expected_value": 0.4868,
@@ -316,6 +342,30 @@
         "safe_pick",
         "double_favorites",
         "credibility_first"
+      ],
+      "legs": [
+        {
+          "sport": "tennis",
+          "league": "ATP 250 — Geneva Open (quart de finale, terre battue)",
+          "home_team": "Alexei Popyrin (AUS)",
+          "away_team": "Casper Ruud (NOR)",
+          "pick": "Casper Ruud vainqueur du match",
+          "kickoff": "2026-05-21T13:15:00+00:00",
+          "odds": 1.28,
+          "outcome": "pending",
+          "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%."
+        },
+        {
+          "sport": "basketball",
+          "league": "NBA Eastern Conference Finals — Game 2",
+          "home_team": "New York Knicks",
+          "away_team": "Cleveland Cavaliers",
+          "pick": "New York Knicks vainqueurs du match",
+          "kickoff": "2026-05-22T00:10:00+00:00",
+          "odds": 1.42,
+          "outcome": "pending",
+          "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%."
+        }
       ]
     }
   ],

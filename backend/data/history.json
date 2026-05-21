@@ -11,6 +11,7 @@
       },
       "pick": "Elina Svitolina",
       "odds": 2.3,
+      "odds_unboosted": null,
       "model_probability": 0.5,
       "book_probability": 0.4348,
       "expected_value": 0.15,
@@ -79,7 +80,8 @@
         "bet_outcome": "✅ Svitolina remporte le titre WTA Rome — pari gagné, gain net +6.50€"
       },
       "comparison": null,
-      "profile_tags": []
+      "profile_tags": [],
+      "legs": null
     },
     {
       "date": "2026-05-18",
@@ -92,6 +94,7 @@
       },
       "pick": "San Antonio Spurs",
       "odds": 2.7,
+      "odds_unboosted": null,
       "model_probability": 0.4,
       "book_probability": 0.3704,
       "expected_value": 0.08,
@@ -161,7 +164,8 @@
         "bet_outcome": "✅ Spurs gagnent en outsider — pari gagné, gain net +8.50€"
       },
       "comparison": null,
-      "profile_tags": []
+      "profile_tags": [],
+      "legs": null
     },
     {
       "date": "2026-05-19",
@@ -174,6 +178,7 @@
       },
       "pick": "New York Knicks",
       "odds": 2.0,
+      "odds_unboosted": null,
       "model_probability": 0.55,
       "book_probability": 0.5,
       "expected_value": 0.1,
@@ -242,7 +247,8 @@
         "bet_outcome": "✅ Comeback victorieux des Knicks — pari gagné, gain net +5.00€"
       },
       "comparison": null,
-      "profile_tags": []
+      "profile_tags": [],
+      "legs": null
     },
     {
       "date": "2026-05-20",
@@ -255,6 +261,7 @@
       },
       "pick": "Detroit Tigers",
       "odds": 2.73,
+      "odds_unboosted": null,
       "model_probability": 0.55,
       "book_probability": 0.3663,
       "expected_value": 0.5015,
@@ -374,7 +381,8 @@
         "home_underdog",
         "starter_road_struggle",
         "revenge_spot"
-      ]
+      ],
+      "legs": null
     },
     {
       "date": "2026-05-21",
@@ -387,6 +395,7 @@
       },
       "pick": "Combiné Ruud + Knicks (boosté bwin)",
       "odds": 2.36,
+      "odds_unboosted": 1.82,
       "model_probability": 0.63,
       "book_probability": 0.4237,
       "expected_value": 0.4868,
@@ -534,6 +543,30 @@
         "safe_pick",
         "double_favorites",
         "credibility_first"
+      ],
+      "legs": [
+        {
+          "sport": "tennis",
+          "league": "ATP 250 — Geneva Open (quart de finale, terre battue)",
+          "home_team": "Alexei Popyrin (AUS)",
+          "away_team": "Casper Ruud (NOR)",
+          "pick": "Casper Ruud vainqueur du match",
+          "kickoff": "2026-05-21T13:15:00+00:00",
+          "odds": 1.28,
+          "outcome": "pending",
+          "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%."
+        },
+        {
+          "sport": "basketball",
+          "league": "NBA Eastern Conference Finals — Game 2",
+          "home_team": "New York Knicks",
+          "away_team": "Cleveland Cavaliers",
+          "pick": "New York Knicks vainqueurs du match",
+          "kickoff": "2026-05-22T00:10:00+00:00",
+          "odds": 1.42,
+          "outcome": "pending",
+          "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%."
+        }
       ]
     }
   ],
@@ -561,5 +594,5 @@
     "max_profit_single": 8.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-21T07:15:01.627126+00:00"
+  "generated_at": "2026-05-21T14:51:53.684532+00:00"
 }

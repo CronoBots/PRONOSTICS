@@ -58,6 +58,7 @@ def build_history() -> dict:
             },
             "pick": p["pick"],
             "odds": odds,
+            "odds_unboosted": p.get("odds_unboosted"),
             "model_probability": model_prob,
             "book_probability": book_prob,
             "expected_value": ev,
@@ -72,6 +73,7 @@ def build_history() -> dict:
             "result": p.get("result"),
             "comparison": p.get("comparison"),
             "profile_tags": p.get("profile_tags", []),
+            "legs": p.get("legs"),
         })
 
     history = {
@@ -101,6 +103,7 @@ def build_today_payload(history: dict) -> tuple[str, dict] | None:
         "kickoff": pick["match"]["kickoff"],
         "pick": pick["pick"],
         "odds": pick["odds"],
+        "odds_unboosted": pick.get("odds_unboosted"),
         "model_probability": pick["model_probability"],
         "book_probability": pick["book_probability"],
         "expected_value": pick["expected_value"],
@@ -115,6 +118,7 @@ def build_today_payload(history: dict) -> tuple[str, dict] | None:
         "kind": "value_bet" if pick["expected_value"] > 0.05 else "safe_favorite",
         "comparison": pick.get("comparison"),
         "profile_tags": pick.get("profile_tags", []),
+        "legs": pick.get("legs"),
     }
 
     payload = {
