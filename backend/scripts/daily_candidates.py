@@ -56,8 +56,9 @@ logging.basicConfig(
 logger = logging.getLogger("daily_candidates")
 
 
-# Bookmaker préféré utilisateur (cote affichée dans le CSV)
-PREFERRED_BOOK = "bwin"
+# Bookmakers préférés utilisateur, ordre d'importance (1er trouvé = utilisé).
+# bwin = book principal Belgique. Si pas dispo, fallback chain via books licenciés.
+PREFERRED_BOOKS = ["bwin", "betclic", "unibet", "betfair", "betvictor", "williamhill", "pinnacle"]
 
 # Fenêtre de kickoff considérée (heures depuis maintenant)
 KICKOFF_WINDOW_HOURS = 36
@@ -189,9 +190,15 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
     if not (COTE_MIN <= fav_fair_cote <= COTE_MAX):
         return None
 
-    # Cote sur le book préféré (bwin)
-    bwin_book = books.get(PREFERRED_BOOK)
-    bwin_cote = bwin_book.get(fav_outcome) if bwin_book else None
+    # Cote sur le 1er bookmaker préféré disponible (chaîne de fallback)
+    preferred_cote = None
+    preferred_book_used = None
+    for book_key in PREFERRED_BOOKS:
+        book_data = books.get(book_key)
+        if book_data and fav_outcome in book_data:
+            preferred_cote = book_data[fav_outcome]
+            preferred_book_used = book_key
+            break
 
     # Cote médiane brute (sans dévigging) pour info
     raw_cotes_fav = [b.get(fav_outcome) for b in books_list if fav_outcome in b]
@@ -203,8 +210,8 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
     # Proba finale combinée
     combined_prob = blend_with_polymarket(fair_prob, pm_prob, book_weight=0.6)
 
-    # Edge vs bwin
-    edge = compute_edge(bwin_cote, combined_prob or fair_prob) if bwin_cote else 0.0
+    # Edge vs book préféré (bwin si dispo, sinon fallback)
+    edge = compute_edge(preferred_cote, combined_prob or fair_prob) if preferred_cote else 0.0
 
     # Safety score
     n_books = len(books_list)
@@ -220,11 +227,12 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
         "fav_pick": fav_outcome,
         "fair_cote": round(fav_fair_cote, 3),
         "fair_prob_pct": round(fair_prob * 100, 1),
-        "bwin_cote": round(bwin_cote, 3) if bwin_cote else None,
+        "book_used": preferred_book_used or "",
+        "book_cote": round(preferred_cote, 3) if preferred_cote else None,
         "median_cote": median_cote,
         "polymarket_prob_pct": round(pm_prob * 100, 1) if pm_prob else None,
         "combined_prob_pct": round((combined_prob or fair_prob) * 100, 1),
-        "edge_vs_bwin_pct": round(edge * 100, 2),
+        "edge_vs_book_pct": round(edge * 100, 2),
         "n_books": n_books,
         "safety_score": safety,
     }
@@ -377,15 +385,16 @@ async def main() -> None:
     logger.info("=== TOP 5 candidats par safety_score ===")
     for i, row in enumerate(rows[:5], 1):
         logger.info(
-            "%d. [%s] %s vs %s | pick=%s | combined_prob=%.1f%% | bwin=%s | edge=%.1f%% | safety=%.1f",
+            "%d. [%s] %s vs %s | pick=%s | combined_prob=%.1f%% | %s=%s | edge=%.1f%% | safety=%.1f",
             i,
             row["sport_key"],
             row["home_team"],
             row["away_team"],
             row["fav_pick"],
             row["combined_prob_pct"],
-            row["bwin_cote"],
-            row["edge_vs_bwin_pct"],
+            row["book_used"] or "no-book",
+            row["book_cote"],
+            row["edge_vs_book_pct"],
             row["safety_score"],
         )
 
