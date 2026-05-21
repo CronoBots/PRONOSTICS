@@ -5,6 +5,7 @@ export const SPORT_LABELS: Record<string, string> = {
   nfl: "NFL",
   mlb: "MLB",
   nhl: "NHL",
+  combo: "Combiné",
 };
 
 export const SPORT_EMOJIS: Record<string, string> = {
@@ -14,6 +15,7 @@ export const SPORT_EMOJIS: Record<string, string> = {
   nfl: "🏈",
   mlb: "⚾",
   nhl: "🏒",
+  combo: "🎯",
 };
 
 export interface SafePick {
