@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { LANG_LABELS, useI18n } from "@/lib/i18n";
 
 export default function ComptePage() {
-  const { user, ready, logout, cancelSubscription } = useAuth();
+  const { user, ready, mode, logout, cancelSubscription } = useAuth();
   const { lang, setLang, t } = useI18n();
   const router = useRouter();
 
@@ -46,6 +46,18 @@ export default function ComptePage() {
                 {t("auth.register")}
               </Link>
             </div>
+          </div>
+          {/* Badge mode auth — utile aussi quand pas connecté */}
+          <div className="mt-4">
+            <span
+              className={`inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full border ${
+                mode === "supabase"
+                  ? "bg-accent-green/10 text-accent-green border-accent-green/30"
+                  : "bg-yellow-400/10 text-yellow-400 border-yellow-400/30"
+              }`}
+            >
+              Auth : {mode === "supabase" ? "☁️ Supabase (cloud)" : "💾 Mock (local)"}
+            </span>
           </div>
         </main>
       </>
@@ -155,6 +167,19 @@ export default function ComptePage() {
 
         <div className="text-center text-xs text-white/30 mt-6">
           WTF · Win The Future · v0.2 · {new Date().getFullYear()}
+        </div>
+
+        {/* Badge mode auth (debug) — visible quelques jours pour valider le setup */}
+        <div className="text-center mt-2">
+          <span
+            className={`inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full border ${
+              mode === "supabase"
+                ? "bg-accent-green/10 text-accent-green border-accent-green/30"
+                : "bg-yellow-400/10 text-yellow-400 border-yellow-400/30"
+            }`}
+          >
+            Auth : {mode === "supabase" ? "☁️ Supabase (cloud)" : "💾 Mock (local)"}
+          </span>
         </div>
       </main>
     </>
