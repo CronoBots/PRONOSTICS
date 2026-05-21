@@ -39,6 +39,17 @@ Tu peux vérifier dans **Table Editor** que ces tables existent :
 - `public.subscriptions`
 - `public.personal_bets`
 
+### 3 bis. Appliquer les corrections Security Advisor
+
+Après la 0001, Supabase Advisor remonte plusieurs warnings (Security Definer View,
+RLS Initialization Plan, Function Search Path, Public Execute on SECURITY DEFINER).
+Ces warnings sont légitimes — pour les corriger :
+
+1. Dans **SQL Editor → New query**
+2. Copie-colle le contenu de `migrations/0002_security_advisor_fixes.sql`
+3. Clique **Run**
+4. Vérifie dans **Advisors → Security** que les warnings ont disparu (0 critical / 0 high)
+
 ### 4. Configurer Authentication
 
 Dans **Authentication → Providers** :
