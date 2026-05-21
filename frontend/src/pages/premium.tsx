@@ -7,27 +7,53 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
+import { isStripeEnabled, startCheckout } from "@/lib/stripe";
+import { supabase } from "@/lib/supabase";
 
 const PRICE_MONTHLY = 9.99;
 const PRICE_YEARLY = 95.88; // 9.99 * 12 - 20% ≈ 95.88
 
 export default function PremiumPage() {
-  const { user, upgradeTo } = useAuth();
+  const { user, mode, upgradeTo } = useAuth();
   const { t } = useI18n();
   const router = useRouter();
   const [selected, setSelected] = useState<"monthly" | "yearly">("yearly");
   const [history, setHistory] = useState<History | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
     fetchHistory().then(setHistory);
   }, []);
 
-  function handleSubscribe() {
+  async function handleSubscribe() {
     if (!user) {
       router.push("/login");
       return;
     }
-    upgradeTo(selected);
+    setCheckoutError(null);
+
+    // Mode Supabase + Stripe activé → vrai checkout
+    if (mode === "supabase" && isStripeEnabled() && supabase) {
+      setCheckoutLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      if (!session?.access_token) {
+        setCheckoutError("Session expirée, reconnecte-toi");
+        setCheckoutLoading(false);
+        return;
+      }
+      const result = await startCheckout(selected, session.access_token, supabaseUrl);
+      if (!result.ok) {
+        setCheckoutError(result.error ?? "Erreur checkout");
+        setCheckoutLoading(false);
+      }
+      // Si OK : window.location.href est déjà déclenché vers Stripe
+      return;
+    }
+
+    // Mode mock (dev sans Stripe) → simulation locale
+    await upgradeTo(selected);
     router.push("/compte");
   }
 
@@ -164,11 +190,24 @@ export default function PremiumPage() {
         {/* CTA */}
         <button
           onClick={handleSubscribe}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-base shadow-lg shadow-yellow-500/20"
+          disabled={checkoutLoading}
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-base shadow-lg shadow-yellow-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          👑 Choisir {selected === "yearly" ? "l'annuel" : "le mensuel"} ·{" "}
-          {(selected === "yearly" ? PRICE_YEARLY : PRICE_MONTHLY).toFixed(2)}€
+          {checkoutLoading ? (
+            <>⏳ Redirection vers le paiement…</>
+          ) : (
+            <>
+              👑 Choisir {selected === "yearly" ? "l'annuel" : "le mensuel"} ·{" "}
+              {(selected === "yearly" ? PRICE_YEARLY : PRICE_MONTHLY).toFixed(2)}€
+            </>
+          )}
         </button>
+
+        {checkoutError && (
+          <div className="mt-3 p-3 rounded-xl bg-accent-red/10 border border-accent-red/30 text-xs text-accent-red">
+            ⚠️ {checkoutError}
+          </div>
+        )}
 
         <p className="text-[11px] text-white/40 text-center mt-3 leading-relaxed">
           🔒 Paiement sécurisé Stripe (CB / PayPal / Apple Pay / Google Pay).
