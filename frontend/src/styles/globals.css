@@ -79,6 +79,26 @@ a {
   animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Page transition fade-in (déclenché par key=router.pathname dans _app.tsx).
+   Masque l'instant noir/blanc quand Next.js charge le chunk de la page
+   suivante en navigation client. */
+@keyframes pageFadeIn {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+.page-fade {
+  animation: pageFadeIn 0.18s ease-out;
+  /* contain layout : empêche les changements de layout interne
+     d'affecter le wrapper (= pas de décalage au tap) */
+  contain: layout style;
+}
+
+/* Désactive le flash de tap iOS (rectangle gris au touch) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Scrollbar discret */
 ::-webkit-scrollbar {
   width: 8px;

@@ -551,14 +551,15 @@ PICKS: list[Pick] = [
             "Décision : sur 2 favoris à ~80% chacun, le combiné maximise la cote tout en gardant proba > 60% (zone safe). Sur 2 picks à 60% on n'aurait jamais fait un combiné.",
 
             "##📊 Calcul détaillé du combiné BOOSTÉ",
-            "Mise : 5,00€ (fixe).",
+            "Mise effectivement placée : **10,00€** (mise doublée vs standard 5€, justifiée par la cote boostée 2,36 et le profil double-favoris ultra-safe).",
             "Cote bwin réelle : Ruud 1,28 × Knicks 1,42 = 1,8176 (cote normale combinée).",
-            "Cote BOOSTÉE par bwin : 2,36 (+29,8% bonus). Promo 'gains boostés en cash' affichée 2,72€.",
-            "Gain potentiel si combiné gagné : 5€ × 2,36 = 11,80€ (gain net +6,80€).",
-            "Perte potentielle : −5€ (si UNE des 2 jambes perd, on perd tout).",
+            "Cote BOOSTÉE par bwin : 2,36 (+29,8% bonus). Promo 'gains boostés en cash' affichée 5,45€ sur cette mise de 10€.",
+            "Gain potentiel si combiné gagné : 10€ × 2,36 = 23,63€ (gain net +13,63€).",
+            "Perte potentielle : −10€ (si UNE des 2 jambes perd, on perd tout).",
             "Probabilité combinée estimée : 81% × 78% = 63,2% (arrondi 63%).",
             "Expected Value : (0,63 × 2,36) − 1 = +48,7% par euro misé. Exceptionnel.",
             "Comparaison sans boost : (0,63 × 1,82) − 1 = +14,7%. Le boost multiplie l'EV par 3.",
+            "Note Kelly criterion : à proba 63% et cote 2,36, fraction Kelly optimale = 0,30 (30% du bankroll). Mise 10€/20€ = 50% du bankroll → légèrement sur-misée vs Kelly pur, mais acceptable vu l'EV exceptionnelle et le profil double-favoris.",
 
             "##⚠️ Risques honnêtes",
             "Risque 1 (Ruud) : Popyrin a battu Fritz, donc il peut surprendre. Un Ruud avec une mauvaise journée + Popyrin servant à 75% premières → upset possible (~15% proba).",
@@ -582,7 +583,7 @@ PICKS: list[Pick] = [
             "https://www.statsinsider.com.au/news/alexei-popyrin-vs-casper-ruud-prediction-atp-geneva-open-2026",
             "https://tennistonic.com/tennis-news/1000399/h2h-prediction-of-casper-ruud-vs-alexei-popyrin-in-geneva-with-odds-preview-pick-21st-may-2026/",
         ],
-        "stake": STAKE,
+        "stake": 10.0,  # mise doublée (10€ au lieu du standard 5€) — décision confiance sur cote boostée
         "outcome": "pending",
     },
 ]

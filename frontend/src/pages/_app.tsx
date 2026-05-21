@@ -38,12 +38,18 @@ export default function App({ Component, pageProps }: AppProps) {
     <I18nProvider>
       <AuthProvider>
         <div
-          className={showNav ? "" : ""}
-          style={
-            showNav
-              ? { paddingBottom: "calc(var(--safe-bottom) + 5.5rem)" }
-              : undefined
-          }
+          // min-height 100svh + bg explicite = pas d'écran noir/blanc pendant
+          // la transition entre pages. La key force un fade au changement
+          // de route pour masquer la latence de chargement du chunk.
+          key={router.pathname}
+          className="page-fade"
+          style={{
+            minHeight: "100svh",
+            background: "var(--bg-base)",
+            // PaddingBottom constant quand nav visible — évite les
+            // décalages quand on switch entre pages avec/sans lock-scroll.
+            paddingBottom: showNav ? "calc(var(--safe-bottom) + 5.5rem)" : 0,
+          }}
         >
           <Component {...pageProps} />
         </div>
