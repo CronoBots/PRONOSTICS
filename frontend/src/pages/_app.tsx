@@ -38,16 +38,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <I18nProvider>
       <AuthProvider>
         <div
-          // min-height 100svh + bg explicite = pas d'écran noir/blanc pendant
-          // la transition entre pages. La key force un fade au changement
-          // de route pour masquer la latence de chargement du chunk.
+          // key force un remount + animation fade au changement de route
+          // pour masquer la latence de chargement du chunk Next.js.
+          // PAS de min-height ni contain (cassait le layout de la Home).
           key={router.pathname}
           className="page-fade"
           style={{
-            minHeight: "100svh",
             background: "var(--bg-base)",
-            // PaddingBottom constant quand nav visible — évite les
-            // décalages quand on switch entre pages avec/sans lock-scroll.
             paddingBottom: showNav ? "calc(var(--safe-bottom) + 5.5rem)" : 0,
           }}
         >

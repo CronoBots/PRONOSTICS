@@ -81,7 +81,7 @@ a {
 
 /* Page transition fade-in (déclenché par key=router.pathname dans _app.tsx).
    Masque l'instant noir/blanc quand Next.js charge le chunk de la page
-   suivante en navigation client. */
+   suivante en navigation client. PAS de contain (cassait la Home). */
 @keyframes pageFadeIn {
   from { opacity: 0.4; }
   to { opacity: 1; }
@@ -89,9 +89,6 @@ a {
 
 .page-fade {
   animation: pageFadeIn 0.18s ease-out;
-  /* contain layout : empêche les changements de layout interne
-     d'affecter le wrapper (= pas de décalage au tap) */
-  contain: layout style;
 }
 
 /* Désactive le flash de tap iOS (rectangle gris au touch) */

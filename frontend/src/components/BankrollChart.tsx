@@ -162,13 +162,13 @@ export function BankrollChart({
             <XAxis dataKey="label" hide />
             <YAxis
               stroke="rgba(255,255,255,0.85)"
-              tick={{ fontSize: 12, fill: "#ffffff" }}
+              tick={{ fontSize: 11, fill: "#ffffff" }}
               tickLine={false}
               axisLine={false}
-              tickFormatter={(v) => `${v} €`}
+              tickFormatter={(v) => `${Math.round(v)}€`}
               domain={["dataMin - 2", "dataMax + 2"]}
-              width={48}
-              tickCount={8}
+              width={42}
+              tickCount={6}
             />
             <Tooltip
               content={<HeroTooltip mode={mode} />}
@@ -246,9 +246,9 @@ export function BankrollChart({
             tick={{ fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(v) => `${v} €`}
+            tickFormatter={(v) => `${Math.round(v)}€`}
             domain={["dataMin - 5", "dataMax + 5"]}
-            width={56}
+            width={42}
           />
           <Tooltip
             contentStyle={{
