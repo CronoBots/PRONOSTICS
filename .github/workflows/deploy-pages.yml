@@ -48,6 +48,11 @@ jobs:
           NEXT_PUBLIC_DATA_MODE: static
           # basePath = "/<repo>" → le repo s'appelle PRONOSTICS
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # Supabase (optionnel — si secrets absents, l'app retombe sur le mock localStorage)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # Stripe (pour Phase 2 — checkout côté client)
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
         run: npm run build
 
       - name: Disable Jekyll
