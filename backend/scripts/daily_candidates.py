@@ -293,6 +293,17 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
     }
 
 
+# Dict global qui capture les métadonnées du dernier appel Odds API
+# (rempli par fetch_odds_api_events, lu par le diagnostic)
+ODDS_API_DIAG: dict = {
+    "sports_endpoint_status": None,
+    "active_sports_count": 0,
+    "quota_used": None,
+    "quota_remaining": None,
+    "per_sport": [],  # liste de dicts {sport, n_total, n_kept, status, error}
+}
+
+
 async def fetch_odds_api_events(target_date: date) -> list[dict]:
     """Pull tous les events Odds API pour les sports configurés.
 
@@ -302,6 +313,7 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
     settings = get_settings()
     if not settings.odds_api_key:
         logger.warning("odds_api_key absente — utilisation de Polymarket uniquement")
+        ODDS_API_DIAG["sports_endpoint_status"] = "no_api_key"
         return []
 
     api_key = settings.odds_api_key
@@ -316,13 +328,19 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
     async with httpx.AsyncClient(timeout=timeout) as client:
         try:
             resp = await client.get(f"{base_url}/sports", params={"apiKey": api_key})
+            ODDS_API_DIAG["sports_endpoint_status"] = resp.status_code
+            ODDS_API_DIAG["quota_used"] = resp.headers.get("x-requests-used", "?")
+            ODDS_API_DIAG["quota_remaining"] = resp.headers.get("x-requests-remaining", "?")
             resp.raise_for_status()
             sports_data = resp.json()
         except Exception as exc:  # noqa: BLE001
             logger.error("odds_api /sports KO : %s", exc)
+            ODDS_API_DIAG["sports_endpoint_status"] = f"error: {exc!r}"[:200]
             return []
 
     active_sport_keys = [s["key"] for s in sports_data if s.get("active") and not s.get("has_outrights")]
+    ODDS_API_DIAG["active_sports_count"] = len(active_sport_keys)
+    ODDS_API_DIAG["active_sports_sample"] = active_sport_keys[:15]
     logger.info("odds_api : %d sports actifs : %s", len(active_sport_keys), ", ".join(active_sport_keys[:10]))
 
     # 2. Pour chaque sport, pull les odds
@@ -338,6 +356,7 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
                         "oddsFormat": "decimal",
                     },
                 )
+                ODDS_API_DIAG["quota_remaining"] = resp.headers.get("x-requests-remaining", "?")
                 resp.raise_for_status()
                 events = resp.json()
                 n_total = len(events)
@@ -347,12 +366,19 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
                     if _kickoff_within_window(kickoff, target_date):
                         kept.append(event)
                 all_events.extend(kept)
-                remaining = resp.headers.get("x-requests-remaining", "?")
+                ODDS_API_DIAG["per_sport"].append({
+                    "sport": sport_key, "n_total": n_total, "n_kept": len(kept),
+                    "status": resp.status_code,
+                })
                 logger.info(
                     "odds_api %s : %d/%d events gardés (quota restant : %s)",
-                    sport_key, len(kept), n_total, remaining,
+                    sport_key, len(kept), n_total, ODDS_API_DIAG["quota_remaining"],
                 )
             except Exception as exc:  # noqa: BLE001
+                ODDS_API_DIAG["per_sport"].append({
+                    "sport": sport_key, "n_total": 0, "n_kept": 0,
+                    "status": "error", "error": str(exc)[:100],
+                })
                 logger.warning("odds_api %s KO : %s", sport_key, exc)
                 continue
 
@@ -475,8 +501,25 @@ async def main() -> None:
         f"Run timestamp UTC : {run_time.isoformat()}",
         f"",
         f"--- Odds API ---",
-        f"Events retournés (après filtre kickoff)     : {len(odds_events)}",
-        f"Events totaux par bookmaker_freq (top 15)    :",
+        f"Status /sports endpoint         : {ODDS_API_DIAG.get('sports_endpoint_status')}",
+        f"Quota used / remaining          : {ODDS_API_DIAG.get('quota_used')} / {ODDS_API_DIAG.get('quota_remaining')}",
+        f"Sports actifs trouvés           : {ODDS_API_DIAG.get('active_sports_count')}",
+        f"Échantillon sports              : {', '.join(ODDS_API_DIAG.get('active_sports_sample', [])[:8])}",
+        f"Events retournés (après filtre) : {len(odds_events)}",
+        f"",
+        f"--- Per-sport detail (top 15) ---",
+    ]
+    per_sport = ODDS_API_DIAG.get("per_sport", [])
+    for ps in per_sport[:15]:
+        status = ps.get("status", "?")
+        err = f" err={ps.get('error', '')[:50]}" if ps.get("error") else ""
+        debug_lines.append(
+            f"  {ps.get('sport', '?')[:30]:30s} : {ps.get('n_kept', 0)}/{ps.get('n_total', 0)} kept | status={status}{err}"
+        )
+
+    debug_lines += [
+        f"",
+        f"--- Bookmakers vus dans events retenus (top 15) ---",
     ]
     bookmaker_freq: dict[str, int] = {}
     for event in odds_events:
