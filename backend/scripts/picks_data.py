@@ -433,10 +433,10 @@ PICKS: list[Pick] = [
         "home_team": "Ruud + Knicks",
         "away_team": "Popyrin + Cavaliers",
         "kickoff": "2026-05-21T13:15:00+00:00",  # Ruud à 15h15 Genève (UTC+2)
-        "pick": "Combiné : Ruud (Geneva QF) + Knicks (NBA G2)",
-        "odds": 1.66,  # 1.28 × 1.30 = 1.664
-        "model_probability": 0.65,  # 0.81 × 0.80
-        "headline": "Combiné 'double favoris' — Ruud (14-1 carrière à Geneva, 3 titres) + Knicks (10-0 à MSG, 23-3 SU comme favori −6,5+ home). Deux picks à ~80% chacun individuellement pour cote combinée 1,66 en mode safety maximum.",
+        "pick": "Combiné BOOSTÉ bwin : Ruud + Knicks @ 2,36",
+        "odds": 2.36,  # cote BOOSTÉE bwin (cote normale 1.28 × 1.42 = 1.82)
+        "model_probability": 0.63,  # 0.81 × 0.78
+        "headline": "Combiné 'double favoris' BOOSTÉ par bwin (1,82 → 2,36, +30%) — Ruud (14-1 carrière à Geneva, 3 titres) + Knicks (10 wins consécutifs à MSG, 23-3 SU comme favori −6,5+ home). Proba combinée ~63%, EV +49% grâce au boost. Le combiné safe du jour devient aussi le plus +EV.",
         "profile_tags": ["combo", "safe_pick", "double_favorites", "credibility_first"],
         "comparison": {
             "matches_analyzed": 14,
@@ -476,8 +476,12 @@ PICKS: list[Pick] = [
         "rationale": [
             "##🎯 Le combiné en 1 ligne",
             "Pari unique 2 jambes : Casper Ruud bat Alexei Popyrin (Geneva QF, 15h15) ET New York Knicks battent Cleveland Cavaliers (NBA ECF Game 2, 02h00 du matin Belgique). Les DEUX doivent gagner pour valider le combiné.",
-            "Mise unique 5€ sur le combiné. Cote totale 1,66 (= 1,28 × 1,30). Si gagné : +3,32€ net. Si perdu (UNE jambe suffit) : −5€.",
-            "Pourquoi un combiné maintenant ? Phase 'crédibilité' de la plateforme : on privilégie la consistance des wins sur l'EV pure. 2 favoris ultra-établis valent mieux qu'1 value bet à 50%.",
+            "Mise unique 5€ sur le combiné. Cote BOOSTÉE bwin 2,36 (vs cote normale 1,82). Si gagné : +6,81€ net. Si perdu (UNE jambe suffit) : −5€.",
+            "##🚀 La cote boostée — le booster qui change tout",
+            "bwin propose une cote BOOSTÉE de 1,82 → 2,36 sur ce combiné (+29% de gain bonifié, marqué '2,72€ de gains boostés en cash').",
+            "Pourquoi un boost ? Marketing : bwin pousse les promos sur les marchés liquides (gros matchs NBA + tennis ATP) pour attirer du volume. C'est de l'argent gratuit quand on a déjà notre analyse en main.",
+            "Impact sur l'EV : 2,36 × 0,63 = 1,49 → **+49% d'espérance** par euro misé. Sans boost on était à +14%, avec boost on est dans le top 1% des opportunités value.",
+            "**Pourquoi un combiné maintenant ?** Phase 'crédibilité' de la plateforme : on privilégie la consistance des wins. 2 favoris ultra-établis (Ruud 81%, Knicks 78%) à proba combinée 63% — sweet spot safety/cote.",
 
             "##🎾 Jambe 1 — Casper Ruud vs Alexei Popyrin (Geneva QF, clay)",
             "Tournoi : ATP 250 Gonet Geneva Open, terre battue intérieure, Genève (Suisse).",
@@ -510,7 +514,7 @@ PICKS: list[Pick] = [
             "##🏀 Jambe 2 — Knicks vs Cavaliers (NBA ECF Game 2)",
             "Conference Finals Est NBA, Game 2 de la série (Knicks mènent 1-0 après le Game 1 historique).",
             "Coup d'envoi : jeudi 21 mai 20h00 ET = vendredi 22 mai 02h00 du matin Belgique. Madison Square Garden, New York.",
-            "Pari : New York Knicks vainqueurs du match (moneyline simple). Cote estimée 1,30 (bwin/Winamax).",
+            "Pari : New York Knicks vainqueurs du match (moneyline simple). Cote bwin réelle 1,42 (légèrement plus généreuse que DraftKings/FanDuel à 1,30 — bwin moins agressive sur ce favori).",
             "New York Knicks : 51-31 saison régulière (4e Est), Jalen Brunson MVP candidate, Mikal Bridges, Karl-Anthony Towns, OG Anunoby. Coach Tom Thibodeau.",
             "Cleveland Cavaliers : 60-22 saison régulière (1ère seed Est) MAIS roster jeune (Mobley 24, Garland 26, Mitchell 27) avec moins d'expérience playoffs.",
 
@@ -537,8 +541,8 @@ PICKS: list[Pick] = [
             "FiveThirtyEight CARMELO : Knicks 79%.",
             "DraftKings projected score : Knicks 111 - Cavaliers 102 (margin +9, implique ~78% Knicks ML).",
             "Computer projection model : Knicks 118 - Cavaliers 111.",
-            "Notre estimation : 80% (modèle + facteur MSG + état mental Cavs).",
-            "Cote 1,30 = book implique 76,9% → notre 80% → edge +3% (cohérent avec Ruud).",
+            "Notre estimation : 78% (modèle + facteur MSG + état mental Cavs, légèrement révisée à la baisse car cote bwin 1,42 suggère le marché est moins agressif).",
+            "Cote bwin 1,42 = book implique 70,4% → notre 78% → edge +7,6% (positif, plus marqué que sur les books US).",
 
             "##💰 Pourquoi un combiné plutôt que 2 picks séparés ?",
             "Pick séparé Ruud 5€ à 1,28 → gain net +1,40€. Pick séparé Knicks 5€ à 1,30 → gain net +1,50€. Total 10€ misés pour gain max 2,90€.",
@@ -546,13 +550,15 @@ PICKS: list[Pick] = [
             "Tradeoff : combiné = AMPLIFICATION du risque (il suffit qu'1 jambe perde pour tout perdre). 0,81 × 0,80 = 65% proba combinée vs 80% chacun individuellement.",
             "Décision : sur 2 favoris à ~80% chacun, le combiné maximise la cote tout en gardant proba > 60% (zone safe). Sur 2 picks à 60% on n'aurait jamais fait un combiné.",
 
-            "##📊 Calcul détaillé du combiné",
+            "##📊 Calcul détaillé du combiné BOOSTÉ",
             "Mise : 5,00€ (fixe).",
-            "Cote totale : 1,28 × 1,30 = 1,664 (arrondi 1,66 sur la fiche).",
-            "Gain potentiel si combiné gagné : 5€ × 1,66 = 8,30€ (gain net +3,30€).",
+            "Cote bwin réelle : Ruud 1,28 × Knicks 1,42 = 1,8176 (cote normale combinée).",
+            "Cote BOOSTÉE par bwin : 2,36 (+29,8% bonus). Promo 'gains boostés en cash' affichée 2,72€.",
+            "Gain potentiel si combiné gagné : 5€ × 2,36 = 11,80€ (gain net +6,80€).",
             "Perte potentielle : −5€ (si UNE des 2 jambes perd, on perd tout).",
-            "Probabilité combinée estimée : 81% × 80% = 64,8% (arrondi 65%).",
-            "Expected Value : (0,65 × 1,66) − 1 = +7,9% par euro misé. Positif.",
+            "Probabilité combinée estimée : 81% × 78% = 63,2% (arrondi 63%).",
+            "Expected Value : (0,63 × 2,36) − 1 = +48,7% par euro misé. Exceptionnel.",
+            "Comparaison sans boost : (0,63 × 1,82) − 1 = +14,7%. Le boost multiplie l'EV par 3.",
 
             "##⚠️ Risques honnêtes",
             "Risque 1 (Ruud) : Popyrin a battu Fritz, donc il peut surprendre. Un Ruud avec une mauvaise journée + Popyrin servant à 75% premières → upset possible (~15% proba).",
