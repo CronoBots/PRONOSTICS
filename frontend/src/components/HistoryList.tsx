@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 import { PickDetail, pickFromHistory } from "@/components/PickDetail";
+import { useAuth } from "@/lib/auth";
 import { HistoryPick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 const MONTH_NAMES = [
@@ -46,12 +47,14 @@ interface DayBucket {
   dayName: string;
   dayNum: number;
   profit: number;
+  allPending: boolean;
   picks: HistoryPick[];
 }
 
 interface WeekBucket {
   num: number;
   profit: number;
+  allPending: boolean;
   days: DayBucket[];
 }
 
@@ -59,6 +62,7 @@ interface MonthBucket {
   key: string;
   label: string;
   profit: number;
+  allPending: boolean;
   weeks: WeekBucket[];
 }
 
@@ -80,39 +84,46 @@ function groupHierarchical(picks: HistoryPick[]): MonthBucket[] {
 
     let m = monthsMap.get(monthKey);
     if (!m) {
-      m = { key: monthKey, label: monthLabel, profit: 0, weeks: [] };
+      m = { key: monthKey, label: monthLabel, profit: 0, allPending: true, weeks: [] };
       monthsMap.set(monthKey, m);
     }
     m.profit += profit;
 
     let w = m.weeks.find((x) => x.num === weekNum);
     if (!w) {
-      w = { num: weekNum, profit: 0, days: [] };
+      w = { num: weekNum, profit: 0, allPending: true, days: [] };
       m.weeks.push(w);
     }
     w.profit += profit;
 
     let day = w.days.find((x) => x.date === p.date);
     if (!day) {
-      day = { date: p.date, dayName, dayNum, profit: 0, picks: [] };
+      day = { date: p.date, dayName, dayNum, profit: 0, allPending: true, picks: [] };
       w.days.push(day);
     }
     day.profit += profit;
     day.picks.push(p);
   }
 
-  // Round profits + sort
+  // Round profits + sort + compute allPending flags
   const months = Array.from(monthsMap.values());
   for (const m of months) {
     m.profit = round2(m.profit);
     m.weeks.sort((a, b) => b.num - a.num);
+    let mAllPending = true;
     for (const w of m.weeks) {
       w.profit = round2(w.profit);
       w.days.sort((a, b) => b.date.localeCompare(a.date));
+      let wAllPending = true;
       for (const d of w.days) {
         d.profit = round2(d.profit);
+        d.allPending = d.picks.every((p) => p.outcome === "pending");
+        if (!d.allPending) wAllPending = false;
       }
+      w.allPending = wAllPending;
+      if (!w.allPending) mAllPending = false;
     }
+    m.allPending = mAllPending;
   }
   return months;
 }
@@ -126,17 +137,28 @@ function fmtSigned(n: number): string {
   return `${n > 0 ? "+" : ""}${n.toFixed(2)} €`;
 }
 
-function ProfitChip({ profit, outcome }: { profit: number; outcome?: HistoryPick["outcome"] }) {
+function ProfitChip({
+  profit,
+  pending,
+}: {
+  profit: number;
+  pending?: boolean;
+}) {
   let cls = "text-white/40 bg-white/5 border-white/10";
-  if (profit > 0) cls = "text-accent-green bg-accent-green/10 border-accent-green/30";
-  else if (profit < 0) cls = "text-accent-red bg-accent-red/10 border-accent-red/30";
-  else if (outcome === "pending") cls = "text-white/40 bg-white/5 border-white/10";
-  else cls = "text-accent-red bg-accent-red/5 border-accent-red/20";
+  let label = fmtSigned(profit);
+  if (pending) {
+    label = "En cours";
+    cls = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
+  } else if (profit > 0) {
+    cls = "text-accent-green bg-accent-green/10 border-accent-green/30";
+  } else if (profit < 0) {
+    cls = "text-accent-red bg-accent-red/10 border-accent-red/30";
+  }
   return (
     <span
-      className={`text-xs font-semibold tabular-nums px-2.5 py-1 rounded-md border ${cls}`}
+      className={`text-xs font-semibold tabular-nums px-2.5 py-1 rounded-md border whitespace-nowrap ${cls}`}
     >
-      {fmtSigned(profit)}
+      {label}
     </span>
   );
 }
@@ -178,6 +200,7 @@ function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
 
 function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
+  const isCombo = pick.match.sport === "combo";
   const time = pick.match.kickoff
     ? new Date(pick.match.kickoff).toLocaleTimeString("fr-FR", {
         hour: "2-digit",
@@ -196,8 +219,14 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           <span className="text-[11px] font-mono text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
             {time}
           </span>
-          <span className="text-[10px] uppercase tracking-wider font-semibold text-accent-blue bg-accent-blue/10 border border-accent-blue/20 px-2 py-0.5 rounded">
-            Simple
+          <span
+            className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded border ${
+              isCombo
+                ? "text-yellow-400 bg-yellow-400/10 border-yellow-400/30"
+                : "text-accent-blue bg-accent-blue/10 border-accent-blue/20"
+            }`}
+          >
+            {isCombo ? "Combiné" : "Simple"}
           </span>
           <span className="text-[11px] font-bold italic bg-bg-base text-white px-2 py-0.5 rounded">
             b<span className="relative">w<span className="absolute -top-0.5 right-0 w-1 h-1 rounded-full bg-yellow-400" /></span>in
@@ -224,7 +253,7 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
         <div className="font-semibold">
           <span className="capitalize">{day.dayName}</span> {day.dayNum}
         </div>
-        <ProfitChip profit={day.profit} />
+        <ProfitChip profit={day.profit} pending={day.allPending} />
       </div>
       <div className="p-3 space-y-2">
         {day.picks.map((p, i) => (
@@ -246,7 +275,7 @@ function WeekSection({
     <div className="mb-5">
       <div className="flex items-center justify-between px-1 mb-2">
         <span className="text-white/50 text-sm">Semaine {week.num}</span>
-        <ProfitChip profit={week.profit} />
+        <ProfitChip profit={week.profit} pending={week.allPending} />
       </div>
       <div className="space-y-3">
         {week.days.map((d) => (
@@ -267,7 +296,7 @@ function MonthHeader({ month, current }: { month: MonthBucket; current: boolean 
       <span className={`font-semibold capitalize ${current ? "text-accent-blue" : "text-white/80"}`}>
         {month.label}
       </span>
-      <ProfitChip profit={month.profit} />
+      <ProfitChip profit={month.profit} pending={month.allPending} />
     </div>
   );
 }
@@ -277,9 +306,15 @@ interface Props {
 }
 
 export function HistoryList({ picks }: Props) {
-  // Masquer les paris en attente : ils sont affichés sur la page /today (Premium)
-  const settled = picks.filter((p) => p.outcome !== "pending");
-  const months = useMemo(() => groupHierarchical(settled), [settled]);
+  const { user, ready } = useAuth();
+  const isPremium = ready && user?.isPremium;
+  // Paris en attente : visibles uniquement par les Premium (gated comme /today).
+  // Les non-Premium voient une carte teaser "Pick du jour réservé Premium".
+  const visiblePicks = isPremium
+    ? picks
+    : picks.filter((p) => p.outcome !== "pending");
+  const pendingPicks = picks.filter((p) => p.outcome === "pending");
+  const months = useMemo(() => groupHierarchical(visiblePicks), [visiblePicks]);
   const [openPick, setOpenPick] = useState<HistoryPick | null>(null);
   const currentMonthKey = (() => {
     const d = new Date();

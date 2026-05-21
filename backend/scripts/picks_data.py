@@ -433,7 +433,7 @@ PICKS: list[Pick] = [
         "home_team": "Ruud + Knicks",
         "away_team": "Popyrin + Cavaliers",
         "kickoff": "2026-05-21T13:15:00+00:00",  # Ruud à 15h15 Genève (UTC+2)
-        "pick": "Combiné BOOSTÉ bwin : Ruud + Knicks @ 2,36",
+        "pick": "Combiné Ruud + Knicks (boosté bwin)",
         "odds": 2.36,  # cote BOOSTÉE bwin (cote normale 1.28 × 1.42 = 1.82)
         "model_probability": 0.63,  # 0.81 × 0.78
         "headline": "Combiné 'double favoris' BOOSTÉ par bwin (1,82 → 2,36, +30%) — Ruud (14-1 carrière à Geneva, 3 titres) + Knicks (10 wins consécutifs à MSG, 23-3 SU comme favori −6,5+ home). Proba combinée ~63%, EV +49% grâce au boost. Le combiné safe du jour devient aussi le plus +EV.",

@@ -1,6 +1,6 @@
 {
   "date": "2026-05-21",
-  "generated_at": "2026-05-21T07:05:17.505081+00:00",
+  "generated_at": "2026-05-21T07:15:01.628023+00:00",
   "safe_pick": {
     "match_id": 1,
     "sport": "combo",
@@ -8,7 +8,7 @@
     "home_team": "Ruud + Knicks",
     "away_team": "Popyrin + Cavaliers",
     "kickoff": "2026-05-21T13:15:00+00:00",
-    "pick": "Combiné BOOSTÉ bwin : Ruud + Knicks @ 2,36",
+    "pick": "Combiné Ruud + Knicks (boosté bwin)",
     "odds": 2.36,
     "model_probability": 0.63,
     "book_probability": 0.4237,
@@ -167,7 +167,7 @@
       "home_team": "Ruud + Knicks",
       "away_team": "Popyrin + Cavaliers",
       "kickoff": "2026-05-21T13:15:00+00:00",
-      "pick": "Combiné BOOSTÉ bwin : Ruud + Knicks @ 2,36",
+      "pick": "Combiné Ruud + Knicks (boosté bwin)",
       "odds": 2.36,
       "model_probability": 0.63,
       "book_probability": 0.4237,

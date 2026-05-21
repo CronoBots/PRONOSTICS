@@ -385,7 +385,7 @@
         "away_team": "Popyrin + Cavaliers",
         "kickoff": "2026-05-21T13:15:00+00:00"
       },
-      "pick": "Combiné BOOSTÉ bwin : Ruud + Knicks @ 2,36",
+      "pick": "Combiné Ruud + Knicks (boosté bwin)",
       "odds": 2.36,
       "model_probability": 0.63,
       "book_probability": 0.4237,
@@ -561,5 +561,5 @@
     "max_profit_single": 8.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-21T07:05:17.503836+00:00"
+  "generated_at": "2026-05-21T07:15:01.627126+00:00"
 }

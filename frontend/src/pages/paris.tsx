@@ -3,12 +3,15 @@ import Head from "next/head";
 
 import { Header } from "@/components/Header";
 import { HistoryList } from "@/components/HistoryList";
+import { useAuth } from "@/lib/auth";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
 export default function ParisPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user, ready } = useAuth();
+  const isPremium = ready && user?.isPremium;
 
   useEffect(() => {
     let cancelled = false;
@@ -23,6 +26,10 @@ export default function ParisPage() {
   }, []);
 
   const picks = history?.picks ?? [];
+  // Non-Premium voient seulement les paris réglés (les "en attente" sont gated sur /today)
+  const displayedCount = isPremium
+    ? picks.length
+    : picks.filter((p) => p.outcome !== "pending").length;
 
   return (
     <>
@@ -43,7 +50,7 @@ export default function ParisPage() {
                 Historique des paris
               </h2>
               <span className="text-[11px] text-white/40">
-                {picks.length} pari{picks.length > 1 ? "s" : ""}
+                {displayedCount} pari{displayedCount > 1 ? "s" : ""}
               </span>
             </div>
             <HistoryList picks={picks} />
