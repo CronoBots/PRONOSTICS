@@ -610,7 +610,12 @@ PICKS: list[Pick] = [
                 "pick": "Casper Ruud vainqueur du match",
                 "kickoff": "2026-05-21T13:15:00+00:00",
                 "odds": 1.28,
-                "outcome": "pending",
+                "outcome": "win",
+                "result": {
+                    "score_text": "Ruud d. Popyrin (Ruud passe en demi-finale)",
+                    "summary": "Casper Ruud a remporté son quart de finale contre Alexei Popyrin et est qualifié pour la demi-finale du Geneva Open de demain (22/05). Confirmation via la liste des demi-finalistes Geneva : Ruud, Navone, Rinderknech, Bublik.",
+                    "bet_outcome": "✅ Ruud gagne — 1ère jambe du combiné validée",
+                },
                 "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%.",
             },
             {
