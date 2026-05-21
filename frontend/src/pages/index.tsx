@@ -99,14 +99,6 @@ export default function Home() {
     };
   }, []);
 
-  // Verrouille le scroll sur la Home (no-scroll par design)
-  useEffect(() => {
-    document.body.classList.add("lock-scroll");
-    return () => {
-      document.body.classList.remove("lock-scroll");
-    };
-  }, []);
-
   // Détecte si des filtres sont actifs (sauvegardés en localStorage)
   useEffect(() => {
     try {
@@ -157,15 +149,10 @@ export default function Home() {
       </Head>
 
       <main
-        className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-2 flex flex-col"
-        style={{
-          // 100svh = small viewport height (stable, ne change pas avec
-          // l'apparition du clavier). Variables --safe-* pinnées au load.
-          height: "calc(100svh - 6.5rem - var(--safe-top) - var(--safe-bottom))",
-        }}
+        className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-4 flex flex-col gap-3"
       >
         {/* Header compact */}
-        <header className="flex items-center justify-between mb-3 shrink-0">
+        <header className="flex items-center justify-between shrink-0">
           <button className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5">
             ←
           </button>
@@ -191,9 +178,9 @@ export default function Home() {
         {loading && <HomeSkeleton />}
 
         {!loading && history && (
-          <div className="flex-1 flex flex-col gap-3 min-h-0">
-            {/* Chart + bouton ⋯ — flex-1 prend l'espace restant */}
-            <section className="relative flex-1 min-h-[180px]">
+          <>
+            {/* Chart : hauteur fixe (pas de flex-1 stretch) */}
+            <section className="relative h-[240px]">
               <BankrollChart
                 picks={picks}
                 startingBankroll={startingBankroll}
@@ -222,7 +209,7 @@ export default function Home() {
             </section>
 
             {/* Filter pills */}
-            <div className="grid grid-cols-5 gap-1.5 shrink-0">
+            <div className="grid grid-cols-5 gap-1.5">
               {PERIODS.map((p) => (
                 <button
                   key={p}
@@ -245,7 +232,7 @@ export default function Home() {
             </div>
 
             {/* Analyses / Calendrier */}
-            <div className="grid grid-cols-2 gap-2 shrink-0">
+            <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/analyzer"
                 className="bg-bg-card border border-white/[0.06] rounded-xl py-2.5 flex items-center justify-center gap-1.5"
@@ -268,9 +255,9 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* 4 stat tiles — pas de signe +/- */}
+            {/* 4 stat tiles — taille naturelle, pas étirées */}
             {stats && (
-              <div className="grid grid-cols-2 gap-2 shrink-0">
+              <div className="grid grid-cols-2 gap-2">
                 <StatTile
                   label="PARIS"
                   value={`${settledCount}`}
@@ -297,7 +284,7 @@ export default function Home() {
                 />
               </div>
             )}
-          </div>
+          </>
         )}
       </main>
 
