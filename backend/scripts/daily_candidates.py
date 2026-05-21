@@ -268,6 +268,11 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
         n_books=n_books,
     )
 
+    # Pénalité supplémentaire pour les matchs imminents (< 30 min = peu de temps pour analyser)
+    minutes_until = kickoff_minutes_from_now(event.get("commence_time", ""))
+    if minutes_until is not None and minutes_until < 30:
+        safety = round(safety * 0.5, 1)  # -50% sur le safety si imminent
+
     return {
         "sport_key": event.get("sport_key", ""),
         "sport_title": event.get("sport_title", ""),
@@ -318,7 +323,7 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
             return []
 
     active_sport_keys = [s["key"] for s in sports_data if s.get("active") and not s.get("has_outrights")]
-    logger.info("odds_api : %d sports actifs", len(active_sport_keys))
+    logger.info("odds_api : %d sports actifs : %s", len(active_sport_keys), ", ".join(active_sport_keys[:10]))
 
     # 2. Pour chaque sport, pull les odds
     async with httpx.AsyncClient(timeout=timeout) as client:
@@ -335,17 +340,17 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
                 )
                 resp.raise_for_status()
                 events = resp.json()
-                # Filtre par fenêtre kickoff
+                n_total = len(events)
+                kept = []
                 for event in events:
                     kickoff = event.get("commence_time", "")
                     if _kickoff_within_window(kickoff, target_date):
-                        all_events.append(event)
+                        kept.append(event)
+                all_events.extend(kept)
                 remaining = resp.headers.get("x-requests-remaining", "?")
                 logger.info(
-                    "odds_api %s : %d events filtrés (quota restant : %s)",
-                    sport_key,
-                    len([e for e in events if _kickoff_within_window(e.get("commence_time", ""), target_date)]),
-                    remaining,
+                    "odds_api %s : %d/%d events gardés (quota restant : %s)",
+                    sport_key, len(kept), n_total, remaining,
                 )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("odds_api %s KO : %s", sport_key, exc)
@@ -356,10 +361,11 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
 
 
 def _kickoff_within_window(iso_kickoff: str, target_date: date) -> bool:
-    """True si kickoff dans [now + buffer, target_date + 36h].
+    """True si kickoff dans [now, target_date + 36h].
 
-    On exclut les matchs déjà commencés ou imminents (< KICKOFF_BUFFER_MINUTES)
-    pour n'inclure que ce qui est réellement bettable.
+    On exclut UNIQUEMENT les matchs déjà commencés (kickoff < now).
+    Les matchs imminents sont gardés et reçoivent une pénalité de safety_score
+    plus tard (cf get_imminent_penalty).
     """
     if not iso_kickoff:
         return False
@@ -369,19 +375,32 @@ def _kickoff_within_window(iso_kickoff: str, target_date: date) -> bool:
         dt = datetime.fromisoformat(iso_kickoff)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        # Borne basse : maintenant + buffer (matchs assez en avance pour analyser)
+        # Borne basse : kickoff doit être dans le futur
         now = datetime.now(timezone.utc)
-        start = max(
-            datetime.combine(target_date, datetime.min.time(), tzinfo=timezone.utc),
-            now + timedelta(minutes=KICKOFF_BUFFER_MINUTES),
-        )
-        # Borne haute : target_date + window
+        if dt < now:
+            return False
+        # Borne haute : pas plus de 36h après target_date
         end = datetime.combine(target_date, datetime.min.time(), tzinfo=timezone.utc) + timedelta(
             hours=KICKOFF_WINDOW_HOURS
         )
-        return start <= dt <= end
+        return dt <= end
     except (ValueError, TypeError):
         return False
+
+
+def kickoff_minutes_from_now(iso_kickoff: str) -> int | None:
+    """Retourne le nombre de minutes jusqu'au kickoff (négatif si passé)."""
+    if not iso_kickoff:
+        return None
+    try:
+        if iso_kickoff.endswith("Z"):
+            iso_kickoff = iso_kickoff.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(iso_kickoff)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return int((dt - datetime.now(timezone.utc)).total_seconds() / 60)
+    except (ValueError, TypeError):
+        return None
 
 
 async def main() -> None:
