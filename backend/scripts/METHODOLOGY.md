@@ -3,9 +3,35 @@
 > **Document de référence** pour la sélection du pari quotidien.
 > À appliquer chaque jour, sans exception. Toute déviation doit être documentée.
 >
-> **Principe directeur** : on préfère 30 min d'analyse pour 1 pick robuste
+> **Principe directeur** : on préfère 45-60 min d'analyse pour 1 pick robuste
 > que 5 min pour un pick "intuitif". La crédibilité de la plateforme repose
 > sur la consistance des wins, pas sur la vitesse de publication.
+
+---
+
+## 🧭 Source primaire : Claude en conversation
+
+**Décision opérationnelle (2026-05-21)** : Claude est la source primaire des picks,
+pas le workflow automatique. Le workflow `daily-candidates.yml` continue de tourner
+à 7h Belgique en parallèle comme **backup silencieux + 2ème regard**, mais l'analyse
+décisionnelle est faite par Claude **dans la conversation**.
+
+### Rythme quotidien
+- **J matin (7h-8h Belgique)** : l'utilisateur ouvre la conversation et demande le pick
+- **J matin (analyse Claude, 45-60 min)** : exhaustive, en live, dans le chat
+- **J matin (8h-9h Belgique)** : décision + placement du pari
+- **J+1 matin** : utilisateur confirme résultat (win/loss), `picks_data.py` mis à jour
+
+### Périmètre du pick
+- Couvre les matchs **du jour J + nuit J→J+1** (= ~24h de fenêtre)
+- Pas d'analyse anticipée la veille (données plus fraîches le matin J)
+- Pas de "pick stocké" — chaque jour est nouveau
+
+### Rôle du workflow auto en backup
+- Tourne quand même à 7h Belgique chaque matin
+- Produit `backend/data/candidates/{date}.csv` + `.md` + `.debug.txt`
+- Claude peut le consulter pour avoir un **2ème regard quantitatif** (notamment l'edge vs marché consensus)
+- Si écart majeur entre l'analyse Claude et le ranking workflow → investiguer avant de publier
 
 ---
 
@@ -22,14 +48,15 @@ parmi tous les marchés disponibles, avec :
 
 ## ⏱ Investissement temps recommandé
 
-| Phase | Durée min | Détail |
+| Phase | Durée | Détail |
 |---|---:|---|
-| 1. Cartographie matchs J+0/J+1 | 5 min | Tous sports, tous bookmakers |
-| 2. Pré-filtre quantitatif | 5 min | Cote 1.20-2.50, liquidité suffisante |
-| 3. Analyse top 5-10 candidats | 15 min | 3 sources/candidat minimum |
-| 4. Comparaison + sélection | 5 min | Tableau de risques, choix final |
-| 5. Documentation pick | 5 min | Analyse 45+ points, sources cliquables |
-| **Total minimum** | **35 min** | Pas de raccourci |
+| 1. Cartographie exhaustive J+0 (jour + nuit) | 10 min | Tous sports, tous ligues, tous bookmakers |
+| 2. Pré-filtre quantitatif | 5 min | Cote 1.20-2.30, liquidité ≥3 books, kickoff > now+1h |
+| 3. Analyse profonde top 5-8 candidats | 20-30 min | 3-4 sources/candidat (Tier 1+2+3) |
+| 4. Calcul proba multi-méthodes (A/B/C/D) | 5 min | Médiane de 3-4 méthodes indépendantes |
+| 5. Tableau comparatif + verdict | 5 min | Risques top 3 par candidat |
+| 6. Documentation pick (analyse 45+ points) | 10 min | `picks_data.py` + comparison.top_alternatives |
+| **Total** | **55-65 min** | Pas de raccourci sauf urgence |
 
 **Si moins de 30 min disponibles** → pas de pick publié ce jour-là.
 La discipline > le volume. Une journée sans pick > un pick bâclé qui perd.
