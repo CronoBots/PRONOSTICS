@@ -67,6 +67,11 @@ KICKOFF_WINDOW_HOURS = 36
 COTE_MIN = 1.10
 COTE_MAX = 2.50
 
+# Buffer avant le kickoff (en minutes). On exclut les matchs qui démarrent
+# dans moins que ce délai pour avoir le temps d'analyser + parier.
+# Cours pratique : utilisateur consulte le CSV vers 7h-8h Belgique.
+KICKOFF_BUFFER_MINUTES = 30
+
 
 def parse_target_date(arg: str | None) -> date:
     if arg:
@@ -351,7 +356,11 @@ async def fetch_odds_api_events(target_date: date) -> list[dict]:
 
 
 def _kickoff_within_window(iso_kickoff: str, target_date: date) -> bool:
-    """True si kickoff dans [target_date, target_date + 36h]."""
+    """True si kickoff dans [now + buffer, target_date + 36h].
+
+    On exclut les matchs déjà commencés ou imminents (< KICKOFF_BUFFER_MINUTES)
+    pour n'inclure que ce qui est réellement bettable.
+    """
     if not iso_kickoff:
         return False
     try:
@@ -360,9 +369,16 @@ def _kickoff_within_window(iso_kickoff: str, target_date: date) -> bool:
         dt = datetime.fromisoformat(iso_kickoff)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        # Fenêtre = [target_date 00:00 UTC, target_date 00:00 UTC + 36h]
-        start = datetime.combine(target_date, datetime.min.time(), tzinfo=timezone.utc)
-        end = start + timedelta(hours=KICKOFF_WINDOW_HOURS)
+        # Borne basse : maintenant + buffer (matchs assez en avance pour analyser)
+        now = datetime.now(timezone.utc)
+        start = max(
+            datetime.combine(target_date, datetime.min.time(), tzinfo=timezone.utc),
+            now + timedelta(minutes=KICKOFF_BUFFER_MINUTES),
+        )
+        # Borne haute : target_date + window
+        end = datetime.combine(target_date, datetime.min.time(), tzinfo=timezone.utc) + timedelta(
+            hours=KICKOFF_WINDOW_HOURS
+        )
         return start <= dt <= end
     except (ValueError, TypeError):
         return False
