@@ -405,7 +405,8 @@ def kickoff_minutes_from_now(iso_kickoff: str) -> int | None:
 
 async def main() -> None:
     target_date = parse_target_date(sys.argv[1] if len(sys.argv) > 1 else None)
-    logger.info("=== daily_candidates pour %s ===", target_date)
+    run_time = datetime.now(timezone.utc)
+    logger.info("=== daily_candidates pour %s (run %s UTC) ===", target_date, run_time.isoformat())
 
     # 1. Pull sources en parallèle
     odds_events_task = fetch_odds_api_events(target_date)
@@ -466,9 +467,67 @@ async def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{target_date.isoformat()}.csv"
 
+    # Fichier de diagnostic TOUJOURS écrit (même si 0 picks)
+    # → permet de comprendre pourquoi 0 picks sans avoir accès aux logs GH Actions
+    debug_path = out_dir / f"{target_date.isoformat()}.debug.txt"
+    debug_lines = [
+        f"=== Daily candidates debug — {target_date.isoformat()} ===",
+        f"Run timestamp UTC : {run_time.isoformat()}",
+        f"",
+        f"--- Odds API ---",
+        f"Events retournés (après filtre kickoff)     : {len(odds_events)}",
+        f"Events totaux par bookmaker_freq (top 15)    :",
+    ]
+    bookmaker_freq: dict[str, int] = {}
+    for event in odds_events:
+        for bm in event.get("bookmakers", []):
+            key = bm.get("key", "")
+            if key:
+                bookmaker_freq[key] = bookmaker_freq.get(key, 0) + 1
+    for book, count in sorted(bookmaker_freq.items(), key=lambda x: -x[1])[:15]:
+        debug_lines.append(f"  {book:25s} : {count} events")
+
+    # Sample des 5 premiers events bruts (sport + kickoff + bookmaker count)
+    debug_lines.append("")
+    debug_lines.append("--- Sample 5 premiers events Odds API ---")
+    for ev in odds_events[:5]:
+        debug_lines.append(
+            f"  {ev.get('sport_key', '?')[:25]:25s} | kickoff={ev.get('commence_time', '?')[:19]} "
+            f"| {len(ev.get('bookmakers', []))} books | {ev.get('home_team', '')} vs {ev.get('away_team', '')}"
+        )
+
+    debug_lines.append("")
+    debug_lines.append("--- Polymarket ---")
+    debug_lines.append(f"Picks bruts retournés          : {len(polymarket_picks)}")
+    pm_in_window = [
+        p for p in polymarket_picks
+        if polymarket.is_kickoff_within(p.get("kickoff_iso", ""), hours=KICKOFF_WINDOW_HOURS)
+    ]
+    debug_lines.append(f"Picks dans fenêtre {KICKOFF_WINDOW_HOURS}h        : {len(pm_in_window)}")
+    debug_lines.append("Sample 3 premiers picks Polymarket :")
+    for p in pm_in_window[:3]:
+        debug_lines.append(
+            f"  '{p.get('question', '')[:60]}' | prob={p.get('polymarket_prob', 0):.2f} "
+            f"| kickoff={p.get('kickoff_iso', '?')[:19]}"
+        )
+
+    debug_lines.append("")
+    debug_lines.append(f"--- Résultat final ---")
+    debug_lines.append(f"Candidats retenus dans CSV     : {len(rows)}")
+    if not rows:
+        debug_lines.append("→ AUCUN candidat retenu. Causes possibles :")
+        debug_lines.append("  1. Quota Odds API épuisé (vérifier x-requests-remaining dans logs)")
+        debug_lines.append("  2. Tous les events ont < 2 bookmakers (illiquide)")
+        debug_lines.append("  3. Toutes les cotes hors range 1.10-2.50")
+        debug_lines.append("  4. Aucun match dans la fenêtre kickoff (filtre trop agressif)")
+
+    debug_path.write_text("\n".join(debug_lines), encoding="utf-8")
+    logger.info("Diagnostic écrit : %s", debug_path)
+
     if not rows:
         out_path.write_text(
             "Aucun candidat retenu — données insuffisantes ou kickoff hors fenêtre.\n"
+            f"Voir {debug_path.name} pour le diagnostic détaillé.\n"
         )
         logger.warning("Aucun candidat retenu pour %s", target_date)
         return
