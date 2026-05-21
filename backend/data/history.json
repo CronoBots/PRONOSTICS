@@ -327,10 +327,16 @@
         "https://pickdawgz.com/mlb-picks/guardians-vs-tigers-prediction-5-20-2026-todays-mlb-picks/"
       ],
       "stake": 5.0,
-      "outcome": "pending",
-      "profit": 0.0,
-      "bankroll_after": 25.0,
-      "result": null,
+      "outcome": "loss",
+      "profit": -5.0,
+      "bankroll_after": 20.0,
+      "result": {
+        "score_home": 2,
+        "score_away": 3,
+        "score_text": "Guardians 3 - Tigers 2 (10 manches)",
+        "summary": "Match perdu en 10 manches sur un triple d'Angel Martínez face à Tyler Holton, suivi d'un double RBI de José Ramírez. Cleveland Tanner Bibee a dominé 8 manches (1 ER, 4 hits) — exactement l'inverse de notre lecture sur son inefficacité à l'extérieur. Detroit avait pourtant l'occasion de gagner en 9e (1ers et 2e, aucun out) : 3 strikeouts consécutifs. 5e défaite consécutive des Tigers, 13e en 15 matchs.",
+        "bet_outcome": "❌ Cleveland gagne en extras 3-2 — pari perdu, perte −5.00€. Bibee (le lanceur visé) a réalisé sa meilleure sortie de la saison. La discipline > la confiance."
+      },
       "comparison": {
         "matches_analyzed": 17,
         "top_alternatives": [
@@ -374,26 +380,26 @@
   "stats": {
     "total_picks": 4,
     "won": 3,
-    "lost": 0,
-    "pending": 1,
-    "profit": 20.0,
-    "roi_percent": 133.33,
-    "average_odds": 2.333,
-    "win_rate": 100.0,
+    "lost": 1,
+    "pending": 0,
+    "profit": 15.0,
+    "roi_percent": 75.0,
+    "average_odds": 2.433,
+    "win_rate": 75.0,
     "starting_bankroll": 5.0,
-    "current_bankroll": 25.0,
-    "progression_percent": 400.0,
-    "drawdown_max": 0.0,
-    "current_streak": 3,
+    "current_bankroll": 20.0,
+    "progression_percent": 300.0,
+    "drawdown_max": 5.0,
+    "current_streak": -1,
     "best_streak": 3,
-    "worst_streak": 0,
+    "worst_streak": -1,
     "total_stake_played": 20.0,
-    "pending_stake": 5.0,
+    "pending_stake": 0,
     "avg_stake": 5.0,
     "max_stake": 5.0,
     "max_odds_won": 2.7,
     "max_profit_single": 8.5,
-    "max_loss_single": 0.0
+    "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-20T19:55:03.433336+00:00"
+  "generated_at": "2026-05-21T05:37:47.254944+00:00"
 }

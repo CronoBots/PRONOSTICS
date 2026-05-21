@@ -416,6 +416,13 @@ PICKS: list[Pick] = [
             "https://pickdawgz.com/mlb-picks/guardians-vs-tigers-prediction-5-20-2026-todays-mlb-picks/",
         ],
         "stake": STAKE,
-        "outcome": "pending",
+        "outcome": "loss",
+        "result": {
+            "score_home": 2,
+            "score_away": 3,
+            "score_text": "Guardians 3 - Tigers 2 (10 manches)",
+            "summary": "Match perdu en 10 manches sur un triple d'Angel Martínez face à Tyler Holton, suivi d'un double RBI de José Ramírez. Cleveland Tanner Bibee a dominé 8 manches (1 ER, 4 hits) — exactement l'inverse de notre lecture sur son inefficacité à l'extérieur. Detroit avait pourtant l'occasion de gagner en 9e (1ers et 2e, aucun out) : 3 strikeouts consécutifs. 5e défaite consécutive des Tigers, 13e en 15 matchs.",
+            "bet_outcome": "❌ Cleveland gagne en extras 3-2 — pari perdu, perte −5.00€. Bibee (le lanceur visé) a réalisé sa meilleure sortie de la saison. La discipline > la confiance.",
+        },
     },
 ]
