@@ -100,34 +100,74 @@ def match_polymarket_to_oddsapi(
 ) -> dict[str, dict]:
     """Tente d'associer chaque event Odds API à un pick Polymarket correspondant.
 
+    Matching multi-champs : on cherche les tokens d'équipes dans
+    question + event_title + market_slug (Polymarket) — plus généreux qu'avant.
+    Bonus si la date de kickoff est proche (±48h).
+
     Returns:
         Dict keyed by oddsapi event_id, value = polymarket pick (ou None)
     """
     associations: dict[str, dict] = {}
+    n_total_matched = 0
+
     for event in oddsapi_events:
         event_id = event.get("id")
         if not event_id:
             continue
         home = event.get("home_team", "")
         away = event.get("away_team", "")
-        kickoff = event.get("commence_time", "")
+        oddsapi_kickoff = event.get("commence_time", "")
 
         best_match = None
         best_score = 0
         for pm_pick in polymarket_picks:
-            question = pm_pick.get("question", "")
-            # Score = combien de tokens (home_team, away_team) on retrouve dans question
+            # Concat de tous les champs textuels Polymarket
+            blob = " ".join([
+                pm_pick.get("question", ""),
+                pm_pick.get("event_title", ""),
+                pm_pick.get("market_slug", ""),
+            ]).lower()
+
             score = 0
-            if teams_overlap(home, question):
+            if teams_overlap(home, blob):
                 score += 1
-            if teams_overlap(away, question):
+            if teams_overlap(away, blob):
                 score += 1
+
+            # Bonus date proche (±48h entre les 2 sources)
+            pm_kickoff = pm_pick.get("kickoff_iso", "")
+            if score > 0 and _dates_close(oddsapi_kickoff, pm_kickoff, max_hours=48):
+                score += 1
+
             if score > best_score:
                 best_score = score
                 best_match = pm_pick
-        if best_match and best_score >= 1:
+
+        # Au moins 1 équipe en commun ET (date proche OU 2 équipes en commun)
+        if best_match and best_score >= 2:
             associations[event_id] = best_match
+            n_total_matched += 1
+
+    logger.info("polymarket matching: %d events associés sur %d events odds_api", n_total_matched, len(oddsapi_events))
     return associations
+
+
+def _dates_close(iso_a: str, iso_b: str, max_hours: int = 48) -> bool:
+    """True si les 2 dates ISO sont à moins de `max_hours` d'écart."""
+    if not iso_a or not iso_b:
+        return False
+    try:
+        a = iso_a.replace("Z", "+00:00") if iso_a.endswith("Z") else iso_a
+        b = iso_b.replace("Z", "+00:00") if iso_b.endswith("Z") else iso_b
+        da = datetime.fromisoformat(a)
+        db = datetime.fromisoformat(b)
+        if da.tzinfo is None:
+            da = da.replace(tzinfo=timezone.utc)
+        if db.tzinfo is None:
+            db = db.replace(tzinfo=timezone.utc)
+        return abs((da - db).total_seconds()) <= max_hours * 3600
+    except (ValueError, TypeError):
+        return False
 
 
 def extract_books_odds(event: dict) -> dict[str, dict[str, float]]:
@@ -213,10 +253,15 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
     # Edge vs book préféré (bwin si dispo, sinon fallback)
     edge = compute_edge(preferred_cote, combined_prob or fair_prob) if preferred_cote else 0.0
 
-    # Safety score
+    # Safety score (avec pénalité si edge suspect sur peu de books)
     n_books = len(books_list)
     consensus_strength = min(1.0, n_books / 5)  # 5+ books = consensus full
-    safety = safety_score(combined_prob or fair_prob, edge, consensus_strength)
+    safety = safety_score(
+        fair_prob=combined_prob or fair_prob,
+        edge=edge,
+        consensus_strength=consensus_strength,
+        n_books=n_books,
+    )
 
     return {
         "sport_key": event.get("sport_key", ""),
@@ -337,17 +382,37 @@ async def main() -> None:
     if not odds_events:
         logger.warning("Aucun event Odds API : Polymarket-only output dégradé")
 
+    # Diagnostic : quels bookmakers sont vus dans les events Odds API ?
+    bookmaker_freq: dict[str, int] = {}
+    for event in odds_events:
+        for bm in event.get("bookmakers", []):
+            key = bm.get("key", "")
+            if key:
+                bookmaker_freq[key] = bookmaker_freq.get(key, 0) + 1
+    top_books = sorted(bookmaker_freq.items(), key=lambda x: -x[1])[:15]
+    logger.info("=== Top 15 bookmakers vus (fréquence) ===")
+    for book, count in top_books:
+        logger.info("  %s : %d events", book, count)
+
     # 2. Matching Polymarket ↔ Odds API
+    logger.info("=== Diagnostic Polymarket ===")
+    logger.info("Picks Polymarket bruts : %d", len(polymarket_picks))
     pm_pre_filtered = [
         p for p in polymarket_picks
         if polymarket.is_kickoff_within(p.get("kickoff_iso", ""), hours=KICKOFF_WINDOW_HOURS)
     ]
+    logger.info("Picks Polymarket dans fenêtre %dh : %d", KICKOFF_WINDOW_HOURS, len(pm_pre_filtered))
+    if pm_pre_filtered:
+        # Log 3 exemples pour debug
+        for p in pm_pre_filtered[:3]:
+            logger.info(
+                "  ex: '%s' (slug=%s, kickoff=%s, prob=%.2f)",
+                p.get("question", "")[:60],
+                p.get("market_slug", "")[:40],
+                p.get("kickoff_iso", "")[:19],
+                p.get("polymarket_prob", 0),
+            )
     associations = match_polymarket_to_oddsapi(pm_pre_filtered, odds_events)
-    logger.info(
-        "Matching : %d events odds_api associés à un marché Polymarket (sur %d events)",
-        len(associations),
-        len(odds_events),
-    )
 
     # 3. Process chaque event
     rows: list[dict] = []

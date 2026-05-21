@@ -110,22 +110,44 @@ def safety_score(
     fair_prob: float,
     edge: float,
     consensus_strength: float = 1.0,
+    n_books: int = 0,
 ) -> float:
     """Score composite pour ranker les candidats par 'safety'.
 
-    Heuristique :
-    - Probabilité haute (favori clair) = bonus
-    - Edge positif (book sous-cote) = bonus modeste
-    - Consensus fort entre sources (peu de variance) = bonus
+    Calibrage : on récompense la proba haute (favori clair) et un edge
+    modeste. On pénalise FORTEMENT les edges anormalement grands sur peu
+    de bookmakers (signaux artificiels typiques d'un outlier 1 book).
 
     Returns:
         Score 0-100, plus haut = plus safe.
     """
     if fair_prob <= 0:
         return 0.0
-    # Composante proba : 0 si proba < 50%, croît rapidement au-delà
-    prob_score = max(0, (fair_prob - 0.5) * 200)  # 0 à 100 entre proba 50% et 100%
-    # Composante edge : +20 max si edge > 10%
-    edge_score = max(-20, min(20, edge * 200))
-    # Pondération par consensus (0-1)
-    return round((prob_score + edge_score) * consensus_strength, 1)
+
+    # Composante proba : 0 si proba < 50%, croît jusqu'à 100 à proba=100%
+    prob_score = max(0, (fair_prob - 0.5) * 200)
+
+    # Edge crédité par paliers selon la fiabilité de l'estimation (n_books)
+    # Plus on a de books, plus on peut faire confiance à l'edge calculé.
+    if n_books >= 10:
+        trusted_edge_max = 0.20  # on accepte edges jusqu'à ±20%
+    elif n_books >= 6:
+        trusted_edge_max = 0.10  # ±10% max crédible
+    elif n_books >= 3:
+        trusted_edge_max = 0.05  # ±5% max crédible
+    else:
+        trusted_edge_max = 0.0  # 0-2 books = pas d'edge crédible
+    trusted_edge = max(-trusted_edge_max, min(trusted_edge_max, edge))
+    edge_score = trusted_edge * 100
+
+    # Pénalité forte si l'edge brut dépasse fortement le 'trusted_edge_max'
+    # (= signal d'alerte 'cote outlier sur 1 book')
+    suspicious_penalty = 0.0
+    if abs(edge) > trusted_edge_max + 0.15:
+        # Au-delà de 15 pts au-dessus du seuil de confiance = suspect
+        excess = abs(edge) - (trusted_edge_max + 0.15)
+        suspicious_penalty = -min(40, excess * 100)
+
+    raw = prob_score + edge_score + suspicious_penalty
+    weighted = raw * consensus_strength
+    return round(max(0, weighted), 1)
