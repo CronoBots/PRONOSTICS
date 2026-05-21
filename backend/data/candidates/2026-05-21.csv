@@ -1,101 +1,43 @@
 sport_key,sport_title,kickoff,home_team,away_team,fav_pick,fair_cote,fair_prob_pct,book_used,book_cote,median_cote,polymarket_prob_pct,combined_prob_pct,edge_vs_book_pct,n_books,safety_score
-tennis_atp_french_open,ATP French Open,2026-05-21T09:00:00Z,Marco Cecchinato,Andrea Pellegrino,Andrea Pellegrino,1.237,80.8,pinnacle,1.78,1.14,,80.8,43.9,4,65.3
-baseball_kbo,KBO,2026-05-21T09:31:43Z,Doosan Bears,NC Dinos,Doosan Bears,1.425,70.2,williamhill,1.67,1.33,,70.2,17.19,13,60.4
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Al-Nassr,Damac,Al-Nassr,1.172,85.3,williamhill,1.1,1.07,,85.3,-6.14,28,58.4
-baseball_kbo,KBO,2026-05-21T09:30:35Z,Samsung Lions,KT Wiz,KT Wiz,1.465,68.3,williamhill,2.5,1.35,,68.3,70.65,11,56.5
+baseball_kbo,KBO,2026-05-21T09:31:43Z,Doosan Bears,NC Dinos,Doosan Bears,1.357,73.7,williamhill,1.67,1.26,,73.7,23.07,13,67.4
+baseball_kbo,KBO,2026-05-21T09:31:24Z,Kia Tigers,LG Twins,Kia Tigers,1.406,71.1,williamhill,1.67,1.31,,71.1,18.78,13,61.0
+baseball_npb,NPB,2026-05-21T09:01:00Z,Tokyo Yakult Swallows,Yomiuri Giants,Tokyo Yakult Swallows,1.212,82.5,pinnacle,1.15,1.14,,82.5,-5.12,14,59.9
+handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T17:00:00Z,Füchse Berlin,TSV Hannover-Burgdorf,Füchse Berlin,1.208,82.8,pinnacle,1.08,1.09,,82.8,-10.6,23,55.0
+baseball_kbo,KBO,2026-05-21T09:31:08Z,Kiwoom Heroes,SSG Landers,Kiwoom Heroes,1.511,66.2,williamhill,1.91,1.4,,66.2,26.41,13,52.4
 baseball_ncaa,NCAA Baseball,2026-05-21T14:00:00Z,Sam Houston St Bearkats,Liberty Flames,Liberty Flames,1.329,75.2,,,1.25,,75.2,0.0,5,50.5
+baseball_kbo,KBO,2026-05-21T09:30:25Z,Hanwha Eagles,Lotte Giants,Lotte Giants,1.362,73.4,williamhill,2.1,1.26,,73.4,54.19,12,47.7
 baseball_ncaa,NCAA Baseball,2026-05-21T15:00:00Z,Georgia Tech Yellow Jackets,Virginia Cavaliers,Georgia Tech Yellow Jackets,1.356,73.7,,,1.28,,73.7,0.0,5,47.5
-soccer_conmebol_copa_sudamericana,Copa Sudamericana,2026-05-22T00:00:00Z,Racing Club,Caracas FC,Racing Club,1.244,80.4,williamhill,1.15,1.15,,80.4,-7.56,24,45.7
-handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T17:00:00Z,Füchse Berlin,TSV Hannover-Burgdorf,Füchse Berlin,1.208,82.8,pinnacle,1.08,1.09,,82.8,-10.6,23,45.6
-soccer_conmebol_copa_sudamericana,Copa Sudamericana,2026-05-21T22:00:00Z,Clube Atlético Mineiro,Club Cienciano,Clube Atlético Mineiro,1.268,78.9,williamhill,1.18,1.18,,78.9,-6.94,23,43.8
-aussierules_afl,AFL,2026-05-22T10:30:37Z,Fremantle Dockers,St Kilda Saints,Fremantle Dockers,1.328,75.3,pinnacle,1.28,1.27,,75.3,-3.61,18,43.4
-baseball_npb,NPB,2026-05-21T09:01:00Z,Tokyo Yakult Swallows,Yomiuri Giants,Tokyo Yakult Swallows,1.249,80.1,pinnacle,1.14,1.16,,80.1,-8.73,15,42.7
-baseball_kbo,KBO,2026-05-21T09:30:25Z,Hanwha Eagles,Lotte Giants,Lotte Giants,1.633,61.2,williamhill,2.1,1.54,,61.2,28.6,12,42.5
+aussierules_afl,AFL,2026-05-22T10:30:37Z,Fremantle Dockers,St Kilda Saints,Fremantle Dockers,1.334,75.0,pinnacle,1.28,1.27,,75.0,-4.05,17,45.9
+baseball_npb,NPB,2026-05-21T09:02:00Z,Hiroshima Toyo Carp,Yokohama DeNA BayStars,Yokohama DeNA BayStars,1.369,73.0,pinnacle,1.35,1.27,,73.0,-1.39,15,44.7
 baseball_ncaa,NCAA Baseball,2026-05-21T17:30:00Z,Middle Tennessee Blue Raiders,Jacksonville St Gamecocks,Jacksonville St Gamecocks,1.333,75.0,,,1.25,,75.0,0.0,4,40.0
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Aliaksandra Sasnovich,Marina Bassols Ribera,Aliaksandra Sasnovich,1.355,73.8,pinnacle,1.3,1.28,,73.8,-4.06,6,39.5
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Al-Fayha,Al-Hilal,Al-Hilal,1.29,77.5,williamhill,1.18,1.18,,77.5,-8.53,28,38.0
-tennis_atp_french_open,ATP French Open,2026-05-21T11:00:00Z,Alexis Galarneau,Federico Cinà,Federico Cinà,1.345,74.3,pinnacle,1.27,1.25,,74.3,-5.58,9,37.5
+basketball_wnba,WNBA,2026-05-22T00:00:00Z,New York Liberty,Golden State Valkyries,New York Liberty,1.38,72.5,pinnacle,1.3,1.32,,72.5,-5.8,26,39.1
 boxing_boxing,Boxing,2026-05-22T00:45:00Z,Angel Ayala Lardizabal,Jayson Mama,Angel Ayala Lardizabal,1.247,80.2,,,1.13,,80.2,0.0,3,36.2
-rugbyleague_nrl,NRL,2026-05-21T09:51:00Z,Canberra Raiders,Dolphins,Canberra Raiders,1.477,67.7,,,1.32,,67.7,0.0,11,35.4
-tennis_atp_french_open,ATP French Open,2026-05-21T09:00:00Z,Jesper De Jong,Michael Zheng,Michael Zheng,1.638,61.1,pinnacle,3.34,1.5,,61.1,103.91,4,33.7
-basketball_wnba,WNBA,2026-05-22T00:00:00Z,New York Liberty,Golden State Valkyries,New York Liberty,1.38,72.5,pinnacle,1.3,1.32,,72.5,-5.8,27,33.3
-tennis_wta_strasbourg,WTA Internationaux de Strasbourg,2026-05-21T13:00:00Z,Shuai Zhang,Emma Navarro,Emma Navarro,1.386,72.2,betvictor,1.3,1.32,,72.2,-6.2,41,31.9
-tennis_atp_french_open,ATP French Open,2026-05-21T09:00:00Z,August Holmgren,Facundo Diaz Acosta,August Holmgren,1.675,59.7,pinnacle,3.08,1.57,,59.7,83.88,4,31.5
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Rebecca Sramkova,Maria Lourdes Carle,Rebecca Sramkova,1.428,70.0,pinnacle,1.36,1.36,,70.0,-4.76,6,30.5
-aussierules_afl,AFL,2026-05-21T09:32:00Z,Hawthorn Hawks,Adelaide Crows,Adelaide Crows,1.542,64.9,,,1.43,,64.9,0.0,11,29.7
-basketball_wnba,WNBA,2026-05-22T00:00:00Z,Minnesota Lynx,Toronto Tempo,Minnesota Lynx,1.431,69.9,pinnacle,1.35,1.36,,69.9,-5.66,26,28.4
-tennis_atp_hamburg_open,ATP Hamburg Open,2026-05-21T11:00:00Z,Ignacio Buse,Ugo Humbert,Ignacio Buse,1.406,71.1,betvictor,1.3,1.34,,71.1,-7.54,41,27.2
-tennis_wta_french_open,WTA French Open,2026-05-21T13:00:00Z,Ashlyn Krueger,Mary Stoiana,Ashlyn Krueger,1.476,67.8,pinnacle,1.4,1.38,,67.8,-5.15,7,25.2
-baseball_npb,NPB,2026-05-21T09:02:00Z,Hiroshima Toyo Carp,Yokohama DeNA BayStars,Yokohama DeNA BayStars,1.458,68.6,pinnacle,1.37,1.35,,68.6,-6.04,15,25.1
-tennis_atp_hamburg_open,ATP Hamburg Open,2026-05-21T12:20:00Z,Aleksandar Kovacevic,Camilo Ugo Carabelli,Camilo Ugo Carabelli,1.453,68.8,betvictor,1.36,1.38,,68.8,-6.4,44,24.8
-soccer_belgium_first_div,Belgium First Div,2026-05-21T18:30:00Z,KV Mechelen,Club Brugge,Club Brugge,1.435,69.7,betvictor,1.33,1.33,,69.7,-7.32,44,24.7
-basketball_nba,NBA,2026-05-22T00:10:00Z,New York Knicks,Cleveland Cavaliers,New York Knicks,1.49,67.1,betvictor,1.4,1.43,,67.1,-6.04,44,22.1
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Al-Riyadh,Al-Okhdood,Al-Riyadh,1.469,68.1,williamhill,1.36,1.35,,68.1,-7.42,28,21.3
-aussierules_afl,AFL,2026-05-22T09:45:07Z,Richmond Tigers,Essendon Bombers,Essendon Bombers,1.569,63.7,pinnacle,1.51,1.48,,63.7,-3.76,18,19.9
-tennis_atp_hamburg_open,ATP Hamburg Open,2026-05-21T12:00:00Z,Tommy Paul,Daniel Altmaier,Tommy Paul,1.509,66.3,betvictor,1.4,1.44,,66.3,-7.22,44,18.1
-tennis_wta_french_open,WTA French Open,2026-05-21T11:00:00Z,Elena Pridankina,Himeno Sakatsume,Elena Pridankina,1.612,62.0,pinnacle,1.56,1.53,,62.0,-3.23,5,17.6
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Lulu Sun,Claire Liu,Claire Liu,1.624,61.6,pinnacle,1.57,1.53,,61.6,-3.33,7,16.5
-soccer_conmebol_copa_sudamericana,Copa Sudamericana,2026-05-22T02:00:00Z,Macará,Alianza Atlético,Macará,1.526,65.5,williamhill,1.4,1.41,,65.5,-8.26,24,14.5
-baseball_kbo,KBO,2026-05-21T09:31:24Z,Kia Tigers,LG Twins,Kia Tigers,1.7,58.8,williamhill,1.67,1.59,,58.8,-1.76,12,14.1
-tennis_wta_french_open,WTA French Open,2026-05-21T09:00:00Z,Maja Chwalinska,Suzan Lamens,Maja Chwalinska,1.397,71.6,pinnacle,1.25,1.29,,71.6,-10.52,3,13.9
-baseball_kbo,KBO,2026-05-21T09:31:08Z,Kiwoom Heroes,SSG Landers,Kiwoom Heroes,1.855,53.9,williamhill,1.91,1.74,,53.9,2.96,13,13.7
-tennis_wta_french_open,WTA French Open,2026-05-21T09:00:00Z,Leyre Romero Gormaz,Sloane Stephens,Leyre Romero Gormaz,1.968,50.8,pinnacle,2.18,1.82,,50.8,10.77,3,13.0
-baseball_mlb,MLB,2026-05-22T01:41:00Z,Arizona Diamondbacks,Colorado Rockies,Arizona Diamondbacks,1.567,63.8,betvictor,1.45,1.5,,63.8,-7.47,40,12.7
-tennis_atp_french_open,ATP French Open,2026-05-22T08:00:00Z,Vilius Gaubas,Pablo Llamas Ruiz,Pablo Llamas Ruiz,1.644,60.8,pinnacle,1.57,1.52,,60.8,-4.5,8,12.7
-soccer_germany_bundesliga2,Bundesliga 2 - Germany,2026-05-21T18:30:00Z,VfL Wolfsburg,SC Paderborn,VfL Wolfsburg,1.781,56.1,,,1.65,,56.1,0.0,10,12.3
-tennis_atp_french_open,ATP French Open,2026-05-22T08:00:00Z,Emilio Nava,Pedro Martinez,Emilio Nava,1.588,63.0,pinnacle,1.48,1.47,,63.0,-6.8,7,12.3
+basketball_wnba,WNBA,2026-05-22T00:00:00Z,Minnesota Lynx,Toronto Tempo,Minnesota Lynx,1.434,69.7,pinnacle,1.35,1.36,,69.7,-5.86,25,33.6
+basketball_nba,NBA,2026-05-22T00:10:00Z,New York Knicks,Cleveland Cavaliers,New York Knicks,1.491,67.1,betvictor,1.4,1.43,,67.1,-6.1,43,28.0
+baseball_kbo,KBO,2026-05-21T09:30:35Z,Samsung Lions,KT Wiz,KT Wiz,1.747,57.2,williamhill,2.5,1.62,,57.2,43.1,12,26.4
+aussierules_afl,AFL,2026-05-22T09:45:07Z,Richmond Tigers,Essendon Bombers,Essendon Bombers,1.569,63.7,pinnacle,1.51,1.48,,63.7,-3.76,17,23.7
+baseball_mlb,MLB,2026-05-22T01:41:00Z,Arizona Diamondbacks,Colorado Rockies,Arizona Diamondbacks,1.567,63.8,betvictor,1.45,1.5,,63.8,-7.47,39,20.2
+aussierules_afl,AFL,2026-05-21T09:32:00Z,Hawthorn Hawks,Adelaide Crows,Hawthorn Hawks,1.674,59.7,,,1.57,,59.7,0.0,11,19.5
+handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T18:00:00Z,SC Magdeburg,SG Flensburg-Handewitt,SC Magdeburg,1.524,65.6,pinnacle,1.28,1.39,,65.6,-16.01,23,15.2
+baseball_mlb,MLB,2026-05-21T23:06:00Z,New York Yankees,Toronto Blue Jays,New York Yankees,1.66,60.2,betvictor,1.55,1.58,,60.2,-6.63,40,13.9
+basketball_wnba,WNBA,2026-05-22T02:00:00Z,Phoenix Mercury,Los Angeles Sparks,Phoenix Mercury,1.72,58.1,pinnacle,1.64,1.62,,58.1,-4.65,26,11.6
 baseball_ncaa,NCAA Baseball,2026-05-21T20:05:00Z,Air Force Falcons,UNLV Rebels,Air Force Falcons,1.752,57.1,,,1.65,,57.1,0.0,4,11.3
-handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T18:00:00Z,SC Magdeburg,SG Flensburg-Handewitt,SC Magdeburg,1.524,65.6,pinnacle,1.28,1.39,,65.6,-16.01,23,11.2
-tennis_wta_french_open,WTA French Open,2026-05-21T11:00:00Z,Guo Hanyu,Sofia Costoulas,Sofia Costoulas,1.707,58.6,pinnacle,1.64,1.6,,58.6,-3.93,7,9.3
 baseball_ncaa,NCAA Baseball,2026-05-21T19:00:00Z,Boston College Eagles,Miami Hurricanes,Miami Hurricanes,1.75,57.1,,,1.65,,57.1,0.0,3,8.6
 baseball_ncaa,NCAA Baseball,2026-05-21T20:00:00Z,Xavier Musketeers,UConn Huskies,UConn Huskies,1.646,60.8,,,1.56,,60.8,0.0,2,8.6
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Katarina Zavatska,Lucia Bronzetti,Lucia Bronzetti,1.732,57.7,pinnacle,1.67,1.61,,57.7,-3.58,7,8.3
-tennis_atp_french_open,ATP French Open,2026-05-22T08:00:00Z,Roberto Carballes Baena,Hugo Dellien,Hugo Dellien,1.644,60.8,pinnacle,1.53,1.52,,60.8,-6.93,9,7.8
-tennis_wta_french_open,WTA French Open,2026-05-21T13:00:00Z,Alina Korneeva,Julia Riera,Alina Korneeva,1.743,57.4,pinnacle,1.68,1.66,,57.4,-3.61,7,7.5
-baseball_mlb,MLB,2026-05-21T23:06:00Z,New York Yankees,Toronto Blue Jays,New York Yankees,1.661,60.2,betvictor,1.55,1.59,,60.2,-6.68,41,7.0
-basketball_wnba,WNBA,2026-05-22T02:00:00Z,Phoenix Mercury,Los Angeles Sparks,Phoenix Mercury,1.72,58.1,pinnacle,1.64,1.62,,58.1,-4.65,27,7.0
-tennis_wta_strasbourg,WTA Internationaux de Strasbourg,2026-05-21T10:20:00Z,Jaqueline Cristian,Daria Kasatkina,Daria Kasatkina,1.698,58.9,betvictor,1.6,1.62,,58.9,-5.77,41,6.2
-baseball_ncaa,NCAA Baseball,2026-05-21T20:30:00Z,Alabama Crimson Tide,Florida Gators,Florida Gators,1.74,57.5,,,1.68,,57.5,0.0,2,6.0
-tennis_wta_strasbourg,WTA Internationaux de Strasbourg,2026-05-21T15:30:00Z,Victoria Mboko,Leylah Fernandez,Victoria Mboko,1.662,60.2,betvictor,1.53,1.58,,60.2,-7.94,44,4.5
+cricket_ipl,IPL,2026-05-21T14:00:00Z,Gujarat Titans,Chennai Super Kings,Gujarat Titans,1.759,56.9,williamhill,1.67,1.67,,56.9,-5.06,22,8.6
+baseball_mlb,MLB,2026-05-21T22:41:00Z,Miami Marlins,Atlanta Braves,Atlanta Braves,1.777,56.3,betvictor,1.67,1.69,,56.3,-6.02,42,6.5
+baseball_ncaa,NCAA Baseball,2026-05-21T20:30:00Z,Alabama Crimson Tide,Florida Gators,Florida Gators,1.751,57.1,,,1.7,,57.1,0.0,2,5.7
+baseball_mlb,MLB,2026-05-21T17:16:00Z,St. Louis Cardinals,Pittsburgh Pirates,Pittsburgh Pirates,1.841,54.3,betvictor,1.75,1.76,,54.3,-4.94,42,3.7
 baseball_ncaa,NCAA Baseball,2026-05-21T16:00:00Z,UCF Knights,Oklahoma St Cowboys,UCF Knights,1.913,52.3,,,1.8,,52.3,0.0,4,3.6
-cricket_ipl,IPL,2026-05-21T14:00:00Z,Gujarat Titans,Chennai Super Kings,Gujarat Titans,1.759,56.9,williamhill,1.67,1.67,,56.9,-5.06,22,3.6
 baseball_ncaa,NCAA Baseball,2026-05-21T14:00:00Z,Troy Trojans,South Alabama Jaguars,Troy Trojans,1.892,52.9,,,1.77,,52.9,0.0,3,3.4
 baseball_ncaa,NCAA Baseball,2026-05-21T19:00:00Z,Purdue Boilermakers,Iowa Hawkeyes,Iowa Hawkeyes,1.923,52.0,,,1.8,,52.0,0.0,4,3.2
-soccer_greece_super_league,Super League - Greece,2026-05-21T16:00:00Z,Atromitos Athens,Panserraikos FC,Atromitos Athens,1.676,59.7,betvictor,1.53,1.54,,59.7,-8.71,41,1.9
 baseball_ncaa,NCAA Baseball,2026-05-22T01:05:00Z,Nevada Wolf Pack,New Mexico Lobos,Nevada Wolf Pack,1.958,51.1,,,1.83,,51.1,0.0,3,1.3
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Susan Bandecchi,Viktoria Hruncakova,Susan Bandecchi,1.792,55.8,pinnacle,1.7,1.67,,55.8,-5.13,7,1.3
-baseball_mlb,MLB,2026-05-21T22:41:00Z,Miami Marlins,Atlanta Braves,Atlanta Braves,1.776,56.3,betvictor,1.67,1.69,,56.3,-5.97,43,0.7
-baseball_ncaa,NCAA Baseball,2026-05-21T17:00:00Z,Georgia Bulldogs,Mississippi St Bulldogs,Mississippi St Bulldogs,2.0,50.0,,,1.91,,50.0,0.0,2,0.0
-baseball_ncaa,NCAA Baseball,2026-05-22T03:00:00Z,Arizona St Sun Devils,Cincinnati Bearcats,Arizona St Sun Devils,2.0,50.0,,,1.87,,50.0,0.0,4,0.0
-tennis_wta_strasbourg,WTA Internationaux de Strasbourg,2026-05-21T08:30:00Z,Marie Bouzkova,Ann Li,Ann Li,1.694,59.0,betvictor,1.45,1.56,,59.0,-14.4,32,-1.9
-tennis_atp_french_open,ATP French Open,2026-05-22T08:00:00Z,Borna Gojo,Jurij Rodionov,Jurij Rodionov,1.846,54.2,pinnacle,1.75,1.71,,54.2,-5.2,9,-2.1
-soccer_mexico_ligamx,Liga MX,2026-05-22T02:00:00Z,Cruz Azul,Pumas,Cruz Azul,1.795,55.7,betvictor,1.67,1.66,,55.7,-6.96,42,-2.5
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Harmony Tan,Linda Fruhvirtova,Linda Fruhvirtova,1.702,58.8,pinnacle,1.53,1.59,,58.8,-10.11,5,-2.5
-tennis_wta_french_open,WTA French Open,2026-05-22T08:00:00Z,Polina Kudermetova,Xiyu Wang,Xiyu Wang,1.795,55.7,pinnacle,1.67,1.67,,55.7,-6.96,7,-2.5
-baseball_mlb,MLB,2026-05-21T17:16:00Z,St. Louis Cardinals,Pittsburgh Pirates,Pittsburgh Pirates,1.85,54.1,betvictor,1.75,1.76,,54.1,-5.41,43,-2.7
-handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T17:00:00Z,SC DHfK Leipzig,MT Melsungen,MT Melsungen,1.706,58.6,pinnacle,1.4,1.54,,58.6,-17.94,22,-2.8
-soccer_conmebol_copa_libertadores,Copa Libertadores,2026-05-22T00:30:00Z,Universidad Católica (CHI),Barcelona SC,Universidad Católica (CHI),1.839,54.4,williamhill,1.73,1.72,,54.4,-5.93,34,-3.1
-rugbyleague_nrl,NRL,2026-05-22T10:00:00Z,Canterbury Bulldogs,Melbourne Storm,Canterbury Bulldogs,1.812,55.2,pinnacle,1.68,1.65,,55.2,-7.28,15,-4.2
-soccer_germany_bundesliga,Bundesliga - Germany,2026-05-21T18:30:00Z,VfL Wolfsburg,SC Paderborn,VfL Wolfsburg,1.81,55.2,betvictor,1.67,1.71,,55.2,-7.73,22,-5.0
-tennis_wta_french_open,WTA French Open,2026-05-21T11:00:00Z,Mayar Sherif,Greet Minnen,Mayar Sherif,1.969,50.8,pinnacle,1.88,1.85,,50.8,-4.52,6,-7.5
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Al-Hazem,Al-Taawoun,Al-Taawoun,1.779,56.2,williamhill,1.6,1.62,,56.2,-10.06,28,-7.6
-soccer_conmebol_copa_sudamericana,Copa Sudamericana,2026-05-21T22:00:00Z,Puerto Cabello,CA Juventud,Puerto Cabello,2.34,42.7,williamhill,2.25,2.18,,42.7,-3.85,23,-7.7
-baseball_mlb,MLB,2026-05-21T17:11:00Z,Detroit Tigers,Cleveland Guardians,Detroit Tigers,1.939,51.6,betvictor,1.83,1.85,,51.6,-5.62,43,-8.1
-baseball_mlb,MLB,2026-05-21T20:06:00Z,Washington Nationals,New York Mets,New York Mets,1.959,51.0,betvictor,1.85,1.87,,51.0,-5.56,43,-9.0
-tennis_atp_french_open,ATP French Open,2026-05-21T13:30:00Z,Jaime Faria,Lukas Neumayer,Lukas Neumayer,1.932,51.8,pinnacle,1.81,1.8,,51.8,-6.31,7,-9.1
-soccer_belgium_first_div,Belgium First Div,2026-05-21T18:30:00Z,Gent,Union Saint-Gilloise,Union Saint-Gilloise,1.879,53.2,betvictor,1.73,1.75,,53.2,-7.93,44,-9.4
-soccer_conmebol_copa_libertadores,Copa Libertadores,2026-05-21T22:00:00Z,Deportivo La Guaira,Independiente Rivadavia,Independiente Rivadavia,1.964,50.9,williamhill,1.85,1.84,,50.9,-5.8,38,-9.8
-tennis_atp_hamburg_open,ATP Hamburg Open,2026-05-21T16:00:00Z,Luciano Darderi,Alex de Minaur,Alex de Minaur,1.933,51.7,betvictor,1.8,1.85,,51.7,-6.88,42,-10.3
-baseball_mlb,MLB,2026-05-22T01:39:00Z,Los Angeles Angels,Athletics,Los Angeles Angels,1.985,50.4,betvictor,1.87,1.9,,50.4,-5.79,43,-10.8
-soccer_japan_j_league,J League,2026-05-22T10:30:00Z,FC Machida Zelvia,Urawa Red Diamonds,FC Machida Zelvia,2.44,41.0,williamhill,2.3,2.25,,41.0,-5.74,18,-11.5
-soccer_conmebol_copa_sudamericana,Copa Sudamericana,2026-05-22T00:30:00Z,Blooming,Carabobo FC,Carabobo FC,2.446,40.9,williamhill,2.3,2.3,,40.9,-5.97,24,-11.9
-soccer_netherlands_eredivisie,Dutch Eredivisie,2026-05-21T16:45:00Z,Ajax,Groningen,Ajax,1.966,50.9,betvictor,1.83,1.84,,50.9,-6.92,45,-12.1
-soccer_netherlands_eredivisie,Dutch Eredivisie,2026-05-21T19:00:00Z,FC Utrecht,Heerenveen,FC Utrecht,2.057,48.6,betvictor,1.93,1.92,,48.6,-6.17,45,-12.3
-soccer_belgium_first_div,Belgium First Div,2026-05-21T18:30:00Z,Anderlecht,Sint Truiden,Anderlecht,2.25,44.4,betvictor,2.1,2.1,,44.4,-6.67,43,-13.3
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Neom,Al-Ettifaq,Neom,2.048,48.8,williamhill,1.91,1.9,,48.8,-6.74,28,-13.5
-icehockey_nhl,NHL,2026-05-22T00:20:36Z,Carolina Hurricanes,Montréal Canadiens,Carolina Hurricanes,1.897,52.7,betvictor,1.45,1.52,,52.7,-23.56,39,-14.6
-icehockey_ahl,AHL,2026-05-21T23:05:00Z,Springfield Thunderbirds,W-B/Scranton Penguins,W-B/Scranton Penguins,1.919,52.1,williamhill,1.5,1.75,,52.1,-21.83,16,-15.8
-soccer_greece_super_league,Super League - Greece,2026-05-21T16:00:00Z,AE Kifisia FC,AEL,AE Kifisia FC,2.35,42.6,betvictor,2.15,2.2,,42.6,-8.51,27,-17.0
-soccer_denmark_superliga,Denmark Superliga,2026-05-21T16:30:00Z,Brondby IF,FC Copenhagen,FC Copenhagen,2.38,42.0,betvictor,2.15,2.2,,42.0,-9.66,45,-19.3
-icehockey_ahl,AHL,2026-05-22T00:00:00Z,Chicago Wolves,Grand Rapids Griffins,Grand Rapids Griffins,2.313,43.2,williamhill,1.7,2.1,,43.2,-26.5,16,-20.0
-soccer_saudi_arabia_pro_league,Saudi Pro League,2026-05-21T18:00:00Z,Al-Ittihad,Al-Qadsiah,Al-Qadsiah,2.455,40.7,williamhill,2.2,2.28,,40.7,-10.39,28,-20.0
+baseball_mlb,MLB,2026-05-21T17:11:00Z,Detroit Tigers,Cleveland Guardians,Detroit Tigers,1.939,51.6,betvictor,1.83,1.85,,51.6,-5.62,42,0
+baseball_mlb,MLB,2026-05-21T20:06:00Z,Washington Nationals,New York Mets,New York Mets,1.959,51.0,betvictor,1.85,1.87,,51.0,-5.56,42,0
+baseball_mlb,MLB,2026-05-22T01:39:00Z,Los Angeles Angels,Athletics,Los Angeles Angels,1.99,50.3,betvictor,1.87,1.9,,50.3,-6.03,42,0
+baseball_ncaa,NCAA Baseball,2026-05-21T17:00:00Z,Georgia Bulldogs,Mississippi St Bulldogs,Mississippi St Bulldogs,2.0,50.0,,,1.91,,50.0,0.0,2,0
+baseball_ncaa,NCAA Baseball,2026-05-22T03:00:00Z,Arizona St Sun Devils,Cincinnati Bearcats,Arizona St Sun Devils,2.0,50.0,,,1.87,,50.0,0.0,4,0
+handball_germany_bundesliga,Handball-Bundesliga,2026-05-21T17:00:00Z,SC DHfK Leipzig,MT Melsungen,MT Melsungen,1.706,58.6,pinnacle,1.41,1.54,,58.6,-17.35,22,0
+icehockey_ahl,AHL,2026-05-21T23:05:00Z,Springfield Thunderbirds,W-B/Scranton Penguins,W-B/Scranton Penguins,1.919,52.1,williamhill,1.5,1.75,,52.1,-21.83,16,0
+icehockey_ahl,AHL,2026-05-22T00:00:00Z,Chicago Wolves,Grand Rapids Griffins,Grand Rapids Griffins,2.313,43.2,williamhill,1.7,2.1,,43.2,-26.5,16,0
+icehockey_nhl,NHL,2026-05-22T00:20:36Z,Carolina Hurricanes,Montréal Canadiens,Carolina Hurricanes,1.895,52.8,betvictor,1.45,1.53,,52.8,-23.48,38,0
