@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
+import { DailyStatusCard } from "@/components/DailyStatusCard";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
-import { fetchHistory } from "@/lib/dataSource";
+import { fetchDay, fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
 
 type StatKey = "paris" | "benefice" | "roi" | "progression";
@@ -75,6 +76,7 @@ interface ChartOptions {
 export default function Home() {
   const router = useRouter();
   const [history, setHistory] = useState<History | null>(null);
+  const [hasPickToday, setHasPickToday] = useState(false);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<Period>("1m");
   const [opts, setOpts] = useState<ChartOptions>({
@@ -89,9 +91,11 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory().then((h) => {
+    const todayIso = new Date().toISOString().slice(0, 10);
+    Promise.all([fetchHistory(), fetchDay(todayIso)]).then(([h, d]) => {
       if (cancelled) return;
       setHistory(h);
+      setHasPickToday(!!d?.safe_pick);
       setLoading(false);
     });
     return () => {
@@ -181,6 +185,9 @@ export default function Home() {
 
         {!loading && history && (
           <>
+            {/* Daily Status Card — moment de check-in quotidien */}
+            <DailyStatusCard history={history} hasPickToday={hasPickToday} />
+
             {/* Chart : hauteur fixe (pas de flex-1 stretch) */}
             <section className="relative h-[240px]">
               <BankrollChart

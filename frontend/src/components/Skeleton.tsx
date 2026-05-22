@@ -12,26 +12,28 @@ export function Skeleton({ className = "" }: Props) {
 }
 
 export function HomeSkeleton() {
+  // Rendu directement dans le <main> de index.tsx — pas de wrapper qui duplique
   return (
-    <div className="max-w-md mx-auto px-4 pt-6 pb-6 space-y-4">
-      <div className="flex items-center justify-between mb-5">
-        <Skeleton className="w-9 h-9 rounded-full" />
-        <Skeleton className="w-24 h-6" />
-        <Skeleton className="w-9 h-9 rounded-full" />
-      </div>
-      <Skeleton className="h-72 rounded-3xl" />
-      <div className="grid grid-cols-5 gap-2">
+    <div className="flex flex-col gap-3 animate-fade-in">
+      {/* Daily status card placeholder */}
+      <Skeleton className="h-24 rounded-2xl" />
+      {/* Chart */}
+      <Skeleton className="h-[240px] rounded-2xl" />
+      {/* Filter pills */}
+      <div className="grid grid-cols-5 gap-1.5">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-8 rounded-full" />
+          <Skeleton key={i} className="h-7 rounded-full" />
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <Skeleton className="h-14 rounded-2xl" />
-        <Skeleton className="h-14 rounded-2xl" />
+      {/* Analyses / Calendrier */}
+      <div className="grid grid-cols-2 gap-2">
+        <Skeleton className="h-11 rounded-xl" />
+        <Skeleton className="h-11 rounded-xl" />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      {/* 4 stat tiles */}
+      <div className="grid grid-cols-2 gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-2xl" />
+          <Skeleton key={i} className="h-20 rounded-2xl" />
         ))}
       </div>
     </div>

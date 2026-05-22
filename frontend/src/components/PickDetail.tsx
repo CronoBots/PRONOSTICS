@@ -403,10 +403,21 @@ function PendingBanner({ pick }: { pick: UnifiedPick }) {
 }
 
 function WinBanner({ pick }: { pick: UnifiedPick }) {
+  const profit = pick.profit ?? 0;
   return (
-    <div className="bg-accent-green/10 border-2 border-accent-green/40 rounded-2xl p-4 md:p-5">
+    <div className="relative bg-gradient-to-br from-accent-green/15 to-accent-green/5 border-2 border-accent-green/40 rounded-2xl p-4 md:p-5 overflow-hidden">
+      {/* Mini confetti decoratifs */}
+      <span aria-hidden className="absolute top-2 right-3 text-2xl">🎉</span>
+      <span aria-hidden className="absolute top-6 right-10 text-base opacity-60">✨</span>
+      <span aria-hidden className="absolute top-3 right-16 text-sm opacity-40">⭐</span>
+
       <div className="flex items-center gap-2 text-accent-green text-[10px] uppercase tracking-[0.2em] font-bold mb-2">
-        <span className="text-xl">✓</span> Pari gagné
+        <span className="text-2xl">✓</span> Pari gagné
+        {profit > 0 && (
+          <span className="ml-auto text-accent-green text-base font-extrabold normal-case tabular-nums">
+            +{profit.toFixed(2)}€
+          </span>
+        )}
       </div>
       {pick.result?.score_text && (
         <div className="text-xl md:text-2xl font-bold mb-2 tabular-nums">
@@ -426,10 +437,16 @@ function WinBanner({ pick }: { pick: UnifiedPick }) {
 }
 
 function LossBanner({ pick }: { pick: UnifiedPick }) {
+  const loss = pick.profit ?? 0;
   return (
-    <div className="bg-accent-red/10 border-2 border-accent-red/40 rounded-2xl p-4 md:p-5">
+    <div className="bg-gradient-to-br from-accent-red/10 to-bg-card border-2 border-accent-red/40 rounded-2xl p-4 md:p-5">
       <div className="flex items-center gap-2 text-accent-red text-[10px] uppercase tracking-[0.2em] font-bold mb-2">
         <span className="text-xl">✕</span> Pari perdu
+        {loss < 0 && (
+          <span className="ml-auto text-accent-red text-base font-extrabold normal-case tabular-nums">
+            {loss.toFixed(2)}€
+          </span>
+        )}
       </div>
       {pick.result?.score_text && (
         <div className="text-xl md:text-2xl font-bold mb-2 tabular-nums">
@@ -444,6 +461,11 @@ function LossBanner({ pick }: { pick: UnifiedPick }) {
           {pick.result.bet_outcome}
         </div>
       )}
+      {/* Lesson learned / empathy footer */}
+      <div className="mt-3 pt-3 border-t border-white/5 text-[11px] text-white/50 italic leading-relaxed">
+        💡 La variance fait partie du métier. Sur 100 picks à 70% de proba,
+        on en perd 30. C'est mathématique, pas un échec.
+      </div>
     </div>
   );
 }

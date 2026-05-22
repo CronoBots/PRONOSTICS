@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { PickDetail, pickFromSafe } from "@/components/PickDetail";
+import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/lib/auth";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
 import { DayPayload, History, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
@@ -57,7 +58,11 @@ export default function TodayPage() {
         </div>
 
         {loading && (
-          <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>
+          <div className="space-y-4 animate-fade-in">
+            <Skeleton className="h-32 rounded-2xl" />
+            <Skeleton className="h-20 rounded-2xl" />
+            <Skeleton className="h-40 rounded-2xl" />
+          </div>
         )}
 
         {!loading && !day?.safe_pick && <NoPickToday />}

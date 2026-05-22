@@ -375,8 +375,12 @@ export function HistoryList({ picks }: Props) {
 
   if (months.length === 0) {
     return (
-      <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-8 text-center text-white/50">
-        Aucun pari pour le moment
+      <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-8 text-center">
+        <div className="text-5xl mb-3 opacity-40">📊</div>
+        <p className="text-base font-semibold mb-1">Aucun pari pour le moment</p>
+        <p className="text-sm text-white/50 leading-relaxed max-w-xs mx-auto">
+          L'historique des paris apparaîtra ici dès qu'on aura des picks réglés.
+        </p>
       </div>
     );
   }

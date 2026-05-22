@@ -113,7 +113,10 @@ export default function CalendrierPage() {
         </div>
 
         {loading && (
-          <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>
+          <div className="text-white/40 text-sm py-12 text-center animate-fade-in">
+            <div className="inline-block w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin mb-3" />
+            <div>Chargement du calendrier…</div>
+          </div>
         )}
 
         {!loading && grid && (

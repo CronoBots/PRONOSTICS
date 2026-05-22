@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 
 import { Header } from "@/components/Header";
+import { Skeleton } from "@/components/Skeleton";
 import { fetchHistory } from "@/lib/dataSource";
 import { History, HistoryStats } from "@/lib/types";
 
@@ -169,7 +170,19 @@ export default function StatsPage() {
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
         <Header title="Statistiques" stats={stats} />
 
-        {loading && <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>}
+        {loading && (
+          <div className="space-y-5 animate-fade-in">
+            {Array.from({ length: 5 }).map((_, sec) => (
+              <div key={sec}>
+                <Skeleton className="h-3 w-24 mb-2" />
+                <div className="grid grid-cols-2 gap-2">
+                  <Skeleton className="h-12 rounded-xl" />
+                  <Skeleton className="h-12 rounded-xl" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {!loading && stats && (
           <div>

@@ -3,6 +3,7 @@ import Head from "next/head";
 
 import { Header } from "@/components/Header";
 import { HistoryList } from "@/components/HistoryList";
+import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/lib/auth";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
@@ -40,7 +41,17 @@ export default function ParisPage() {
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
         <Header title="Paris" stats={history?.stats} />
 
-        {loading && <div className="text-white/50 text-sm py-12 text-center">Chargement…</div>}
+        {loading && (
+          <div className="space-y-4 animate-fade-in">
+            <Skeleton className="h-14 rounded-2xl" />
+            <Skeleton className="h-7 w-32" />
+            <div className="space-y-3">
+              <Skeleton className="h-24 rounded-2xl" />
+              <Skeleton className="h-24 rounded-2xl" />
+              <Skeleton className="h-24 rounded-2xl" />
+            </div>
+          </div>
+        )}
 
         {!loading && history && (
           <div>

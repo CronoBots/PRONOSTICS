@@ -59,10 +59,17 @@ body {
   padding-bottom: 0;
 }
 
-/* Empêche double-tap zoom sur boutons */
+/* Empêche double-tap zoom sur boutons + microinteraction tap scale */
 button,
 a {
   touch-action: manipulation;
+  transition: transform 120ms ease-out, opacity 120ms ease-out;
+}
+
+/* Feedback tactile : léger scale down quand pressé (style iOS native) */
+button:active:not(:disabled),
+a:active {
+  transform: scale(0.97);
 }
 
 @keyframes shimmer {
