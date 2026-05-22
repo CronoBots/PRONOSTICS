@@ -205,10 +205,13 @@ export default function Home() {
                 topRight={
                   <button
                     onClick={() => setMenuOpen((o) => !o)}
-                    className="nav-pulse w-7 h-7 rounded-full border border-white/70 flex items-center justify-center text-white"
+                    style={{ borderColor: "#ffffff" }}
+                    className="nav-pulse w-7 h-7 rounded-full border flex items-center justify-center gap-[2px]"
                     aria-label={t("home.chartOptions")}
                   >
-                    <span className="block w-1 h-1 rounded-full bg-white" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
                   </button>
                 }
                 footer={

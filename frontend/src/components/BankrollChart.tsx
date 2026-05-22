@@ -15,6 +15,37 @@ import { HistoryPick } from "@/lib/types";
 
 export type ChartMode = "benefice" | "capital";
 
+/**
+ * Génère un tableau de ticks "nice numbers" à intervalle régulier entre min
+ * et max. Retourne typiquement `count+1` valeurs uniformément espacées,
+ * step arrondi à 1/2/5/10/20/50/100… selon la magnitude.
+ *
+ * Exemple : niceTickArray(2, 16, 5) → [0, 5, 10, 15, 20] (step = 5)
+ *           niceTickArray(-3, 12, 5) → [-5, 0, 5, 10, 15]
+ */
+function niceTickArray(min: number, max: number, count: number): number[] {
+  if (!Number.isFinite(min) || !Number.isFinite(max) || max === min) {
+    const v = Number.isFinite(min) ? min : 0;
+    return [v - 1, v, v + 1];
+  }
+  const range = max - min;
+  const rawStep = range / count;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const normalized = rawStep / magnitude;
+  let step: number;
+  if (normalized < 1.5) step = 1 * magnitude;
+  else if (normalized < 3) step = 2 * magnitude;
+  else if (normalized < 7) step = 5 * magnitude;
+  else step = 10 * magnitude;
+  const niceMin = Math.floor(min / step) * step;
+  const niceMax = Math.ceil(max / step) * step;
+  const ticks: number[] = [];
+  for (let v = niceMin; v <= niceMax + step / 2; v += step) {
+    ticks.push(Math.round(v * 1000) / 1000); // évite les flottants type 1.99999
+  }
+  return ticks;
+}
+
 interface Props {
   picks: HistoryPick[];
   startingBankroll: number;
@@ -129,6 +160,15 @@ export function BankrollChart({
     // Hero NΞXBΞT : fond vert plein (#10d9a3 = couleur exacte du logo),
     // tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
     // les period pills sont rendus via les slots topRight / footer.
+    // Génère des ticks Y à intervalles RÉGULIERS (pas calé sur les valeurs
+    // brutes des picks pour éviter une échelle type "2, 4, 7, 16").
+    const allValues = data
+      .flatMap((d) => [d.value, d.ifWin, d.ifLoss])
+      .filter((v): v is number => v !== null && v !== undefined);
+    const dataMin = allValues.length ? Math.min(...allValues) : 0;
+    const dataMax = allValues.length ? Math.max(...allValues) : 10;
+    const niceTicks = niceTickArray(dataMin, dataMax, 5);
+    const yDomain: [number, number] = [niceTicks[0], niceTicks[niceTicks.length - 1]];
     return (
       <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-green relative flex flex-col">
         {topRight && (
@@ -145,9 +185,9 @@ export function BankrollChart({
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${Math.round(v)}€`}
-                domain={["dataMin - 2", "dataMax + 2"]}
+                domain={yDomain}
+                ticks={niceTicks}
                 width={42}
-                tickCount={6}
               />
               <Tooltip
                 contentStyle={{
