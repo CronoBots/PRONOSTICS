@@ -1,3 +1,4 @@
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { HistoryStats } from "@/lib/types";
 
 interface Props {
@@ -34,7 +35,7 @@ export function Header({ title, stats }: Props) {
               bankrollPositive ? "text-accent-green" : "text-accent-red"
             }`}
           >
-            {stats.current_bankroll.toFixed(2)} €
+            <AnimatedNumber value={stats.current_bankroll} decimals={2} suffix=" €" />
           </div>
         </div>
       )}

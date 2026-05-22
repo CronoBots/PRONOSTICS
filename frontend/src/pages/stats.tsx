@@ -3,6 +3,7 @@ import Head from "next/head";
 
 import { Header } from "@/components/Header";
 import { Skeleton } from "@/components/Skeleton";
+import { StatsHero } from "@/components/StatsHero";
 import { fetchHistory } from "@/lib/dataSource";
 import { History, HistoryStats } from "@/lib/types";
 
@@ -184,8 +185,9 @@ export default function StatsPage() {
           </div>
         )}
 
-        {!loading && stats && (
+        {!loading && stats && history && (
           <div>
+            <StatsHero picks={history.picks} stats={stats} />
             {sections.map((s) => (
               <StatsSection key={s.title} title={s.title} rows={s.rows} />
             ))}
