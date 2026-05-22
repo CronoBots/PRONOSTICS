@@ -70,12 +70,12 @@ export default function MesParisPage() {
         <title>{t("perso.titleTab")}</title>
       </Head>
 
-      <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
           <Link
             href="/"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
             aria-label={t("common.back")}
           >
             ←
@@ -139,7 +139,7 @@ export default function MesParisPage() {
                 <p className="text-sm text-white/50">{t("perso.filterEmpty")}</p>
               </div>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-3">
                 {filtered.map((b) => (
                   <PersonalBetCard
                     key={b.id}

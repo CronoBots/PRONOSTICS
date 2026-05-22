@@ -159,10 +159,10 @@ export default function Home() {
       </Head>
 
       <main
-        className="max-w-md mx-auto px-4 md:px-6 pt-3 pb-4 flex flex-col gap-3"
+        className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-3 lg:pt-6 pb-4 flex flex-col gap-3 lg:gap-5"
       >
-        {/* Header compact */}
-        <header className="flex items-center justify-between shrink-0">
+        {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
+        <header className="lg:hidden flex items-center justify-between shrink-0">
           {/* Slot gauche : streak indicator si série en cours */}
           {stats && stats.current_streak !== 0 ? (
             <div
@@ -213,7 +213,7 @@ export default function Home() {
             <DailyStatusCard history={history} hasPickToday={hasPickToday} />
 
             {/* Chart : hauteur fixe (pas de flex-1 stretch) */}
-            <section className="relative h-[240px]">
+            <section className="relative h-[240px] lg:h-[360px]">
               <BankrollChart
                 picks={picks}
                 startingBankroll={startingBankroll}
@@ -300,7 +300,7 @@ export default function Home() {
 
             {/* 4 stat tiles — taille naturelle, pas étirées */}
             {stats && (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
                 <StatTile
                   label={t("home.statParis")}
                   value={settledCount}

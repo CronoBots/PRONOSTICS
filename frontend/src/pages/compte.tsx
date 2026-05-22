@@ -79,8 +79,8 @@ export default function ComptePage() {
         <Head>
           <title>{`${t("account.title")} — WTF`}</title>
         </Head>
-        <main className="max-w-md mx-auto px-4 py-10 text-center">
-          <h1 className="text-lg font-bold mb-6">{t("account.title")}</h1>
+        <main className="max-w-md mx-auto px-4 py-10 lg:py-16 text-center">
+          <h1 className="text-lg lg:text-2xl font-bold mb-6">{t("account.title")}</h1>
           <div className="bg-bg-card border border-white/10 rounded-2xl p-6 mt-6">
             <p className="text-white/70 mb-4">
               {t("account.loginToManage")}
@@ -131,8 +131,8 @@ export default function ComptePage() {
       <Head>
         <title>{`${t("account.title")} — WTF`}</title>
       </Head>
-      <main className="max-w-md mx-auto px-4 md:px-6 py-6 md:py-10">
-        <h1 className="text-center text-base font-semibold text-white/80 mb-6">
+      <main className="max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
+        <h1 className="text-center text-base lg:text-2xl font-semibold lg:font-bold text-white/80 lg:text-white mb-6">
           {t("account.title")}
         </h1>
 

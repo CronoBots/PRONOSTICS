@@ -75,16 +75,16 @@ export default function FiltresPage() {
       <Head>
         <title>{t("filtres.titleTab")}</title>
       </Head>
-      <main className="max-w-md mx-auto px-4 pt-6 pb-32">
+      <main className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-32">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
             aria-label={t("common.back")}
           >
             ←
           </button>
-          <h1 className="text-lg font-bold tracking-tight">{t("filtres.title")}</h1>
+          <h1 className="text-lg lg:text-2xl font-bold tracking-tight">{t("filtres.title")}</h1>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

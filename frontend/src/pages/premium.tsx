@@ -64,16 +64,16 @@ export default function PremiumPage() {
       <Head>
         <title>{`${t("pricing.title")} — WTF`}</title>
       </Head>
-      <main className="max-w-md mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex items-center gap-3 mb-4">
           <Link
             href="/"
-            className="w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60"
+            className="lg:hidden w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60"
             aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight flex-1">
+          <h1 className="text-lg lg:text-2xl font-bold tracking-tight flex-1">
             {t("premium.pageTitle")}
           </h1>
         </div>

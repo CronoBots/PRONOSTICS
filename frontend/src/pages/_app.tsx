@@ -6,6 +6,7 @@ import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 
 import { BottomNav } from "@/components/BottomNav";
+import { DesktopHeader } from "@/components/DesktopHeader";
 import { Onboarding } from "@/components/Onboarding";
 import { ToastContainer } from "@/components/Toast";
 import { AuthProvider } from "@/lib/auth";
@@ -51,13 +52,13 @@ export default function App({ Component, pageProps }: AppProps) {
             </Head>
             <div
               key={router.pathname}
-              className="page-fade"
-              style={{
-                background: "var(--bg-base)",
-                paddingBottom: showNav ? "calc(var(--safe-bottom) + 5.5rem)" : 0,
-              }}
+              className="page-fade min-h-screen flex flex-col"
+              style={{ background: "var(--bg-base)" }}
             >
-              <Component {...pageProps} />
+              {showNav && <DesktopHeader />}
+              <div className={`flex-1 ${showNav ? "pb-[calc(var(--safe-bottom)+5.5rem)] lg:pb-0" : ""}`}>
+                <Component {...pageProps} />
+              </div>
             </div>
             {showNav && <BottomNav />}
             {showNav && <Onboarding />}

@@ -69,16 +69,16 @@ export default function PlusPage() {
       <Head>
         <title>{t("plus.titleTab")}</title>
       </Head>
-      <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-6">
         <div className="flex items-center gap-3 mb-6">
           <Link
             href="/"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
             aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">{t("plus.title")}</h1>
+          <h1 className="text-lg lg:text-2xl font-bold tracking-tight">{t("plus.title")}</h1>
         </div>
 
         {loading && (
@@ -90,31 +90,33 @@ export default function PlusPage() {
 
         {!loading && (
           <>
-            <Section title="Outils">
-              <RowLink icon="🎯" label={t("perso.title")} href="/mes-paris" />
-              <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
-              <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
-              <Row icon="📝" label="Bloc notes" onClick={() => setOpen("notes")} />
-            </Section>
+            <div className="lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-0">
+              <Section title="Outils">
+                <RowLink icon="🎯" label={t("perso.title")} href="/mes-paris" />
+                <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
+                <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
+                <Row icon="📝" label="Bloc notes" onClick={() => setOpen("notes")} />
+              </Section>
 
-            <Section title="Partager">
-              <Row icon="🔗" label="Partager la plateforme" onClick={() => setOpen("share")} />
-              <Row icon="</>" label="Code d'intégration" onClick={() => setOpen("embed")} />
-            </Section>
+              <Section title="Partager">
+                <Row icon="🔗" label="Partager la plateforme" onClick={() => setOpen("share")} />
+                <Row icon="</>" label="Code d'intégration" onClick={() => setOpen("embed")} />
+              </Section>
 
-            <Section title="Infos">
-              <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
-              <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
-              <Row icon="👋" label="Revoir l'intro" onClick={replayOnboarding} />
-              <Row icon="🆘" label="Jeu responsable" onClick={() => setOpen("responsible")} />
-              <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
-              <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
-            </Section>
+              <Section title="Infos">
+                <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
+                <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
+                <Row icon="👋" label="Revoir l'intro" onClick={replayOnboarding} />
+                <Row icon="🆘" label="Jeu responsable" onClick={() => setOpen("responsible")} />
+                <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
+                <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
+              </Section>
 
-            <Section title={t("nav.account")}>
-              <RowLink icon="👤" label={t("account.title")} href="/compte" />
-              <RowLink icon="👑" label={t("account.goPremium")} href="/premium" />
-            </Section>
+              <Section title={t("nav.account")}>
+                <RowLink icon="👤" label={t("account.title")} href="/compte" />
+                <RowLink icon="👑" label={t("account.goPremium")} href="/premium" />
+              </Section>
+            </div>
 
             <div className="text-center text-[10px] text-white/30 mt-8">
               WTF · Win The Future · v0.2 · {new Date().getFullYear()}
