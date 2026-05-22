@@ -34,6 +34,15 @@ export function BottomNav() {
         </svg>
       ),
     },
+    {
+      href: "/stats",
+      label: t("nav.stats"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 20V10M9 20V4M15 20v-8M21 20v-4" />
+        </svg>
+      ),
+    },
   ];
 
   const rightTabs: Tab[] = [
@@ -81,7 +90,7 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
       <div
-        className="max-w-md mx-auto grid grid-cols-5 relative items-end"
+        className="max-w-md mx-auto grid grid-cols-6 relative items-end"
         style={{ paddingBottom: "calc(var(--safe-bottom) + 0.75rem)" }}
       >
         {leftTabs.map(renderTab)}

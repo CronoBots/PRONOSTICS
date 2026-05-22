@@ -260,46 +260,42 @@ export default function Home() {
               )}
             </section>
 
-            {/* Stat tiles : 2 rangées séparées pour distribuer les gaps
-                équitablement via justify-between sur main (mobile + desktop) */}
+            {/* Stat tiles 2x2 : une seule grille pour garantir des hauteurs
+                égales sur les 4 cards (grid stretch par défaut) */}
             {stats && (
-              <>
-                <div className="grid grid-cols-2 gap-2 lg:gap-3 shrink-0">
-                  <StatTile
-                    label={t("home.statParis")}
-                    value={settledCount}
-                    decimals={0}
-                    tone="blue"
-                    onInfo={() => setInfoOpen("paris")}
-                  />
-                  <StatTile
-                    label={t("home.statBenefice")}
-                    value={Math.abs(stats.profit)}
-                    decimals={2}
-                    suffix="€"
-                    tone={stats.profit >= 0 ? "green" : "red"}
-                    onInfo={() => setInfoOpen("benefice")}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2 lg:gap-3 shrink-0">
-                  <StatTile
-                    label={t("home.statRoi")}
-                    value={Math.abs(stats.roi_percent)}
-                    decimals={2}
-                    suffix="%"
-                    tone={stats.roi_percent >= 0 ? "green" : "red"}
-                    onInfo={() => setInfoOpen("roi")}
-                  />
-                  <StatTile
-                    label={t("home.statProgression")}
-                    value={Math.abs(stats.progression_percent)}
-                    decimals={2}
-                    suffix="%"
-                    tone={stats.progression_percent >= 0 ? "green" : "red"}
-                    onInfo={() => setInfoOpen("progression")}
-                  />
-                </div>
-              </>
+              <div className="grid grid-cols-2 grid-rows-2 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-4 lg:grid-rows-1 shrink-0">
+                <StatTile
+                  label={t("home.statParis")}
+                  value={settledCount}
+                  decimals={0}
+                  tone="blue"
+                  onInfo={() => setInfoOpen("paris")}
+                />
+                <StatTile
+                  label={t("home.statBenefice")}
+                  value={Math.abs(stats.profit)}
+                  decimals={2}
+                  suffix="€"
+                  tone={stats.profit >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("benefice")}
+                />
+                <StatTile
+                  label={t("home.statRoi")}
+                  value={Math.abs(stats.roi_percent)}
+                  decimals={2}
+                  suffix="%"
+                  tone={stats.roi_percent >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("roi")}
+                />
+                <StatTile
+                  label={t("home.statProgression")}
+                  value={Math.abs(stats.progression_percent)}
+                  decimals={2}
+                  suffix="%"
+                  tone={stats.progression_percent >= 0 ? "green" : "red"}
+                  onInfo={() => setInfoOpen("progression")}
+                />
+              </div>
             )}
 
           </>
@@ -353,7 +349,7 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border card-border shadow-card rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
+    <div className="bg-bg-card border card-border shadow-card rounded-2xl px-3 py-1.5 lg:py-4 min-h-[64px] relative flex flex-col justify-center items-center">
       {onInfo && (
         <button
           onClick={onInfo}
