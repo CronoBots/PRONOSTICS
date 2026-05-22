@@ -449,7 +449,7 @@ PICKS: list[Pick] = [
         "away_team": "Popyrin + Cavaliers",
         "kickoff": "2026-05-21T13:15:00+00:00",  # Ruud à 15h15 Genève (UTC+2)
         "pick": "Combiné Ruud + Knicks (boosté bwin)",
-        "odds": 2.36,  # cote BOOSTÉE bwin (cote normale 1.28 × 1.42 = 1.82)
+        "odds": 2.363,  # cote BOOSTÉE bwin précise (cote normale 1.28 × 1.42 = 1.82)
         "model_probability": 0.63,  # 0.81 × 0.78
         "headline": "Combiné 'double favoris' BOOSTÉ par bwin (1,82 → 2,36, +30%) — Ruud (14-1 carrière à Geneva, 3 titres) + Knicks (10 wins consécutifs à MSG, 23-3 SU comme favori −6,5+ home). Proba combinée ~63%, EV +49% grâce au boost. Le combiné safe du jour devient aussi le plus +EV.",
         "profile_tags": ["combo", "safe_pick", "double_favorites", "credibility_first"],
@@ -600,7 +600,12 @@ PICKS: list[Pick] = [
         ],
         "stake": 10.0,  # mise doublée (10€ au lieu du standard 5€) — décision confiance sur cote boostée
         "odds_unboosted": 1.82,    # cote normale combinée (1.28 × 1.42)
-        "outcome": "pending",
+        "outcome": "win",
+        "result": {
+            "score_text": "Combiné GAGNÉ ✓ — Ruud d. Popyrin 6-4 6-3 · Knicks 109-93 Cavaliers",
+            "summary": "Combiné parfait : (1) Ruud expédie Popyrin 6-4 6-3 en 73 min au Geneva Open et égale le record Mats Wilander à 16 wins (passe en demi-finale). (2) Knicks dominent Cavs Game 2 109-93 grâce à un 18-0 au 3e quart, Josh Hart 26 pts career-high playoffs, Brunson 19 pts + 14 assists. Cavs limités à 44 pts en 2e mi-temps. Knicks mènent la série 2-0.",
+            "bet_outcome": "✅ Les 2 jambes gagnées · cote boostée 2,363 · mise 10€ → retour 23,63€ (gain net +13,63€). Bankroll 20€ → 33,63€.",
+        },
         "legs": [
             {
                 "sport": "tennis",
@@ -612,9 +617,9 @@ PICKS: list[Pick] = [
                 "odds": 1.28,
                 "outcome": "win",
                 "result": {
-                    "score_text": "Ruud d. Popyrin (Ruud passe en demi-finale)",
-                    "summary": "Casper Ruud a remporté son quart de finale contre Alexei Popyrin et est qualifié pour la demi-finale du Geneva Open de demain (22/05). Confirmation via la liste des demi-finalistes Geneva : Ruud, Navone, Rinderknech, Bublik.",
-                    "bet_outcome": "✅ Ruud gagne — 1ère jambe du combiné validée",
+                    "score_text": "Ruud d. Popyrin 6-4 6-3 (73 min)",
+                    "summary": "Ruud expédie Popyrin en straight sets au Geneva Open. Confirmation absolue de sa domination à Geneva : 16-1 carrière, égale le record Mats Wilander pour le plus de victoires au tournoi. Passe en demi-finale (vs Munar ou Bublik samedi).",
+                    "bet_outcome": "✅ Ruud gagne en 2 sets — 1ère jambe du combiné validée comme prévu",
                 },
                 "notes": "Ruud 14-1 carrière à Geneva, 3 titres (2021/2022/2024), n'a pas perdu un set ce tournoi. Stats Insider 74%, notre estim 79%.",
             },
@@ -626,7 +631,14 @@ PICKS: list[Pick] = [
                 "pick": "New York Knicks vainqueurs du match",
                 "kickoff": "2026-05-22T00:10:00+00:00",
                 "odds": 1.42,
-                "outcome": "pending",
+                "outcome": "win",
+                "result": {
+                    "score_home": 109,
+                    "score_away": 93,
+                    "score_text": "Knicks 109 - Cavaliers 93",
+                    "summary": "Dommage Knicks Game 2 à MSG. Match basculé par un 18-0 au 3e quart, après quoi Cavs n'ont jamais récupéré. Josh Hart playoff career-high 26 pts, Brunson 19 pts + 14 assists (playoff career-high). Mitchell 26 pts pour les Cavs insuffisants. Cavs limités à 44 pts en 2e mi-temps. Knicks mènent la série 2-0 et sont à 2 wins des NBA Finals.",
+                    "bet_outcome": "✅ Knicks gagnent confortablement (+16) — 2e jambe du combiné validée, COMBINÉ GAGNÉ",
+                },
                 "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%.",
             },
         ],
