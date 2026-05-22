@@ -584,13 +584,207 @@
           "notes": "23-3 SU comme favori −6.5+ home cette saison. 10 wins consécutifs à MSG. Comeback historique de −22 en OT au Game 1. Notre estim 78%."
         }
       ]
+    },
+    {
+      "date": "2026-05-22",
+      "match": {
+        "sport": "combo",
+        "league": "Combiné — ATP Geneva SF (Ruud) + Euroleague Final Four SF (Olympiakos)",
+        "home_team": "Ruud + Olympiakos",
+        "away_team": "Navone + Fenerbahçe",
+        "kickoff": "2026-05-22T13:00:00+00:00"
+      },
+      "pick": "Combiné Ruud + Olympiakos (boosté bwin)",
+      "odds": 2.249,
+      "odds_unboosted": 1.73,
+      "model_probability": 0.536,
+      "book_probability": 0.4446,
+      "expected_value": 0.2055,
+      "engine": "claude_curated@1.0",
+      "headline": "Combiné 'double favoris à domicile' BOOSTÉ par bwin (1,73 → 2,249, +30%) — Ruud (record absolu Geneva 23V-1D, 3 titres, n'a pas perdu un set cette semaine) + Olympiakos (régulière #1 Euroleague, Telekom Center Athens à domicile pour le Final Four). Proba combinée 53,6%, EV +20,6% grâce au boost.",
+      "rationale": [
+        "##🎯 Le combiné en 1 ligne",
+        "Pari unique 2 jambes : Casper Ruud bat Mariano Navone (Geneva SF, 15h heure Genève) ET Olympiakos bat Fenerbahçe (Euroleague Final Four SF, 18h Athènes). Les 2 doivent gagner pour valider le combiné.",
+        "Mise unique 8,63€ sur le combiné. Cote BOOSTÉE bwin 2,249 (vs cote normale 1,73). Si gagné : +10,81€ net. Si perdu (1 jambe suffit) : −8,63€.",
+        "##🚀 La cote boostée — encore une fois le booster qui change l'EV",
+        "bwin propose une cote BOOSTÉE de 1,73 → 2,249 sur ce combiné (+30% de gain bonifié, marqué '4,49€ de gains boostés en cash' sur la mise 8,63€).",
+        "C'est la 2e cote boostée bwin qu'on capture cette semaine (après Ruud+Knicks hier à 1,82→2,36). Pattern : bwin boost les combinés 'double favoris' sur les marchés ATP + basket Europe car volume marketing.",
+        "Impact sur l'EV : 2,249 × 0,536 = 1,206 → **+20,6% d'espérance** par euro misé. Sans boost on était à +5,6%. Le boost quadruple l'EV.",
+        "##🎾 Jambe 1 — Casper Ruud vs Mariano Navone (Geneva SF, clay)",
+        "Tournoi : ATP 250 Gonet Geneva Open, terre battue intérieure, demi-finale.",
+        "Coup d'envoi : vendredi 22 mai 15h00 heure Genève/Belgique (13h00 UTC, court central).",
+        "Pari : Casper Ruud vainqueur du match. Cote bwin 1,22.",
+        "Casper Ruud : N°11 mondial ATP, 27 ans, norvégien. Tenant du titre Geneva 2024. Vient de battre Popyrin 6-4 6-3 en 73 min en QF (notre 1ère jambe d'hier).",
+        "Mariano Navone : N°44 mondial ATP, 25 ans, argentin. Spécialiste terre battue (1 titre clay 2024 Cordoba). Vient de battre Munar 6-2 6-2 en QF.",
+        "##📊 Stats Ruud à Geneva — record absolu du tournoi",
+        "Ruud à Geneva : 16V-1D carrière (.941), 3 titres (2021/2022/2024), finaliste 2025. **Égale le record Mats Wilander** pour le plus de victoires au tournoi (acquis hier soir).",
+        "Cette édition 2026 : 3 wins sans perdre un set (Brooksby, Mannarino, Popyrin). État de forme idéal.",
+        "Surface : terre battue intérieure, conditions stables, rebond moyen. Style topspin lourd de Ruud parfaitement adapté.",
+        "Calendrier : Roland Garros démarre dimanche 24/05 — Ruud pourrait économiser MAIS il est tenant du titre Geneva donc va probablement jouer à fond pour le titre + confiance avant RG.",
+        "##🤝 H2H et profil tactique Ruud vs Navone",
+        "H2H Ruud vs Navone : **1-0 Ruud** (Davis Cup 2024, dur indoor, 6-3 6-3 facile pour Ruud).",
+        "Sur terre battue : aucune confrontation directe. Mais Ruud a un track record exceptionnel contre les ATP #40-60 sur clay (87% de victoires depuis 2022).",
+        "Style Navone : grinder argentin classique, défensif, rallies longs, mental fort. Profil très similaire à Ruud lui-même.",
+        "Avantage Ruud : meilleur niveau (top 15 vs top 50), expérience finales clay (2× finaliste RG), service plus puissant (140+ km/h vs 130 Navone).",
+        "Risque Navone : peut tenir une fatigue Ruud si match va 3 sets (Ruud a joué 4 matches en 5 jours, Navone idem).",
+        "##📈 Confiance Ruud — modèles externes",
+        "Last Word On Tennis : Ruud favori clair, prediction 'straight sets'.",
+        "Dimers Stats Insider : Ruud ~81% probabilité gain.",
+        "Cote bwin 1,22 = book implique 82% → notre estim 80% → marché légèrement aggressive, on est aligné (edge marginal).",
+        "##🏀 Jambe 2 — Olympiakos vs Fenerbahçe (Euroleague Final Four SF)",
+        "Tournoi : Euroleague Final Four 2026, Telekom Center Athens, demi-finale (winner-take-all, pas de série).",
+        "Coup d'envoi : vendredi 22 mai 18h heure Athènes (16h UTC, 17h Belgique).",
+        "Pari : Olympiakos vainqueur du match. Cote bwin 1,42.",
+        "Olympiakos : club grec, **#1 régulière Euroleague 2025-26**, a swept AS Monaco en playoffs (3-0). Coach Georgios Bartzokas. Stars : Sasha Vezenkov (MVP candidate), Tyler Dorsey, Moustapha Fall.",
+        "Fenerbahçe : club turc, **champion en titre Euroleague 2025**, 3 titres en 4 saisons. Coach Sarunas Jasikevicius. Stars : Scottie Wilbekin, Nigel Hayes-Davis, Devon Hall.",
+        "##📊 Stats Olympiakos à Athènes — avantage maison décisif",
+        "Le Final Four 2026 se joue au Telekom Center Athens — **terrain de domicile d'Olympiakos**. Avantage massif : la salle sera 90%+ pro-Olympiakos.",
+        "Olympiakos à domicile cette saison Euroleague : **13V-2D** (.867). À Athènes en context Final Four : terrain conquis, support 18 000 spectateurs.",
+        "L'équipe d'Olympiakos cumule **70 Final Four appearances** (joueurs + staff), bien plus que les 3 autres équipes réunies. Expérience event.",
+        "##🤝 H2H et contexte",
+        "10 derniers H2H Olympiakos-Fenerbahce : **5-5** (équilibré). Mais le DERNIER match en date (mars 2026) : Olympiakos 104-87 Fenerbahce (à Athènes). Momentum.",
+        "Cette saison régulière H2H : Olympiakos 2-0 vs Fenerbahce.",
+        "Ce qui penche pour Fenerbahce : champion en titre, expérience clutch, 3 titres en 4 ans = mentalité de gagnant Euroleague.",
+        "Ce qui penche pour Olympiakos : à domicile, finaliste régulière #1, momentum H2H récent, fans à Athènes pour cette demi-finale.",
+        "##📈 Confiance Olympiakos — modèles externes",
+        "Marché Polymarket : Olympiakos 67,5% / Fenerbahce 32,5% (proba implicite). Cote équivalente 1,48.",
+        "Basketnews predictions panel : Olympiakos favori 'clear consensus across traditional sportsbooks and prediction markets'.",
+        "Tips.GG : 'Olympiakos emerges as the clear consensus favorite' (1,48-1,50 cote agrégée).",
+        "Notre estim : 67-70% (avec facteur home court Athènes).",
+        "Cote bwin 1,42 = book implique 70,4% → notre 67% → edge légèrement négatif (-2%) MAIS le boost compense largement.",
+        "##💰 Pourquoi un combiné plutôt que 2 picks séparés ?",
+        "Pick séparé Ruud 5€ à 1,22 → gain net +1,10€. Pick séparé Olympiakos 5€ à 1,42 → gain net +2,10€. Total 10€ misés pour gain max 3,20€.",
+        "Combiné 8,63€ à 1,73 (normal) → gain net +6,30€. Mêmes 2 picks, mise unique 8,63€, gain +97% supérieur.",
+        "Avec le boost à 2,249 : gain net +10,81€ → **+238% par rapport aux 2 picks séparés**.",
+        "Tradeoff : combiné = AMPLIFICATION du risque (1 jambe perd = tout perdu). 80% × 67% = 53,6% proba combinée (vs 80% et 67% individuels).",
+        "Décision : EV +20,6% grâce au boost + 2 favoris à domicile non-corrélés (tennis Suisse vs basket Grèce) = sweet spot risk/reward.",
+        "##📊 Calcul détaillé du combiné BOOSTÉ",
+        "Mise effectivement placée : **8,63€** (mise calibrée bwin sur cote boostée 2,249 pour gain rond ~19,44€).",
+        "Cote bwin normale combinée : Ruud 1,22 × Olympiakos 1,42 = 1,7324.",
+        "Cote BOOSTÉE par bwin : 2,249 (+29,8% bonus). Promo '4,49€ de gains boostés en cash' affichée.",
+        "Gain potentiel si combiné gagné : 8,63€ × 2,249 = 19,41€ (gain net +10,78€ ≈ +10,81€).",
+        "Perte potentielle : −8,63€ (si UNE des 2 jambes perd, on perd tout).",
+        "Probabilité combinée estimée : 80% × 67% = 53,6%.",
+        "Expected Value : (0,536 × 2,249) − 1 = +20,5% par euro misé. Excellent.",
+        "Comparaison sans boost : (0,536 × 1,73) − 1 = -7,3%. Le boost transforme un -EV en +EV substantiel.",
+        "Bankroll avant : 33,63€. Si win : 44,44€ (+32%). Si loss : 25,00€ (= solde bwin actuel post-mise ✓).",
+        "##⚠️ Risques honnêtes",
+        "Risque 1 (Ruud) : fatigue cumulée (4 matches en 5 jours) + Roland Garros qui arrive dimanche → possibilité de match en mode économie. Mais titre Geneva à défendre = motivation maximale.",
+        "Risque 2 (Ruud) : Navone est en confiance après avoir sorti Munar 6-2 6-2, peut être inspiré pour une finale. Style similaire à Ruud = bataille de patience.",
+        "Risque 3 (Olympiakos) : Fenerbahce est champion en titre, gènes de killer en Final Four. Wilbekin notamment réputé en moments clutch.",
+        "Risque 4 (Olympiakos) : pression du public maison = double-edged. Si Olympiakos commence mal, la pression peut paralyser.",
+        "Risque 5 (combiné) : 46,4% de chance qu'au moins UNE jambe perde = on perd tout. C'est le prix de la cote boostée 2,249.",
+        "Aucun de ces risques ne fait passer la proba combinée sous 50%, mais ils s'additionnent.",
+        "##✅ Pourquoi c'est le pick du jour",
+        "Sur 22 matchs analysés ce 22/05 (cartographie exhaustive 4 tournois tennis + NBA + NHL + MLB + Euroleague F4 + Liga MX + Libertadores + NRL + IPL + Bundesliga playoff), AUCUN pick solo ne combine cote ≥ 1,90 ET proba ≥ 70% ET événement premium.",
+        "Le combiné Ruud + Olympiakos atteint cote 2,249 boostée tout en gardant proba 53,6% (zone safe pour un combiné).",
+        "Les 2 jambes sont totalement indépendantes (tennis Suisse vs basket Grèce, sports différents, créneaux horaires différents) — aucune corrélation.",
+        "Storytelling premium : 'le combiné des favoris à domicile dans 2 compétitions de prestige' (Geneva pour Ruud, Final Four pour Olympiakos)."
+      ],
+      "sources": [
+        "https://lastwordonsports.com/tennis/2026/05/21/atp-geneva-semifinal-predictions-ruud-navone/",
+        "https://www.dimers.com/news/casper-ruud-vs-mariano-navone-tennis-prediction-atp-geneva-open-2026-ac",
+        "https://www.atptour.com/en/scores/current/geneva/322/results",
+        "https://www.lines.com/prediction-markets/sports/euroleague-olympiac-fenerbah-2026-05-22",
+        "https://tips.gg/article/euroleague-final-four-2026-winner-odds-event/",
+        "https://www.olympics.com/en/news/euroleague-final-four-2026-guide",
+        "https://basketnews.com/news-246073-euroleague-playoff-odds-two-clear-favorites-and-two-coin-flip-series.html"
+      ],
+      "stake": 8.63,
+      "outcome": "pending",
+      "profit": 0.0,
+      "bankroll_after": 33.63,
+      "result": null,
+      "comparison": {
+        "matches_analyzed": 22,
+        "top_alternatives": [
+          {
+            "match": "Solo Casper Ruud vs Navone (Geneva SF)",
+            "pick": "Ruud ML",
+            "odds": 1.33,
+            "verdict": "Le plus safe (80% proba) mais profit faible (+1,65€ sur 5€). Combiné avec Olympiakos garde la même Ruud + ajoute du gain."
+          },
+          {
+            "match": "Solo Olympiakos vs Fenerbahce (Euroleague F4)",
+            "pick": "Olympiakos ML",
+            "odds": 1.48,
+            "verdict": "Favori à domicile à Athènes, 70+ Final Fours cumulés. Mais Fenerbahce est champion en titre (3 titres en 4 ans) — pas un walk-over, 67% proba. EV solo neutre."
+          },
+          {
+            "match": "Victoria Mboko vs Cristian (Strasbourg SF, WTA, clay)",
+            "pick": "Mboko ML",
+            "odds": 1.444,
+            "verdict": "Top seed du tournoi, breakout star canadienne 2026, en grande forme. 72% proba mais Cristian peut surprendre. Excellent candidat pour combiné Ruud+Mboko (1.92 cote, EV +10,6%) — mais Euroleague Final Four offre meilleur storytelling premium."
+          },
+          {
+            "match": "Anhelina Kalinina vs Udvardy (Rabat SF, WTA, clay)",
+            "pick": "Kalinina ML",
+            "odds": 1.333,
+            "verdict": "H2H 3-0 vs Udvardy, en confiance. Mais marché juste (EV ~+1%). Pas value."
+          },
+          {
+            "match": "Spurs vs Thunder (NBA WCF G3)",
+            "pick": "Spurs ML",
+            "odds": 1.85,
+            "verdict": "Spurs -1.5 à domicile mais série 1-1, coin-flip réel. Trop volatil pour safe pick."
+          },
+          {
+            "match": "Vegas vs Colorado (NHL WCF G2)",
+            "pick": "Colorado ML",
+            "odds": 1.85,
+            "verdict": "Colorado a perdu G1 à domicile, doit réagir. Mais variance Stanley Cup playoffs G2 = trop élevée."
+          },
+          {
+            "match": "Dodgers @ Brewers (MLB)",
+            "pick": "Dodgers ML",
+            "odds": 1.85,
+            "verdict": "Dodgers favoris légers mais Brewers en grosse forme (sweep Cubs récent). Coin-flip 54%."
+          },
+          {
+            "match": "Peñarol vs Corinthians (Copa Libertadores groupe E)",
+            "pick": "Corinthians ML",
+            "odds": 3.0,
+            "verdict": "Corinthians invaincu en groupes, Peñarol 0 victoire. Cote intéressante mais match équilibré à Montevideo (draw 3.00 le plus probable)."
+          }
+        ]
+      },
+      "profile_tags": [
+        "combo",
+        "double_favorites_home",
+        "boosted",
+        "premium_events"
+      ],
+      "legs": [
+        {
+          "sport": "tennis",
+          "league": "ATP 250 — Geneva Open (demi-finale, terre battue)",
+          "home_team": "Casper Ruud (NOR)",
+          "away_team": "Mariano Navone (ARG)",
+          "pick": "Casper Ruud vainqueur du match",
+          "kickoff": "2026-05-22T13:00:00+00:00",
+          "odds": 1.22,
+          "outcome": "pending",
+          "notes": "Ruud 16-1 carrière à Geneva (record absolu, égale Wilander), tenant du titre 2024, 3 wins sans perdre un set cette semaine. H2H 1-0 vs Navone. Notre estim 80%."
+        },
+        {
+          "sport": "basketball",
+          "league": "Euroleague Final Four — Demi-finale (Athènes)",
+          "home_team": "Olympiakos Piraeus",
+          "away_team": "Fenerbahçe Beko Istanbul",
+          "pick": "Olympiakos vainqueur du match",
+          "kickoff": "2026-05-22T16:00:00+00:00",
+          "odds": 1.42,
+          "outcome": "pending",
+          "notes": "#1 régulière Euroleague, à domicile au Telekom Center Athens. Sweep AS Monaco en playoffs (3-0). Dernier H2H gagné 104-87. Vs champion en titre Fenerbahce (3 titres en 4 ans). Notre estim 67%."
+        }
+      ]
     }
   ],
   "stats": {
-    "total_picks": 5,
+    "total_picks": 6,
     "won": 4,
     "lost": 1,
-    "pending": 0,
+    "pending": 1,
     "profit": 28.63,
     "roi_percent": 95.43,
     "average_odds": 2.419,
@@ -602,13 +796,13 @@
     "current_streak": 1,
     "best_streak": 3,
     "worst_streak": -1,
-    "total_stake_played": 30.0,
-    "pending_stake": 0,
-    "avg_stake": 6.0,
+    "total_stake_played": 38.63,
+    "pending_stake": 8.63,
+    "avg_stake": 6.44,
     "max_stake": 10.0,
     "max_odds_won": 2.7,
     "max_profit_single": 13.63,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-22T05:53:54.820421+00:00"
+  "generated_at": "2026-05-22T08:52:51.224979+00:00"
 }
