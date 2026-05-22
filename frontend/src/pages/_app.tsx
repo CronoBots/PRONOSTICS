@@ -52,11 +52,21 @@ export default function App({ Component, pageProps }: AppProps) {
             </Head>
             <div
               key={router.pathname}
-              className="page-fade min-h-screen flex flex-col"
-              style={{ background: "var(--bg-base)" }}
+              className="page-fade flex flex-col"
+              style={{
+                background: "var(--bg-base)",
+                // 100dvh = dynamic viewport height : s'adapte automatiquement à
+                // l'URL bar mobile Safari/Chrome quand elle se cache / s'affiche.
+                // -safe-top car body a déjà padding-top:safe-top.
+                minHeight: "calc(100dvh - var(--safe-top, 0px))",
+              }}
             >
               {showNav && <DesktopHeader />}
-              <div className={`flex-1 ${showNav ? "pb-[calc(var(--safe-bottom)+5.5rem)] lg:pb-0" : ""}`}>
+              <div
+                className={`flex-1 flex flex-col ${
+                  showNav ? "pb-[calc(var(--safe-bottom)+5.5rem)] lg:pb-0" : ""
+                }`}
+              >
                 <Component {...pageProps} />
               </div>
             </div>

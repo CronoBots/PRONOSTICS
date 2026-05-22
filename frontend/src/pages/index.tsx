@@ -169,15 +169,7 @@ export default function Home() {
       </Head>
 
       <main
-        className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-2 lg:gap-5 lg:min-h-0"
-        style={{
-          // Sur mobile : hauteur calée pile entre top safe-area et bottom nav
-          // (5.5rem = hauteur de la BottomNav) pour éviter tout scroll.
-          // Sur desktop (lg) : le style inline est ignoré au profit de min-h-0
-          //   (le DesktopHeader gère sa propre hauteur).
-          minHeight:
-            "calc(100svh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5.5rem - 0.5rem)",
-        }}
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-2 lg:gap-5 flex-1 lg:flex-none"
       >
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
