@@ -151,6 +151,17 @@ export default function Home() {
   const startingBankroll = stats?.starting_bankroll ?? 5;
   const settledCount = stats ? stats.won + stats.lost : 0;
 
+  // Filtre des picks selon la période sélectionnée (chart recharge)
+  const PERIOD_DAYS: Record<Period, number> = { "1j": 1, "1s": 7, "1m": 30, "1a": 365 };
+  const filteredPicks = useMemo(() => {
+    const days = PERIOD_DAYS[period];
+    const cutoff = new Date();
+    cutoff.setHours(0, 0, 0, 0);
+    cutoff.setDate(cutoff.getDate() - (days - 1));
+    const cutoffIso = cutoff.toISOString().slice(0, 10);
+    return picks.filter((p) => p.date >= cutoffIso);
+  }, [picks, period]);
+
   return (
     <>
       <Head>
@@ -186,7 +197,7 @@ export default function Home() {
             {/* Chart NΞXBΞT — fond vert plein, period pills intégrés dans le cadre */}
             <section className="relative h-[300px] lg:h-[420px]" ref={menuRef}>
               <BankrollChart
-                picks={picks}
+                picks={filteredPicks}
                 startingBankroll={startingBankroll}
                 variant="hero"
                 mode={opts.mode}
@@ -215,8 +226,9 @@ export default function Home() {
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border border-white text-white text-center ${
-                            period === p ? "bg-white/25" : "bg-transparent"
+                          style={{ color: "#ffffff", borderColor: "#ffffff" }}
+                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center ${
+                            period === p ? "bg-white/35" : "bg-transparent"
                           }`}
                         >
                           {t(labelKey)}
@@ -225,7 +237,8 @@ export default function Home() {
                     })}
                     <Link
                       href="/filtres"
-                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border border-white text-white text-center bg-transparent"
+                      style={{ color: "#ffffff", borderColor: "#ffffff" }}
+                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center bg-transparent"
                     >
                       {t("home.filters")}
                     </Link>
