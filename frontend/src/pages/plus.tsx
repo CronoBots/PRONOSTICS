@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { InfoSheet } from "@/components/InfoSheet";
 import { KellyCalculator } from "@/components/KellyCalculator";
+import { Onboarding, resetOnboarding } from "@/components/Onboarding";
 import { StakeSimulator } from "@/components/StakeSimulator";
 import { fetchHistory } from "@/lib/dataSource";
 import { History } from "@/lib/types";
@@ -24,6 +25,12 @@ export default function PlusPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<SheetKey | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  function replayOnboarding() {
+    resetOnboarding();
+    setShowOnboarding(true);
+  }
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
@@ -90,6 +97,7 @@ export default function PlusPage() {
             <Section title="Infos">
               <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
               <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
+              <Row icon="👋" label="Revoir l'intro" onClick={replayOnboarding} />
               <Row icon="🆘" label="Jeu responsable" onClick={() => setOpen("responsible")} />
               <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
               <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
@@ -280,6 +288,11 @@ export default function PlusPage() {
           données associées sont effacées sous 30 jours.
         </p>
       </InfoSheet>
+
+      {/* Onboarding revisitable */}
+      {showOnboarding && (
+        <Onboarding forceShow onClose={() => setShowOnboarding(false)} />
+      )}
     </>
   );
 }

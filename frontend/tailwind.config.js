@@ -32,6 +32,32 @@ module.exports = {
           "sans-serif",
         ],
       },
+      animation: {
+        "ping-slow": "ping-slow 2.5s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "fade-in": "fade-in 0.3s ease-out",
+        "count-up": "count-up 0.6s ease-out",
+        confetti: "confetti 1.5s ease-out forwards",
+      },
+      keyframes: {
+        "ping-slow": {
+          "0%": { transform: "scale(1)", opacity: "0.7" },
+          "70%": { transform: "scale(1.6)", opacity: "0" },
+          "100%": { transform: "scale(1.6)", opacity: "0" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(4px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "count-up": {
+          "0%": { transform: "translateY(8px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        confetti: {
+          "0%": { transform: "translateY(0) scale(0.8) rotate(0deg)", opacity: "0" },
+          "20%": { opacity: "1" },
+          "100%": { transform: "translateY(-120px) scale(1) rotate(180deg)", opacity: "0" },
+        },
+      },
     },
   },
   plugins: [],

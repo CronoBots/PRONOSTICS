@@ -152,10 +152,13 @@ export default function Home() {
       >
         {/* Header compact */}
         <header className="flex items-center justify-between shrink-0">
-          <button className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5">
-            ←
-          </button>
-          <Link href="/today" className="flex items-center gap-1.5 font-bold">
+          {/* Slot gauche : laissé vide pour balance visuelle (Home = entry point, pas de back) */}
+          <div className="w-9 h-9" aria-hidden />
+          <Link
+            href="/today"
+            className="flex items-center gap-1.5 font-bold"
+            aria-label="Pick du jour"
+          >
             <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
               WTF
             </span>
