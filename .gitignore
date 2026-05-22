@@ -34,6 +34,7 @@ npm-debug.log*
 
 # Next.js (auto-généré)
 frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
 
 # Données copiées par prebuild (frontend/scripts/copy-predictions.js)
 frontend/public/data/predictions/

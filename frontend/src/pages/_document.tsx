@@ -1,9 +1,14 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
+// Anti-FOUC : inline script qui applique le thème AVANT que la page ne s'hydrate.
+// Doit être dans _document pour s'exécuter en tout premier (avant le bundle React).
+const THEME_BOOT = `(function(){try{var s=localStorage.getItem('pronostics.theme');var r;if(s==='light'||s==='dark'){r=s;}else{r=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',r);var m=document.querySelector('meta[name=theme-color]');if(m){m.content=r==='light'?'#f6f7fb':'#0a0b1e';}}catch(e){}})();`;
+
 export default function Document() {
   return (
     <Html lang="fr">
       <Head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         {/* Note : <meta name="viewport"> est dans _app.tsx (recommandation Next.js).
            Le _document.tsx contient uniquement les meta tags statiques + assets. */}
 

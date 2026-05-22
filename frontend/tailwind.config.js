@@ -4,11 +4,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Palette "Aurora" — sombre violacé, accent émeraude + violet électrique
+        // Palette "Aurora" — drivée par CSS variables (theme-aware light/dark).
+        // Les hex de fallback préservent le rendu si une var n'est pas définie.
         bg: {
-          base: "#0a0b1e",       // deep void (violet-noir)
-          card: "#14172c",       // slate purple
-          elevated: "#1f2240",   // surface élevée
+          base: "rgb(var(--bg-base-rgb) / <alpha-value>)",
+          card: "rgb(var(--bg-card-rgb) / <alpha-value>)",
+          elevated: "rgb(var(--bg-elevated-rgb) / <alpha-value>)",
         },
         accent: {
           green: "#10d9a3",      // émeraude vive

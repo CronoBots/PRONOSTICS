@@ -10,6 +10,8 @@ import { Onboarding } from "@/components/Onboarding";
 import { ToastContainer } from "@/components/Toast";
 import { AuthProvider } from "@/lib/auth";
 import { I18nProvider } from "@/lib/i18n";
+import { PreferencesProvider } from "@/lib/preferences";
+import { ThemeProvider } from "@/lib/theme";
 
 const HIDE_NAV = new Set(["/login", "/register", "/forgot-password"]);
 
@@ -37,32 +39,32 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <I18nProvider>
-      <AuthProvider>
-        {/* Viewport doit être dans _app ou page-level (jamais dans _document) */}
-        <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-          />
-        </Head>
-        <div
-          // key force un remount + animation fade au changement de route
-          // pour masquer la latence de chargement du chunk Next.js.
-          // PAS de min-height ni contain (cassait le layout de la Home).
-          key={router.pathname}
-          className="page-fade"
-          style={{
-            background: "var(--bg-base)",
-            paddingBottom: showNav ? "calc(var(--safe-bottom) + 5.5rem)" : 0,
-          }}
-        >
-          <Component {...pageProps} />
-        </div>
-        {showNav && <BottomNav />}
-        {showNav && <Onboarding />}
-        <ToastContainer />
-      </AuthProvider>
-    </I18nProvider>
+    <ThemeProvider>
+      <PreferencesProvider>
+        <I18nProvider>
+          <AuthProvider>
+            <Head>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+              />
+            </Head>
+            <div
+              key={router.pathname}
+              className="page-fade"
+              style={{
+                background: "var(--bg-base)",
+                paddingBottom: showNav ? "calc(var(--safe-bottom) + 5.5rem)" : 0,
+              }}
+            >
+              <Component {...pageProps} />
+            </div>
+            {showNav && <BottomNav />}
+            {showNav && <Onboarding />}
+            <ToastContainer />
+          </AuthProvider>
+        </I18nProvider>
+      </PreferencesProvider>
+    </ThemeProvider>
   );
 }
