@@ -99,49 +99,6 @@ function buildSeries(
   return series;
 }
 
-function HeroTooltip({
-  active,
-  payload,
-  label,
-  mode,
-  labels,
-}: {
-  active?: boolean;
-  payload?: Array<{ value: number | null; dataKey: string; payload: Point }>;
-  label?: string;
-  mode: ChartMode;
-  labels: { capital: string; benefit: string; ifWon: string; ifLost: string };
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  const seen = new Set<string>();
-  const lines: Array<{ name: string; value: number }> = [];
-  for (const entry of payload) {
-    const v = entry.value;
-    if (v === null || v === undefined) continue;
-    const key = `${entry.dataKey}-${v.toFixed(2)}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    let name = mode === "capital" ? labels.capital : labels.benefit;
-    if (entry.dataKey === "ifWin") name = labels.ifWon;
-    else if (entry.dataKey === "ifLoss") name = labels.ifLost;
-    if (lines.find((l) => l.value === v)) continue;
-    lines.push({ name, value: v });
-  }
-  if (lines.length === 0) return null;
-  const dateLabel = payload[0].payload?.label || label;
-  return (
-    <div className="bg-bg-card border border-white/15 rounded-lg p-2.5 text-xs shadow-xl">
-      {dateLabel && <div className="text-white/60 mb-1">{dateLabel}</div>}
-      {lines.map((l, i) => (
-        <div key={i} className="text-white">
-          <span className="text-white/70">{l.name} :</span>{" "}
-          <span className="font-semibold">{l.value.toFixed(2)} €</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function BankrollChart({
   picks,
   startingBankroll,
@@ -154,8 +111,6 @@ export function BankrollChart({
   const labels = {
     capital: t("chart.capital"),
     benefit: t("chart.benefit"),
-    ifWon: t("chart.ifWon"),
-    ifLost: t("chart.ifLost"),
   };
   const data = useMemo(
     () => buildSeries(picks, startingBankroll, mode, locale, t("chart.start")),
@@ -164,40 +119,61 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
+    // Style sparkline sombre (inspiré /stats StatsHero) :
+    // - fond gradient bg-card → bg-elevated
+    // - ligne verte/rouge selon trend (vs flashy green/blanc)
+    // - grid + axes très discrets
+    // - tooltip dark cohérent avec le reste de l'app
+    const lastVal = data[data.length - 1]?.value ?? 0;
+    const baseline = mode === "capital" ? startingBankroll : 0;
+    const positive = lastVal >= baseline;
+    const lineColor = positive ? "#10d9a3" : "#ff4d6d";
+
     return (
-      <div className="h-full min-h-[180px] w-full rounded-2xl overflow-hidden bg-accent-green relative">
+      <div className="h-full min-h-[180px] w-full rounded-2xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated border border-white/[0.06] shadow-card relative">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 8 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
+            <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeWidth={1} vertical={false} />
             <XAxis dataKey="label" hide />
             <YAxis
-              stroke="rgba(255,255,255,0.85)"
-              tick={{ fontSize: 11, fill: "#ffffff" }}
+              stroke="rgba(255,255,255,0.25)"
+              tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
               tickLine={false}
               axisLine={false}
               tickFormatter={(v) => `${Math.round(v)}€`}
               domain={["dataMin - 2", "dataMax + 2"]}
               width={42}
-              tickCount={6}
+              tickCount={5}
             />
             <Tooltip
-              content={<HeroTooltip mode={mode} labels={labels} />}
-              cursor={{ stroke: "rgba(255,255,255,0.5)", strokeWidth: 1 }}
+              contentStyle={{
+                background: "rgb(var(--bg-card-rgb))",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 8,
+                fontSize: 12,
+              }}
+              labelStyle={{ color: "rgba(255,255,255,0.5)" }}
+              formatter={(v: number) => [
+                `${v.toFixed(2)} €`,
+                mode === "capital" ? labels.capital : labels.benefit,
+              ]}
+              cursor={{ stroke: "rgba(255,255,255,0.3)", strokeWidth: 1 }}
             />
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#ffffff"
-              strokeWidth={3}
-              dot={showValues ? { fill: "#fff", r: 4 } : false}
+              stroke={lineColor}
+              strokeWidth={2.5}
+              dot={showValues ? { fill: lineColor, r: 4 } : false}
               connectNulls={false}
-              isAnimationActive={false}
+              isAnimationActive={true}
+              animationDuration={1200}
             >
               {showValues && (
                 <LabelList
                   dataKey="value"
                   position="top"
-                  fill="#ffffff"
+                  fill="rgba(255,255,255,0.85)"
                   fontSize={11}
                   formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
                 />
@@ -207,18 +183,20 @@ export function BankrollChart({
               <Line
                 type="monotone"
                 dataKey="ifWin"
-                stroke="#ffffff"
-                strokeWidth={3}
+                stroke={lineColor}
+                strokeWidth={2.5}
                 strokeDasharray="6 5"
-                dot={showValues ? { fill: "#fff", r: 4 } : false}
+                strokeOpacity={0.6}
+                dot={showValues ? { fill: lineColor, r: 4 } : false}
                 connectNulls={false}
-                isAnimationActive={false}
+                isAnimationActive={true}
+                animationDuration={1200}
               >
                 {showValues && (
                   <LabelList
                     dataKey="ifWin"
                     position="top"
-                    fill="#ffffff"
+                    fill="rgba(255,255,255,0.85)"
                     fontSize={11}
                     formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
                   />

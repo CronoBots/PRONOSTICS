@@ -226,7 +226,7 @@ export default function Home() {
               <div className="absolute top-3 right-3" ref={menuRef}>
                 <button
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white"
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition"
                   aria-label={t("home.chartOptions")}
                 >
                   ⋯
