@@ -218,7 +218,12 @@ export function BankrollChart({
         {topRight && (
           <div className="absolute top-3 right-3 z-10">{topRight}</div>
         )}
-        <div className="flex-1 min-h-[160px]">
+        {/* Wrapper relatif : ResponsiveContainer Recharts a besoin d'un parent
+            avec hauteur résolue. En layout flex-1 imbriqué, l'hauteur n'est
+            mesurable qu'après calcul ; absolute inset-0 garantit une dimension
+            exploitable dès le 1er render. */}
+        <div className="flex-1 min-h-[160px] relative">
+          <div className="absolute inset-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 6 }}>
               <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
@@ -282,6 +287,7 @@ export function BankrollChart({
               )}
             </LineChart>
           </ResponsiveContainer>
+          </div>
         </div>
         {footer && <div className="px-3 pb-3 pt-1">{footer}</div>}
       </div>
