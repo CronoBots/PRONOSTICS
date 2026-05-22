@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 
-import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 
 interface Tab {
@@ -14,24 +13,6 @@ interface Tab {
 export function BottomNav() {
   const router = useRouter();
   const { t } = useI18n();
-  const [hasPendingPick, setHasPendingPick] = useState(false);
-
-  // Détecte si un pick pending existe → animation pulse sur le "+" central
-  useEffect(() => {
-    let cancelled = false;
-    fetchHistory()
-      .then((h) => {
-        if (cancelled || !h) return;
-        const pending = h.picks.some((p) => p.outcome === "pending");
-        setHasPendingPick(pending);
-      })
-      .catch(() => {
-        /* ignore */
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [router.asPath]);
 
   const leftTabs: Tab[] = [
     {
@@ -44,11 +25,12 @@ export function BottomNav() {
       ),
     },
     {
-      href: "/paris",
-      label: t("nav.paris"),
+      href: "/analyzer",
+      label: t("home.analyzer"),
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+          <circle cx="12" cy="12" r="9" />
+          <path strokeLinecap="round" d="M12 3v9l6 4" />
         </svg>
       ),
     },
@@ -56,11 +38,12 @@ export function BottomNav() {
 
   const rightTabs: Tab[] = [
     {
-      href: "/stats",
-      label: t("nav.stats"),
+      href: "/calendrier",
+      label: t("home.calendar"),
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3 20V10M9 20V4M15 20v-8M21 20v-4" />
+          <rect x="3" y="4" width="18" height="17" rx="2" />
+          <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
         </svg>
       ),
     },
@@ -93,7 +76,7 @@ export function BottomNav() {
     );
   }
 
-  const todayActive = router.pathname === "/today";
+  const parisActive = router.pathname === "/paris";
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
@@ -103,34 +86,23 @@ export function BottomNav() {
       >
         {leftTabs.map(renderTab)}
 
-        {/* Bouton central + → /today (pick du jour Premium) */}
+        {/* Bouton central → /paris (historique), couleur du chart accent-green */}
         <div className="flex justify-center -mt-7 relative">
-          {/* Halo pulse derrière le bouton quand pending pick */}
-          {hasPendingPick && !todayActive && (
+          <Link
+            href="/paris"
+            className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-green shadow-accent-green/30 hover:shadow-accent-green/50"
+            aria-label={t("nav.paris")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-7 h-7">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+            </svg>
+          </Link>
+          {parisActive && (
             <span
               aria-hidden
-              className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-accent-green/40 animate-ping-slow"
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-green"
             />
           )}
-          <Link
-            href="/today"
-            className={`nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition ${
-              todayActive
-                ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
-                : hasPendingPick
-                  ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/40"
-                  : "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
-            }`}
-            aria-label={hasPendingPick ? t("nav.todayPickPending") : t("nav.todayPick")}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-7 h-7">
-              <path strokeLinecap="round" d="M12 5v14M5 12h14" />
-            </svg>
-            {/* Petit point indicateur si pending */}
-            {hasPendingPick && (
-              <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-yellow-400 ring-2 ring-bg-base" />
-            )}
-          </Link>
         </div>
 
         {rightTabs.map(renderTab)}
