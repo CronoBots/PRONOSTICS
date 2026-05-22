@@ -27,11 +27,36 @@ décisionnelle est faite par Claude **dans la conversation**.
 - Pas d'analyse anticipée la veille (données plus fraîches le matin J)
 - Pas de "pick stocké" — chaque jour est nouveau
 
-### Rôle du workflow auto en backup
-- Tourne quand même à 7h Belgique chaque matin
+### Rôle du workflow auto en backup + 2ème regard OBLIGATOIRE
+- Tourne automatiquement à 7h Belgique chaque matin (GH Action `daily-candidates.yml`)
 - Produit `backend/data/candidates/{date}.csv` + `.md` + `.debug.txt`
-- Claude peut le consulter pour avoir un **2ème regard quantitatif** (notamment l'edge vs marché consensus)
-- Si écart majeur entre l'analyse Claude et le ranking workflow → investiguer avant de publier
+
+**Procédure quotidienne OBLIGATOIRE** :
+
+1. **Étape 0 (avant toute analyse)** : Claude lit `backend/data/candidates/{date}.csv` (et `.md` si plus lisible). Si pas encore généré, lance `git pull` ou attend.
+
+2. **Étape 1** : Claude fait sa cartographie web indépendante (sans biais du CSV — pour ne pas être ancré).
+
+3. **Étape 2 (synthèse)** : Claude inclut un **tableau comparatif obligatoire** dans sa réponse à l'utilisateur :
+
+   | Rang | Workflow (CSV) | Claude (analyse web) | Écart |
+   |---|---|---|---|
+   | #1 | … | … | 🟢 = ou 🔴 différent |
+   | #2 | … | … | 🟢 = ou 🔴 différent |
+   | #3 | … | … | 🟢 = ou 🔴 différent |
+
+4. **Étape 3 (gate)** : Si écart majeur (workflow top1 ≠ Claude top1), **investiguer avant de publier** :
+   - Pourquoi le workflow ranke X en #1 ? (edge consensus mesuré)
+   - Pourquoi je n'ai pas X dans mon top ? (loupé, ou écarté pour raison contextuelle)
+   - Documenter la décision finale dans `picks_data.py` field `workflow_comparison`
+
+5. **Étape 4 (audit trail)** : créer/append `backend/data/comparison/{date}.md` avec la table comparative + décision finale. Permet audit historique mensuel.
+
+**Pourquoi obligatoire** : 
+- Le workflow couvre certains sports que Claude peut rater (ex: cartographie quantitative MLB exhaustive)
+- Inversement, Claude couvre des sports que le workflow rate (ex: Euroleague, IPL, NRL si non couverts par bookmakers EU/UK/US)
+- La divergence est un signal — soit le marché a un edge non détecté, soit Claude a vu un contexte que le workflow ignore
+- 30 jours de comparaison archivés = data précieuse pour calibrer la méthodologie
 
 ---
 

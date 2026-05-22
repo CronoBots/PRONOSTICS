@@ -5,11 +5,11 @@ Free tier : 500 req/mois.
 
 Stratégie :
   1. On découvre les sports actifs via /sports (1 req)
-  2. On filtre ceux qui nous intéressent + ceux qui ont des évents en cours (`has_outrights=False`)
+  2. On filtre ceux qui nous intéressent (préfixes sport_*) + actifs + non-outright
   3. Pour chaque sport actif, on récupère /odds (1 req par sport)
   4. On log le quota restant à chaque appel (header `x-requests-remaining`)
 
-Budget ~6-8 req/jour → confortable sous les 500/mois.
+Budget : ~12-18 req/jour selon nb de sports actifs. Marge sur 500/mois free.
 """
 
 from __future__ import annotations
@@ -26,32 +26,23 @@ from app.schemas import MatchInput
 
 logger = logging.getLogger(__name__)
 
-# Mapping nos sport keys → keys The Odds API. Plusieurs valeurs possibles ;
-# on garde celles qui sont actives à l'instant T (vérifié via /sports).
-_SPORT_KEYS: dict[str, list[str]] = {
-    "football": [
-        "soccer_epl",
-        "soccer_france_ligue_one",
-        "soccer_spain_la_liga",
-        "soccer_italy_serie_a",
-        "soccer_germany_bundesliga",
-        "soccer_uefa_champs_league",
-        "soccer_uefa_europa_league",
-    ],
-    "basketball": ["basketball_nba", "basketball_euroleague"],
-    "tennis": [
-        "tennis_atp_french_open",
-        "tennis_wta_french_open",
-        "tennis_atp_wimbledon",
-        "tennis_wta_wimbledon",
-        "tennis_atp_us_open",
-        "tennis_wta_us_open",
-        "tennis_atp_aus_open",
-        "tennis_wta_aus_open",
-    ],
+# Préfixes The Odds API que l'on considère pour chaque catégorie sportive WTF.
+# Le filtre est appliqué APRÈS découverte des sports actifs via /sports, donc
+# si Geneva ou Strasbourg apparaissent comme `tennis_atp_geneva` ou similaire,
+# ils seront automatiquement inclus. Inclut désormais : NRL, AFL, IPL, MMA,
+# soccer Sud-Am, Liga MX, et toutes les WTA/ATP actuellement actives.
+_SPORT_PREFIXES: dict[str, list[str]] = {
+    "football": ["soccer_"],          # toutes ligues soccer EU + Sud-Am + Liga MX + finales coupe
+    "basketball": ["basketball_"],    # NBA, Euroleague, etc.
+    "tennis": ["tennis_"],            # TOUS les ATP/WTA actifs (GS, 1000, 500, 250)
     "nfl": ["americanfootball_nfl"],
     "mlb": ["baseball_mlb"],
     "nhl": ["icehockey_nhl"],
+    "cricket": ["cricket_"],          # IPL, PSL, etc.
+    "rugby_league": ["rugbyleague_"], # NRL, Super League
+    "aussie_rules": ["aussierules_"], # AFL
+    "mma": ["mma_"],                  # UFC + autres orgs
+    "boxing": ["boxing_"],            # combats individuels
 }
 
 
@@ -87,19 +78,34 @@ class OddsApiAdapter(BaseAdapter):
         return {s["key"] for s in data if s.get("active") and not s.get("has_outrights")}
 
     async def fetch_daily(self, sport: str, when: date) -> list[MatchInput]:
-        all_keys = _SPORT_KEYS.get(sport, [])
-        if not all_keys:
+        prefixes = _SPORT_PREFIXES.get(sport, [])
+        if not prefixes:
             return []
 
         api_key = get_settings().odds_api_key
         active = await self._active_sport_keys(api_key)
-        keys_to_call = [k for k in all_keys if k in active]
+
+        # Découverte dynamique : tous les sports actifs dont la clé commence par
+        # l'un des préfixes WTF. Permet de couvrir Geneva, Strasbourg, Lyon,
+        # Conference League, Libertadores, IPL etc. sans hardcoder chaque key.
+        keys_to_call = sorted(
+            k for k in active if any(k.startswith(p) for p in prefixes)
+        )
 
         if not keys_to_call:
             logger.info(
-                "odds_api : aucun sport actif pour %s parmi %s", sport, all_keys
+                "odds_api : aucun sport actif pour %s parmi préfixes %s",
+                sport,
+                prefixes,
             )
             return []
+
+        logger.info(
+            "odds_api : %d sports actifs pour %s : %s",
+            len(keys_to_call),
+            sport,
+            keys_to_call,
+        )
 
         day_start = datetime.combine(when, datetime.min.time(), tzinfo=timezone.utc)
         day_end = day_start + timedelta(days=1)
