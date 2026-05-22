@@ -235,12 +235,16 @@ export default function ComptePage() {
 
         {/* Section : Préférences */}
         <Section title={t("account.section.preferences")}>
-          <RowSelect
-            icon={resolved === "light" ? "☀️" : "🌙"}
-            label={t("account.theme")}
-            value={themeLabel}
-            onClick={() => setOpenSheet("theme")}
-          />
+          <RowToggleTheme />
+          {/* Sheet "system" toujours accessible via tap long sur l'icône (legacy) */}
+          {false && (
+            <RowSelect
+              icon={resolved === "light" ? "☀️" : "🌙"}
+              label={t("account.theme")}
+              value={themeLabel}
+              onClick={() => setOpenSheet("theme")}
+            />
+          )}
           <RowSelect
             icon="🌐"
             label={t("account.language")}
@@ -582,6 +586,39 @@ function RowToggle({
         <span
           className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
             checked ? "translate-x-[1.375rem]" : "translate-x-0.5"
+          }`}
+        />
+      </span>
+    </button>
+  );
+}
+
+function RowToggleTheme() {
+  const { t } = useI18n();
+  const { resolved, setTheme } = useTheme();
+  const isDark = resolved === "dark";
+  return (
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="w-full bg-bg-card border border-white/10 rounded-2xl p-3.5 flex items-center gap-3 text-left"
+      role="switch"
+      aria-checked={!isDark}
+      aria-label={t("account.theme")}
+    >
+      <span className="text-lg w-6 text-center">{isDark ? "🌙" : "☀️"}</span>
+      <span className="flex-1 text-sm font-medium">{t("account.theme")}</span>
+      <span className="text-xs text-white/50 mr-2">
+        {isDark ? t("account.themeDark") : t("account.themeLight")}
+      </span>
+      {/* Toggle slide gauche↔droite */}
+      <span
+        className={`relative w-11 h-6 rounded-full transition ${
+          isDark ? "bg-bg-elevated border border-white/15" : "bg-accent-green/40"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+            isDark ? "translate-x-0.5" : "translate-x-[1.375rem]"
           }`}
         />
       </span>

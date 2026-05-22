@@ -85,7 +85,7 @@ export function BottomNav() {
     );
   }
 
-  const parisActive = router.pathname === "/paris";
+  const todayActive = router.pathname === "/today";
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
@@ -95,18 +95,19 @@ export function BottomNav() {
       >
         {leftTabs.map(renderTab)}
 
-        {/* Bouton central → /paris (historique), couleur du chart accent-green */}
+        {/* Bouton central → /today (pari du jour), couleur du chart accent-green
+            étoile = identité forte "le pick du jour à ne pas rater" */}
         <div className="flex justify-center -mt-7 relative">
           <Link
-            href="/paris"
+            href="/today"
             className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-green shadow-accent-green/30 hover:shadow-accent-green/50"
-            aria-label={t("nav.paris")}
+            aria-label={t("nav.todayPick")}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-7 h-7">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+              <path d="M12 2 14.39 8.59 21 9.32l-5 4.87 1.51 6.81L12 17.5l-6.51 3.5L7 14.19 2 9.32l6.61-.73L12 2z" />
             </svg>
           </Link>
-          {parisActive && (
+          {todayActive && (
             <span
               aria-hidden
               className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-green"
