@@ -1,4 +1,4 @@
-# 🌐 Supabase Edge Functions — WTF
+# 🌐 Supabase Edge Functions — NΞXBΞT
 
 Functions Deno qui gèrent l'intégration Stripe côté serveur. Le frontend
 (static export GitHub Pages) ne peut pas exposer la `STRIPE_SECRET_KEY`,
@@ -86,13 +86,13 @@ Dans Stripe dashboard :
 
 Dans Stripe dashboard → **Products → + Add product** :
 
-**Product 1** : WTF Premium Mensuel
-- Name : `WTF Premium Mensuel`
+**Product 1** : NΞXBΞT Premium Mensuel
+- Name : `NΞXBΞT Premium Mensuel`
 - Pricing : `9,99 EUR / mois` (recurring monthly)
 - Description : `Accès au pick safe du jour avec analyse complète (45+ points), sources web vérifiées, historique complet.`
 
-**Product 2** : WTF Premium Annuel
-- Name : `WTF Premium Annuel`
+**Product 2** : NΞXBΞT Premium Annuel
+- Name : `NΞXBΞT Premium Annuel`
 - Pricing : `95,88 EUR / an` (recurring yearly)
 - Description : `Accès Premium annuel avec −20% vs mensuel. Économie de 23,88 €/an.`
 

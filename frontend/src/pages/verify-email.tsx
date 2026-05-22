@@ -67,8 +67,8 @@ export default function VerifyEmailPage() {
             <div className="w-16 h-16 rounded-2xl bg-white/20 ring-2 ring-white/40 mx-auto mb-3 flex items-center justify-center">
               <span className="text-3xl">📬</span>
             </div>
-            <div className="text-white font-bold text-2xl tracking-tight">WTF</div>
-            <div className="text-white/80 text-xs mt-1 tracking-wider">Win The Future</div>
+            <div className="text-white font-bold text-2xl tracking-tight">NΞXBΞT</div>
+            <div className="text-white/80 text-xs mt-1 tracking-wider">Trust the Algorithm</div>
           </div>
         </div>
 

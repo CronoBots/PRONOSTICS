@@ -2,6 +2,7 @@ import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/BrandLogo";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 
@@ -46,11 +47,9 @@ export default function ForgotPasswordPage() {
 
         <div className="bg-accent-green flex-1 flex items-center justify-center py-16 min-h-[260px]">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 ring-2 ring-white/40 mx-auto mb-3 flex items-center justify-center">
-              <span className="text-3xl">🤖</span>
-            </div>
-            <div className="text-white font-bold text-2xl tracking-tight">WTF</div>
-            <div className="text-white/80 text-xs mt-1 tracking-wider">Win The Future</div>
+            <BrandLogo size={72} background="rgba(255,255,255,0.18)" rounded={20} className="mx-auto mb-3 ring-2 ring-white/40" />
+            <div className="text-white font-bold text-2xl tracking-tight">NΞXBΞT</div>
+            <div className="text-white/80 text-xs mt-1 tracking-wider">Trust the Algorithm</div>
           </div>
         </div>
 

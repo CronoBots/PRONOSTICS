@@ -23,21 +23,21 @@ export default function Document() {
         <link rel="apple-touch-icon" href="/PRONOSTICS/icons/icon-192.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="WTF" />
+        <meta name="apple-mobile-web-app-title" content="NΞXBΞT" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* Open Graph */}
-        <meta property="og:title" content="WTF — Win The Future" />
+        <meta property="og:title" content="NΞXBΞT — Trust the Algorithm" />
         <meta property="og:description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/PRONOSTICS/icons/og-image.svg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="WTF — Win The Future · L'IA qui prédit, tu gagnes" />
-        <meta property="og:site_name" content="Win The Future" />
+        <meta property="og:image:alt" content="NΞXBΞT — Trust the Algorithm · L'IA qui prédit, tu gagnes" />
+        <meta property="og:site_name" content="Trust the Algorithm" />
         <meta property="og:locale" content="fr_FR" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="WTF — Win The Future" />
+        <meta name="twitter:title" content="NΞXBΞT — Trust the Algorithm" />
         <meta name="twitter:description" content="L'IA qui prédit. Tu gagnes." />
         <meta name="twitter:image" content="/PRONOSTICS/icons/og-image.svg" />
         <meta name="description" content="L'IA qui analyse 30+ matchs par jour et identifie LE value bet à cote ≥ 2.00 le plus fiable. Tracking ROI transparent, historique vérifiable." />

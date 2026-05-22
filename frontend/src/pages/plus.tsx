@@ -119,7 +119,7 @@ export default function PlusPage() {
             </div>
 
             <div className="text-center text-[10px] text-white/30 mt-8">
-              WTF · Win The Future · v0.2 · {new Date().getFullYear()}
+              NΞXBΞT · Trust the Algorithm · v0.2 · {new Date().getFullYear()}
             </div>
           </>
         )}
@@ -216,7 +216,7 @@ export default function PlusPage() {
         onClose={() => setOpen(null)}
       >
         <ol className="space-y-2 list-decimal list-inside text-sm">
-          <li>Chaque jour, <strong>WTF (l'IA)</strong> analyse les matchs disponibles (foot, NBA, NHL, MLB, ATP/WTA).</li>
+          <li>Chaque jour, <strong>NΞXBΞT (l'IA)</strong> analyse les matchs disponibles (foot, NBA, NHL, MLB, ATP/WTA).</li>
           <li>Sources croisées : forme récente, blessures, H2H, statistiques avancées.</li>
           <li>
             Identification du <strong>value bet</strong> du jour : cote ≥ 2.00 + probabilité estimée supérieure à celle du bookmaker.
@@ -255,7 +255,7 @@ export default function PlusPage() {
           </ul>
         </div>
         <p className="text-[10px] text-white/40 mt-4 italic">
-          WTF est un service d'analyse statistique informatif. Nous ne prenons aucun pari
+          NΞXBΞT est un service d'analyse statistique informatif. Nous ne prenons aucun pari
           et ne touchons aucune commission sur les mises placées chez les bookmakers.
         </p>
       </InfoSheet>
@@ -266,7 +266,7 @@ export default function PlusPage() {
         onClose={() => setOpen(null)}
       >
         <p className="text-xs">
-          <strong>Service</strong> : WTF · Win The Future
+          <strong>Service</strong> : NΞXBΞT · Trust the Algorithm
           <br />
           <strong>Éditeur</strong> : CronoBots
           <br />

@@ -1,15 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a0b1e"/>
-      <stop offset="100%" stop-color="#1f2240"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#10d9a3"/>
-      <stop offset="100%" stop-color="#7c5cff"/>
-    </linearGradient>
-  </defs>
-  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
-  <circle cx="96" cy="96" r="60" fill="none" stroke="url(#accent)" stroke-width="5" opacity="0.3"/>
-  <text x="96" y="118" font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="900" text-anchor="middle" fill="url(#accent)" letter-spacing="-2">WTF</text>
+  <!-- Fond teal inspiré du logo NΞXBΞT -->
+  <rect width="192" height="192" rx="36" fill="#10d9a3"/>
+
+  <!-- Hexagone blanc principal -->
+  <polygon points="96,30 156,64 156,128 96,162 36,128 36,64" fill="none" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Motif chevron blanc intérieur -->
+  <g fill="#ffffff" stroke="none">
+    <path d="M 69 75 L 82 75 L 82 84 L 89 84 L 89 92 L 82 92 L 82 100 L 89 100 L 89 108 L 82 108 L 82 117 L 69 117 Z"/>
+    <path d="M 123 75 L 110 75 L 110 84 L 103 84 L 103 92 L 110 92 L 110 100 L 103 100 L 103 108 L 110 108 L 110 117 L 123 117 Z"/>
+  </g>
 </svg>

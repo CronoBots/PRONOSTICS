@@ -77,7 +77,7 @@ export default function ComptePage() {
     return (
       <>
         <Head>
-          <title>{`${t("account.title")} — WTF`}</title>
+          <title>{`${t("account.title")} — NΞXBΞT`}</title>
         </Head>
         <main className="max-w-md mx-auto px-4 py-10 lg:py-16 text-center">
           <h1 className="text-lg lg:text-2xl font-bold mb-6">{t("account.title")}</h1>
@@ -129,7 +129,7 @@ export default function ComptePage() {
   return (
     <>
       <Head>
-        <title>{`${t("account.title")} — WTF`}</title>
+        <title>{`${t("account.title")} — NΞXBΞT`}</title>
       </Head>
       <main className="max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <h1 className="text-center text-base lg:text-2xl font-semibold lg:font-bold text-white/80 lg:text-white mb-6">

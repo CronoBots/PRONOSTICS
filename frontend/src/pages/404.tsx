@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <>
       <Head>
-        <title>Page introuvable — WTF</title>
+        <title>Page introuvable — NΞXBΞT</title>
       </Head>
       <main className="max-w-md mx-auto px-6 py-16 text-center min-h-[60vh] flex flex-col justify-center items-center">
         <div className="text-8xl mb-4 opacity-40">🤖</div>
@@ -21,7 +21,7 @@ export default function NotFound() {
           ← Retour à l'app
         </Link>
         <p className="text-white/30 text-xs mt-8">
-          WTF · Win The Future
+          NΞXBΞT · Trust the Algorithm
         </p>
       </main>
     </>

@@ -17,7 +17,7 @@ export function Header({ title, stats }: Props) {
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-accent-green/20 to-accent-blue/20 ring-1 ring-white/10 flex items-center justify-center">
           <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent text-xs md:text-sm font-extrabold tracking-tighter">
-            WTF
+            NΞXBΞT
           </span>
         </div>
         <div>

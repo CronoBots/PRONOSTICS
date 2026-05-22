@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a0b1e"/>
-      <stop offset="100%" stop-color="#1f2240"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#10d9a3"/>
-      <stop offset="100%" stop-color="#7c5cff"/>
-    </linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
-  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#accent)" stroke-width="14" opacity="0.3"/>
-  <text x="256" y="312" font-family="Inter, system-ui, sans-serif" font-size="155" font-weight="900" text-anchor="middle" fill="url(#accent)" letter-spacing="-5">WTF</text>
+  <!-- Fond teal inspiré du logo NΞXBΞT (#10d9a3 = accent-green) -->
+  <rect width="512" height="512" rx="96" fill="#10d9a3"/>
+
+  <!-- Hexagone blanc principal, contour épais -->
+  <polygon points="256,80 416,170 416,342 256,432 96,342 96,170" fill="none" stroke="#ffffff" stroke-width="20" stroke-linejoin="round"/>
+
+  <!-- Motif chevron blanc intérieur (forme [ ] inspirée du logo) -->
+  <g fill="#ffffff" stroke="none">
+    <!-- Chevron gauche -->
+    <path d="M 184 200 L 218 200 L 218 222 L 235 222 L 235 244 L 218 244 L 218 268 L 235 268 L 235 290 L 218 290 L 218 312 L 184 312 Z"/>
+    <!-- Chevron droit (miroir horizontal) -->
+    <path d="M 328 200 L 294 200 L 294 222 L 277 222 L 277 244 L 294 244 L 294 268 L 277 268 L 277 290 L 294 290 L 294 312 L 328 312 Z"/>
+  </g>
 </svg>

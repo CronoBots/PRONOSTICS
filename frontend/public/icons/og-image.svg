@@ -19,12 +19,19 @@
   <path d="M 50 480 Q 250 460 380 400 T 700 280 T 1000 180 T 1150 130" stroke="url(#accent)" stroke-width="4" fill="none" opacity="0.4"/>
   <path d="M 50 480 Q 250 460 380 400 T 700 280 T 1000 180 T 1150 130 L 1150 600 L 50 600 Z" fill="url(#green)"/>
 
-  <!-- Logo -->
-  <rect x="80" y="100" width="100" height="100" rx="22" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.1" stroke-width="2"/>
-  <text x="130" y="172" font-family="Inter, system-ui, sans-serif" font-size="42" font-weight="900" text-anchor="middle" fill="url(#accent)" letter-spacing="-2">WTF</text>
+  <!-- Logo : hexagone vert avec chevrons (mini version du logo) -->
+  <g transform="translate(80, 100)">
+    <rect width="100" height="100" rx="22" fill="#10d9a3"/>
+    <polygon points="50,18 80,36 80,72 50,90 20,72 20,36" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>
+    <g fill="#ffffff" stroke="none">
+      <path d="M 36 42 L 43 42 L 43 47 L 47 47 L 47 51 L 43 51 L 43 57 L 47 57 L 47 61 L 43 61 L 43 66 L 36 66 Z"/>
+      <path d="M 64 42 L 57 42 L 57 47 L 53 47 L 53 51 L 57 51 L 57 57 L 53 57 L 53 61 L 57 61 L 57 66 L 64 66 Z"/>
+    </g>
+  </g>
+  <text x="200" y="167" font-family="Inter, system-ui, sans-serif" font-size="56" font-weight="900" fill="url(#accent)" letter-spacing="-2">NΞXBΞT</text>
 
   <!-- Title -->
-  <text x="80" y="290" font-family="Inter, system-ui, sans-serif" font-size="78" font-weight="900" fill="#ffffff" letter-spacing="-3">Win The Future</text>
+  <text x="80" y="290" font-family="Inter, system-ui, sans-serif" font-size="78" font-weight="900" fill="#ffffff" letter-spacing="-3">Trust the Algorithm</text>
   <text x="80" y="350" font-family="Inter, system-ui, sans-serif" font-size="36" font-weight="600" fill="url(#accent)" letter-spacing="-1">L'IA qui prédit · tu gagnes</text>
 
   <!-- Sub -->

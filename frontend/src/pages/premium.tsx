@@ -62,7 +62,7 @@ export default function PremiumPage() {
   return (
     <>
       <Head>
-        <title>{`${t("pricing.title")} — WTF`}</title>
+        <title>{`${t("pricing.title")} — NΞXBΞT`}</title>
       </Head>
       <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex items-center gap-3 mb-4">

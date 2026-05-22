@@ -155,7 +155,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>WTF — Win The Future</title>
+        <title>NΞXBΞT — Trust the Algorithm</title>
       </Head>
 
       <main
@@ -188,7 +188,7 @@ export default function Home() {
             aria-label={t("nav.todayPick")}
           >
             <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
-              WTF
+              NΞXBΞT
             </span>
             <span className="w-5 h-5 rounded-full bg-accent-blue/20 text-accent-blue flex items-center justify-center text-xs">
               ›

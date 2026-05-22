@@ -1,4 +1,4 @@
-# 🗃 Setup Supabase pour WTF
+# 🗃 Setup Supabase pour NΞXBΞT
 
 Ce dossier contient les migrations SQL et la doc de setup du backend
 Supabase (auth + DB) qui remplace le mock localStorage de la Phase 1.
@@ -11,7 +11,7 @@ Supabase (auth + DB) qui remplace le mock localStorage de la Phase 1.
 
 1. Va sur [supabase.com](https://supabase.com) et crée un compte (gratuit, pas de carte requise)
 2. **New project** :
-   - Name : `wtf-pronostics`
+   - Name : `nexbet-pronostics`
    - Database password : **génère-en un fort et garde-le quelque part** (utile pour pgAdmin si tu en as besoin un jour)
    - Region : **West EU (Ireland) eu-west-1** (le plus proche de la Belgique)
    - Plan : **Free**
@@ -218,7 +218,7 @@ plus simple (plan gratuit 3000 emails/mois).
 | Champ | Valeur |
 |---|---|
 | Sender email | `no-reply@ton-domaine.com` |
-| Sender name | `WTF` |
+| Sender name | `NΞXBΞT` |
 | Host | `smtp.resend.com` |
 | Port | `465` (SSL/TLS) |
 | Username | `resend` |
