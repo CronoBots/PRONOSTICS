@@ -16,6 +16,50 @@ import { HistoryPick } from "@/lib/types";
 export type ChartMode = "benefice" | "capital";
 
 /**
+ * Label custom rendu via Recharts LabelList content prop : un pill blanc
+ * arrondi avec valeur en vert dark dedans. Beaucoup plus lisible que du texte
+ * blanc directement sur la ligne blanche du chart.
+ */
+function PillLabel(props: {
+  x?: number;
+  y?: number;
+  value?: number | string;
+}) {
+  const { x = 0, y = 0, value } = props;
+  if (value === null || value === undefined || value === "") return null;
+  const text = typeof value === "number" ? value.toFixed(2) : String(value);
+  const charWidth = 6.5;
+  const padX = 6;
+  const width = text.length * charWidth + padX * 2;
+  const height = 16;
+  const cx = x;
+  const cy = y - 10;
+  return (
+    <g pointerEvents="none">
+      <rect
+        x={cx - width / 2}
+        y={cy - height / 2}
+        width={width}
+        height={height}
+        rx={8}
+        fill="#ffffff"
+      />
+      <text
+        x={cx}
+        y={cy + 1}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize={10}
+        fontWeight={700}
+        fill="#0a7e63"
+      >
+        {text}
+      </text>
+    </g>
+  );
+}
+
+/**
  * Génère un tableau de ticks "nice numbers" à intervalle régulier entre min
  * et max. Retourne typiquement `count+1` valeurs uniformément espacées,
  * step arrondi à 1/2/5/10/20/50/100… selon la magnitude.
@@ -215,13 +259,7 @@ export function BankrollChart({
                 animationDuration={1000}
               >
                 {showValues && (
-                  <LabelList
-                    dataKey="value"
-                    position="top"
-                    fill="#ffffff"
-                    fontSize={11}
-                    formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
-                  />
+                  <LabelList dataKey="value" position="top" content={<PillLabel />} />
                 )}
               </Line>
               {hasProjection && (
@@ -238,13 +276,7 @@ export function BankrollChart({
                   animationDuration={1000}
                 >
                   {showValues && (
-                    <LabelList
-                      dataKey="ifWin"
-                      position="top"
-                      fill="#ffffff"
-                      fontSize={11}
-                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
-                    />
+                    <LabelList dataKey="ifWin" position="top" content={<PillLabel />} />
                   )}
                 </Line>
               )}
