@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
+import { BrandBanner } from "@/components/BrandBanner";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
@@ -171,12 +172,11 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
+        {/* Header compact — banner NΞXBΞT centré + burger menu à droite.
+            Caché sur desktop (DesktopHeader prend le relais). */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
           <div aria-hidden />
-          <h1 className="text-2xl font-extrabold tracking-tight text-accent-green text-center">
-            NΞXBΞT
-          </h1>
+          <BrandBanner height={48} className="mx-auto" />
           <div className="flex justify-end">
             <Link
               href="/compte"
