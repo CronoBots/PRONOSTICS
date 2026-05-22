@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import { BrandLogo } from "@/components/BrandLogo";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 
@@ -61,13 +62,7 @@ export function DesktopHeader() {
           className="flex items-center gap-2 font-bold text-lg shrink-0"
           aria-label="NΞXBΞT"
         >
-          <span className="w-9 h-9 rounded-xl bg-accent-green flex items-center justify-center shadow-sm">
-            <svg viewBox="0 0 100 100" className="w-6 h-6" aria-hidden>
-              <polygon points="50,18 80,36 80,72 50,90 20,72 20,36" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinejoin="round" />
-              <path fill="#ffffff" d="M 36 42 L 43 42 L 43 47 L 47 47 L 47 51 L 43 51 L 43 57 L 47 57 L 47 61 L 43 61 L 43 66 L 36 66 Z" />
-              <path fill="#ffffff" d="M 64 42 L 57 42 L 57 47 L 53 47 L 53 51 L 57 51 L 57 57 L 53 57 L 53 61 L 57 61 L 57 66 L 64 66 Z" />
-            </svg>
-          </span>
+          <BrandLogo size={36} rounded={10} className="shadow-sm" />
           <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
             NΞXBΞT
           </span>
