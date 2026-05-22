@@ -275,7 +275,7 @@ function NewPickState() {
   return (
     <Link
       href="/today"
-      className="block bg-gradient-to-br from-accent-blue/20 to-purple-500/15 border-2 border-accent-blue/40 rounded-2xl p-4 hover:border-accent-blue/60 transition animate-fade-in relative overflow-hidden group"
+      className="block bg-gradient-to-br from-accent-green/20 to-accent-blue/15 border-2 border-accent-blue/40 rounded-2xl p-4 hover:border-accent-blue/60 transition animate-fade-in relative overflow-hidden group"
     >
       <span
         aria-hidden

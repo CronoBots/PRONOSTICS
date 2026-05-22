@@ -6,8 +6,8 @@
   "scope": "/PRONOSTICS/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0b1e",
-  "theme_color": "#0a0b1e",
+  "background_color": "#091110",
+  "theme_color": "#091110",
   "lang": "fr",
   "categories": ["sports", "finance", "entertainment"],
   "icons": [

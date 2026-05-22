@@ -112,7 +112,7 @@ export default function VerifyEmailPage() {
             type="button"
             onClick={handleResend}
             disabled={busy || cooldown > 0}
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold disabled:opacity-50"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-green to-accent-blue text-white font-semibold disabled:opacity-50"
           >
             {busy
               ? "…"

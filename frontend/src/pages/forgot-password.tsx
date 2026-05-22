@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={busy}
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold disabled:opacity-50"
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-green to-accent-blue text-white font-semibold disabled:opacity-50"
               >
                 {busy ? "…" : t("auth.sendLink")}
               </button>

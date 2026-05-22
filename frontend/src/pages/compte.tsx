@@ -88,7 +88,7 @@ export default function ComptePage() {
             <div className="flex flex-col gap-3">
               <Link
                 href="/login"
-                className="block py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold"
+                className="block py-3 rounded-lg bg-gradient-to-r from-accent-green to-accent-blue text-white font-semibold"
               >
                 {t("auth.login")}
               </Link>

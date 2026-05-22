@@ -289,7 +289,7 @@ export default function FiltresPage() {
           </button>
           <button
             onClick={onApply}
-            className="py-3.5 rounded-xl bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold"
+            className="py-3.5 rounded-xl bg-gradient-to-r from-accent-green to-accent-blue text-white font-semibold"
           >
             {t("filtres.apply")}
           </button>

@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from "next/document";
 
 // Anti-FOUC : inline script qui applique le thème AVANT que la page ne s'hydrate.
 // Doit être dans _document pour s'exécuter en tout premier (avant le bundle React).
-const THEME_BOOT = `(function(){try{var s=localStorage.getItem('pronostics.theme');var r;if(s==='light'||s==='dark'){r=s;}else{r=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',r);var m=document.querySelector('meta[name=theme-color]');if(m){m.content=r==='light'?'#f6f7fb':'#0a0b1e';}}catch(e){}})();`;
+const THEME_BOOT = `(function(){try{var s=localStorage.getItem('pronostics.theme');var r;if(s==='light'||s==='dark'){r=s;}else{r=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',r);var m=document.querySelector('meta[name=theme-color]');if(m){m.content=r==='light'?'#f6fbf9':'#091110';}}catch(e){}})();`;
 
 export default function Document() {
   return (
@@ -16,7 +16,7 @@ export default function Document() {
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
-        <meta name="theme-color" content="#0a0b1e" />
+        <meta name="theme-color" content="#091110" />
 
         {/* PWA installable */}
         <link rel="manifest" href="/PRONOSTICS/manifest.json" />

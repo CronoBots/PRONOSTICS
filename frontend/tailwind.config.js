@@ -12,16 +12,25 @@ module.exports = {
           elevated: "rgb(var(--bg-elevated-rgb) / <alpha-value>)",
         },
         accent: {
-          green: "#10d9a3",      // émeraude vive
+          // Palette NΞXBΞT : monochromatique teal/emerald (cohérent avec le logo).
+          // `accent-blue` n'est plus violet (#7c5cff) mais cyan-teal foncé pour
+          // s'harmoniser avec le green dominant.
+          green: "#10d9a3",      // émeraude vive (couleur signature du logo)
           greenDim: "#0fb088",
-          red: "#ff4d6d",        // rose punchy
-          blue: "#7c5cff",       // violet électrique (distinctif)
+          red: "#ff4d6d",        // rose punchy (signaux négatifs)
+          blue: "#0e7490",       // cyan-teal foncé (CTA secondaires, accents)
           gold: "#fcd34d",       // accent premium
         },
       },
       boxShadow: {
         card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.6)",
-        glow: "0 0 32px 0 rgba(124,92,255,0.25)",
+        glow: "0 0 32px 0 rgba(16,217,163,0.25)",  // glow vert (vs violet avant)
+      },
+      backgroundImage: {
+        // Pattern hexagonal subtil (utilisé en bg-hex pour les hero sections)
+        // SVG inline = pas de file fetch supplémentaire
+        "hex-pattern":
+          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92' width='80' height='92'><polygon points='40,2 76,23 76,69 40,90 4,69 4,23' fill='none' stroke='%2310d9a3' stroke-opacity='0.08' stroke-width='1.5'/></svg>\")",
       },
       fontFamily: {
         sans: [

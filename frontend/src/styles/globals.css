@@ -12,18 +12,24 @@
 
 :root,
 :root[data-theme="dark"] {
-  --bg-base-rgb: 10 11 30;
-  --bg-card-rgb: 20 23 44;
-  --bg-elevated-rgb: 31 34 64;
-  --bg-base: #0a0b1e;
-  --bg-card: #14172c;
-  --bg-elevated: #1f2240;
+  /* Theme NΞXBΞT — charcoal teinté teal (cohérent avec le logo green/blanc).
+     Avant : violet-bleu sombre (#0a0b1e). Maintenant : charcoal-teal subtil. */
+  --bg-base-rgb: 9 17 16;          /* #091110 — charcoal avec sous-ton teal */
+  --bg-card-rgb: 14 26 24;         /* #0e1a18 */
+  --bg-elevated-rgb: 22 38 34;     /* #162622 */
+  --bg-base: #091110;
+  --bg-card: #0e1a18;
+  --bg-elevated: #162622;
+  /* Accent green = couleur exacte du logo (#10d9a3) — couleur signature */
   --accent-green: #10d9a3;
-  --accent-blue: #7c5cff;
+  --accent-greenDim: #0fb088;
+  /* Avant accent-blue était violet #7c5cff → on passe en cyan-teal foncé pour
+     cohérence avec la palette green dominante du logo. */
+  --accent-blue: #0e7490;
   --accent-red: #ff4d6d;
   --accent-gold: #fcd34d;
-  --foreground: #e7e9f3;
-  --foreground-rgb: 231 233 243;
+  --foreground: #e7f3ec;            /* tirage léger vers le teal aussi */
+  --foreground-rgb: 231 243 236;
   /* Surfaces glassy au-dessus du base (white-alpha en dark) */
   --surface-1: 255 255 255; /* utilisé en rgba(var(--surface-1) / X) */
   --border-base: 255 255 255;
@@ -37,19 +43,21 @@
 }
 
 :root[data-theme="light"] {
-  --bg-base-rgb: 246 247 251;        /* #f6f7fb */
+  /* Theme NΞXBΞT light — blanc avec sous-ton teal très léger (cohérent logo) */
+  --bg-base-rgb: 246 251 249;        /* #f6fbf9 — slight teal undertone */
   --bg-card-rgb: 255 255 255;        /* #ffffff */
-  --bg-elevated-rgb: 240 241 247;    /* #f0f1f7 */
-  --bg-base: #f6f7fb;
+  --bg-elevated-rgb: 239 246 243;    /* #eff6f3 */
+  --bg-base: #f6fbf9;
   --bg-card: #ffffff;
-  --bg-elevated: #f0f1f7;
-  /* Accents : on garde les mêmes hue mais légèrement assombris pour le contraste */
-  --accent-green: #0fb088;
-  --accent-blue: #6347d6;
+  --bg-elevated: #eff6f3;
+  /* Accents : assombris pour le contraste, cohérents avec le green dominant */
+  --accent-green: #0d9b78;
+  --accent-greenDim: #097554;
+  --accent-blue: #0e7490;             /* teal foncé, plus le violet */
   --accent-red: #e0344f;
   --accent-gold: #d97706;
-  --foreground: #1a1b2e;
-  --foreground-rgb: 26 27 46;
+  --foreground: #0a2620;
+  --foreground-rgb: 10 38 32;
   /* Sur fond clair, les "white-alpha" deviennent du noir-alpha */
   --surface-1: 26 27 46;
   --border-base: 26 27 46;

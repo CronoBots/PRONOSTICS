@@ -119,7 +119,7 @@ export function BottomNav() {
                 ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
                 : hasPendingPick
                   ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/40"
-                  : "bg-gradient-to-br from-accent-blue to-purple-500 shadow-purple-500/30"
+                  : "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
             }`}
             aria-label={hasPendingPick ? t("nav.todayPickPending") : t("nav.todayPick")}
           >

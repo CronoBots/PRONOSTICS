@@ -119,7 +119,7 @@ export function DesktopHeader() {
               ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
               : hasPendingPick
                 ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/40"
-                : "bg-gradient-to-br from-accent-blue to-purple-500 shadow-purple-500/30 hover:shadow-purple-500/50"
+                : "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30 hover:shadow-accent-green/50"
           }`}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
