@@ -91,6 +91,7 @@ export default function PlusPage() {
         {!loading && (
           <>
             <Section title="Outils">
+              <RowLink icon="🎯" label={t("perso.title")} href="/mes-paris" />
               <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
               <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
               <Row icon="📝" label="Bloc notes" onClick={() => setOpen("notes")} />
