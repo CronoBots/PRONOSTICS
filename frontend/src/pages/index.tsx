@@ -157,8 +157,25 @@ export default function Home() {
       >
         {/* Header compact */}
         <header className="flex items-center justify-between shrink-0">
-          {/* Slot gauche : laissé vide pour balance visuelle (Home = entry point, pas de back) */}
-          <div className="w-9 h-9" aria-hidden />
+          {/* Slot gauche : streak indicator si série en cours */}
+          {stats && stats.current_streak !== 0 ? (
+            <div
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold tabular-nums border ${
+                stats.current_streak > 0
+                  ? "bg-accent-green/10 text-accent-green border-accent-green/30"
+                  : "bg-accent-red/10 text-accent-red border-accent-red/30"
+              }`}
+              title="Série en cours"
+            >
+              <span>{stats.current_streak > 0 ? "🔥" : "🥶"}</span>
+              <span>
+                {stats.current_streak > 0 ? "+" : ""}
+                {stats.current_streak}
+              </span>
+            </div>
+          ) : (
+            <div className="w-9 h-9" aria-hidden />
+          )}
           <Link
             href="/today"
             className="flex items-center gap-1.5 font-bold"
