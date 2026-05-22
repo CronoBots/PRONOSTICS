@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { HistoryPick } from "@/lib/types";
 
 export type ChartMode = "benefice" | "capital";
@@ -34,6 +35,8 @@ function buildSeries(
   picks: HistoryPick[],
   starting: number,
   mode: ChartMode,
+  locale: string,
+  startLabel: string,
 ): Point[] {
   const sorted = [...picks].sort((a, b) => a.date.localeCompare(b.date));
   const settled = sorted.filter((p) => p.outcome === "win" || p.outcome === "loss");
@@ -52,13 +55,13 @@ function buildSeries(
       value: toY(starting),
     });
   } else {
-    series.push({ date: "start", label: "Départ", value: toY(starting) });
+    series.push({ date: "start", label: startLabel, value: toY(starting) });
   }
 
   for (const p of settled) {
     series.push({
       date: p.date,
-      label: new Date(p.date).toLocaleDateString("fr-FR", {
+      label: new Date(p.date).toLocaleDateString(locale, {
         day: "2-digit",
         month: "short",
       }),
@@ -83,7 +86,7 @@ function buildSeries(
 
     series.push({
       date: p.date,
-      label: new Date(p.date).toLocaleDateString("fr-FR", {
+      label: new Date(p.date).toLocaleDateString(locale, {
         day: "2-digit",
         month: "short",
       }),
@@ -101,15 +104,15 @@ function HeroTooltip({
   payload,
   label,
   mode,
+  labels,
 }: {
   active?: boolean;
   payload?: Array<{ value: number | null; dataKey: string; payload: Point }>;
   label?: string;
   mode: ChartMode;
+  labels: { capital: string; benefit: string; ifWon: string; ifLost: string };
 }) {
   if (!active || !payload || payload.length === 0) return null;
-  // Dédupliquer : si plusieurs séries pointent vers la même valeur,
-  // on ne montre qu'une entrée (avec un nom adapté).
   const seen = new Set<string>();
   const lines: Array<{ name: string; value: number }> = [];
   for (const entry of payload) {
@@ -118,10 +121,9 @@ function HeroTooltip({
     const key = `${entry.dataKey}-${v.toFixed(2)}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    let name = mode === "capital" ? "Capital" : "Bénéfice";
-    if (entry.dataKey === "ifWin") name = "Si gagné";
-    else if (entry.dataKey === "ifLoss") name = "Si perdu";
-    // Évite le doublon "Capital 25 / Si gagné 25 / Si perdu 25" — on dédup par valeur
+    let name = mode === "capital" ? labels.capital : labels.benefit;
+    if (entry.dataKey === "ifWin") name = labels.ifWon;
+    else if (entry.dataKey === "ifLoss") name = labels.ifLost;
     if (lines.find((l) => l.value === v)) continue;
     lines.push({ name, value: v });
   }
@@ -147,9 +149,17 @@ export function BankrollChart({
   mode = "capital",
   showValues = false,
 }: Props) {
+  const { t, lang } = useI18n();
+  const locale = localeForLang(lang);
+  const labels = {
+    capital: t("chart.capital"),
+    benefit: t("chart.benefit"),
+    ifWon: t("chart.ifWon"),
+    ifLost: t("chart.ifLost"),
+  };
   const data = useMemo(
-    () => buildSeries(picks, startingBankroll, mode),
-    [picks, startingBankroll, mode],
+    () => buildSeries(picks, startingBankroll, mode, locale, t("chart.start")),
+    [picks, startingBankroll, mode, locale, t],
   );
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
@@ -171,7 +181,7 @@ export function BankrollChart({
               tickCount={6}
             />
             <Tooltip
-              content={<HeroTooltip mode={mode} />}
+              content={<HeroTooltip mode={mode} labels={labels} />}
               cursor={{ stroke: "rgba(255,255,255,0.5)", strokeWidth: 1 }}
             />
             <Line
@@ -258,7 +268,7 @@ export function BankrollChart({
               fontSize: 12,
             }}
             labelStyle={{ color: "rgba(255,255,255,0.6)" }}
-            formatter={(v: number) => [`${v.toFixed(2)} €`, mode === "capital" ? "Capital" : "Bénéfice"]}
+            formatter={(v: number) => [`${v.toFixed(2)} €`, mode === "capital" ? labels.capital : labels.benefit]}
           />
           <Line
             type="monotone"

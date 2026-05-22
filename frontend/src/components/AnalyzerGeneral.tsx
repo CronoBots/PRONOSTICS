@@ -1,5 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
+import { useI18n } from "@/lib/i18n";
 import {
   breakdownByState,
   computeProfitFactor,
@@ -61,7 +62,9 @@ function BigStatCard({
 }
 
 export function AnalyzerGeneral({ picks }: Props) {
-  const states = breakdownByState(picks);
+  const { t } = useI18n();
+  // breakdownByState renvoie `label` = clé i18n ; on résout ici pour le rendu.
+  const states = breakdownByState(picks).map((s) => ({ ...s, label: t(s.label) }));
   const total = states.reduce((s, x) => s + x.count, 0);
   const data = states.filter((s) => s.count > 0);
   const pf = computeProfitFactor(picks);
@@ -73,7 +76,7 @@ export function AnalyzerGeneral({ picks }: Props) {
       {/* Donut Répartition des états */}
       <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
         <h3 className="text-center text-sm font-semibold text-white/80 mb-3">
-          Répartition des états
+          {t("analyzer.section.statesBreakdown")}
         </h3>
         <div className="h-56 w-full">
           <ResponsiveContainer>
@@ -98,7 +101,10 @@ export function AnalyzerGeneral({ picks }: Props) {
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(value: number, name: string) => [`${value} pari${value > 1 ? "s" : ""}`, name]}
+                formatter={(value: number, name: string) => [
+                  t(value > 1 ? "analyzer.bet.many" : "analyzer.bet.one", { n: value }),
+                  name,
+                ]}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -113,13 +119,13 @@ export function AnalyzerGeneral({ picks }: Props) {
           ))}
         </div>
         <div className="text-center text-[11px] text-white/40 mt-3">
-          {total} pari{total > 1 ? "s" : ""} au total
+          {t(total > 1 ? "analyzer.totalBets.many" : "analyzer.totalBets.one", { n: total })}
         </div>
       </section>
 
       {/* Profit Factor */}
       <BigStatCard
-        title="Profit Factor"
+        title={t("analyzer.profitFactor")}
         value={
           pf.factor === Infinity
             ? "∞"
@@ -129,24 +135,24 @@ export function AnalyzerGeneral({ picks }: Props) {
         }
         tone={pf.factor >= 1.2 ? "green" : pf.factor > 0 && pf.factor < 1 ? "red" : "neutral"}
         rows={[
-          { label: "Bénéfice total", value: `${pf.totalGains.toFixed(2)} €`, tone: "green" },
-          { label: "Perte total", value: `${pf.totalLosses.toFixed(2)} €`, tone: "red" },
+          { label: t("analyzer.profitTotal"), value: `${pf.totalGains.toFixed(2)} €`, tone: "green" },
+          { label: t("analyzer.lossTotal"), value: `${pf.totalLosses.toFixed(2)} €`, tone: "red" },
         ]}
       />
 
       {/* Ratio Mise / Profit */}
       <BigStatCard
-        title="Ratio Mise/Profit"
+        title={t("analyzer.stakeRatio")}
         value={sr.ratio === 0 ? "—" : sr.ratio.toFixed(2)}
         tone={sr.profit >= 0 ? "neutral" : "red"}
         rows={[
           {
-            label: "Mise totale",
+            label: t("analyzer.stakeTotal"),
             value: `${sr.totalStake.toFixed(2)} €`,
             tone: "neutral",
           },
           {
-            label: "Bénéfice",
+            label: t("analyzer.benefit"),
             value: fmtSigned(sr.profit),
             tone: sr.profit >= 0 ? "green" : "red",
           },
@@ -156,14 +162,14 @@ export function AnalyzerGeneral({ picks }: Props) {
       {/* Mise totale + moyenne par état */}
       <section className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-card">
         <h3 className="text-center text-sm font-semibold text-white/80 py-3 border-b border-white/5">
-          Mise totale et moyenne par état
+          {t("analyzer.section.stakeByState")}
         </h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-xs text-white/40 border-b border-white/5">
-              <th className="px-3 py-2 text-left font-medium">État</th>
-              <th className="px-3 py-2 text-right font-medium">Mise totale</th>
-              <th className="px-3 py-2 text-right font-medium">Mise moyenne</th>
+              <th className="px-3 py-2 text-left font-medium">{t("analyzer.col.state")}</th>
+              <th className="px-3 py-2 text-right font-medium">{t("analyzer.col.stakeTotal")}</th>
+              <th className="px-3 py-2 text-right font-medium">{t("analyzer.col.stakeAvg")}</th>
             </tr>
           </thead>
           <tbody>
@@ -187,22 +193,22 @@ export function AnalyzerGeneral({ picks }: Props) {
       {/* Statistiques par tranche de mise */}
       <section className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-card">
         <h3 className="text-center text-sm font-semibold text-white/80 py-3 border-b border-white/5">
-          Statistiques par tranche de mise
+          {t("analyzer.section.byStakeBucket")}
         </h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-xs text-white/40 border-b border-white/5">
-              <th className="px-2 py-2 text-left font-medium">Tranche</th>
-              <th className="px-2 py-2 text-center font-medium">Paris</th>
-              <th className="px-2 py-2 text-right font-medium">Mise totale</th>
-              <th className="px-2 py-2 text-right font-medium">Bénéf.</th>
+              <th className="px-2 py-2 text-left font-medium">{t("analyzer.col.bucket")}</th>
+              <th className="px-2 py-2 text-center font-medium">{t("analyzer.col.bets")}</th>
+              <th className="px-2 py-2 text-right font-medium">{t("analyzer.col.stakeTotal")}</th>
+              <th className="px-2 py-2 text-right font-medium">{t("analyzer.col.profit")}</th>
             </tr>
           </thead>
           <tbody>
             {buckets.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center text-white/40 py-4">
-                  Aucun pari
+                  {t("analyzer.empty")}
                 </td>
               </tr>
             ) : (
@@ -236,12 +242,12 @@ export function AnalyzerGeneral({ picks }: Props) {
       {/* États par tranche de mise */}
       <section className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden shadow-card">
         <h3 className="text-center text-sm font-semibold text-white/80 py-3 border-b border-white/5">
-          États par tranche de mise
+          {t("analyzer.section.statesByBucket")}
         </h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-xs text-white/40 border-b border-white/5">
-              <th className="px-2 py-2 text-left font-medium">Tranche</th>
+              <th className="px-2 py-2 text-left font-medium">{t("analyzer.col.bucket")}</th>
               <th className="px-2 py-2 text-center font-medium">⋯</th>
               <th className="px-2 py-2 text-center font-medium text-accent-green">V</th>
               <th className="px-2 py-2 text-center font-medium text-accent-red">D</th>
@@ -251,7 +257,7 @@ export function AnalyzerGeneral({ picks }: Props) {
             {buckets.length === 0 ? (
               <tr>
                 <td colSpan={4} className="text-center text-white/40 py-4">
-                  Aucun pari
+                  {t("analyzer.empty")}
                 </td>
               </tr>
             ) : (

@@ -6,17 +6,18 @@ import { AnalyzerGeneral } from "@/components/AnalyzerGeneral";
 import { AnalyzerPeriode } from "@/components/AnalyzerPeriode";
 import { AnalyzerSport } from "@/components/AnalyzerSport";
 import { fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
 type Tab = "general" | "periode" | "sport";
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "general", label: "Général" },
-  { id: "periode", label: "Période" },
-  { id: "sport", label: "Sport" },
-];
-
 export default function AnalyzerPage() {
+  const { t } = useI18n();
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "general", label: t("analyzer.tab.general") },
+    { id: "periode", label: t("analyzer.tab.period") },
+    { id: "sport", label: t("analyzer.tab.sport") },
+  ];
   const [history, setHistory] = useState<History | null>(null);
   const [tab, setTab] = useState<Tab>("general");
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ export default function AnalyzerPage() {
   return (
     <>
       <Head>
-        <title>Analyses — WTF</title>
+        <title>{t("analyzer.titleTab")}</title>
       </Head>
 
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
@@ -46,26 +47,26 @@ export default function AnalyzerPage() {
           <Link
             href="/"
             className="w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60 hover:text-white transition"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Analyses</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("analyzer.title")}</h1>
         </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-5 overflow-x-auto -mx-1 px-1">
-          {TABS.map((t) => (
+          {TABS.map((tabDef) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={tabDef.id}
+              onClick={() => setTab(tabDef.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition border ${
-                tab === t.id
+                tab === tabDef.id
                   ? "bg-accent-green/15 border-accent-green/40 text-accent-green"
                   : "bg-bg-card border-white/[0.06] text-white/60 hover:text-white"
               }`}
             >
-              {t.label}
+              {tabDef.label}
             </button>
           ))}
         </div>
@@ -73,7 +74,7 @@ export default function AnalyzerPage() {
         {loading && (
           <div className="text-white/40 text-sm py-12 text-center animate-fade-in">
             <div className="inline-block w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin mb-3" />
-            <div>Chargement des analyses…</div>
+            <div>{t("common.loading")}</div>
           </div>
         )}
 

@@ -243,19 +243,29 @@ export default function Home() {
 
             {/* Filter pills */}
             <div className="grid grid-cols-5 gap-1.5">
-              {PERIODS.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPeriod(p)}
-                  className={`py-1 rounded-full text-[11px] font-medium border transition text-center ${
-                    period === p
-                      ? "bg-bg-card text-accent-green border-accent-green"
-                      : "bg-bg-card/60 text-white/70 border-white/10"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
+              {PERIODS.map((p) => {
+                const labelKey =
+                  p === "1j"
+                    ? "period.day"
+                    : p === "1s"
+                      ? "period.week"
+                      : p === "1m"
+                        ? "period.month"
+                        : "period.year";
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPeriod(p)}
+                    className={`py-1 rounded-full text-[11px] font-medium border transition text-center ${
+                      period === p
+                        ? "bg-bg-card text-accent-green border-accent-green"
+                        : "bg-bg-card/60 text-white/70 border-white/10"
+                    }`}
+                  >
+                    {t(labelKey)}
+                  </button>
+                );
+              })}
               <Link
                 href="/filtres"
                 className="py-1 rounded-full text-[11px] font-medium border bg-bg-card/60 text-white/70 border-white/10 text-center"

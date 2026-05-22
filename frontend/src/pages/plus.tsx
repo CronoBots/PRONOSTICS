@@ -7,6 +7,7 @@ import { KellyCalculator } from "@/components/KellyCalculator";
 import { Onboarding, resetOnboarding } from "@/components/Onboarding";
 import { StakeSimulator } from "@/components/StakeSimulator";
 import { fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
 type SheetKey =
@@ -22,6 +23,7 @@ type SheetKey =
   | "privacy";
 
 export default function PlusPage() {
+  const { t } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<SheetKey | null>(null);
@@ -65,24 +67,24 @@ export default function PlusPage() {
   return (
     <>
       <Head>
-        <title>Plus — WTF</title>
+        <title>{t("plus.titleTab")}</title>
       </Head>
       <main className="max-w-md mx-auto px-4 md:px-6 pt-6 pb-6">
         <div className="flex items-center gap-3 mb-6">
           <Link
             href="/"
             className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Plus</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("plus.title")}</h1>
         </div>
 
         {loading && (
           <div className="text-white/40 text-sm py-12 text-center animate-fade-in">
             <div className="inline-block w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin mb-3" />
-            <div>Chargement…</div>
+            <div>{t("common.loading")}</div>
           </div>
         )}
 
@@ -108,9 +110,9 @@ export default function PlusPage() {
               <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
             </Section>
 
-            <Section title="Compte">
-              <RowLink icon="👤" label="Mon compte" href="/compte" />
-              <RowLink icon="👑" label="Passer en Premium" href="/premium" />
+            <Section title={t("nav.account")}>
+              <RowLink icon="👤" label={t("account.title")} href="/compte" />
+              <RowLink icon="👑" label={t("account.goPremium")} href="/premium" />
             </Section>
 
             <div className="text-center text-[10px] text-white/30 mt-8">

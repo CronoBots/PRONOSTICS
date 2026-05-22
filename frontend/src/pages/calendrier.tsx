@@ -3,25 +3,18 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { fetchHistory } from "@/lib/dataSource";
-import { buildMonthGrid, DayCell, WEEKDAY_LABELS } from "@/lib/stats";
+import { useDateLabels, useI18n } from "@/lib/i18n";
+import { buildMonthGrid, DayCell } from "@/lib/stats";
 import { History } from "@/lib/types";
 
-const MONTH_NAMES = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
-
 export default function CalendrierPage() {
+  const { t } = useI18n();
+  const { months: MONTH_NAMES, days } = useDateLabels();
+  // useDateLabels.days est ordonné Dim→Sam (indice 0=Dimanche). La grille
+  // calendrier est ordonnée Lun→Dim → on réordonne et abrège (initiale uppercase).
+  const WEEKDAY_LABELS = [1, 2, 3, 4, 5, 6, 0].map((i) =>
+    days[i].slice(0, 1).toUpperCase(),
+  );
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +63,7 @@ export default function CalendrierPage() {
   return (
     <>
       <Head>
-        <title>Calendrier — WTF</title>
+        <title>{t("calendrier.titleTab")}</title>
       </Head>
 
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
@@ -78,11 +71,11 @@ export default function CalendrierPage() {
           <Link
             href="/"
             className="w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60 hover:text-white transition"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Calendrier des bénéfices</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("calendrier.title")}</h1>
         </div>
 
         {/* Nav mois */}
@@ -90,7 +83,7 @@ export default function CalendrierPage() {
           <button
             onClick={prevMonth}
             className="w-10 h-10 rounded-xl bg-bg-card border border-white/[0.06] flex items-center justify-center text-white/70 hover:text-white"
-            aria-label="Mois précédent"
+            aria-label={t("calendrier.prevMonth")}
           >
             ‹
           </button>
@@ -100,7 +93,7 @@ export default function CalendrierPage() {
           <button
             onClick={nextMonth}
             className="w-10 h-10 rounded-xl bg-bg-card border border-white/[0.06] flex items-center justify-center text-white/70 hover:text-white"
-            aria-label="Mois suivant"
+            aria-label={t("calendrier.nextMonth")}
           >
             ›
           </button>
@@ -108,14 +101,14 @@ export default function CalendrierPage() {
             onClick={goToday}
             className="px-3 h-10 rounded-xl bg-bg-card border border-white/[0.06] text-sm text-white/70 hover:text-white"
           >
-            Aujourd'hui
+            {t("calendrier.today")}
           </button>
         </div>
 
         {loading && (
           <div className="text-white/40 text-sm py-12 text-center animate-fade-in">
             <div className="inline-block w-6 h-6 border-2 border-accent-green border-t-transparent rounded-full animate-spin mb-3" />
-            <div>Chargement du calendrier…</div>
+            <div>{t("calendrier.loading")}</div>
           </div>
         )}
 
@@ -144,7 +137,7 @@ export default function CalendrierPage() {
             <div className="grid grid-cols-2 gap-3 mt-5">
               <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
                 <div className="text-[11px] uppercase tracking-wider text-white/40">
-                  Bénéfice du mois
+                  {t("calendrier.monthProfit")}
                 </div>
                 <div
                   className={`text-2xl font-bold mt-1 tabular-nums ${
@@ -161,7 +154,7 @@ export default function CalendrierPage() {
               </div>
               <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
                 <div className="text-[11px] uppercase tracking-wider text-white/40">
-                  Paris du mois
+                  {t("calendrier.monthBets")}
                 </div>
                 <div className="text-2xl font-bold mt-1 tabular-nums text-accent-blue">
                   {grid.monthPicks}

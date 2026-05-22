@@ -1,3 +1,4 @@
+import { useI18n } from "@/lib/i18n";
 import { HistoryStats } from "@/lib/types";
 
 interface Props {
@@ -30,29 +31,36 @@ const toneClass: Record<Tile["tone"], string> = {
 };
 
 export function StatsGrid({ stats }: Props) {
+  const { t } = useI18n();
   const tiles: Tile[] = [
     {
-      label: "Paris",
+      label: t("statsGrid.bets"),
       value: `${stats.total_picks}`,
-      hint: `${stats.won}V · ${stats.lost}D · ${stats.pending} en cours`,
+      hint: t("statsGrid.betsHint", {
+        won: stats.won,
+        lost: stats.lost,
+        pending: stats.pending,
+      }),
       tone: "blue",
     },
     {
-      label: "Bénéfice",
+      label: t("statsGrid.profit"),
       value: `${fmtSigned(stats.profit)} €`,
-      hint: `Cote moy. ${stats.average_odds.toFixed(2)}`,
+      hint: t("statsGrid.profitHint", { odds: stats.average_odds.toFixed(2) }),
       tone: tone(stats.profit),
     },
     {
-      label: "ROI",
+      label: t("statsGrid.roi"),
       value: `${fmtSigned(stats.roi_percent, "%")}`,
-      hint: `Win rate ${stats.win_rate.toFixed(1)}%`,
+      hint: t("statsGrid.roiHint", { winRate: stats.win_rate.toFixed(1) }),
       tone: tone(stats.roi_percent),
     },
     {
-      label: "Progression",
+      label: t("statsGrid.progression"),
       value: `${fmtSigned(stats.progression_percent, "%")}`,
-      hint: `Bankroll ${stats.current_bankroll.toFixed(0)} €`,
+      hint: t("statsGrid.progressionHint", {
+        bankroll: stats.current_bankroll.toFixed(0),
+      }),
       tone: tone(stats.progression_percent),
     },
   ];

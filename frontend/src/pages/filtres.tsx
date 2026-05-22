@@ -2,6 +2,8 @@ import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+import { useI18n } from "@/lib/i18n";
+
 interface FormState {
   dateStart: string;
   dateEnd: string;
@@ -46,6 +48,7 @@ const EMPTY: FormState = {
 
 export default function FiltresPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [form, setForm] = useState<FormState>(EMPTY);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -70,127 +73,182 @@ export default function FiltresPage() {
   return (
     <>
       <Head>
-        <title>Filtres — WTF</title>
+        <title>{t("filtres.titleTab")}</title>
       </Head>
       <main className="max-w-md mx-auto px-4 pt-6 pb-32">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => router.back()}
             className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </button>
-          <h1 className="text-lg font-bold tracking-tight">Filtres</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("filtres.title")}</h1>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <FieldDate
-            label="Date de début"
+            label={t("filtres.dateStart")}
             value={form.dateStart}
             onChange={(v) => update("dateStart", v)}
           />
           <FieldDate
-            label="Date de fin"
+            label={t("filtres.dateEnd")}
             value={form.dateEnd}
             onChange={(v) => update("dateEnd", v)}
           />
 
           <div className="col-span-2">
             <FieldText
-              label="Intitulé du pari"
-              placeholder="Ex: Real Madrid - Bayer"
+              label={t("filtres.label")}
+              placeholder={t("filtres.labelPh")}
               value={form.label}
               onChange={(v) => update("label", v)}
             />
           </div>
 
           <FieldSelect
-            label="État"
+            label={t("filtres.status")}
+            placeholder={t("filtres.select")}
             value={form.status}
-            options={["Gagné", "Perdu", "En attente", "Remboursé"]}
+            options={[
+              { value: "won", label: t("filtres.statusWon") },
+              { value: "lost", label: t("filtres.statusLost") },
+              { value: "pending", label: t("filtres.statusPending") },
+              { value: "refunded", label: t("filtres.statusRefunded") },
+            ]}
             onChange={(v) => update("status", v)}
           />
           <FieldSelect
-            label="Type"
+            label={t("filtres.type")}
+            placeholder={t("filtres.select")}
             value={form.type}
-            options={["Simple", "Combiné", "Système"]}
+            options={[
+              { value: "simple", label: t("filtres.typeSimple") },
+              { value: "combo", label: t("filtres.typeCombo") },
+              { value: "system", label: t("filtres.typeSystem") },
+            ]}
             onChange={(v) => update("type", v)}
           />
 
           <FieldSelect
-            label="Sport"
+            label={t("filtres.sport")}
+            placeholder={t("filtres.select")}
             value={form.sport}
-            options={["Football", "Tennis", "Basketball", "Baseball", "Hockey", "NFL"]}
+            options={[
+              { value: "football", label: "Football" },
+              { value: "tennis", label: "Tennis" },
+              { value: "basketball", label: "Basketball" },
+              { value: "baseball", label: "Baseball" },
+              { value: "hockey", label: "Hockey" },
+              { value: "nfl", label: "NFL" },
+            ]}
             onChange={(v) => update("sport", v)}
           />
           <FieldSelect
-            label="Bookmaker"
+            label={t("filtres.bookmaker")}
+            placeholder={t("filtres.select")}
             value={form.bookmaker}
-            options={["bwin", "Unibet", "Winamax", "Betclic", "PMU"]}
+            options={[
+              { value: "bwin", label: "bwin" },
+              { value: "unibet", label: "Unibet" },
+              { value: "winamax", label: "Winamax" },
+              { value: "betclic", label: "Betclic" },
+              { value: "pmu", label: "PMU" },
+            ]}
             onChange={(v) => update("bookmaker", v)}
           />
 
           <FieldSelect
-            label="Tipster"
+            label={t("filtres.tipster")}
+            placeholder={t("filtres.select")}
             value={form.tipster}
-            options={["WTF (Win The Future)", "Moi-même"]}
+            options={[
+              { value: "wtf", label: "WTF (Win The Future)" },
+              { value: "self", label: t("filtres.tipsterMe") },
+            ]}
             onChange={(v) => update("tipster", v)}
           />
           <FieldText
-            label="Mise min (€)"
-            placeholder="Ex: 1"
+            label={t("filtres.stakeMin")}
+            placeholder={t("filtres.stakeMinPh")}
             value={form.stakeMin}
             onChange={(v) => update("stakeMin", v)}
             numeric
           />
 
           <FieldText
-            label="Mise max (€)"
-            placeholder="Ex: 50"
+            label={t("filtres.stakeMax")}
+            placeholder={t("filtres.stakeMaxPh")}
             value={form.stakeMax}
             onChange={(v) => update("stakeMax", v)}
             numeric
           />
           <FieldText
-            label="Cote min"
-            placeholder="Ex: 1.10"
+            label={t("filtres.oddsMin")}
+            placeholder={t("filtres.oddsMinPh")}
             value={form.oddsMin}
             onChange={(v) => update("oddsMin", v)}
             numeric
           />
 
           <FieldText
-            label="Cote max"
-            placeholder="Ex: 5.00"
+            label={t("filtres.oddsMax")}
+            placeholder={t("filtres.oddsMaxPh")}
             value={form.oddsMax}
             onChange={(v) => update("oddsMax", v)}
             numeric
           />
           <FieldSelect
-            label="Catégorie"
+            label={t("filtres.category")}
+            placeholder={t("filtres.select")}
             value={form.category}
-            options={["Pré-match", "Live", "Outright"]}
+            options={[
+              { value: "pre", label: t("filtres.catPreMatch") },
+              { value: "live", label: t("filtres.catLive") },
+              { value: "outright", label: t("filtres.catOutright") },
+            ]}
             onChange={(v) => update("category", v)}
           />
 
           <FieldSelect
-            label="Compétition"
+            label={t("filtres.competition")}
+            placeholder={t("filtres.select")}
             value={form.competition}
-            options={["NBA", "MLB", "ATP", "WTA", "NHL", "Ligue 1", "Premier League"]}
+            options={[
+              { value: "nba", label: "NBA" },
+              { value: "mlb", label: "MLB" },
+              { value: "atp", label: "ATP" },
+              { value: "wta", label: "WTA" },
+              { value: "nhl", label: "NHL" },
+              { value: "l1", label: "Ligue 1" },
+              { value: "epl", label: "Premier League" },
+            ]}
             onChange={(v) => update("competition", v)}
           />
           <FieldSelect
-            label="Type de pari"
+            label={t("filtres.betType")}
+            placeholder={t("filtres.select")}
             value={form.betType}
-            options={["Vainqueur", "Spread", "Total", "Both teams to score"]}
+            options={[
+              { value: "winner", label: t("filtres.betWinner") },
+              { value: "spread", label: t("filtres.betSpread") },
+              { value: "total", label: t("filtres.betTotal") },
+              { value: "btts", label: t("filtres.betBtts") },
+            ]}
             onChange={(v) => update("betType", v)}
           />
 
           <FieldSelect
-            label="Dépôt/Retrait"
+            label={t("filtres.depositWithdrawal")}
+            placeholder={t("filtres.select")}
             value={form.depositWithdrawal}
-            options={["Dépôt", "Retrait", "Bonus"]}
+            options={[
+              { value: "deposit", label: t("filtres.depDeposit") },
+              { value: "withdrawal", label: t("filtres.depWithdrawal") },
+              { value: "bonus", label: t("filtres.depBonus") },
+            ]}
             onChange={(v) => update("depositWithdrawal", v)}
           />
           <div />
@@ -198,13 +256,23 @@ export default function FiltresPage() {
 
         <ToggleRow
           icon="📺"
-          label="Pari live"
+          label={t("filtres.live")}
+          labels={{
+            yes: t("filtres.toggleYes"),
+            no: t("filtres.toggleNo"),
+            all: t("filtres.toggleAll"),
+          }}
           value={form.live}
           onChange={(v) => update("live", v)}
         />
         <ToggleRow
           icon="🎟️"
-          label="Pari gratuit"
+          label={t("filtres.free")}
+          labels={{
+            yes: t("filtres.toggleYes"),
+            no: t("filtres.toggleNo"),
+            all: t("filtres.toggleAll"),
+          }}
           value={form.free}
           onChange={(v) => update("free", v)}
         />
@@ -217,13 +285,13 @@ export default function FiltresPage() {
             onClick={onReset}
             className="py-3.5 rounded-xl bg-bg-card border border-white/10 font-semibold hover:bg-white/5"
           >
-            Retirer filtres
+            {t("filtres.reset")}
           </button>
           <button
             onClick={onApply}
             className="py-3.5 rounded-xl bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold"
           >
-            Filtrer
+            {t("filtres.apply")}
           </button>
         </div>
       </div>
@@ -286,11 +354,13 @@ function FieldSelect({
   options,
   value,
   onChange,
+  placeholder,
 }: {
   label: string;
-  options: string[];
+  options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
+  placeholder: string;
 }) {
   return (
     <label className="bg-bg-card border border-white/[0.06] rounded-xl px-3 py-2.5 block relative">
@@ -300,10 +370,10 @@ function FieldSelect({
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-transparent text-sm focus:outline-none mt-1 appearance-none pr-4"
       >
-        <option value="">Sélectionner</option>
+        <option value="">{placeholder}</option>
         {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
+          <option key={o.value} value={o.value}>
+            {o.label}
           </option>
         ))}
       </select>
@@ -319,11 +389,13 @@ function ToggleRow({
   label,
   value,
   onChange,
+  labels,
 }: {
   icon: string;
   label: string;
   value: "oui" | "non" | "tous";
   onChange: (v: "oui" | "non" | "tous") => void;
+  labels: { yes: string; no: string; all: string };
 }) {
   return (
     <div className="bg-bg-card border border-white/[0.06] rounded-xl p-3 mt-3 flex items-center justify-between gap-3">
@@ -342,7 +414,7 @@ function ToggleRow({
                 : "border-white/10 text-white/60 hover:bg-white/5"
             }`}
           >
-            {v === "oui" ? "Oui" : v === "non" ? "Non" : "Tous"}
+            {v === "oui" ? labels.yes : v === "non" ? labels.no : labels.all}
           </button>
         ))}
       </div>

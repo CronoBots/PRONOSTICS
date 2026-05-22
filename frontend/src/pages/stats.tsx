@@ -5,7 +5,10 @@ import { Header } from "@/components/Header";
 import { Skeleton } from "@/components/Skeleton";
 import { StatsHero } from "@/components/StatsHero";
 import { fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 import { History, HistoryStats } from "@/lib/types";
+
+type TFn = (key: string, vars?: Record<string, string | number>) => string;
 
 function fmtSigned(n: number, suffix = "") {
   const sign = n > 0 ? "+" : "";
@@ -59,82 +62,82 @@ function StatsSection({ title, rows }: { title: string; rows: StatRow[] }) {
   );
 }
 
-function buildSections(stats: HistoryStats): { title: string; rows: StatRow[] }[] {
+function buildSections(stats: HistoryStats, t: TFn): { title: string; rows: StatRow[] }[] {
   return [
     {
-      title: "Performances",
+      title: t("statsPage.section.performances"),
       rows: [
-        { label: "Paris", value: `${stats.total_picks}`, tone: "blue" },
-        { label: "Bénéfice", value: `${fmtSigned(stats.profit)} €`, tone: signTone(stats.profit) },
-        { label: "ROI", value: `${fmtSigned(stats.roi_percent, "%")}`, tone: signTone(stats.roi_percent) },
+        { label: t("statsPage.bets"), value: `${stats.total_picks}`, tone: "blue" },
+        { label: t("statsPage.profit"), value: `${fmtSigned(stats.profit)} €`, tone: signTone(stats.profit) },
+        { label: t("statsPage.roi"), value: `${fmtSigned(stats.roi_percent, "%")}`, tone: signTone(stats.roi_percent) },
         {
-          label: "Progression",
+          label: t("statsPage.progression"),
           value: `${fmtSigned(stats.progression_percent, "%")}`,
           tone: signTone(stats.progression_percent),
         },
-        { label: "Réussite %", value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
+        { label: t("statsPage.successRate"), value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
         {
-          label: "Drawdown max",
+          label: t("statsPage.drawdownMax"),
           value: `${stats.drawdown_max.toFixed(2)} €`,
           tone: stats.drawdown_max > 0 ? "red" : "neutral",
         },
       ],
     },
     {
-      title: "Capital",
+      title: t("statsPage.section.capital"),
       rows: [
-        { label: "Capital de départ", value: `${stats.starting_bankroll.toFixed(2)} €` },
+        { label: t("statsPage.capitalStart"), value: `${stats.starting_bankroll.toFixed(2)} €` },
         {
-          label: "Capital actuel",
+          label: t("statsPage.capitalCurrent"),
           value: `${stats.current_bankroll.toFixed(2)} €`,
           tone: signTone(stats.current_bankroll - stats.starting_bankroll),
         },
       ],
     },
     {
-      title: "Bilan paris",
+      title: t("statsPage.section.bilan"),
       rows: [
-        { label: "Paris gagnants", value: `${stats.won}`, tone: "green" },
-        { label: "Paris perdants", value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
-        { label: "Paris en cours", value: `${stats.pending}`, tone: "blue" },
-        { label: "Série victoires max", value: `${stats.best_streak}`, tone: "green" },
+        { label: t("statsPage.betsWon"), value: `${stats.won}`, tone: "green" },
+        { label: t("statsPage.betsLost"), value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
+        { label: t("statsPage.betsPending"), value: `${stats.pending}`, tone: "blue" },
+        { label: t("statsPage.bestStreak"), value: `${stats.best_streak}`, tone: "green" },
         {
-          label: "Série défaites max",
+          label: t("statsPage.worstStreak"),
           value: `${Math.abs(stats.worst_streak)}`,
           tone: stats.worst_streak < 0 ? "red" : "neutral",
         },
         {
-          label: "Série en cours",
+          label: t("statsPage.currentStreak"),
           value: stats.current_streak >= 0 ? `+${stats.current_streak}` : `${stats.current_streak}`,
           tone: signTone(stats.current_streak),
         },
       ],
     },
     {
-      title: "Mises",
+      title: t("statsPage.section.mises"),
       rows: [
-        { label: "Mises jouées", value: `${stats.total_stake_played.toFixed(2)} €` },
-        { label: "Mises en cours", value: `${stats.pending_stake.toFixed(2)} €` },
-        { label: "Mise moyenne", value: `${stats.avg_stake.toFixed(2)} €` },
-        { label: "Mise max", value: `${stats.max_stake.toFixed(2)} €` },
+        { label: t("statsPage.stakePlayed"), value: `${stats.total_stake_played.toFixed(2)} €` },
+        { label: t("statsPage.stakePending"), value: `${stats.pending_stake.toFixed(2)} €` },
+        { label: t("statsPage.stakeAvg"), value: `${stats.avg_stake.toFixed(2)} €` },
+        { label: t("statsPage.stakeMax"), value: `${stats.max_stake.toFixed(2)} €` },
       ],
     },
     {
-      title: "Cotes & extrêmes",
+      title: t("statsPage.section.cotes"),
       rows: [
-        { label: "Cote moyenne", value: stats.average_odds.toFixed(3) },
+        { label: t("statsPage.oddsAvg"), value: stats.average_odds.toFixed(3) },
         {
-          label: "Plus grosse cote gagnée",
+          label: t("statsPage.oddsMaxWon"),
           value: stats.max_odds_won > 0 ? stats.max_odds_won.toFixed(2) : "—",
           tone: "green",
         },
         {
-          label: "Plus gros bénéfice",
+          label: t("statsPage.profitMaxSingle"),
           value: `${fmtSigned(stats.max_profit_single)} €`,
           tone: "green",
         },
         {
-          label: "Plus grosse perte",
+          label: t("statsPage.lossMaxSingle"),
           value: `${stats.max_loss_single.toFixed(2)} €`,
           tone: stats.max_loss_single < 0 ? "red" : "neutral",
         },
@@ -144,6 +147,7 @@ function buildSections(stats: HistoryStats): { title: string; rows: StatRow[] }[
 }
 
 export default function StatsPage() {
+  const { t } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -160,16 +164,16 @@ export default function StatsPage() {
   }, []);
 
   const stats = history?.stats;
-  const sections = stats ? buildSections(stats) : [];
+  const sections = stats ? buildSections(stats, t) : [];
 
   return (
     <>
       <Head>
-        <title>Statistiques — WTF</title>
+        <title>{t("statsPage.titleTab")}</title>
       </Head>
 
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
-        <Header title="Statistiques" stats={stats} />
+        <Header title={t("statsPage.title")} stats={stats} />
 
         {loading && (
           <div className="space-y-5 animate-fade-in">

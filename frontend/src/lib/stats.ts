@@ -34,16 +34,26 @@ export interface StateBreakdown {
   color: string;
 }
 
-const STATE_META: Record<
-  StateBreakdown["state"],
-  { label: string; color: string }
-> = {
-  win: { label: "Gagné", color: "#26e0a4" },
-  loss: { label: "Perdu", color: "#ff5470" },
-  pending: { label: "En attente", color: "#9aa3b2" },
-  void: { label: "Remboursé", color: "#5b8def" },
+// Couleur par état (label is provided by i18n at the call site, cf. STATE_LABEL_KEYS)
+const STATE_COLORS: Record<StateBreakdown["state"], string> = {
+  win: "#26e0a4",
+  loss: "#ff5470",
+  pending: "#9aa3b2",
+  void: "#5b8def",
 };
 
+/** Clés i18n associées à chaque état — à résoudre via t() chez l'appelant. */
+export const STATE_LABEL_KEYS: Record<StateBreakdown["state"], string> = {
+  win: "filtres.statusWon",
+  loss: "filtres.statusLost",
+  pending: "filtres.statusPending",
+  void: "filtres.statusRefunded",
+};
+
+/**
+ * Breakdown des paris par état. Le `label` est ici une CLÉ i18n (filtres.status*)
+ * à résoudre via t() au moment du render. Garde la lib stats agnostique de la langue.
+ */
 export function breakdownByState(picks: HistoryPick[]): StateBreakdown[] {
   const acc: Record<string, { count: number; stake_sum: number }> = {
     win: { count: 0, stake_sum: 0 },
@@ -57,10 +67,10 @@ export function breakdownByState(picks: HistoryPick[]): StateBreakdown[] {
     acc[key].count += 1;
     acc[key].stake_sum += p.stake;
   }
-  return (Object.keys(STATE_META) as StateBreakdown["state"][]).map((state) => ({
+  return (Object.keys(STATE_COLORS) as StateBreakdown["state"][]).map((state) => ({
     state,
-    label: STATE_META[state].label,
-    color: STATE_META[state].color,
+    label: STATE_LABEL_KEYS[state],
+    color: STATE_COLORS[state],
     count: acc[state].count,
     total_stake: round2(acc[state].stake_sum),
     avg_stake: acc[state].count > 0 ? round2(acc[state].stake_sum / acc[state].count) : 0,
