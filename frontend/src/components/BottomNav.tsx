@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 
 import { fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 
 interface Tab {
   href: string;
@@ -10,52 +11,9 @@ interface Tab {
   icon: ReactNode;
 }
 
-const leftTabs: Tab[] = [
-  {
-    href: "/",
-    label: "Home",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12 12 3l9 9M5 10v10h4v-6h6v6h4V10" />
-      </svg>
-    ),
-  },
-  {
-    href: "/paris",
-    label: "Paris",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
-      </svg>
-    ),
-  },
-];
-
-const rightTabs: Tab[] = [
-  {
-    href: "/stats",
-    label: "Statistiques",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 20V10M9 20V4M15 20v-8M21 20v-4" />
-      </svg>
-    ),
-  },
-  {
-    href: "/plus",
-    label: "Plus",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-        <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-        <circle cx="19" cy="12" r="1.5" fill="currentColor" />
-      </svg>
-    ),
-  },
-];
-
 export function BottomNav() {
   const router = useRouter();
+  const { t } = useI18n();
   const [hasPendingPick, setHasPendingPick] = useState(false);
 
   // Détecte si un pick pending existe → animation pulse sur le "+" central
@@ -75,18 +33,62 @@ export function BottomNav() {
     };
   }, [router.asPath]);
 
-  function renderTab(t: Tab) {
-    const active = router.pathname === t.href;
+  const leftTabs: Tab[] = [
+    {
+      href: "/",
+      label: t("nav.home"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 12 12 3l9 9M5 10v10h4v-6h6v6h4V10" />
+        </svg>
+      ),
+    },
+    {
+      href: "/paris",
+      label: t("nav.paris"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+        </svg>
+      ),
+    },
+  ];
+
+  const rightTabs: Tab[] = [
+    {
+      href: "/stats",
+      label: t("nav.stats"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 20V10M9 20V4M15 20v-8M21 20v-4" />
+        </svg>
+      ),
+    },
+    {
+      href: "/plus",
+      label: t("nav.plus"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <circle cx="5" cy="12" r="1.5" fill="currentColor" />
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+          <circle cx="19" cy="12" r="1.5" fill="currentColor" />
+        </svg>
+      ),
+    },
+  ];
+
+  function renderTab(tab: Tab) {
+    const active = router.pathname === tab.href;
     return (
       <Link
-        key={t.href}
-        href={t.href}
+        key={tab.href}
+        href={tab.href}
         className={`flex flex-col items-center gap-1 py-2.5 transition ${
           active ? "text-accent-green" : "text-white/40 hover:text-white/70"
         }`}
       >
-        {t.icon}
-        <span className="text-[10px] font-medium tracking-wider">{t.label}</span>
+        {tab.icon}
+        <span className="text-[10px] font-medium tracking-wider">{tab.label}</span>
       </Link>
     );
   }
@@ -119,7 +121,7 @@ export function BottomNav() {
                   ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/40"
                   : "bg-gradient-to-br from-accent-blue to-purple-500 shadow-purple-500/30"
             }`}
-            aria-label={hasPendingPick ? "Pick du jour (en attente)" : "Pick du jour"}
+            aria-label={hasPendingPick ? t("nav.todayPickPending") : t("nav.todayPick")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-7 h-7">
               <path strokeLinecap="round" d="M12 5v14M5 12h14" />

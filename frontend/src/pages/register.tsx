@@ -24,21 +24,21 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     if (password !== confirm) {
-      setError("Les mots de passe ne correspondent pas");
+      setError(t("auth.errPasswordMismatch"));
       return;
     }
     if (!cgu) {
-      setError("Tu dois accepter les CGU");
+      setError(t("auth.errAcceptCgu"));
       return;
     }
     setBusy(true);
     const res = await register(pseudo, email.trim(), password);
     setBusy(false);
     if (res.ok) {
-      showToast("Compte créé · Bienvenue 🎉", { type: "success", duration: 3000 });
+      showToast(t("auth.toastAccountCreated"), { type: "success", duration: 3000 });
       router.push("/");
     } else {
-      setError(res.error ?? "Erreur");
+      setError(res.error ?? t("auth.errGeneric"));
     }
   }
 
@@ -51,7 +51,7 @@ export default function RegisterPage() {
         {/* Back button — flottant en haut à gauche */}
         <Link
           href="/"
-          aria-label="Retour à l'accueil"
+          aria-label={t("auth.backToHome")}
           className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-white/25 transition"
           style={{ marginTop: "var(--safe-top)" }}
         >
@@ -81,7 +81,7 @@ export default function RegisterPage() {
                 type="text"
                 value={pseudo}
                 onChange={(e) => setPseudo(e.target.value)}
-                placeholder="Pseudo"
+                placeholder={t("auth.pseudo")}
                 className="mt-1 w-full bg-bg-elevated border border-white/10 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-green/50 placeholder:text-white/30"
                 required
               />

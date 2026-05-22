@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { useI18n } from "@/lib/i18n";
 
 const STORAGE_KEY = "pronostics.onboarding.done";
 
@@ -7,24 +9,6 @@ interface Slide {
   title: string;
   body: string;
 }
-
-const SLIDES: Slide[] = [
-  {
-    icon: "🤖",
-    title: "WTF · Win The Future",
-    body: "L'IA qui analyse 30+ matchs par jour (football, NBA, NHL, MLB, ATP/WTA) et identifie LE value bet à cote ≥ 2.00 le plus fiable du jour.",
-  },
-  {
-    icon: "📊",
-    title: "Tracking 100% transparent",
-    body: "Historique complet visible publiquement : tous les picks passés, les résultats, le ROI cumulé. Aucun pick caché, aucune triche. Vérifie toi-même avant de t'abonner.",
-  },
-  {
-    icon: "👑",
-    title: "Premium pour le pick du jour",
-    body: "L'historique reste gratuit. Le pick du jour et l'analyse complète (45-60 points avec sources web vérifiables) sont réservés aux abonnés Premium.",
-  },
-];
 
 interface OnboardingProps {
   /** Si true, affiche l'onboarding même s'il a déjà été vu */
@@ -46,8 +30,18 @@ export function resetOnboarding(): void {
 }
 
 export function Onboarding({ forceShow = false, onClose }: OnboardingProps = {}) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
+
+  const SLIDES = useMemo<Slide[]>(
+    () => [
+      { icon: "🤖", title: t("onb.slide1Title"), body: t("onb.slide1Body") },
+      { icon: "📊", title: t("onb.slide2Title"), body: t("onb.slide2Body") },
+      { icon: "👑", title: t("onb.slide3Title"), body: t("onb.slide3Body") },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (forceShow) {
@@ -102,7 +96,7 @@ export function Onboarding({ forceShow = false, onClose }: OnboardingProps = {})
           <button
             onClick={prev}
             disabled={isFirst}
-            aria-label="Précédent"
+            aria-label={t("onb.previous")}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition ${
               isFirst
                 ? "opacity-30 cursor-not-allowed"
@@ -125,7 +119,7 @@ export function Onboarding({ forceShow = false, onClose }: OnboardingProps = {})
           </div>
           <button
             onClick={close}
-            aria-label="Fermer"
+            aria-label={t("onb.close")}
             className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:bg-white/10 hover:text-white transition"
           >
             ✕
@@ -143,13 +137,13 @@ export function Onboarding({ forceShow = false, onClose }: OnboardingProps = {})
             onClick={close}
             className="flex-1 py-3 rounded-xl border border-white/10 text-white/60 text-sm hover:bg-white/5"
           >
-            Passer
+            {t("onb.skip")}
           </button>
           <button
             onClick={next}
             className="flex-1 py-3 rounded-xl bg-gradient-to-r from-accent-blue to-accent-green text-bg-base font-semibold text-sm"
           >
-            {isLast ? "Commencer" : "Suivant"}
+            {isLast ? t("onb.start") : t("onb.next")}
           </button>
         </div>
       </div>

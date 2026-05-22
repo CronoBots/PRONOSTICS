@@ -6,6 +6,7 @@ import { PickDetail, pickFromSafe } from "@/components/PickDetail";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/lib/auth";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { DayPayload, History, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 function todayIso(): string {
@@ -18,6 +19,7 @@ export default function TodayPage() {
   const [date, setDate] = useState(todayIso());
   const [loading, setLoading] = useState(true);
   const { user, ready } = useAuth();
+  const { t } = useI18n();
 
   useEffect(() => {
     let cancelled = false;
@@ -42,7 +44,7 @@ export default function TodayPage() {
   return (
     <>
       <Head>
-        <title>Pick du jour — WTF</title>
+        <title>{t("today.titleTab")}</title>
       </Head>
 
       <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
@@ -50,11 +52,11 @@ export default function TodayPage() {
           <Link
             href="/"
             className="w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60 hover:text-white transition"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Pick safe du jour</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("today.title")}</h1>
         </div>
 
         {loading && (
@@ -80,16 +82,16 @@ export default function TodayPage() {
 }
 
 function NoPickToday() {
+  const { t } = useI18n();
   return (
     <div className="bg-bg-card border border-white/10 rounded-2xl p-8 text-center">
       <div className="text-5xl mb-3">🧘</div>
-      <p className="text-base font-semibold mb-2">Aucun value bet aujourd'hui</p>
+      <p className="text-base font-semibold mb-2">{t("today.noPickTitle")}</p>
       <p className="text-sm text-white/50 leading-relaxed max-w-sm mx-auto">
-        Le moteur n'a pas identifié de pari avec probabilité ≥ 70% et edge suffisant.
-        On préfère skip un jour plutôt que de te proposer un pari médiocre.
+        {t("today.noPickBody")}
       </p>
       <p className="text-xs text-white/40 mt-4 italic">
-        La discipline {">"} le volume. Reviens demain.
+        {t("today.noPickFooter")}
       </p>
     </div>
   );
@@ -102,11 +104,12 @@ function PremiumGate({
   pick: NonNullable<DayPayload["safe_pick"]>;
   history: History | null;
 }) {
+  const { t, lang } = useI18n();
   const stats = history?.stats;
   const sportEmoji = SPORT_EMOJIS[pick.sport] || "🎯";
   const sportLabel = SPORT_LABELS[pick.sport] || pick.sport;
   const kickoffDate = new Date(pick.kickoff);
-  const kickoffText = kickoffDate.toLocaleString("fr-FR", {
+  const kickoffText = kickoffDate.toLocaleString(localeForLang(lang), {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -141,7 +144,7 @@ function PremiumGate({
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="bg-bg-elevated/40 rounded-lg p-2 text-center">
               <div className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">
-                Cote
+                {t("pick.cote")}
               </div>
               <div className="text-sm font-bold tabular-nums">
                 {pick.odds.toFixed(2)}
@@ -149,7 +152,7 @@ function PremiumGate({
             </div>
             <div className="bg-bg-elevated/40 rounded-lg p-2 text-center">
               <div className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">
-                Confiance
+                {t("today.confidence")}
               </div>
               <div className="text-sm font-bold text-accent-green tabular-nums">
                 {(pick.model_probability * 100).toFixed(0)}%
@@ -157,7 +160,7 @@ function PremiumGate({
             </div>
             <div className="bg-bg-elevated/40 rounded-lg p-2 text-center">
               <div className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">
-                EV
+                {t("today.ev")}
               </div>
               <div className="text-sm font-bold text-accent-green tabular-nums">
                 +{(pick.expected_value * 100).toFixed(0)}%
@@ -169,7 +172,7 @@ function PremiumGate({
           <div className="relative">
             <div className="bg-bg-elevated/30 rounded-xl p-4 select-none filter blur-sm">
               <div className="text-[10px] uppercase tracking-wider text-accent-green/80 font-bold mb-1">
-                💡 Le pick
+                {t("today.thePick")}
               </div>
               <div className="text-lg font-extrabold mb-2">▓▓▓▓▓▓ ▓▓▓▓▓▓▓</div>
               <div className="text-xs text-white/60 leading-relaxed">
@@ -186,24 +189,28 @@ function PremiumGate({
             <li className="flex items-start gap-2">
               <span className="text-accent-green">✓</span>
               <span>
-                <strong className="text-white/90">{pick.rationale?.length ?? 45}+ points
-                d'analyse</strong> structurés
+                <strong className="text-white/90">
+                  {t("today.analysisPoints", { n: pick.rationale?.length ?? 45 })}
+                </strong>{" "}
+                {t("today.analysisPointsStructured")}
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-accent-green">✓</span>
               <span>
-                <strong className="text-white/90">{pick.sources?.length ?? 3} sources
-                web</strong> vérifiables (cliquables)
+                <strong className="text-white/90">
+                  {t("today.webSources", { n: pick.sources?.length ?? 3 })}
+                </strong>{" "}
+                {t("today.webSourcesVerifiable")}
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-accent-green">✓</span>
-              <span>Top 5 candidats écartés + raisons</span>
+              <span>{t("today.top5Excluded")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-accent-green">✓</span>
-              <span>Liens bookmakers (bwin, Winamax, Unibet)</span>
+              <span>{t("today.bookmakerLinks")}</span>
             </li>
           </ul>
         </div>
@@ -213,32 +220,36 @@ function PremiumGate({
       {stats && stats.total_picks >= 3 && (
         <div className="bg-bg-card border border-accent-green/20 rounded-2xl p-4">
           <div className="text-[10px] uppercase tracking-wider text-accent-green font-bold mb-2 text-center">
-            📈 Track record vérifiable
+            {t("today.trackRecord")}
           </div>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div>
               <div className="text-xl font-bold text-accent-green tabular-nums">
                 {stats.win_rate.toFixed(0)}%
               </div>
-              <div className="text-[10px] text-white/50">Réussite</div>
+              <div className="text-[10px] text-white/50">{t("today.successRate")}</div>
             </div>
             <div>
               <div className="text-xl font-bold text-accent-green tabular-nums">
                 +{stats.roi_percent.toFixed(0)}%
               </div>
-              <div className="text-[10px] text-white/50">ROI</div>
+              <div className="text-[10px] text-white/50">{t("today.roi")}</div>
             </div>
             <div>
               <div className="text-xl font-bold text-accent-green tabular-nums">
                 ×{(stats.current_bankroll / stats.starting_bankroll).toFixed(1)}
               </div>
-              <div className="text-[10px] text-white/50">Bankroll</div>
+              <div className="text-[10px] text-white/50">{t("today.bankrollMultiplier")}</div>
             </div>
           </div>
           <p className="text-[10px] text-white/40 text-center mt-2">
-            {stats.won}V / {stats.lost}D sur {stats.total_picks} paris ·{" "}
+            {t("today.historyLine", {
+              won: stats.won,
+              lost: stats.lost,
+              total: stats.total_picks,
+            })}{" "}
             <Link href="/paris" className="text-accent-blue hover:underline">
-              voir l'historique complet
+              {t("today.viewFullHistory")}
             </Link>
           </p>
         </div>
@@ -248,20 +259,19 @@ function PremiumGate({
       <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-400/5 border border-yellow-400/30 rounded-2xl p-5">
         <div className="text-center mb-4">
           <div className="text-3xl mb-2">👑</div>
-          <h3 className="text-lg font-bold mb-1">Découvre le pick complet</h3>
+          <h3 className="text-lg font-bold mb-1">{t("today.discoverFullPick")}</h3>
           <p className="text-xs text-white/60">
-            Le pick + analyse + sources sont réservés aux Premium.
+            {t("today.premiumReserved")}
           </p>
         </div>
         <Link
           href="/premium"
           className="block py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-center"
         >
-          Passer en Premium · à partir de 7,99€/mois
+          {t("today.ctaPremium")}
         </Link>
         <p className="text-[10px] text-white/40 text-center mt-3">
-          *7,99€/mois avec l'annuel (95,88€/an, −20%). Mensuel : 9,99€. Résiliable
-          en 1 clic.
+          {t("today.footerNote")}
         </p>
       </div>
 
@@ -270,7 +280,7 @@ function PremiumGate({
         href="/paris"
         className="block text-center text-sm text-white/40 hover:text-white py-2"
       >
-        Voir l'historique des paris →
+        {t("today.viewHistoryLink")}
       </Link>
     </div>
   );

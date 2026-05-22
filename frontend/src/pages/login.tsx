@@ -24,10 +24,10 @@ export default function LoginPage() {
     const res = await login(email.trim(), password);
     setBusy(false);
     if (res.ok) {
-      showToast("Connecté 👋", { type: "success", duration: 2500 });
+      showToast(t("auth.toastLoggedIn"), { type: "success", duration: 2500 });
       router.push("/");
     } else {
-      setError(res.error ?? "Erreur");
+      setError(res.error ?? t("auth.errGeneric"));
     }
   }
 
@@ -40,7 +40,7 @@ export default function LoginPage() {
         {/* Back button — flottant en haut à gauche */}
         <Link
           href="/"
-          aria-label="Retour à l'accueil"
+          aria-label={t("auth.backToHome")}
           className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-white/25 transition"
           style={{ marginTop: "var(--safe-top)" }}
         >

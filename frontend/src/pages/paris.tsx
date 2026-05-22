@@ -6,12 +6,14 @@ import { HistoryList } from "@/components/HistoryList";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/lib/auth";
 import { fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
 export default function ParisPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const { user, ready } = useAuth();
+  const { t } = useI18n();
   const isPremium = ready && user?.isPremium;
 
   useEffect(() => {
@@ -35,11 +37,11 @@ export default function ParisPage() {
   return (
     <>
       <Head>
-        <title>Paris — WTF</title>
+        <title>{t("paris.titleTab")}</title>
       </Head>
 
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
-        <Header title="Paris" stats={history?.stats} />
+        <Header title={t("paris.title")} stats={history?.stats} />
 
         {loading && (
           <div className="space-y-4 animate-fade-in">
@@ -57,10 +59,12 @@ export default function ParisPage() {
           <div>
             <div className="flex items-baseline justify-between mb-3 px-1">
               <h2 className="text-sm md:text-base font-semibold uppercase tracking-wider text-white/70">
-                Historique des paris
+                {t("paris.historyTitle")}
               </h2>
               <span className="text-[11px] text-white/40">
-                {displayedCount} pari{displayedCount > 1 ? "s" : ""}
+                {displayedCount > 1
+                  ? t("paris.countMany", { n: displayedCount })
+                  : t("paris.countOne", { n: displayedCount })}
               </span>
             </div>
             <HistoryList picks={picks} />

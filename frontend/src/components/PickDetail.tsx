@@ -1,5 +1,6 @@
 import { ReactNode, useState } from "react";
 
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { ComboLeg, HistoryPick, PickComparison, PickResult, SafePick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
 
 interface UnifiedPick {
@@ -32,8 +33,8 @@ interface Props {
   variant?: "today" | "past";
 }
 
-function fmtKickoff(iso: string) {
-  return new Date(iso).toLocaleString("fr-FR", {
+function fmtKickoff(iso: string, locale: string) {
+  return new Date(iso).toLocaleString(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -42,16 +43,9 @@ function fmtKickoff(iso: string) {
   });
 }
 
-const GLOSSARY: Record<string, string> = {
-  cote: "Multiplicateur du gain : pour 1€ misé tu touches X€ si tu gagnes.",
-  ev: "Expected Value = rentabilité statistique du pari. Positive = pari rentable à long terme.",
-  edge: "Écart entre notre estimation et celle du bookmaker. Plus c'est élevé, plus le pari est intéressant.",
-  era: "Earned Run Average — points encaissés par lanceur sur 9 manches (baseball). Bas = bon.",
-  whip:
-    "Walks + Hits per Inning — coureurs adverses sur base par manche (baseball). Bas = bon.",
-};
-
 export function PickDetail({ pick, variant = "today" }: Props) {
+  const { t, lang } = useI18n();
+  const locale = localeForLang(lang);
   const isPending = pick.outcome === "pending" || pick.outcome === undefined;
   const isWin = pick.outcome === "win";
   const isLoss = pick.outcome === "loss";
@@ -59,13 +53,21 @@ export function PickDetail({ pick, variant = "today" }: Props) {
   const potentialProfit = stake * (pick.odds - 1);
   const potentialReturn = stake * pick.odds;
 
+  const GLOSSARY: Record<string, string> = {
+    cote: t("pickDetail.glossaryCote"),
+    ev: t("pickDetail.glossaryEv"),
+    edge: t("pickDetail.glossaryEdge"),
+    era: t("pickDetail.glossaryEra"),
+    whip: t("pickDetail.glossaryWhip"),
+  };
+
   return (
     <div className="space-y-5">
       {/* Headline punchy en haut */}
       {pick.headline && (
         <div className="bg-accent-green/10 border-l-4 border-accent-green rounded-r-xl px-4 py-3">
           <div className="text-[10px] uppercase tracking-wider text-accent-green/80 font-semibold mb-1">
-            💡 En 1 phrase
+            {t("pickDetail.headlineLabel")}
           </div>
           <p className="text-sm md:text-base font-medium leading-relaxed">{pick.headline}</p>
         </div>
@@ -79,7 +81,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
             {SPORT_LABELS[pick.sport] || pick.sport}
           </span>
           <span className="text-white/20">·</span>
-          <span className="capitalize">{fmtKickoff(pick.kickoff)}</span>
+          <span className="capitalize">{fmtKickoff(pick.kickoff, locale)}</span>
         </div>
         <div className="text-xs text-white/50 mt-1">{pick.league}</div>
         <div className="text-2xl md:text-3xl font-bold leading-tight mt-3">
@@ -101,17 +103,17 @@ export function PickDetail({ pick, variant = "today" }: Props) {
       {/* Résumé chiffres clés */}
       <div className="grid grid-cols-3 gap-3">
         <KeyStat
-          label="Cote"
+          label={t("pick.cote")}
           value={pick.odds.toFixed(2)}
           tooltip={GLOSSARY.cote}
         />
         <KeyStat
-          label="Notre estimation"
+          label={t("pickDetail.estimation")}
           value={`${(pick.model_probability * 100).toFixed(0)}%`}
-          tooltip="Probabilité de victoire selon notre analyse (différente de celle du bookmaker)."
+          tooltip={t("pickDetail.estimationTooltip")}
         />
         <KeyStat
-          label="EV"
+          label={t("today.ev")}
           value={`+${(pick.expected_value * 100).toFixed(1)}%`}
           tone="green"
           tooltip={GLOSSARY.ev}
@@ -121,26 +123,26 @@ export function PickDetail({ pick, variant = "today" }: Props) {
       {/* Mise & gain */}
       <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
         <div className="text-[10px] uppercase tracking-wider text-white/40 mb-3">
-          {isPending ? "Mise & gains potentiels" : "Mise & résultat"}
+          {isPending ? t("pickDetail.stakeAndPotential") : t("pickDetail.stakeAndResult")}
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="text-[10px] text-white/50">Mise</div>
+            <div className="text-[10px] text-white/50">{t("pick.stake")}</div>
             <div className="text-lg font-bold tabular-nums">{stake.toFixed(2)} €</div>
           </div>
           {isPending && (
             <>
               <div>
-                <div className="text-[10px] text-accent-green">Si gagné</div>
+                <div className="text-[10px] text-accent-green">{t("pick.ifWon")}</div>
                 <div className="text-lg font-bold tabular-nums text-accent-green">
                   +{potentialProfit.toFixed(2)} €
                 </div>
                 <div className="text-[10px] text-white/40">
-                  (retour {potentialReturn.toFixed(2)} €)
+                  ({t("pick.return")} {potentialReturn.toFixed(2)} €)
                 </div>
               </div>
               <div>
-                <div className="text-[10px] text-accent-red">Si perdu</div>
+                <div className="text-[10px] text-accent-red">{t("pick.ifLost")}</div>
                 <div className="text-lg font-bold tabular-nums text-accent-red">
                   −{stake.toFixed(2)} €
                 </div>
@@ -150,13 +152,13 @@ export function PickDetail({ pick, variant = "today" }: Props) {
           {isWin && (
             <>
               <div>
-                <div className="text-[10px] text-accent-green">Gain réel</div>
+                <div className="text-[10px] text-accent-green">{t("pickDetail.realGain")}</div>
                 <div className="text-lg font-bold tabular-nums text-accent-green">
                   +{(pick.profit ?? potentialProfit).toFixed(2)} €
                 </div>
               </div>
               <div>
-                <div className="text-[10px] text-white/50">Retour total</div>
+                <div className="text-[10px] text-white/50">{t("pickDetail.totalReturn")}</div>
                 <div className="text-lg font-bold tabular-nums">
                   {(stake + (pick.profit ?? potentialProfit)).toFixed(2)} €
                 </div>
@@ -166,13 +168,13 @@ export function PickDetail({ pick, variant = "today" }: Props) {
           {isLoss && (
             <>
               <div>
-                <div className="text-[10px] text-accent-red">Perte</div>
+                <div className="text-[10px] text-accent-red">{t("pickDetail.loss")}</div>
                 <div className="text-lg font-bold tabular-nums text-accent-red">
                   {(pick.profit ?? -stake).toFixed(2)} €
                 </div>
               </div>
               <div>
-                <div className="text-[10px] text-white/50">Retour</div>
+                <div className="text-[10px] text-white/50">{t("pickDetail.returnLabel")}</div>
                 <div className="text-lg font-bold tabular-nums">0.00 €</div>
               </div>
             </>
@@ -187,19 +189,20 @@ export function PickDetail({ pick, variant = "today" }: Props) {
 
       {/* Résumé en 1 phrase + analyse complète */}
       <ExpandableSection
-        title="Analyse complète"
+        title={t("pickDetail.fullAnalysis")}
         icon="🧠"
-        subtitle={`${pick.rationale.length} points d'analyse`}
+        subtitle={t("pickDetail.analysisPoints", { n: pick.rationale.length })}
         defaultOpen={variant === "today"}
       >
         <div className="text-sm text-white/80 leading-relaxed mb-3 pb-3 border-b border-white/5">
-          <span className="text-accent-green font-semibold">Résumé :</span>{" "}
-          Notre modèle estime que <strong>{pick.pick}</strong> a{" "}
-          <strong>{(pick.model_probability * 100).toFixed(0)}% de chances</strong> de
-          gagner, alors que le bookmaker n'en donne que{" "}
-          <strong>{(pick.book_probability * 100).toFixed(0)}%</strong>. C'est ce qu'on
-          appelle un <span className="text-accent-green">value bet</span> — la cote est
-          plus élevée que la probabilité réelle.
+          <span className="text-accent-green font-semibold">{t("pickDetail.summary")}</span>{" "}
+          {t("pickDetail.modelEstimatesPrefix")} <strong>{pick.pick}</strong> {t("pickDetail.hasChances")}{" "}
+          <strong>{t("pickDetail.chancesToWin", { percent: (pick.model_probability * 100).toFixed(0) })}</strong>{" "}
+          {t("pickDetail.toWin")}{" "}
+          <strong>{(pick.book_probability * 100).toFixed(0)}%</strong>
+          {t("pickDetail.thatIsCalled")}{" "}
+          <span className="text-accent-green">{t("pickDetail.valueBet")}</span>{" "}
+          {t("pickDetail.oddsHigher")}
         </div>
         <div className="space-y-2 text-sm text-white/70">
           {pick.rationale.map((r, i) => {
@@ -226,51 +229,48 @@ export function PickDetail({ pick, variant = "today" }: Props) {
 
       {/* Guide pour débutants */}
       <ExpandableSection
-        title="Tu débutes ? Lis ceci"
+        title={t("pickDetail.beginnersTitle")}
         icon="🎓"
-        subtitle="Explication pas à pas"
+        subtitle={t("pickDetail.beginnersSubtitle")}
         defaultOpen={false}
       >
         <ol className="space-y-3 text-sm text-white/70 list-decimal list-inside">
           <li>
-            <strong className="text-white">Pari "Vainqueur"</strong> : tu paries que
-            l'équipe choisie va gagner le match. Pas le score exact, juste qui gagne.
-          </li>
-          <li>
-            <strong className="text-white">Cote {pick.odds.toFixed(2)}</strong> : pour
-            1€ misé, le bookmaker te rendra {pick.odds.toFixed(2)} € si tu gagnes
-            (dont {(pick.odds - 1).toFixed(2)} € de profit + ton 1€ initial).
+            <strong className="text-white">{t("pickDetail.beg1strong")}</strong>
+            {t("pickDetail.beg1")}
           </li>
           <li>
             <strong className="text-white">
-              Pourquoi cette cote est intéressante ?
-            </strong>{" "}
-            Le bookmaker estime que {pick.pick} a{" "}
-            {(pick.book_probability * 100).toFixed(0)}% de chances. Notre analyse, qui
-            tient compte d'éléments comme la forme récente, les blessures, le
-            historique direct, donne{" "}
-            {(pick.model_probability * 100).toFixed(0)}%. L'écart en notre faveur =
-            opportunité.
+              {t("pickDetail.beg2strong", { odds: pick.odds.toFixed(2) })}
+            </strong>
+            {t("pickDetail.beg2", {
+              odds: pick.odds.toFixed(2),
+              profit: (pick.odds - 1).toFixed(2),
+            })}
           </li>
           <li>
-            <strong className="text-white">Mise raisonnable</strong> : ne jamais miser
-            plus de 5% de ta bankroll sur un seul pari. Pour 100€ de bankroll, 5€ max.
-            Plus tu mises petit, plus tu absorbes les pertes.
+            <strong className="text-white">{t("pickDetail.beg3strong")}</strong>{" "}
+            {t("pickDetail.beg3", {
+              pick: pick.pick,
+              bookPct: (pick.book_probability * 100).toFixed(0),
+              modelPct: (pick.model_probability * 100).toFixed(0),
+            })}
           </li>
           <li>
-            <strong className="text-white">EV (Expected Value)</strong> :{" "}
-            +{(pick.expected_value * 100).toFixed(1)}% signifie qu'en moyenne, sur
-            beaucoup de paris similaires, tu gagnerais{" "}
-            {(pick.expected_value * 100).toFixed(1)}% de ta mise totale. Plus c'est
-            haut, plus c'est intéressant — mais ça ne garantit jamais le résultat de
-            CE pari spécifique.
+            <strong className="text-white">{t("pickDetail.beg4strong")}</strong>
+            {t("pickDetail.beg4")}
+          </li>
+          <li>
+            <strong className="text-white">{t("pickDetail.beg5strong")}</strong>
+            {t("pickDetail.beg5", { ev: (pick.expected_value * 100).toFixed(1) })}
           </li>
           {isPending && (
             <li>
-              <strong className="text-white">Comment placer ce pari ?</strong> Va sur
-              ton bookmaker préféré (Bwin, Unibet, Winamax…), cherche le match{" "}
-              <em>{pick.home_team} vs {pick.away_team}</em>, sélectionne{" "}
-              <em>"{pick.pick} vainqueur"</em>, mets ta mise, valide.
+              <strong className="text-white">{t("pickDetail.beg6strong")}</strong>{" "}
+              {t("pickDetail.beg6", {
+                match: `${pick.home_team} vs ${pick.away_team}`,
+                pick: pick.pick,
+              })}
             </li>
           )}
         </ol>
@@ -279,13 +279,13 @@ export function PickDetail({ pick, variant = "today" }: Props) {
       {/* Pourquoi celui-ci ? — comparaison avec autres candidats */}
       {pick.comparison && (
         <ExpandableSection
-          title="Pourquoi celui-ci ?"
+          title={t("pickDetail.whyThisOne")}
           icon="🎯"
-          subtitle={`${pick.comparison.matches_analyzed} matchs analysés aujourd'hui`}
+          subtitle={t("pickDetail.matchesAnalyzed", { n: pick.comparison.matches_analyzed })}
           defaultOpen={false}
         >
           <p className="text-xs text-white/50 mb-3">
-            Les top alternatives écartées et pourquoi :
+            {t("pickDetail.alternativesIntro")}
           </p>
           <div className="space-y-2.5">
             {pick.comparison.top_alternatives.map((alt) => (
@@ -304,7 +304,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
                 </div>
                 <div className="flex items-center gap-2 text-[11px] text-white/50 mb-1.5">
                   <span className="bg-white/5 px-1.5 py-0.5 rounded">
-                    edge {alt.edge}
+                    {t("pickDetail.edge")} {alt.edge}
                   </span>
                   <span
                     className={`px-1.5 py-0.5 rounded ${
@@ -315,7 +315,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
                           : "bg-white/5"
                     }`}
                   >
-                    confidence {alt.confidence}
+                    {t("pickDetail.confidence")} {alt.confidence}
                   </span>
                 </div>
                 <p className="text-xs text-white/60 italic">↳ {alt.why_not}</p>
@@ -329,7 +329,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
       {isPending && (
         <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
           <div className="text-[10px] uppercase tracking-wider text-white/40 mb-3 text-center">
-            ⚡ Placer ce pari
+            {t("pickDetail.placeBet")}
           </div>
           <div className="grid grid-cols-3 gap-2">
             <BookmakerButton
@@ -346,8 +346,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
             />
           </div>
           <p className="text-[10px] text-white/30 text-center mt-2 leading-relaxed">
-            Liens vers les bookmakers — cherche le match{" "}
-            <em>{pick.home_team} vs {pick.away_team}</em> et place ton pari.
+            {t("pickDetail.bookmakerHint", { match: `${pick.home_team} vs ${pick.away_team}` })}
           </p>
         </section>
       )}
@@ -358,9 +357,9 @@ export function PickDetail({ pick, variant = "today" }: Props) {
       {/* Sources */}
       {pick.sources && pick.sources.length > 0 && (
         <ExpandableSection
-          title="Sources web vérifiées"
+          title={t("pickDetail.sourcesTitle")}
           icon="🔗"
-          subtitle={`${pick.sources.length} articles consultés`}
+          subtitle={t("pickDetail.sourcesSubtitle", { n: pick.sources.length })}
           defaultOpen={false}
         >
           <ul className="space-y-2 text-xs">
@@ -386,23 +385,27 @@ export function PickDetail({ pick, variant = "today" }: Props) {
 // ============== Sous-composants ==============
 
 function PendingBanner({ pick }: { pick: UnifiedPick }) {
+  const { t } = useI18n();
   return (
     <div className="bg-gradient-to-r from-accent-green to-accent-greenDim text-bg-base rounded-2xl p-4 md:p-5 shadow-lg shadow-accent-green/20">
       <div className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-70 mb-1">
-        ⚡ Pari à placer
+        {t("pickDetail.pendingBanner")}
       </div>
       <div className="text-2xl md:text-3xl font-black leading-none">
-        {pick.pick} <span className="opacity-60 font-bold text-xl">VAINQUEUR</span>
+        {pick.pick} <span className="opacity-60 font-bold text-xl">{t("pickDetail.winnerSuffix")}</span>
       </div>
       <div className="text-xs md:text-sm mt-2 opacity-80 font-medium">
-        Cote {pick.odds.toFixed(2)} ·{" "}
-        {(pick.model_probability * 100).toFixed(0)}% de chances estimées
+        {t("pickDetail.coteEstimated", {
+          odds: pick.odds.toFixed(2),
+          percent: (pick.model_probability * 100).toFixed(0),
+        })}
       </div>
     </div>
   );
 }
 
 function WinBanner({ pick }: { pick: UnifiedPick }) {
+  const { t } = useI18n();
   const profit = pick.profit ?? 0;
   return (
     <div className="relative bg-gradient-to-br from-accent-green/15 to-accent-green/5 border-2 border-accent-green/40 rounded-2xl p-4 md:p-5 overflow-hidden">
@@ -412,7 +415,7 @@ function WinBanner({ pick }: { pick: UnifiedPick }) {
       <span aria-hidden className="absolute top-3 right-16 text-sm opacity-40">⭐</span>
 
       <div className="flex items-center gap-2 text-accent-green text-[10px] uppercase tracking-[0.2em] font-bold mb-2">
-        <span className="text-2xl">✓</span> Pari gagné
+        <span className="text-2xl">✓</span> {t("pickDetail.wonBanner")}
         {profit > 0 && (
           <span className="ml-auto text-accent-green text-base font-extrabold normal-case tabular-nums">
             +{profit.toFixed(2)}€
@@ -437,11 +440,12 @@ function WinBanner({ pick }: { pick: UnifiedPick }) {
 }
 
 function LossBanner({ pick }: { pick: UnifiedPick }) {
+  const { t } = useI18n();
   const loss = pick.profit ?? 0;
   return (
     <div className="bg-gradient-to-br from-accent-red/10 to-bg-card border-2 border-accent-red/40 rounded-2xl p-4 md:p-5">
       <div className="flex items-center gap-2 text-accent-red text-[10px] uppercase tracking-[0.2em] font-bold mb-2">
-        <span className="text-xl">✕</span> Pari perdu
+        <span className="text-xl">✕</span> {t("pickDetail.lostBanner")}
         {loss < 0 && (
           <span className="ml-auto text-accent-red text-base font-extrabold normal-case tabular-nums">
             {loss.toFixed(2)}€
@@ -463,8 +467,7 @@ function LossBanner({ pick }: { pick: UnifiedPick }) {
       )}
       {/* Lesson learned / empathy footer */}
       <div className="mt-3 pt-3 border-t border-white/5 text-[11px] text-white/50 italic leading-relaxed">
-        💡 La variance fait partie du métier. Sur 100 picks à 70% de proba,
-        on en perd 30. C'est mathématique, pas un échec.
+        {t("pickDetail.lessonLearned")}
       </div>
     </div>
   );
@@ -479,6 +482,7 @@ function ComboLegs({
   unboostedOdds?: number;
   boostedOdds: number;
 }) {
+  const { t } = useI18n();
   const boostDelta =
     unboostedOdds && unboostedOdds > 0
       ? ((boostedOdds - unboostedOdds) / unboostedOdds) * 100
@@ -488,7 +492,7 @@ function ComboLegs({
     <div className="bg-bg-card border border-yellow-400/20 rounded-2xl overflow-hidden">
       <div className="bg-yellow-400/10 px-4 py-2.5 border-b border-yellow-400/20 flex items-center justify-between">
         <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-yellow-400">
-          🎯 Combiné · {legs.length} jambes
+          {t("pickDetail.comboTitle", { n: legs.length })}
         </div>
         <div className="text-[10px] text-white/50 tabular-nums">
           {unboostedOdds ? (
@@ -513,39 +517,41 @@ function ComboLegs({
       </div>
 
       <div className="bg-bg-base/40 px-4 py-2 text-[10px] text-white/40 text-center">
-        Les 2 jambes doivent gagner pour valider le combiné
+        {t("pickDetail.comboBothWin")}
       </div>
     </div>
   );
 }
 
 function LegRow({ leg, index }: { leg: ComboLeg; index: number }) {
+  const { t, lang } = useI18n();
+  const locale = localeForLang(lang);
   const isWin = leg.outcome === "win";
   const isLoss = leg.outcome === "loss";
   const isPending = leg.outcome === "pending" || !leg.outcome;
   const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
   const kickoffDate = new Date(leg.kickoff);
-  const time = kickoffDate.toLocaleTimeString("fr-FR", {
+  const time = kickoffDate.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const day = kickoffDate.toLocaleDateString("fr-FR", {
+  const day = kickoffDate.toLocaleDateString(locale, {
     weekday: "short",
     day: "numeric",
     month: "short",
   });
 
   let outcomeColor = "text-white/40 bg-white/5 border-white/10";
-  let outcomeLabel = "En attente";
+  let outcomeLabel = t("pickDetail.legWaiting");
   if (isWin) {
     outcomeColor = "text-accent-green bg-accent-green/10 border-accent-green/30";
-    outcomeLabel = "✓ Gagné";
+    outcomeLabel = t("pickDetail.legWon");
   } else if (isLoss) {
     outcomeColor = "text-accent-red bg-accent-red/10 border-accent-red/30";
-    outcomeLabel = "✕ Perdu";
+    outcomeLabel = t("pickDetail.legLost");
   } else if (isPending) {
     outcomeColor = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
-    outcomeLabel = "En attente";
+    outcomeLabel = t("pickDetail.legWaiting");
   }
 
   return (
@@ -574,7 +580,7 @@ function LegRow({ leg, index }: { leg: ComboLeg; index: number }) {
             </span>
             <span className="text-white/30">·</span>
             <span className="text-yellow-400 font-bold tabular-nums">
-              cote {leg.odds.toFixed(2)}
+              {t("pickDetail.legCote", { odds: leg.odds.toFixed(2) })}
             </span>
           </div>
           {leg.notes && (
@@ -584,7 +590,7 @@ function LegRow({ leg, index }: { leg: ComboLeg; index: number }) {
           )}
           {leg.result?.score_text && (
             <div className="text-[11px] text-white/70 mt-2 font-medium tabular-nums">
-              Score : {leg.result.score_text}
+              {t("pickDetail.legScore", { score: leg.result.score_text })}
             </div>
           )}
         </div>
@@ -604,6 +610,7 @@ function KeyStat({
   tooltip?: string;
   tone?: "green" | "red";
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const toneClass =
     tone === "green" ? "text-accent-green" : tone === "red" ? "text-accent-red" : "text-white";
@@ -615,7 +622,7 @@ function KeyStat({
           <button
             onClick={() => setOpen(!open)}
             className="w-3.5 h-3.5 rounded-full border border-white/20 text-white/40 text-[9px] flex items-center justify-center hover:bg-white/10"
-            aria-label="Définition"
+            aria-label={t("pickDetail.definition")}
           >
             ?
           </button>
@@ -668,17 +675,33 @@ function ExpandableSection({
 }
 
 function ShareButton({ pick }: { pick: UnifiedPick }) {
+  const { t, lang } = useI18n();
+  const locale = localeForLang(lang);
   const [shared, setShared] = useState(false);
 
   function build(): { title: string; text: string; url: string } {
-    const title = `WTF · Pick du ${new Date(pick.date).toLocaleDateString("fr-FR")}`;
+    const dateStr = new Date(pick.date).toLocaleDateString(locale);
+    const title = t("pickDetail.shareTitle", { date: dateStr });
     let text = "";
     if (pick.outcome === "win" && pick.result) {
-      text = `✅ Pari gagné : ${pick.pick} (cote ${pick.odds.toFixed(2)}). ${pick.result.score_text || ""} Profit +${(pick.profit ?? 0).toFixed(2)}€. WTF — l'IA qui prédit, tu gagnes.`;
+      text = t("pickDetail.shareWinText", {
+        pick: pick.pick,
+        odds: pick.odds.toFixed(2),
+        score: pick.result.score_text || "",
+        profit: (pick.profit ?? 0).toFixed(2),
+      });
     } else if (pick.outcome === "loss") {
-      text = `Pick du ${new Date(pick.date).toLocaleDateString("fr-FR")} : ${pick.pick} @ ${pick.odds.toFixed(2)} — perdu cette fois. Mais transparence 100% : suis tous nos picks sur WTF.`;
+      text = t("pickDetail.shareLossText", {
+        date: dateStr,
+        pick: pick.pick,
+        odds: pick.odds.toFixed(2),
+      });
     } else {
-      text = `🎯 Pari du jour WTF : ${pick.pick} @ ${pick.odds.toFixed(2)} · EV +${(pick.expected_value * 100).toFixed(0)}%. L'IA qui prédit. Découvre l'analyse complète.`;
+      text = t("pickDetail.sharePendingText", {
+        pick: pick.pick,
+        odds: pick.odds.toFixed(2),
+        ev: (pick.expected_value * 100).toFixed(0),
+      });
     }
     return {
       title,
@@ -716,7 +739,7 @@ function ShareButton({ pick }: { pick: UnifiedPick }) {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-green">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
       </svg>
-      <span>{shared ? "✓ Lien copié" : "Partager ce pick"}</span>
+      <span>{shared ? t("pickDetail.shareLinkCopied") : t("pickDetail.share")}</span>
     </button>
   );
 }

@@ -1,4 +1,5 @@
 import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { useI18n } from "@/lib/i18n";
 import { HistoryStats } from "@/lib/types";
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export function Header({ title, stats }: Props) {
+  const { t } = useI18n();
   const bankrollPositive =
     stats !== undefined && stats !== null && stats.current_bankroll >= stats.starting_bankroll;
 
@@ -21,14 +23,14 @@ export function Header({ title, stats }: Props) {
         <div>
           <h1 className="text-lg md:text-xl font-bold tracking-tight">{title}</h1>
           <p className="text-white/40 text-[11px] md:text-xs">
-            L'IA qui prédit · tu gagnes
+            {t("header.brandTagline")}
           </p>
         </div>
       </div>
       {stats && (
         <div className="text-right">
           <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/40">
-            Bankroll
+            {t("header.bankroll")}
           </div>
           <div
             className={`text-xl md:text-2xl font-bold tabular-nums ${

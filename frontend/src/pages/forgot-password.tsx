@@ -17,13 +17,13 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <Head>
-        <title>Mot de passe oublié — WTF</title>
+        <title>{t("auth.forgotPasswordTitleTab")}</title>
       </Head>
       <main className="min-h-screen flex flex-col relative">
         {/* Back button — flottant en haut à gauche */}
         <Link
           href="/login"
-          aria-label="Retour à la connexion"
+          aria-label={t("auth.backToLogin")}
           className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-white/25 transition"
           style={{ marginTop: "var(--safe-top)" }}
         >
@@ -43,13 +43,13 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="bg-bg-card -mt-6 rounded-t-3xl px-6 py-8 max-w-md w-full mx-auto">
-          <h1 className="text-2xl font-bold text-center mb-3">Mot de passe oublié</h1>
+          <h1 className="text-2xl font-bold text-center mb-3">{t("auth.forgotPasswordTitle")}</h1>
           <p className="text-sm text-white/60 text-center mb-6">
-            Indique ton email, on t'enverra un lien pour le réinitialiser.
+            {t("auth.forgotPasswordIntro")}
           </p>
           {sent ? (
             <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4 text-sm text-center text-accent-green">
-              ✓ Email envoyé. Vérifie ta boîte de réception.
+              {t("auth.forgotPasswordSent")}
             </div>
           ) : (
             <form onSubmit={onSubmit} className="space-y-4">
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
                 type="submit"
                 className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold"
               >
-                Envoyer le lien
+                {t("auth.sendLink")}
               </button>
             </form>
           )}
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
             href="/login"
             className="block text-center text-sm text-white/60 hover:text-white py-4 mt-2"
           >
-            ← Retour à la connexion
+            ← {t("auth.backToLogin")}
           </Link>
         </div>
       </main>

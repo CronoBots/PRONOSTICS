@@ -39,13 +39,13 @@ export default function PremiumPage() {
       const { data: { session } } = await supabase.auth.getSession();
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
       if (!session?.access_token) {
-        setCheckoutError("Session expirée, reconnecte-toi");
+        setCheckoutError(t("premium.checkoutSessionExpired"));
         setCheckoutLoading(false);
         return;
       }
       const result = await startCheckout(selected, session.access_token, supabaseUrl);
       if (!result.ok) {
-        setCheckoutError(result.error ?? "Erreur checkout");
+        setCheckoutError(result.error ?? t("premium.checkoutError"));
         setCheckoutLoading(false);
       }
       // Si OK : window.location.href est déjà déclenché vers Stripe
@@ -69,12 +69,12 @@ export default function PremiumPage() {
           <Link
             href="/"
             className="w-9 h-9 rounded-full bg-bg-card border border-white/5 flex items-center justify-center text-white/60"
-            aria-label="Retour"
+            aria-label={t("common.back")}
           >
             ←
           </Link>
           <h1 className="text-lg font-bold tracking-tight flex-1">
-            Passer en Premium
+            {t("premium.pageTitle")}
           </h1>
         </div>
 
@@ -82,16 +82,26 @@ export default function PremiumPage() {
         <div className="text-center mb-6">
           <div className="text-6xl mb-3">👑</div>
           <h2 className="text-2xl font-extrabold mb-2 leading-tight">
-            Débloque{" "}
+            {t("premium.heroPrefix")}{" "}
             <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
-              le pick safe
+              {t("premium.heroAccent")}
             </span>{" "}
-            du jour
+            {t("premium.heroSuffix")}
           </h2>
           <p className="text-white/60 text-sm leading-relaxed">
-            L'IA WTF analyse 30+ matchs chaque jour et identifie{" "}
-            <strong className="text-white/90">LE value bet</strong> le plus
-            fiable. Ne le rate plus.
+            {(() => {
+              const desc = t("premium.heroDescription", {
+                valueBet: "__VB__",
+              });
+              const [before, after] = desc.split("__VB__");
+              return (
+                <>
+                  {before}
+                  <strong className="text-white/90">{t("premium.heroValueBet")}</strong>
+                  {after}
+                </>
+              );
+            })()}
           </p>
         </div>
 
@@ -99,32 +109,36 @@ export default function PremiumPage() {
         {stats && stats.total_picks >= 3 && (
           <div className="bg-bg-card border border-accent-green/20 rounded-2xl p-4 mb-6">
             <div className="text-[10px] uppercase tracking-wider text-accent-green font-bold mb-2 text-center">
-              📈 Track record vérifiable
+              {t("premium.trackRecord")}
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div>
                 <div className="text-2xl font-bold text-accent-green tabular-nums">
                   {stats.win_rate.toFixed(0)}%
                 </div>
-                <div className="text-[10px] text-white/50">Réussite</div>
+                <div className="text-[10px] text-white/50">{t("premium.successRate")}</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-accent-green tabular-nums">
                   +{stats.roi_percent.toFixed(0)}%
                 </div>
-                <div className="text-[10px] text-white/50">ROI</div>
+                <div className="text-[10px] text-white/50">{t("premium.roi")}</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-accent-green tabular-nums">
                   +{stats.progression_percent.toFixed(0)}%
                 </div>
-                <div className="text-[10px] text-white/50">Progression</div>
+                <div className="text-[10px] text-white/50">{t("premium.progression")}</div>
               </div>
             </div>
             <p className="text-[10px] text-white/40 text-center mt-2">
-              {stats.won}V / {stats.lost}D sur {stats.total_picks} paris ·{" "}
+              {t("premium.trackLine", {
+                won: stats.won,
+                lost: stats.lost,
+                total: stats.total_picks,
+              })}{" "}
               <Link href="/paris" className="text-accent-blue hover:underline">
-                voir l'historique
+                {t("premium.viewHistory")}
               </Link>
             </p>
           </div>
@@ -133,18 +147,18 @@ export default function PremiumPage() {
         {/* Plans */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           <PlanCard
-            label="Mensuel"
+            label={t("premium.planMonthly")}
             price={PRICE_MONTHLY}
-            period="/mois"
+            period={t("premium.periodMonth")}
             selected={selected === "monthly"}
             onSelect={() => setSelected("monthly")}
           />
           <PlanCard
-            label="Annuel"
+            label={t("premium.planYearly")}
             price={PRICE_YEARLY}
-            period="/an"
-            subtitle={`Soit ${(PRICE_YEARLY / 12).toFixed(2)}€/mois`}
-            badge="−20%"
+            period={t("premium.periodYear")}
+            subtitle={t("premium.yearlySubtitle", { price: (PRICE_YEARLY / 12).toFixed(2) })}
+            badge={t("premium.badge20")}
             selected={selected === "yearly"}
             onSelect={() => setSelected("yearly")}
             highlight
@@ -156,33 +170,33 @@ export default function PremiumPage() {
           <ul className="space-y-3">
             <Feature
               icon="🎯"
-              title="LE pick safe du jour"
-              text="1 value bet curé par jour, cote ≥ 2.00, edge > +5%"
+              title={t("premium.featureSafePickTitle")}
+              text={t("premium.featureSafePickText")}
             />
             <Feature
               icon="🧠"
-              title="Analyse 45-60 points"
-              text="Stats avancées, H2H, formes, lineups, météo, consensus tiers"
+              title={t("premium.featureAnalysisTitle")}
+              text={t("premium.featureAnalysisText")}
             />
             <Feature
               icon="🔗"
-              title="Sources web vérifiables"
-              text="3+ sources cliquables par pick (ESPN, FanGraphs, etc.)"
+              title={t("premium.featureSourcesTitle")}
+              text={t("premium.featureSourcesText")}
             />
             <Feature
               icon="🎯"
-              title="Comparaison des candidats"
-              text="On te montre les top 3 alternatives écartées et pourquoi"
+              title={t("premium.featureComparisonTitle")}
+              text={t("premium.featureComparisonText")}
             />
             <Feature
               icon="🔓"
-              title="Sans engagement"
-              text="Résiliable à tout moment, en 1 clic depuis ton compte"
+              title={t("premium.featureNoCommitTitle")}
+              text={t("premium.featureNoCommitText")}
             />
             <Feature
               icon="🇫🇷"
-              title="Support FR & EN"
-              text="L'app fonctionne dans ta langue, picks expliqués pour débutants"
+              title={t("premium.featureLangTitle")}
+              text={t("premium.featureLangText")}
             />
           </ul>
         </div>
@@ -193,14 +207,15 @@ export default function PremiumPage() {
           disabled={checkoutLoading}
           className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-base shadow-lg shadow-yellow-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {checkoutLoading ? (
-            <>⏳ Redirection vers le paiement…</>
-          ) : (
-            <>
-              👑 Choisir {selected === "yearly" ? "l'annuel" : "le mensuel"} ·{" "}
-              {(selected === "yearly" ? PRICE_YEARLY : PRICE_MONTHLY).toFixed(2)}€
-            </>
-          )}
+          {checkoutLoading
+            ? t("premium.checkoutLoading")
+            : t("premium.ctaChoose", {
+                plan:
+                  selected === "yearly"
+                    ? t("premium.ctaChooseYearly")
+                    : t("premium.ctaChooseMonthly"),
+                price: (selected === "yearly" ? PRICE_YEARLY : PRICE_MONTHLY).toFixed(2),
+              })}
         </button>
 
         {checkoutError && (
@@ -210,49 +225,38 @@ export default function PremiumPage() {
         )}
 
         <p className="text-[11px] text-white/40 text-center mt-3 leading-relaxed">
-          🔒 Paiement sécurisé Stripe (CB / PayPal / Apple Pay / Google Pay).
+          {t("premium.paymentSecure")}
           <br />
-          Résiliable en 1 clic. Aucun engagement.
+          {t("premium.cancelAnytime")}
         </p>
 
         <p className="text-[10px] text-white/30 text-center mt-3">
-          Phase 1 démo — aucun paiement réel pour l'instant. Stripe sera activé
-          en Phase 2.
+          {t("premium.demoNotice")}
         </p>
 
         {/* Jeu responsable */}
         <div className="mt-6 p-3 rounded-xl bg-accent-red/[0.06] border border-accent-red/20">
           <p className="text-[11px] text-white/70 leading-relaxed text-center">
-            <strong className="text-accent-red">⚠️ Jeu responsable.</strong> Les paris
-            sportifs comportent un risque de perte et d'addiction. Interdit aux moins de
-            18 ans. Ne misez que ce que vous pouvez perdre.
+            <strong className="text-accent-red">{t("premium.responsibleGaming")}</strong>{" "}
+            {t("premium.responsibleGamingText")}
           </p>
           <p className="text-[10px] text-white/50 text-center mt-2">
-            🆘 BE 0800 35 777 · FR 09 74 75 13 13 · <Link href="/plus" className="text-accent-blue hover:underline">en savoir plus</Link>
+            {t("premium.helpline")}{" "}
+            <Link href="/plus" className="text-accent-blue hover:underline">
+              {t("premium.learnMore")}
+            </Link>
           </p>
         </div>
 
         {/* FAQ rapide */}
         <div className="mt-8">
           <h3 className="text-xs uppercase tracking-wider text-white/40 font-semibold mb-3 px-1">
-            Questions fréquentes
+            {t("premium.faqTitle")}
           </h3>
-          <FAQ
-            q="Comment fonctionne la garantie ?"
-            a="Tu peux résilier à tout moment depuis ton compte. Le mois en cours reste actif jusqu'à expiration."
-          />
-          <FAQ
-            q="Puis-je vérifier vos résultats avant d'acheter ?"
-            a="100% oui. L'historique de tous les picks passés est public et gratuit, avec scores et analyses complètes."
-          />
-          <FAQ
-            q="Quelle différence avec un bookmaker ?"
-            a="Aucune ! On ne prend pas tes paris, on les analyse. Tu places tes mises chez bwin/Winamax/Unibet en suivant nos recommandations."
-          />
-          <FAQ
-            q="Que se passe-t-il s'il n'y a pas de value bet un jour ?"
-            a="On dit honnêtement 'aucun pari aujourd'hui' plutôt que forcer. La discipline > le volume."
-          />
+          <FAQ q={t("premium.faqQ1")} a={t("premium.faqA1")} />
+          <FAQ q={t("premium.faqQ2")} a={t("premium.faqA2")} />
+          <FAQ q={t("premium.faqQ3")} a={t("premium.faqA3")} />
+          <FAQ q={t("premium.faqQ4")} a={t("premium.faqA4")} />
         </div>
       </main>
     </>

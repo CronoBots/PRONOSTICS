@@ -6,7 +6,7 @@ import { ReactNode, useState } from "react";
 import { Sheet, SheetOption } from "@/components/Sheet";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
-import { LANG_LABELS, useI18n, type Lang } from "@/lib/i18n";
+import { LANG_LABELS, localeForLang, useI18n, type Lang } from "@/lib/i18n";
 import {
   usePreferences,
   type BetDisplay,
@@ -42,30 +42,25 @@ export default function ComptePage() {
   const [openSheet, setOpenSheet] = useState<SheetKind>(null);
 
   async function handleCancel() {
-    if (
-      !confirm(
-        "Résilier ton abonnement Premium ? Le mois en cours reste actif jusqu'à expiration.",
-      )
-    )
-      return;
+    if (!confirm(t("account.confirmCancel"))) return;
     try {
       await cancelSubscription();
-      showToast("Abonnement résilié. Accès Premium actif jusqu'à expiration.", {
+      showToast(t("account.cancelSuccess"), {
         type: "success",
         duration: 5000,
       });
     } catch (e) {
-      showToast("Erreur lors de la résiliation. Réessaie.", { type: "error" });
+      showToast(t("account.cancelError"), { type: "error" });
     }
   }
 
   async function handleLogout() {
     try {
       await logout();
-      showToast("À bientôt 👋", { type: "info", duration: 2000 });
+      showToast(t("auth.toastBye"), { type: "info", duration: 2000 });
       router.push("/");
     } catch (e) {
-      showToast("Erreur de déconnexion", { type: "error" });
+      showToast(t("auth.toastLogoutError"), { type: "error" });
     }
   }
 
@@ -88,7 +83,7 @@ export default function ComptePage() {
           <h1 className="text-lg font-bold mb-6">{t("account.title")}</h1>
           <div className="bg-bg-card border border-white/10 rounded-2xl p-6 mt-6">
             <p className="text-white/70 mb-4">
-              Connecte-toi pour gérer ton compte, ton abonnement et tes préférences.
+              {t("account.loginToManage")}
             </p>
             <div className="flex flex-col gap-3">
               <Link
@@ -145,7 +140,7 @@ export default function ComptePage() {
         <div className="bg-bg-card border border-white/10 rounded-2xl p-4 flex items-center gap-4 mb-4">
           <button
             onClick={() =>
-              showToast("Personnalisation d'avatar bientôt disponible 🎨", {
+              showToast(t("account.avatarComingSoon"), {
                 type: "info",
               })
             }
@@ -164,7 +159,7 @@ export default function ComptePage() {
               {user.isPremium ? (
                 <span className="inline-block text-xs px-2.5 py-0.5 rounded-full bg-accent-green/20 text-accent-green font-medium">
                   {t("account.premium")} ·{" "}
-                  {user.plan === "yearly" ? "Annuel" : "Mensuel"}
+                  {user.plan === "yearly" ? t("account.planYearly") : t("account.planMonthly")}
                 </span>
               ) : (
                 <span className="inline-block text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/60">
@@ -194,16 +189,18 @@ export default function ComptePage() {
           <div className="bg-bg-card border border-accent-green/20 rounded-2xl p-4 mb-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs uppercase tracking-wider text-accent-green font-bold">
-                Abonnement actif
+                {t("account.activeSubscription")}
               </span>
               <span className="text-[10px] text-white/40">
-                {user.plan === "yearly" ? "Annuel −20%" : "Mensuel"}
+                {user.plan === "yearly"
+                  ? t("account.planYearlyDiscount")
+                  : t("account.planMonthly")}
               </span>
             </div>
             <p className="text-xs text-white/60 mb-3">
-              Renouvellement le{" "}
+              {t("account.renewalOn")}{" "}
               <strong className="text-white/80">
-                {new Date(user.subscriptionEnd).toLocaleDateString("fr-FR", {
+                {new Date(user.subscriptionEnd).toLocaleDateString(localeForLang(lang), {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -214,7 +211,7 @@ export default function ComptePage() {
               onClick={handleCancel}
               className="w-full py-2 rounded-lg border border-white/10 text-xs text-white/60 hover:text-accent-red hover:border-accent-red/30 transition"
             >
-              Résilier l'abonnement
+              {t("account.cancelSubscription")}
             </button>
           </div>
         )}
@@ -228,10 +225,10 @@ export default function ComptePage() {
             label={t("account.changePassword")}
             value="••••••••"
             onClick={() =>
-              showToast(
-                "Changement de mot de passe bientôt — utilise « Mot de passe oublié » pour l'instant.",
-                { type: "info", duration: 4000 },
-              )
+              showToast(t("account.passwordComingSoon"), {
+                type: "info",
+                duration: 4000,
+              })
             }
           />
         </Section>
@@ -308,7 +305,7 @@ export default function ComptePage() {
         </button>
 
         <div className="text-center text-xs text-white/30 mt-6">
-          WTF · Win The Future · v0.2 · {new Date().getFullYear()}
+          {t("account.appFooter", { year: new Date().getFullYear() })}
         </div>
       </main>
 
@@ -378,7 +375,7 @@ export default function ComptePage() {
       >
         <SheetOption<OddsFormat>
           label={t("account.oddsDecimal")}
-          hint="Standard EU · ex. 2.50"
+          hint={t("account.oddsDecimalHint")}
           value="decimal"
           current={oddsFormat}
           onSelect={(v) => {
@@ -388,7 +385,7 @@ export default function ComptePage() {
         />
         <SheetOption<OddsFormat>
           label={t("account.oddsFractional")}
-          hint="Standard UK · ex. 3/2"
+          hint={t("account.oddsFractionalHint")}
           value="fractional"
           current={oddsFormat}
           onSelect={(v) => {
@@ -398,7 +395,7 @@ export default function ComptePage() {
         />
         <SheetOption<OddsFormat>
           label={t("account.oddsAmerican")}
-          hint="Standard US · ex. +150"
+          hint={t("account.oddsAmericanHint")}
           value="american"
           current={oddsFormat}
           onSelect={(v) => {
@@ -435,7 +432,7 @@ export default function ComptePage() {
       >
         <SheetOption<BetDisplay>
           label={t("account.betDisplayDetailed")}
-          hint="Mise, gain potentiel, analyse"
+          hint={t("account.betDisplayDetailedHint")}
           value="detailed"
           current={betDisplay}
           onSelect={(v) => {
@@ -445,7 +442,7 @@ export default function ComptePage() {
         />
         <SheetOption<BetDisplay>
           label={t("account.betDisplayCompact")}
-          hint="Vue épurée, l'essentiel"
+          hint={t("account.betDisplayCompactHint")}
           value="compact"
           current={betDisplay}
           onSelect={(v) => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,60 +9,64 @@ import { DailyStatusCard } from "@/components/DailyStatusCard";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
+import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
 type StatKey = "paris" | "benefice" | "roi" | "progression";
 
-const STAT_INFOS: Record<
-  StatKey,
-  { title: string; body: React.ReactNode; note?: string }
-> = {
-  paris: {
-    title: "Nombre de paris",
-    body: <>Nombre total de paris que vous avez réalisés.</>,
-    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas comptabilisés.",
-  },
-  benefice: {
-    title: "Bénéfice",
-    body: (
-      <>
-        Calcul du bénéfice de votre bankroll :
-        <br />
-        <span className="text-accent-green font-semibold">
-          (Total de vos gains − Total de vos mises) = Bénéfice
-        </span>
-      </>
-    ),
-    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas comptabilisés.",
-  },
-  roi: {
-    title: "ROI",
-    body: (
-      <>
-        Le ROI (Return On Investment) mesure le rapport entre les bénéfices réalisés
-        et le montant total des mises.
-        <br />
-        <span className="text-accent-green font-semibold">
-          (Bénéfices / Mises totales) × 100 = ROI
-        </span>
-      </>
-    ),
-    note: "Les paris avec un état \"En attente\" et \"Annulé\" ne sont pas pris en compte.",
-  },
-  progression: {
-    title: "Progression / ROC",
-    body: (
-      <>
-        La progression est calculée selon le rapport entre les bénéfices réalisés et
-        le capital de départ de la bankroll.
-        <br />
-        <span className="text-accent-green font-semibold">
-          (Bénéfices / Capital de départ) × 100 = Progression
-        </span>
-      </>
-    ),
-  },
-};
+function useStatInfos() {
+  const { t } = useI18n();
+  return useMemo<
+    Record<StatKey, { title: string; body: React.ReactNode; note?: string }>
+  >(
+    () => ({
+      paris: {
+        title: t("statInfo.paris.title"),
+        body: <>{t("statInfo.paris.body")}</>,
+        note: t("statInfo.paris.note"),
+      },
+      benefice: {
+        title: t("statInfo.benefice.title"),
+        body: (
+          <>
+            {t("statInfo.benefice.body")}
+            <br />
+            <span className="text-accent-green font-semibold">
+              {t("statInfo.benefice.formula")}
+            </span>
+          </>
+        ),
+        note: t("statInfo.benefice.note"),
+      },
+      roi: {
+        title: t("statInfo.roi.title"),
+        body: (
+          <>
+            {t("statInfo.roi.body")}
+            <br />
+            <span className="text-accent-green font-semibold">
+              {t("statInfo.roi.formula")}
+            </span>
+          </>
+        ),
+        note: t("statInfo.roi.note"),
+      },
+      progression: {
+        title: t("statInfo.progression.title"),
+        body: (
+          <>
+            {t("statInfo.progression.body")}
+            <br />
+            <span className="text-accent-green font-semibold">
+              {t("statInfo.progression.formula")}
+            </span>
+          </>
+        ),
+      },
+    }),
+    [t],
+  );
+}
 
 type Period = "1j" | "1s" | "1m" | "1a";
 
@@ -76,6 +80,8 @@ interface ChartOptions {
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useI18n();
+  const statInfos = useStatInfos();
   const [history, setHistory] = useState<History | null>(null);
   const [hasPickToday, setHasPickToday] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -165,7 +171,7 @@ export default function Home() {
                   ? "bg-accent-green/10 text-accent-green border-accent-green/30"
                   : "bg-accent-red/10 text-accent-red border-accent-red/30"
               }`}
-              title="Série en cours"
+              title={t("home.streakInProgress")}
             >
               <span>{stats.current_streak > 0 ? "🔥" : "🥶"}</span>
               <span>
@@ -179,7 +185,7 @@ export default function Home() {
           <Link
             href="/today"
             className="flex items-center gap-1.5 font-bold"
-            aria-label="Pick du jour"
+            aria-label={t("nav.todayPick")}
           >
             <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
               WTF
@@ -191,7 +197,7 @@ export default function Home() {
           <Link
             href="/compte"
             className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
-            aria-label="Menu"
+            aria-label={t("home.menu")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
               <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -221,7 +227,7 @@ export default function Home() {
                 <button
                   onClick={() => setMenuOpen((o) => !o)}
                   className="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white"
-                  aria-label="Options du graphique"
+                  aria-label={t("home.chartOptions")}
                 >
                   ⋯
                 </button>
@@ -254,7 +260,7 @@ export default function Home() {
                 href="/filtres"
                 className="py-1 rounded-full text-[11px] font-medium border bg-bg-card/60 text-white/70 border-white/10 text-center"
               >
-                Filtres
+                {t("home.filters")}
               </Link>
             </div>
 
@@ -268,7 +274,7 @@ export default function Home() {
                   <circle cx="12" cy="12" r="9" />
                   <path strokeLinecap="round" d="M12 3v9l6 4" />
                 </svg>
-                <span className="text-sm font-medium">Analyses</span>
+                <span className="text-sm font-medium">{t("home.analyzer")}</span>
               </Link>
               <Link
                 href="/calendrier"
@@ -278,7 +284,7 @@ export default function Home() {
                   <rect x="3" y="4" width="18" height="17" rx="2" />
                   <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
                 </svg>
-                <span className="text-sm font-medium">Calendrier</span>
+                <span className="text-sm font-medium">{t("home.calendar")}</span>
               </Link>
             </div>
 
@@ -286,14 +292,14 @@ export default function Home() {
             {stats && (
               <div className="grid grid-cols-2 gap-2">
                 <StatTile
-                  label="PARIS"
+                  label={t("home.statParis")}
                   value={settledCount}
                   decimals={0}
                   tone="blue"
                   onInfo={() => setInfoOpen("paris")}
                 />
                 <StatTile
-                  label="BÉNÉFICE"
+                  label={t("home.statBenefice")}
                   value={Math.abs(stats.profit)}
                   decimals={2}
                   suffix="€"
@@ -301,7 +307,7 @@ export default function Home() {
                   onInfo={() => setInfoOpen("benefice")}
                 />
                 <StatTile
-                  label="ROI"
+                  label={t("home.statRoi")}
                   value={Math.abs(stats.roi_percent)}
                   decimals={2}
                   suffix="%"
@@ -309,7 +315,7 @@ export default function Home() {
                   onInfo={() => setInfoOpen("roi")}
                 />
                 <StatTile
-                  label="PROGRESSION"
+                  label={t("home.statProgression")}
                   value={Math.abs(stats.progression_percent)}
                   decimals={2}
                   suffix="%"
@@ -325,13 +331,13 @@ export default function Home() {
       {/* InfoSheet pour les ? des stats */}
       {infoOpen && (
         <InfoSheet
-          title={STAT_INFOS[infoOpen].title}
+          title={statInfos[infoOpen].title}
           open={!!infoOpen}
           onClose={() => setInfoOpen(null)}
         >
-          <p>{STAT_INFOS[infoOpen].body}</p>
-          {STAT_INFOS[infoOpen].note && (
-            <p className="text-white/50 text-xs">{STAT_INFOS[infoOpen].note}</p>
+          <p>{statInfos[infoOpen].body}</p>
+          {statInfos[infoOpen].note && (
+            <p className="text-white/50 text-xs">{statInfos[infoOpen].note}</p>
           )}
         </InfoSheet>
       )}
@@ -343,7 +349,7 @@ export default function Home() {
           className="fixed bottom-24 right-4 z-30 bg-accent-red/90 text-white rounded-full pl-3 pr-4 py-2 shadow-lg flex items-center gap-1.5 hover:bg-accent-red"
         >
           <span className="text-sm">✕</span>
-          <span className="text-sm font-semibold">Filtres</span>
+          <span className="text-sm font-semibold">{t("home.filters")}</span>
         </button>
       )}
     </>
@@ -365,6 +371,7 @@ function StatTile({
   tone: "blue" | "green" | "red";
   onInfo?: () => void;
 }) {
+  const { t } = useI18n();
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
@@ -373,7 +380,7 @@ function StatTile({
         <button
           onClick={onInfo}
           className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[10px] flex items-center justify-center transition"
-          aria-label={`Aide ${label}`}
+          aria-label={t("home.helpFor", { label })}
         >
           ?
         </button>
@@ -395,10 +402,11 @@ interface MenuProps {
 }
 
 function ChartOptionsMenu({ opts, onChange }: MenuProps) {
+  const { t } = useI18n();
   return (
     <div className="absolute top-11 right-0 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold">
-        Données du graphique
+        {t("home.chartData")}
       </div>
       <MenuItem
         icon={
@@ -407,7 +415,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
             <path strokeLinecap="round" d="M15 12h6M18 9l3 3-3 3" />
           </svg>
         }
-        label="Bénéfice"
+        label={t("home.chartBenefit")}
         active={opts.mode === "benefice"}
         onClick={() => onChange({ ...opts, mode: "benefice" })}
       />
@@ -417,12 +425,12 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8" />
           </svg>
         }
-        label="Capital"
+        label={t("home.chartCapital")}
         active={opts.mode === "capital"}
         onClick={() => onChange({ ...opts, mode: "capital" })}
       />
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold border-t border-white/5 mt-1">
-        Options
+        {t("home.chartOptionsSection")}
       </div>
       <MenuItem
         icon={
@@ -430,7 +438,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" />
           </svg>
         }
-        label="CLV"
+        label={t("home.chartCLV")}
         active={opts.showCLV}
         onClick={() => onChange({ ...opts, showCLV: !opts.showCLV })}
       />
@@ -440,7 +448,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
             <path strokeLinecap="round" d="M4 9h16M4 15h16M10 3l-4 18M18 3l-4 18" />
           </svg>
         }
-        label="Valeurs"
+        label={t("home.chartValues")}
         active={opts.showValues}
         onClick={() => onChange({ ...opts, showValues: !opts.showValues })}
       />

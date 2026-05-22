@@ -2,32 +2,8 @@ import { useMemo, useState } from "react";
 
 import { PickDetail, pickFromHistory } from "@/components/PickDetail";
 import { useAuth } from "@/lib/auth";
-import { HistoryPick, SPORT_EMOJIS, SPORT_LABELS } from "@/lib/types";
-
-const MONTH_NAMES = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
-
-const DAY_NAMES = [
-  "Dimanche",
-  "Lundi",
-  "Mardi",
-  "Mercredi",
-  "Jeudi",
-  "Vendredi",
-  "Samedi",
-];
+import { localeForLang, useDateLabels, useI18n } from "@/lib/i18n";
+import { HistoryPick, SPORT_EMOJIS } from "@/lib/types";
 
 function getISOWeek(date: Date): number {
   const target = new Date(date.getTime());
@@ -66,7 +42,11 @@ interface MonthBucket {
   weeks: WeekBucket[];
 }
 
-function groupHierarchical(picks: HistoryPick[]): MonthBucket[] {
+function groupHierarchical(
+  picks: HistoryPick[],
+  monthNames: string[],
+  dayNames: string[],
+): MonthBucket[] {
   const monthsMap = new Map<string, MonthBucket>();
 
   const sorted = [...picks].sort((a, b) => b.date.localeCompare(a.date));
@@ -74,9 +54,9 @@ function groupHierarchical(picks: HistoryPick[]): MonthBucket[] {
   for (const p of sorted) {
     const d = new Date(p.date + "T12:00:00Z");
     const monthKey = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
-    const monthLabel = `${MONTH_NAMES[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    const monthLabel = `${monthNames[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
     const weekNum = getISOWeek(d);
-    const dayName = DAY_NAMES[d.getUTCDay()];
+    const dayName = dayNames[d.getUTCDay()];
     const dayNum = d.getUTCDate();
 
     const settled = p.outcome === "win" || p.outcome === "loss";
@@ -144,10 +124,11 @@ function ProfitChip({
   profit: number;
   pending?: boolean;
 }) {
+  const { t } = useI18n();
   let cls = "text-white/40 bg-white/5 border-white/10";
   let label = fmtSigned(profit);
   if (pending) {
-    label = "En cours";
+    label = t("history.inProgress");
     cls = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
   } else if (profit > 0) {
     cls = "text-accent-green bg-accent-green/10 border-accent-green/30";
@@ -164,25 +145,26 @@ function ProfitChip({
 }
 
 function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
+  const { t } = useI18n();
   let bg = "bg-white/5";
   let text = "text-white/40";
-  let label = "—";
+  let label = t("history.outcomeNone");
   if (outcome === "win") {
     bg = "bg-accent-green/15";
     text = "text-accent-green";
-    label = "Gagné";
+    label = t("history.outcomeWin");
   } else if (outcome === "loss") {
     bg = "bg-accent-red/15";
     text = "text-accent-red";
-    label = "Perdu";
+    label = t("history.outcomeLoss");
   } else if (outcome === "pending") {
     bg = "bg-white/[0.07]";
     text = "text-white/50";
-    label = "En attente";
+    label = t("history.outcomePending");
   } else if (outcome === "void") {
     bg = "bg-accent-blue/15";
     text = "text-accent-blue";
-    label = "Remboursé";
+    label = t("history.outcomeVoid");
   }
   return (
     <div
@@ -199,10 +181,11 @@ function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
 }
 
 function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
+  const { t, lang } = useI18n();
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
   const time = pick.match.kickoff
-    ? new Date(pick.match.kickoff).toLocaleTimeString("fr-FR", {
+    ? new Date(pick.match.kickoff).toLocaleTimeString(localeForLang(lang), {
         hour: "2-digit",
         minute: "2-digit",
       })
@@ -226,14 +209,14 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                 : "text-accent-blue bg-accent-blue/10 border-accent-blue/20"
             }`}
           >
-            {isCombo ? `Combiné ${pick.legs!.length} jambes` : "Simple"}
+            {isCombo ? t("history.combinedLegs", { n: pick.legs!.length }) : t("history.simple")}
           </span>
           <span className="text-[11px] font-bold italic bg-bg-base text-white px-2 py-0.5 rounded">
             b<span className="relative">w<span className="absolute -top-0.5 right-0 w-1 h-1 rounded-full bg-yellow-400" /></span>in
           </span>
           {isCombo && pick.odds_unboosted && (
             <span className="text-[10px] text-yellow-400/80 font-semibold">
-              boost <span className="line-through text-white/30">{pick.odds_unboosted.toFixed(2)}</span> → {pick.odds.toFixed(2)}
+              {t("history.boostFromTo")} <span className="line-through text-white/30">{pick.odds_unboosted.toFixed(2)}</span> → {pick.odds.toFixed(2)}
             </span>
           )}
         </div>
@@ -246,10 +229,10 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             ))}
             <div className="text-[10px] text-white/40 mt-1.5 flex items-center gap-2">
               <span className="text-yellow-400 font-bold tabular-nums">
-                Cote totale {pick.odds.toFixed(2)}
+                {t("history.totalOdds", { odds: pick.odds.toFixed(2) })}
               </span>
               <span>·</span>
-              <span>Les 2 doivent gagner</span>
+              <span>{t("history.bothMustWin")}</span>
             </div>
           </div>
         ) : (
@@ -323,10 +306,11 @@ function WeekSection({
   week: WeekBucket;
   onPickClick: (p: HistoryPick) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between px-1 mb-2">
-        <span className="text-white/50 text-sm">Semaine {week.num}</span>
+        <span className="text-white/50 text-sm">{t("history.week", { n: week.num })}</span>
         <ProfitChip profit={week.profit} pending={week.allPending} />
       </div>
       <div className="space-y-3">
@@ -359,14 +343,18 @@ interface Props {
 
 export function HistoryList({ picks }: Props) {
   const { user, ready } = useAuth();
+  const { t } = useI18n();
+  const { months: monthNames, days: dayNames } = useDateLabels();
   const isPremium = ready && user?.isPremium;
   // Paris en attente : visibles uniquement par les Premium (gated comme /today).
   // Les non-Premium voient une carte teaser "Pick du jour réservé Premium".
   const visiblePicks = isPremium
     ? picks
     : picks.filter((p) => p.outcome !== "pending");
-  const pendingPicks = picks.filter((p) => p.outcome === "pending");
-  const months = useMemo(() => groupHierarchical(visiblePicks), [visiblePicks]);
+  const months = useMemo(
+    () => groupHierarchical(visiblePicks, monthNames, dayNames),
+    [visiblePicks, monthNames, dayNames],
+  );
   const [openPick, setOpenPick] = useState<HistoryPick | null>(null);
   const currentMonthKey = (() => {
     const d = new Date();
@@ -377,9 +365,9 @@ export function HistoryList({ picks }: Props) {
     return (
       <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-8 text-center">
         <div className="text-5xl mb-3 opacity-40">📊</div>
-        <p className="text-base font-semibold mb-1">Aucun pari pour le moment</p>
+        <p className="text-base font-semibold mb-1">{t("history.emptyTitle")}</p>
         <p className="text-sm text-white/50 leading-relaxed max-w-xs mx-auto">
-          L'historique des paris apparaîtra ici dès qu'on aura des picks réglés.
+          {t("history.emptyBody")}
         </p>
       </div>
     );
@@ -409,12 +397,12 @@ export function HistoryList({ picks }: Props) {
             >
               <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/5 sticky top-0 bg-bg-base z-10 rounded-t-3xl">
                 <span className="text-sm font-semibold text-white/70">
-                  Analyse du pari
+                  {t("history.betAnalysis")}
                 </span>
                 <button
                   onClick={() => setOpenPick(null)}
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:bg-white/5"
-                  aria-label="Fermer"
+                  aria-label={t("history.close")}
                 >
                   ✕
                 </button>

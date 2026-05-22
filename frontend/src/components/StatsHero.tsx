@@ -6,6 +6,7 @@
 import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
 
 import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { useI18n } from "@/lib/i18n";
 import { HistoryPick, HistoryStats } from "@/lib/types";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function StatsHero({ picks, stats }: Props) {
+  const { t } = useI18n();
   // Construit la série bankroll-over-time pour la sparkline
   const series = [{ idx: 0, value: stats.starting_bankroll }];
   for (const p of picks) {
@@ -32,7 +34,7 @@ export function StatsHero({ picks, stats }: Props) {
         {/* Bankroll actuelle */}
         <div>
           <div className="text-[10px] uppercase tracking-wider text-white/40 mb-1">
-            Bankroll actuelle
+            {t("stats.currentBankroll")}
           </div>
           <div
             className={`text-3xl md:text-4xl font-extrabold tabular-nums ${
@@ -42,7 +44,7 @@ export function StatsHero({ picks, stats }: Props) {
             <AnimatedNumber value={stats.current_bankroll} decimals={2} suffix="€" />
           </div>
           <div className="text-[11px] text-white/50 mt-0.5">
-            depuis {stats.starting_bankroll.toFixed(2)}€ ·{" "}
+            {t("stats.bankrollSince", { amount: stats.starting_bankroll.toFixed(2) })}{" "}
             <span className={bankrollIsPositive ? "text-accent-green" : "text-accent-red"}>
               ×{multiplier.toFixed(2)}
             </span>
@@ -52,7 +54,7 @@ export function StatsHero({ picks, stats }: Props) {
         {/* Win rate */}
         <div className="text-right">
           <div className="text-[10px] uppercase tracking-wider text-white/40 mb-1">
-            Win rate
+            {t("stats.winRate")}
           </div>
           <div className="text-3xl md:text-4xl font-extrabold tabular-nums text-accent-green">
             <AnimatedNumber value={stats.win_rate} decimals={0} suffix="%" />
@@ -87,21 +89,21 @@ export function StatsHero({ picks, stats }: Props) {
       {/* Footer : 3 KPIs secondaires */}
       <div className="grid grid-cols-3 gap-3 pt-3 mt-2 border-t border-white/5">
         <KpiInline
-          label="ROI"
+          label={t("stats.roi")}
           value={stats.roi_percent}
           decimals={1}
           suffix="%"
           tone={stats.roi_percent >= 0 ? "green" : "red"}
         />
         <KpiInline
-          label="Bénéfice"
+          label={t("stats.profit")}
           value={stats.profit}
           decimals={2}
           suffix="€"
           tone={stats.profit >= 0 ? "green" : "red"}
         />
         <KpiInline
-          label="Drawdown"
+          label={t("stats.drawdown")}
           value={stats.drawdown_max}
           decimals={2}
           suffix="€"
