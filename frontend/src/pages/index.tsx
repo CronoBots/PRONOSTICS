@@ -169,7 +169,7 @@ export default function Home() {
       </Head>
 
       <main
-        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-2 lg:gap-5"
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-2 lg:gap-5 flex-1 justify-between lg:justify-start lg:flex-none"
       >
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
@@ -198,7 +198,7 @@ export default function Home() {
                 Hauteur explicite en dvh (s'adapte à l'URL bar mobile) au lieu de
                 flex-1 qui était mal interprété sur Safari iOS dans un layout
                 flex-col imbriqué (chart écrasé). */}
-            <section className="relative h-[44dvh] lg:h-[420px] shrink-0" ref={menuRef}>
+            <section className="relative h-[38dvh] lg:h-[420px] shrink-0" ref={menuRef}>
               <BankrollChart
                 picks={filteredPicks}
                 startingBankroll={startingBankroll}
@@ -284,41 +284,46 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* 4 stat tiles — taille naturelle, pas étirées */}
+            {/* Stat tiles : 2 rangées séparées pour distribuer les gaps
+                équitablement via justify-between sur main (mobile + desktop) */}
             {stats && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3 shrink-0">
-                <StatTile
-                  label={t("home.statParis")}
-                  value={settledCount}
-                  decimals={0}
-                  tone="blue"
-                  onInfo={() => setInfoOpen("paris")}
-                />
-                <StatTile
-                  label={t("home.statBenefice")}
-                  value={Math.abs(stats.profit)}
-                  decimals={2}
-                  suffix="€"
-                  tone={stats.profit >= 0 ? "green" : "red"}
-                  onInfo={() => setInfoOpen("benefice")}
-                />
-                <StatTile
-                  label={t("home.statRoi")}
-                  value={Math.abs(stats.roi_percent)}
-                  decimals={2}
-                  suffix="%"
-                  tone={stats.roi_percent >= 0 ? "green" : "red"}
-                  onInfo={() => setInfoOpen("roi")}
-                />
-                <StatTile
-                  label={t("home.statProgression")}
-                  value={Math.abs(stats.progression_percent)}
-                  decimals={2}
-                  suffix="%"
-                  tone={stats.progression_percent >= 0 ? "green" : "red"}
-                  onInfo={() => setInfoOpen("progression")}
-                />
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-2 lg:gap-3 shrink-0">
+                  <StatTile
+                    label={t("home.statParis")}
+                    value={settledCount}
+                    decimals={0}
+                    tone="blue"
+                    onInfo={() => setInfoOpen("paris")}
+                  />
+                  <StatTile
+                    label={t("home.statBenefice")}
+                    value={Math.abs(stats.profit)}
+                    decimals={2}
+                    suffix="€"
+                    tone={stats.profit >= 0 ? "green" : "red"}
+                    onInfo={() => setInfoOpen("benefice")}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2 lg:gap-3 shrink-0">
+                  <StatTile
+                    label={t("home.statRoi")}
+                    value={Math.abs(stats.roi_percent)}
+                    decimals={2}
+                    suffix="%"
+                    tone={stats.roi_percent >= 0 ? "green" : "red"}
+                    onInfo={() => setInfoOpen("roi")}
+                  />
+                  <StatTile
+                    label={t("home.statProgression")}
+                    value={Math.abs(stats.progression_percent)}
+                    decimals={2}
+                    suffix="%"
+                    tone={stats.progression_percent >= 0 ? "green" : "red"}
+                    onInfo={() => setInfoOpen("progression")}
+                  />
+                </div>
+              </>
             )}
           </>
         )}
