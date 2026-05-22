@@ -1,16 +1,18 @@
 /**
- * Logo NΞXBΞT — image officielle (hexagone teal + chevrons blancs 3D).
+ * Logo NΞXBΞT — version PNG transparente (hexagone blanc détouré).
  *
- * Source : frontend/public/logo.jpg (1024×1024, ~95 KB).
- * Le logo a déjà son fond teal intégré ; pour utiliser sur un fond personnalisé,
- * passe `background="transparent"` (l'image gardera son fond teal d'origine).
+ * Source : frontend/public/logo.png (512×512, fond transparent, ~130 KB).
+ * Polyvalent : se pose sur n'importe quel fond (vert, sombre, gradient…).
+ * Le hexagone blanc 3D avec son ombre douce reste visible partout.
  */
 
 interface Props {
   /** Taille en px du conteneur (carré). Défaut 64. */
   size?: number;
-  /** Border-radius en px. Défaut size/6. */
+  /** Border-radius en px (uniquement si background fourni). */
   rounded?: number;
+  /** Optionnel : couleur de fond derrière le logo. Par défaut transparent. */
+  background?: string;
   /** Optionnel : className additionnelle */
   className?: string;
   /** Alt text. Défaut "NΞXBΞT". */
@@ -19,25 +21,37 @@ interface Props {
 
 const BASE = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
 
-export function BrandLogo({ size = 64, rounded, className = "", alt = "NΞXBΞT" }: Props) {
+export function BrandLogo({
+  size = 64,
+  rounded,
+  background = "transparent",
+  className = "",
+  alt = "NΞXBΞT",
+}: Props) {
   const radius = rounded ?? Math.round(size / 6);
   return (
     <span
-      className={`inline-block overflow-hidden ${className}`}
+      className={`inline-flex items-center justify-center overflow-hidden ${className}`}
       style={{
         width: size,
         height: size,
+        background,
         borderRadius: radius,
       }}
     >
       <img
-        src={`${BASE}/logo.jpg`}
+        src={`${BASE}/logo.png`}
         alt={alt}
         width={size}
         height={size}
         loading="eager"
         decoding="async"
-        style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }}
+        style={{
+          display: "block",
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+        }}
       />
     </span>
   );

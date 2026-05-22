@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
 
         <div className="bg-accent-green flex-1 flex items-center justify-center py-16 min-h-[260px]">
           <div className="text-center">
-            <BrandLogo size={88} rounded={22} className="mx-auto mb-3 ring-4 ring-white/40 shadow-xl" />
+            <BrandLogo size={120} className="mx-auto mb-3" />
             <div className="text-white font-bold text-2xl tracking-tight">NΞXBΞT</div>
             <div className="text-white/80 text-xs mt-1 tracking-wider">Trust the Algorithm</div>
           </div>

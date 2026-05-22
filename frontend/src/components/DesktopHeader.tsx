@@ -62,10 +62,8 @@ export function DesktopHeader() {
           className="flex items-center gap-2 font-bold text-lg shrink-0"
           aria-label="NΞXBΞT"
         >
-          <BrandLogo size={36} rounded={10} className="shadow-sm" />
-          <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
-            NΞXBΞT
-          </span>
+          <BrandLogo size={36} />
+          <span className="text-accent-green">NΞXBΞT</span>
         </Link>
 
         {/* Streak indicator (à côté du logo) */}
