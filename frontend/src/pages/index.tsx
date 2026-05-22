@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
 import { DailyStatusCard } from "@/components/DailyStatusCard";
 import { InfoSheet } from "@/components/InfoSheet";
@@ -269,25 +270,32 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-2">
                 <StatTile
                   label="PARIS"
-                  value={`${settledCount}`}
+                  value={settledCount}
+                  decimals={0}
                   tone="blue"
                   onInfo={() => setInfoOpen("paris")}
                 />
                 <StatTile
                   label="BÉNÉFICE"
-                  value={`${Math.abs(stats.profit).toFixed(2)}€`}
+                  value={Math.abs(stats.profit)}
+                  decimals={2}
+                  suffix="€"
                   tone={stats.profit >= 0 ? "green" : "red"}
                   onInfo={() => setInfoOpen("benefice")}
                 />
                 <StatTile
                   label="ROI"
-                  value={`${Math.abs(stats.roi_percent).toFixed(2)}%`}
+                  value={Math.abs(stats.roi_percent)}
+                  decimals={2}
+                  suffix="%"
                   tone={stats.roi_percent >= 0 ? "green" : "red"}
                   onInfo={() => setInfoOpen("roi")}
                 />
                 <StatTile
                   label="PROGRESSION"
-                  value={`${Math.abs(stats.progression_percent).toFixed(2)}%`}
+                  value={Math.abs(stats.progression_percent)}
+                  decimals={2}
+                  suffix="%"
                   tone={stats.progression_percent >= 0 ? "green" : "red"}
                   onInfo={() => setInfoOpen("progression")}
                 />
@@ -328,11 +336,15 @@ export default function Home() {
 function StatTile({
   label,
   value,
+  decimals = 0,
+  suffix = "",
   tone,
   onInfo,
 }: {
   label: string;
-  value: string;
+  value: number;
+  decimals?: number;
+  suffix?: string;
   tone: "blue" | "green" | "red";
   onInfo?: () => void;
 }) {
@@ -353,7 +365,7 @@ function StatTile({
         {label}
       </div>
       <div className={`text-2xl md:text-3xl font-bold tabular-nums text-center mt-1.5 ${colorClass}`}>
-        {value}
+        <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
       </div>
     </div>
   );

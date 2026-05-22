@@ -86,6 +86,11 @@ a:active {
   animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@keyframes slideDown {
+  from { transform: translateY(-120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Page transition fade-in (déclenché par key=router.pathname dans _app.tsx).
    Masque l'instant noir/blanc quand Next.js charge le chunk de la page
    suivante en navigation client. PAS de contain (cassait la Home). */

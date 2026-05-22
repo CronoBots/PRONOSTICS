@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 
@@ -22,8 +23,12 @@ export default function LoginPage() {
     setBusy(true);
     const res = await login(email.trim(), password);
     setBusy(false);
-    if (res.ok) router.push("/");
-    else setError(res.error ?? "Erreur");
+    if (res.ok) {
+      showToast("Connecté 👋", { type: "success", duration: 2500 });
+      router.push("/");
+    } else {
+      setError(res.error ?? "Erreur");
+    }
   }
 
   return (

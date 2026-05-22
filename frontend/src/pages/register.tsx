@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
+import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 
@@ -33,8 +34,12 @@ export default function RegisterPage() {
     setBusy(true);
     const res = await register(pseudo, email.trim(), password);
     setBusy(false);
-    if (res.ok) router.push("/");
-    else setError(res.error ?? "Erreur");
+    if (res.ok) {
+      showToast("Compte créé · Bienvenue 🎉", { type: "success", duration: 3000 });
+      router.push("/");
+    } else {
+      setError(res.error ?? "Erreur");
+    }
   }
 
   return (

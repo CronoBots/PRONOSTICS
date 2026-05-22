@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Header } from "@/components/Header";
+import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
 import { LANG_LABELS, useI18n } from "@/lib/i18n";
 
@@ -11,9 +12,27 @@ export default function ComptePage() {
   const { lang, setLang, t } = useI18n();
   const router = useRouter();
 
-  function handleCancel() {
+  async function handleCancel() {
     if (!confirm("Résilier ton abonnement Premium ? Le mois en cours reste actif jusqu'à expiration.")) return;
-    cancelSubscription();
+    try {
+      await cancelSubscription();
+      showToast("Abonnement résilié. Accès Premium actif jusqu'à expiration.", {
+        type: "success",
+        duration: 5000,
+      });
+    } catch (e) {
+      showToast("Erreur lors de la résiliation. Réessaie.", { type: "error" });
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await logout();
+      showToast("À bientôt 👋", { type: "info", duration: 2000 });
+      router.push("/");
+    } catch (e) {
+      showToast("Erreur de déconnexion", { type: "error" });
+    }
   }
 
   if (!ready) {
@@ -144,10 +163,7 @@ export default function ComptePage() {
         <Row icon="❓" label={t("account.help")} value="" link />
 
         <button
-          onClick={() => {
-            logout();
-            router.push("/");
-          }}
+          onClick={handleLogout}
           className="w-full mt-6 py-3 rounded-lg text-white/60 hover:text-accent-red border border-white/10 hover:border-accent-red/30 transition"
         >
           → {t("auth.logout")}

@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 
 import { BottomNav } from "@/components/BottomNav";
 import { Onboarding } from "@/components/Onboarding";
+import { ToastContainer } from "@/components/Toast";
 import { AuthProvider } from "@/lib/auth";
 import { I18nProvider } from "@/lib/i18n";
 
@@ -60,6 +61,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
         {showNav && <BottomNav />}
         {showNav && <Onboarding />}
+        <ToastContainer />
       </AuthProvider>
     </I18nProvider>
   );
