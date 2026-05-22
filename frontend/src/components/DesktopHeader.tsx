@@ -2,7 +2,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import { Avatar } from "@/components/Avatar";
 import { BrandLogo } from "@/components/BrandLogo";
+import { useAuth } from "@/lib/auth";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 
@@ -15,9 +17,10 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/", labelKey: "nav.home" },
   { href: "/paris", labelKey: "nav.paris" },
   { href: "/stats", labelKey: "nav.stats" },
-  { href: "/mes-paris", labelKey: "perso.title" },
   { href: "/analyzer", labelKey: "home.analyzer" },
   { href: "/calendrier", labelKey: "home.calendar" },
+  { href: "/demain", labelKey: "demain.title" },
+  { href: "/mes-paris", labelKey: "perso.title" },
   { href: "/plus", labelKey: "nav.plus" },
 ];
 
@@ -32,6 +35,7 @@ const NAV_ITEMS: NavItem[] = [
 export function DesktopHeader() {
   const router = useRouter();
   const { t } = useI18n();
+  const { user } = useAuth();
   const [hasPendingPick, setHasPendingPick] = useState(false);
   const [streak, setStreak] = useState(0);
 
@@ -124,16 +128,16 @@ export function DesktopHeader() {
           )}
         </Link>
 
-        {/* Compte */}
+        {/* Avatar / Compte */}
         <Link
           href="/compte"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.06] transition shrink-0"
+          className="shrink-0 hover:opacity-80 transition"
           aria-label={t("nav.account")}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-            <circle cx="12" cy="8" r="4" />
-            <path strokeLinecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-          </svg>
+          <Avatar
+            initial={user?.pseudo?.slice(0, 1) ?? "?"}
+            size={36}
+          />
         </Link>
       </div>
     </header>

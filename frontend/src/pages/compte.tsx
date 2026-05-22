@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 
+import { Avatar } from "@/components/Avatar";
 import { Sheet, SheetOption } from "@/components/Sheet";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
@@ -138,20 +139,7 @@ export default function ComptePage() {
 
         {/* Bloc identité */}
         <div className="bg-bg-card border border-white/10 rounded-2xl p-4 flex items-center gap-4 mb-4">
-          <button
-            onClick={() =>
-              showToast(t("account.avatarComingSoon"), {
-                type: "info",
-              })
-            }
-            className="relative w-16 h-16 rounded-full bg-gradient-to-br from-accent-blue/30 to-accent-green/20 ring-1 ring-white/10 flex items-center justify-center text-white/80 text-2xl font-bold"
-            aria-label={t("account.avatar")}
-          >
-            {user.pseudo.slice(0, 1).toUpperCase()}
-            <span className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-bg-elevated border-2 border-bg-card flex items-center justify-center text-[10px]">
-              ✏️
-            </span>
-          </button>
+          <Avatar initial={user.pseudo.slice(0, 1)} size={64} editable />
           <div className="flex-1 min-w-0">
             <div className="font-bold text-lg truncate">{user.pseudo}</div>
             <div className="text-xs text-white/40 truncate">{user.email}</div>

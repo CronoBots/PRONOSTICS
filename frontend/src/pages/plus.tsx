@@ -92,6 +92,7 @@ export default function PlusPage() {
           <>
             <div className="lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-0">
               <Section title="Outils">
+                <RowLink icon="🔮" label={t("demain.title")} href="/demain" />
                 <RowLink icon="🎯" label={t("perso.title")} href="/mes-paris" />
                 <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
                 <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
