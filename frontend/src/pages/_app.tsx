@@ -52,18 +52,16 @@ export default function App({ Component, pageProps }: AppProps) {
             </Head>
             <div
               key={router.pathname}
-              className="page-fade flex flex-col"
-              style={{
-                background: "var(--bg-base)",
-                // 100dvh = dynamic viewport height : s'adapte automatiquement à
-                // l'URL bar mobile Safari/Chrome quand elle se cache / s'affiche.
-                // -safe-top car body a déjà padding-top:safe-top.
-                minHeight: "calc(100dvh - var(--safe-top, 0px))",
-              }}
+              // Mobile : hauteur stricte = viewport visible (100dvh suit l'URL bar
+              // mobile) moins safe-top (body a déjà padding-top: safe-top).
+              // Desktop (lg) : hauteur auto + min-h-screen pour permettre le scroll
+              // sur les pages plus longues.
+              className="page-fade flex flex-col h-[calc(100dvh-var(--safe-top,0px))] lg:h-auto lg:min-h-screen"
+              style={{ background: "var(--bg-base)" }}
             >
               {showNav && <DesktopHeader />}
               <div
-                className={`flex-1 flex flex-col ${
+                className={`flex-1 flex flex-col min-h-0 ${
                   showNav ? "pb-[calc(var(--safe-bottom)+5.5rem)] lg:pb-0" : ""
                 }`}
               >
