@@ -106,8 +106,11 @@ function PremiumGate({
 }) {
   const { t, lang } = useI18n();
   const stats = history?.stats;
-  const sportEmoji = SPORT_EMOJIS[pick.sport] || "🎯";
-  const sportLabel = SPORT_LABELS[pick.sport] || pick.sport;
+  const isCombo = pick.sport === "combo";
+  const sportEmoji = isCombo ? "🎯" : SPORT_EMOJIS[pick.sport] || "🎯";
+  const sportLabel = isCombo
+    ? t("today.comboLabel")
+    : SPORT_LABELS[pick.sport] || pick.sport;
   const kickoffDate = new Date(pick.kickoff);
   const kickoffText = kickoffDate.toLocaleString(localeForLang(lang), {
     weekday: "long",
@@ -116,6 +119,10 @@ function PremiumGate({
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  // Pour les combinés on masque league + matchup (qui dévoileraient les noms d'équipes
+  // donc le pari complet). On affiche juste un compteur générique de jambes + sports.
+  // Pour un pick simple, "Équipe A vs Équipe B" ne révèle pas qui on mise → OK d'afficher.
 
   return (
     <div className="space-y-4">
@@ -129,16 +136,32 @@ function PremiumGate({
             <span className="text-white/30">·</span>
             <span className="capitalize">{kickoffText}</span>
           </div>
-          <div className="text-xs text-white/50 mt-0.5">{pick.league}</div>
+          {!isCombo && (
+            <div className="text-xs text-white/50 mt-0.5">{pick.league}</div>
+          )}
         </div>
 
-        {/* Match teaser */}
+        {/* Match teaser — masqué pour les combinés (révélerait les équipes pariées) */}
         <div className="px-5 py-5">
-          <div className="text-xl font-bold leading-tight mb-3">
-            {pick.home_team}{" "}
-            <span className="text-white/30 text-base font-normal">vs</span>{" "}
-            {pick.away_team}
-          </div>
+          {!isCombo ? (
+            <div className="text-xl font-bold leading-tight mb-3">
+              {pick.home_team}{" "}
+              <span className="text-white/30 text-base font-normal">vs</span>{" "}
+              {pick.away_team}
+            </div>
+          ) : (
+            <div className="mb-3 flex items-center gap-3 bg-bg-elevated/30 rounded-xl p-3">
+              <div className="text-2xl">🎯🔒</div>
+              <div className="flex-1">
+                <div className="text-sm font-bold leading-tight">
+                  {t("today.comboTeaserTitle")}
+                </div>
+                <div className="text-[11px] text-white/50 mt-0.5">
+                  {t("today.comboTeaserHint")}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Stats publiques */}
           <div className="grid grid-cols-3 gap-2 mb-4">

@@ -13,6 +13,7 @@
 
 import Link from "next/link";
 
+import { useAuth } from "@/lib/auth";
 import { localeForLang, useI18n } from "@/lib/i18n";
 import { HistoryPick, History } from "@/lib/types";
 
@@ -98,6 +99,8 @@ export function DailyStatusCard({ history, hasPickToday }: Props) {
 
 function PendingState({ pick }: { pick: HistoryPick }) {
   const { t } = useI18n();
+  const { user } = useAuth();
+  const isPremium = !!user?.isPremium;
   const stake = pick.stake;
   const potentialGain = stake * (pick.odds - 1);
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
@@ -107,27 +110,38 @@ function PendingState({ pick }: { pick: HistoryPick }) {
     ? pick.legs!.reduce((max, l) => (l.kickoff > max ? l.kickoff : max), pick.legs![0].kickoff)
     : pick.match.kickoff;
 
+  // Gating Premium : pour les non-Premium on masque les noms d'équipes (qui révèleraient
+  // le pari complet). On garde les stats agrégées (cote, mise, gain potentiel, countdown).
+  const titleText = isPremium
+    ? (isCombo ? t("status.combinedLegs", { n: pick.legs!.length }) : pick.pick)
+    : t("status.pendingLockedTitle");
+
   return (
     <Link
-      href="/paris"
+      href={isPremium ? "/paris" : "/premium"}
       className="block bg-gradient-to-br from-yellow-400/10 to-accent-blue/10 border-2 border-yellow-400/30 rounded-2xl p-4 hover:border-yellow-400/50 transition animate-fade-in"
     >
       <div className="flex items-start justify-between mb-2">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-yellow-400 font-bold mb-0.5">
-            {t("status.pendingLabel")}
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] uppercase tracking-wider text-yellow-400 font-bold mb-0.5 flex items-center gap-1.5">
+            <span>{t("status.pendingLabel")}</span>
+            {!isPremium && <span className="text-white/40 normal-case">🔒</span>}
           </div>
-          <div className="text-base font-bold leading-tight">
-            {isCombo ? t("status.combinedLegs", { n: pick.legs!.length }) : pick.pick}
-          </div>
+          <div className="text-base font-bold leading-tight truncate">{titleText}</div>
+          {!isPremium && (
+            <div className="text-[11px] text-white/40 mt-0.5">
+              {t("status.pendingLockedHint")}
+            </div>
+          )}
         </div>
-        <div className="text-right shrink-0">
+        <div className="text-right shrink-0 ml-3">
           <div className="text-[10px] text-white/40">{t("status.cote")}</div>
           <div className="text-base font-bold tabular-nums">{pick.odds.toFixed(2)}</div>
         </div>
       </div>
 
-      {isCombo && (
+      {/* Jambes individuelles : visibles UNIQUEMENT pour Premium (révèlent les équipes pariées) */}
+      {isPremium && isCombo && (
         <div className="flex flex-wrap gap-1.5 mb-3">
           {pick.legs!.map((leg, i) => {
             const isWin = leg.outcome === "win";

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
 
 import { PickDetail, pickFromHistory } from "@/components/PickDetail";
 import { useAuth } from "@/lib/auth";
@@ -182,6 +183,11 @@ function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
 
 function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const { t, lang } = useI18n();
+  const { user } = useAuth();
+  const router = useRouter();
+  const isPremium = !!user?.isPremium;
+  const isPending = pick.outcome === "pending";
+  const isLocked = isPending && !isPremium;
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
   const time = pick.match.kickoff
@@ -193,7 +199,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
 
   return (
     <button
-      onClick={onClick}
+      onClick={() => (isLocked ? router.push("/premium") : onClick())}
       className="w-full flex items-stretch bg-bg-elevated/40 border border-white/[0.06] rounded-xl overflow-hidden text-left hover:border-accent-green/30 transition"
     >
       <div className="flex items-center justify-center px-2 text-white/30 text-lg">⋮</div>
@@ -221,8 +227,20 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           )}
         </div>
 
-        {/* Affichage différent pour combos */}
-        {isCombo ? (
+        {/* Gating Premium pour un pick PENDING (les équipes révéleraient le pari) */}
+        {isLocked ? (
+          <div className="mt-1 flex items-center gap-2 bg-bg-base/40 border border-yellow-400/20 rounded-lg px-2.5 py-2">
+            <span className="text-lg">🔒</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium leading-tight">
+                {t("status.pendingLockedTitle")}
+              </div>
+              <div className="text-[10px] text-white/40 mt-0.5">
+                {t("status.pendingLockedHint")} · {t("status.cote")} {pick.odds.toFixed(2)}
+              </div>
+            </div>
+          </div>
+        ) : isCombo ? (
           <div className="space-y-1.5 mt-1">
             {pick.legs!.map((leg, i) => (
               <ComboLegMini key={i} leg={leg} index={i + 1} />
