@@ -176,7 +176,7 @@ export default function Home() {
             Caché sur desktop (DesktopHeader prend le relais). */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
           <div aria-hidden />
-          <BrandBanner height={48} className="mx-auto" />
+          <BrandBanner height={36} className="mx-auto" />
           <div className="flex justify-end">
             <Link
               href="/compte"
@@ -376,7 +376,7 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border border-white/[0.06] shadow-card rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
+    <div className="bg-bg-card border border-accent-green/30 shadow-card rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
       {onInfo && (
         <button
           onClick={onInfo}

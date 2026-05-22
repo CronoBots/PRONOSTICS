@@ -214,7 +214,7 @@ export function BankrollChart({
     const niceTicks = niceTickArray(dataMin, dataMax, 5);
     const yDomain: [number, number] = [niceTicks[0], niceTicks[niceTicks.length - 1]];
     return (
-      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-green relative flex flex-col border border-white/[0.06] shadow-card">
+      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-green relative flex flex-col border border-white/[0.06] shadow-card-soft">
         {topRight && (
           <div className="absolute top-3 right-3 z-10">{topRight}</div>
         )}

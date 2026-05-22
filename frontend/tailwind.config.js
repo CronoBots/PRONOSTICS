@@ -24,7 +24,10 @@ module.exports = {
       },
       boxShadow: {
         card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.6)",
-        glow: "0 0 32px 0 rgba(16,217,163,0.25)",  // glow vert (vs violet avant)
+        // Ombre plus subtile : utilisée sur le chart hero (le shadow-card
+        // était trop marqué sur la grande card verte).
+        "card-soft": "0 4px 12px -6px rgba(0,0,0,0.35)",
+        glow: "0 0 32px 0 rgba(16,217,163,0.25)",
       },
       backgroundImage: {
         // Pattern hexagonal subtil (utilisé en bg-hex pour les hero sections)
