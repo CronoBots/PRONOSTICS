@@ -211,9 +211,7 @@ export function BankrollChart({
             </LineChart>
           </ResponsiveContainer>
         </div>
-        {footer && (
-          <div className="px-3 pb-3 pt-1 border-t border-white/15">{footer}</div>
-        )}
+        {footer && <div className="px-3 pb-3 pt-1">{footer}</div>}
       </div>
     );
   }

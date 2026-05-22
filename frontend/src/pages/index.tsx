@@ -7,7 +7,6 @@ import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
@@ -164,11 +163,19 @@ export default function Home() {
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0">
           <div aria-hidden />
-          <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent text-center">
+          <h1 className="text-2xl font-extrabold tracking-tight text-accent-green text-center">
             NΞXBΞT
           </h1>
           <div className="flex justify-end">
-            <ThemeToggle />
+            <Link
+              href="/compte"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5"
+              aria-label={t("home.menu")}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+                <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </Link>
           </div>
         </header>
 
@@ -208,10 +215,8 @@ export default function Home() {
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center ${
-                            period === p
-                              ? "bg-white text-accent-green border-white"
-                              : "bg-white/15 text-white border-white/30"
+                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border border-white text-white text-center ${
+                            period === p ? "bg-white/25" : "bg-transparent"
                           }`}
                         >
                           {t(labelKey)}
@@ -220,7 +225,7 @@ export default function Home() {
                     })}
                     <Link
                       href="/filtres"
-                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border bg-white/15 text-white border-white/30 text-center"
+                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border border-white text-white text-center bg-transparent"
                     >
                       {t("home.filters")}
                     </Link>
