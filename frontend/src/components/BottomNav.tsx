@@ -25,12 +25,11 @@ export function BottomNav() {
       ),
     },
     {
-      href: "/analyzer",
-      label: t("home.analyzer"),
+      href: "/paris",
+      label: t("nav.paris"),
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-          <circle cx="12" cy="12" r="9" />
-          <path strokeLinecap="round" d="M12 3v9l6 4" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h10" />
         </svg>
       ),
     },
@@ -46,6 +45,16 @@ export function BottomNav() {
   ];
 
   const rightTabs: Tab[] = [
+    {
+      href: "/analyzer",
+      label: t("home.analyzer"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <circle cx="12" cy="12" r="9" />
+          <path strokeLinecap="round" d="M12 3v9l6 4" />
+        </svg>
+      ),
+    },
     {
       href: "/calendrier",
       label: t("home.calendar"),
@@ -75,12 +84,14 @@ export function BottomNav() {
       <Link
         key={tab.href}
         href={tab.href}
-        className={`nav-pulse flex flex-col items-center gap-1 py-2.5 transition ${
+        className={`nav-pulse flex flex-col items-center gap-0.5 py-2 px-1 transition ${
           active ? "text-accent-green" : "text-white/40 hover:text-white/70"
         }`}
       >
         {tab.icon}
-        <span className="text-[10px] font-medium tracking-wider">{tab.label}</span>
+        <span className="text-[9px] font-medium tracking-wide truncate max-w-full">
+          {tab.label}
+        </span>
       </Link>
     );
   }
@@ -90,7 +101,7 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
       <div
-        className="max-w-md mx-auto grid grid-cols-6 relative items-end"
+        className="max-w-md mx-auto grid grid-cols-7 relative items-end"
         style={{ paddingBottom: "calc(var(--safe-bottom) + 0.75rem)" }}
       >
         {leftTabs.map(renderTab)}
