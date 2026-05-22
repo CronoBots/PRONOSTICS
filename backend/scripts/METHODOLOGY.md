@@ -225,6 +225,14 @@ Suivre `ANALYSIS_FRAMEWORK.md` (15 sections A à O, ~45-60 points).
 
 4. **Narrative fallacy** : "Detroit reçoit, vs Cleveland en road trip" — histoire cohérente mais peu prédictive.
 
+### Biais identifiés (cas Ruud+Olympiakos du 22/05)
+
+5. **Sous-pondération du calendrier Grand Chelem** : Ruud SF Geneva à J-2 de Roland Garros. On a *documenté* le risque "fatigue + RG" mais pas suffisamment réduit la proba (estimée 80%, réelle ~65-70%). **Règle nouvelle : si favori top 20 ATP/WTA + main draw GS sous 7 jours → soustraire 10-15% de la proba.**
+
+6. **Asymétrie de motivation ignorée** : Ruud (top 15, main draw RG = ses vrais Grand Chelem) vs Navone (rang 44, PAS en main draw GS = Geneva est son tournoi du printemps). Motivation × 2-3 en faveur de l'outsider. **Règle nouvelle : avant tout pick tennis, vérifier les enjeux relatifs des 2 joueurs.**
+
+7. **Boost ≠ permission de prendre plus de risque** : cote boostée 2,249 a "vendu" le combiné même à proba combinée 53,6%. Le boost augmente le rendement, pas la proba de gain. **Règle nouvelle : combinés acceptés uniquement à proba ≥ 60%, même si boost rend l'EV séduisante.**
+
 ### Checklist pré-publication
 
 Avant de publier le pick :
@@ -235,6 +243,18 @@ Avant de publier le pick :
 - [ ] Une personne avec opinion opposée pourrait-elle me convaincre ? (red team test mental)
 - [ ] Suis-je en train de justifier OU d'analyser ? (formulation neutre dans le rationale)
 - [ ] Le pick gagnerait-il toujours si on enlevait notre meilleur argument ? (robustesse)
+
+**Garde-fous tennis (depuis Ruud 22/05) :**
+
+- [ ] Y a-t-il un **Grand Chelem dans les 7 jours** suivant ce match ? (RG, Wimbledon, US Open, AO)
+- [ ] Si oui : le **favori est-il top 20 ET dans le main draw** ? → soustraire 10-15% à la proba estimée
+- [ ] Si oui : l'**outsider est-il en dehors du main draw GS** ? → ajouter 5-10% à sa proba (motivation maximale)
+- [ ] **Asymétrie de motivation** : ce match a-t-il la même valeur pour les 2 joueurs ? (titre tier 2 vs Grand Chelem qui arrive)
+
+**Garde-fous combinés (depuis Ruud+Olympiakos 22/05) :**
+
+- [ ] Proba combinée ≥ 60% ? (sinon trop variant, même avec boost séduisant)
+- [ ] Si boost bookmaker proposé : appliquer un **facteur de prudence** (−5% sur la proba estimée pour compenser le biais "l'EV nous a séduits")
 
 Si réponse "non" à ≥ 2 questions → revoir l'analyse avant publication.
 

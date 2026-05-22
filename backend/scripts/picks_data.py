@@ -811,7 +811,12 @@ PICKS: list[Pick] = [
             "https://basketnews.com/news-246073-euroleague-playoff-odds-two-clear-favorites-and-two-coin-flip-series.html",
         ],
         "stake": 8.63,
-        "outcome": "pending",
+        "outcome": "loss",
+        "result": {
+            "score_text": "Combiné PERDU — Navone d. Ruud (Geneva SF, surprise) · Olympiakos résultat indépendant (combiné déjà perdu)",
+            "summary": "Risque #1 documenté dans le pick s'est réalisé : Casper Ruud a perdu sa demi-finale à Geneva contre Mariano Navone. Cause probable : économie de forces avant Roland Garros qui démarre dimanche 24/05 (le titre Geneva n'est plus prioritaire face au Grand Chelem). Le combiné est invalidé dès la 1ère jambe perdue, le résultat Olympiakos n'a plus d'incidence sur l'outcome.",
+            "bet_outcome": "❌ Combiné perdu sur la 1ère jambe (Ruud) · mise 8,63€ → 0€ retour · bankroll 33,63€ → 25,00€",
+        },
         "legs": [
             {
                 "sport": "tennis",
@@ -821,7 +826,12 @@ PICKS: list[Pick] = [
                 "pick": "Casper Ruud vainqueur du match",
                 "kickoff": "2026-05-22T13:00:00+00:00",
                 "odds": 1.22,
-                "outcome": "pending",
+                "outcome": "loss",
+                "result": {
+                    "score_text": "Navone d. Ruud (Geneva SF, upset)",
+                    "summary": "Mariano Navone bat Casper Ruud en demi-finale du Geneva Open. Upset à 20% de probabilité selon nos modèles. Hypothèse principale : Ruud a économisé physiquement pour Roland Garros (démarrage J+2). Le marché ATP a sous-pondéré le facteur 'tournoi warm-up avant Grand Chelem' pour les top joueurs.",
+                    "bet_outcome": "❌ Ruud perd — 1ère jambe du combiné invalidée, combiné PERDU",
+                },
                 "notes": "Ruud 16-1 carrière à Geneva (record absolu, égale Wilander), tenant du titre 2024, 3 wins sans perdre un set cette semaine. H2H 1-0 vs Navone. Notre estim 80%.",
             },
             {
@@ -832,7 +842,12 @@ PICKS: list[Pick] = [
                 "pick": "Olympiakos vainqueur du match",
                 "kickoff": "2026-05-22T16:00:00+00:00",
                 "odds": 1.42,
-                "outcome": "pending",
+                "outcome": "void",
+                "result": {
+                    "score_text": "Match joué mais résultat sans incidence (combiné déjà perdu)",
+                    "summary": "Le résultat de cette jambe n'a plus d'effet sur l'outcome du combiné (la jambe Ruud était déjà perdue). On note 'void' pour cette jambe à des fins comptables.",
+                    "bet_outcome": "🚫 Jambe sans incidence (combiné perdu sur Ruud)",
+                },
                 "notes": "#1 régulière Euroleague, à domicile au Telekom Center Athens. Sweep AS Monaco en playoffs (3-0). Dernier H2H gagné 104-87. Vs champion en titre Fenerbahce (3 titres en 4 ans). Notre estim 67%.",
             },
         ],

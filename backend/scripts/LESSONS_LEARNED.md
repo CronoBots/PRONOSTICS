@@ -99,6 +99,53 @@
 
 ---
 
+## 2026-05-22 — ❌ Combiné Ruud + Olympiakos (PERDU sur Ruud)
+
+### Le pick
+- Combiné 2 jambes BOOSTÉ bwin : Ruud (Geneva SF) @ 1,22 + Olympiakos (Euroleague F4 SF) @ 1,42 = cote boostée 2,249
+- Mise 8,63€, EV +20,6%, proba combinée 53,6%
+- Résultat : **Navone d. Ruud** en demi-finale Geneva → combiné perdu sur la 1ère jambe
+
+### Pourquoi c'était DÉFAVORABLE (analyse a posteriori)
+- **Facteur sous-pondéré : calendrier Grand Chelem.** Roland Garros démarrait le **dimanche 24/05**, soit 2 jours après cette SF Geneva. Pour un joueur top 15 ATP comme Ruud (2× finaliste RG), le titre Geneva 250 a une valeur **moindre** que le risque de blessure ou de fatigue avant le Grand Chelem.
+- Le risque était **identifié** dans le pick (Risque #1 : "fatigue cumulée + Roland Garros qui arrive dimanche → possibilité de match en mode économie") mais pas suffisamment **pricé** dans notre proba (estim 80% → réelle plus proche de 65-70%).
+- Mariano Navone, lui, n'avait AUCUN intérêt à économiser : il n'est PAS dans le main draw Roland Garros (rang 44 ATP), donc Geneva = son tournoi le plus important du printemps. Asymétrie de motivation totalement sous-estimée.
+- H2H Ruud vs Navone (1-0 sur dur) n'était PAS un indicateur valide pour clay + contexte Grand Slam.
+
+### Robustesse du process
+- ✅ Cartographie exhaustive faite (22 ligues/tournois balayés)
+- ✅ Sources Tier 1 + 2 consultées (Dimers, Last Word, ATP Tour)
+- ✅ Risque #1 documenté dans le pick (fatigue + RG)
+- ❌ **Risque pas suffisamment pricé** : on a documenté le risque mais on l'a quand même fait, parce que la cote boostée 2,249 nous donnait +EV même à 53,6%
+- ❌ **Asymétrie de motivation** : on a comparé les niveaux mais pas les enjeux relatifs. Navone joue sa saison, Ruud joue une mise en jambe.
+
+### Leçons actionnables (à intégrer à METHODOLOGY.md)
+
+**🔑 Règle "Tournoi warm-up avant Grand Chelem" :**
+- Pour les SF/F de tournois ATP/WTA 250 dans les 7 jours précédant un Grand Chelem (Roland Garros, Wimbledon, US Open, Australian Open) :
+  - Si **favori est top 20 ET dans le main draw** du Grand Chelem suivant → **soustraire 10-15%** de la proba implicite "modèle"
+  - Si **outsider n'est PAS dans le main draw** (top 100+ classement, ou qualif uniquement) → **ajouter 5-10%** de proba à l'outsider (motivation maximale)
+  - Si **les 2 joueurs sont en main draw GS** → pas d'ajustement (motivation équivalente)
+
+**🔑 Règle "Asymétrie de motivation" plus large :**
+- Avant de pricer un favori, demander : "Quel est l'enjeu du match pour chacun des 2 joueurs/équipes ?"
+  - Match de saison régulière dans une longue série vs match couperet → asymétrie
+  - Tournoi tier 2 pour favori vs tournoi tier 1 pour outsider → asymétrie inverse
+  - Joueur fatigué de tournoi précédent vs joueur frais → ajustement physique
+
+**🔑 Règle "Boost ≠ permission de prendre plus de risque" :**
+- Le boost bookmaker augmente le rendement, pas la proba de gain
+- Tentation : "EV élevée → on prend même à 53% proba combinée"
+- Réalité : 46% de chance de perdre = perdre 1 fois sur 2 sur la durée. Pas confortable pour un combiné "safe pick"
+- **Nouveau seuil minimum** : combinés à proba ≥ 60% uniquement, même si boost rend l'EV séduisante
+
+### Action concrète pour la prochaine fois
+1. **Avant chaque pick tennis** : vérifier le calendrier ATP/WTA des Grands Chelems sous 7 jours
+2. **Avant chaque combiné** : check les 2 risques d'asymétrie de motivation
+3. **Pour boost bwin** : appliquer un facteur de prudence (réduire la proba estimée de 5% pour compenser le biais "l'EV nous a séduits")
+
+---
+
 ## 🎯 Méta-leçons (synthèse)
 
 1. **Le process > le résultat** : un pick gagné par chance ne valide pas la méthode. Un pick perdu après bon process est statistiquement attendu.
