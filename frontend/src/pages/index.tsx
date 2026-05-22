@@ -169,7 +169,7 @@ export default function Home() {
       </Head>
 
       <main
-        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-2 lg:gap-5 flex-1 justify-between lg:justify-start lg:flex-none"
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-3 lg:gap-5"
       >
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
