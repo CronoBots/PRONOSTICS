@@ -8,26 +8,46 @@ import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, resendConfirmation } = useAuth();
   const { t } = useI18n();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setNeedsConfirmation(false);
+    setResent(false);
     setBusy(true);
     const res = await login(email.trim(), password);
     setBusy(false);
     if (res.ok) {
       showToast(t("auth.toastLoggedIn"), { type: "success", duration: 2500 });
       router.push("/");
+    } else if (res.needsConfirmation) {
+      setNeedsConfirmation(true);
+      setError(t("auth.errEmailNotConfirmed"));
     } else {
       setError(res.error ?? t("auth.errGeneric"));
+    }
+  }
+
+  async function handleResend() {
+    setResending(true);
+    const res = await resendConfirmation(email.trim());
+    setResending(false);
+    if (res.ok) {
+      setResent(true);
+      showToast(t("auth.toastConfirmationResent"), { type: "success" });
+    } else {
+      showToast(res.error ?? t("auth.errGeneric"), { type: "error" });
     }
   }
 
@@ -99,11 +119,33 @@ export default function LoginPage() {
                 {t("auth.forgotPassword")}
               </Link>
             </div>
-            {error && (
+            {needsConfirmation ? (
+              <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-lg p-3.5 text-sm space-y-2.5">
+                <div className="font-semibold text-yellow-400 flex items-center gap-2">
+                  <span>📬</span>
+                  <span>{t("auth.errEmailNotConfirmed")}</span>
+                </div>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  {t("auth.errEmailNotConfirmedBody")}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resending || resent}
+                  className="w-full py-2 rounded-lg bg-yellow-400/15 border border-yellow-400/40 text-yellow-300 font-semibold text-xs hover:bg-yellow-400/25 disabled:opacity-60"
+                >
+                  {resending
+                    ? "…"
+                    : resent
+                      ? `✓ ${t("auth.confirmationResent")}`
+                      : t("auth.resendConfirmation")}
+                </button>
+              </div>
+            ) : error ? (
               <div className="text-sm text-accent-red bg-accent-red/10 rounded-lg px-3 py-2">
                 {error}
               </div>
-            )}
+            ) : null}
             <button
               type="submit"
               disabled={busy}

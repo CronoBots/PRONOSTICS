@@ -2,16 +2,28 @@ import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
+import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 
 export default function ForgotPasswordPage() {
   const { t } = useI18n();
+  const { requestPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSent(true);
+    setError(null);
+    setBusy(true);
+    const res = await requestPasswordReset(email.trim());
+    setBusy(false);
+    if (res.ok) {
+      setSent(true);
+    } else {
+      setError(res.error ?? t("auth.errGeneric"));
+    }
   }
 
   return (
@@ -50,6 +62,7 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4 text-sm text-center text-accent-green">
               {t("auth.forgotPasswordSent")}
+              {email && <div className="text-xs text-white/60 mt-2 font-mono break-all">{email}</div>}
             </div>
           ) : (
             <form onSubmit={onSubmit} className="space-y-4">
@@ -66,11 +79,17 @@ export default function ForgotPasswordPage() {
                   required
                 />
               </label>
+              {error && (
+                <div className="text-sm text-accent-red bg-accent-red/10 rounded-lg px-3 py-2">
+                  {error}
+                </div>
+              )}
               <button
                 type="submit"
-                className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold"
+                disabled={busy}
+                className="w-full py-3 rounded-lg bg-gradient-to-r from-accent-blue to-purple-500 text-white font-semibold disabled:opacity-50"
               >
-                {t("auth.sendLink")}
+                {busy ? "…" : t("auth.sendLink")}
               </button>
             </form>
           )}

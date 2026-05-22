@@ -31,16 +31,18 @@ interface AuthContextType {
   user: AuthUser | null;
   ready: boolean;
   mode: "supabase" | "mock";
-  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string; needsConfirmation?: boolean }>;
   register: (
     pseudo: string,
     email: string,
     password: string,
-  ) => Promise<{ ok: boolean; error?: string }>;
+  ) => Promise<{ ok: boolean; error?: string; needsConfirmation?: boolean }>;
   logout: () => Promise<void>;
   upgradeTo: (plan: "monthly" | "yearly") => Promise<void>;
   cancelSubscription: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  resendConfirmation: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  requestPasswordReset: (email: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -176,7 +178,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         password,
       });
-      if (error) return { ok: false, error: error.message };
+      if (error) {
+        // Supabase renvoie le code "email_not_confirmed" + message dans error.code
+        // ou un message contenant "Email not confirmed" sur certaines versions.
+        const code = (error as { code?: string }).code;
+        const needsConfirmation =
+          code === "email_not_confirmed" ||
+          /email\s*not\s*confirmed/i.test(error.message);
+        return { ok: false, error: error.message, needsConfirmation };
+      }
       if (data.session) {
         const u = await loadAuthUserFromSupabase(data.session);
         setUser(u);
@@ -205,20 +215,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (mode === "supabase" && supabase) {
+      const emailRedirectTo =
+        typeof window !== "undefined" ? `${window.location.origin}/login` : undefined;
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: { pseudo },  // → raw_user_meta_data, lu par le trigger handle_new_user
+          emailRedirectTo,
         },
       });
       if (error) return { ok: false, error: error.message };
-      // En mode "Email confirmation OFF", session est dispo immédiatement
+      // En mode "Email confirmation OFF", session est dispo immédiatement.
+      // En mode ON, data.session === null et l'utilisateur doit cliquer le mail.
       if (data.session) {
         const u = await loadAuthUserFromSupabase(data.session);
         setUser(u);
+        return { ok: true };
       }
-      return { ok: true };
+      // Pas de session → confirmation email requise
+      return { ok: true, needsConfirmation: true };
     }
 
     // Mode mock
@@ -295,6 +311,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function resendConfirmation(email: string) {
+    email = email.trim();
+    if (!email.includes("@")) return { ok: false, error: "Email invalide" };
+    if (mode === "supabase" && supabase) {
+      const emailRedirectTo =
+        typeof window !== "undefined" ? `${window.location.origin}/login` : undefined;
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: emailRedirectTo ? { emailRedirectTo } : undefined,
+      });
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    }
+    // Mode mock : no-op, succeed silently
+    return { ok: true };
+  }
+
+  async function requestPasswordReset(email: string) {
+    email = email.trim();
+    if (!email.includes("@")) return { ok: false, error: "Email invalide" };
+    if (mode === "supabase" && supabase) {
+      const redirectTo =
+        typeof window !== "undefined" ? `${window.location.origin}/login` : undefined;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+      if (error) return { ok: false, error: error.message };
+      return { ok: true };
+    }
+    return { ok: true };
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -307,6 +356,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         upgradeTo,
         cancelSubscription,
         refreshUser,
+        resendConfirmation,
+        requestPasswordReset,
       }}
     >
       {children}

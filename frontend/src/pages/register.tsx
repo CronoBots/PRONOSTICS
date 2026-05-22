@@ -35,6 +35,13 @@ export default function RegisterPage() {
     const res = await register(pseudo, email.trim(), password);
     setBusy(false);
     if (res.ok) {
+      if (res.needsConfirmation) {
+        // Email confirmation activée côté Supabase : on redirige vers la page
+        // "vérifie ta boîte mail" plutôt que vers / (où l'user serait perdu
+        // sans session active).
+        router.push(`/verify-email?email=${encodeURIComponent(email.trim())}`);
+        return;
+      }
       showToast(t("auth.toastAccountCreated"), { type: "success", duration: 3000 });
       router.push("/");
     } else {

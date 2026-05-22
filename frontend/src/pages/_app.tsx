@@ -13,7 +13,7 @@ import { I18nProvider } from "@/lib/i18n";
 import { PreferencesProvider } from "@/lib/preferences";
 import { ThemeProvider } from "@/lib/theme";
 
-const HIDE_NAV = new Set(["/login", "/register", "/forgot-password"]);
+const HIDE_NAV = new Set(["/login", "/register", "/forgot-password", "/verify-email"]);
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
