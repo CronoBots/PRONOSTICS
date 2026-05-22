@@ -78,7 +78,7 @@ export function AnalyzerGeneral({ picks }: Props) {
         <h3 className="text-center text-sm font-semibold text-white/80 mb-3">
           {t("analyzer.section.statesBreakdown")}
         </h3>
-        <div className="h-56 w-full">
+        <div className="h-56 w-full [&_*:focus]:outline-none">
           <ResponsiveContainer>
             <PieChart>
               <Pie
@@ -89,6 +89,7 @@ export function AnalyzerGeneral({ picks }: Props) {
                 outerRadius={92}
                 stroke="none"
                 paddingAngle={2}
+                isAnimationActive
               >
                 {data.map((entry) => (
                   <Cell key={entry.state} fill={entry.color} />
@@ -96,27 +97,72 @@ export function AnalyzerGeneral({ picks }: Props) {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: "#14172c",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 8,
+                  background: "rgba(20, 23, 44, 0.95)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 10,
+                  padding: "8px 12px",
                   fontSize: 12,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
                 }}
-                formatter={(value: number, name: string) => [
-                  t(value > 1 ? "analyzer.bet.many" : "analyzer.bet.one", { n: value }),
-                  name,
-                ]}
+                wrapperStyle={{ outline: "none" }}
+                content={({ active, payload }) => {
+                  if (!active || !payload || payload.length === 0) return null;
+                  const item = payload[0];
+                  const value = item.value as number;
+                  const name = item.name as string;
+                  const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+                  const color = item.payload?.color || "#ffffff";
+                  return (
+                    <div
+                      style={{
+                        background: "rgba(20, 23, 44, 0.95)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: 10,
+                        padding: "8px 12px",
+                        fontSize: 12,
+                        color: "#fff",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                      }}
+                    >
+                      <div style={{ fontWeight: 700, marginBottom: 2 }}>{name}</div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 10,
+                            height: 10,
+                            background: color,
+                            borderRadius: 2,
+                          }}
+                        />
+                        <span>
+                          {name}: {value} ({pct}%)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }}
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex flex-wrap justify-center gap-3 mt-3">
-          {states.map((s) => (
-            <div key={s.state} className="flex items-center gap-2 text-xs">
-              <span className="inline-block w-3 h-3 rounded-sm" style={{ background: s.color }} />
-              <span className="text-white/60">{s.label}</span>
-              <span className="text-white/40">({s.count})</span>
-            </div>
-          ))}
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-3">
+          {states.map((s) => {
+            const pct = total > 0 ? ((s.count / total) * 100).toFixed(0) : "0";
+            return (
+              <div key={s.state} className="flex items-center gap-1.5 text-xs">
+                <span
+                  className="inline-block w-5 h-2.5 rounded-sm"
+                  style={{ background: s.color }}
+                />
+                <span className="text-white/80 font-medium">{s.label}</span>
+                <span className="text-white/45 tabular-nums">
+                  ({s.count}
+                  {total > 0 ? ` · ${pct}%` : ""})
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className="text-center text-[11px] text-white/40 mt-3">
           {t(total > 1 ? "analyzer.totalBets.many" : "analyzer.totalBets.one", { n: total })}
