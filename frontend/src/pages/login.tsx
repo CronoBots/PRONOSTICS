@@ -29,9 +29,21 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>{t("auth.login")} — WTF</title>
+        <title>{`${t("auth.login")} — WTF`}</title>
       </Head>
-      <main className="min-h-screen flex flex-col">
+      <main className="min-h-screen flex flex-col relative">
+        {/* Back button — flottant en haut à gauche */}
+        <Link
+          href="/"
+          aria-label="Retour à l'accueil"
+          className="absolute top-4 left-4 z-10 w-10 h-10 rounded-full bg-white/15 backdrop-blur border border-white/30 flex items-center justify-center text-white hover:bg-white/25 transition"
+          style={{ marginTop: "var(--safe-top)" }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6" />
+          </svg>
+        </Link>
+
         {/* Hero vert */}
         <div className="bg-accent-green flex-1 flex items-center justify-center py-16 min-h-[280px]">
           <div className="text-center">

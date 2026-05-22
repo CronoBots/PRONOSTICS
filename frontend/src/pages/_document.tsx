@@ -4,11 +4,8 @@ export default function Document() {
   return (
     <Html lang="fr">
       <Head>
-        {/* Viewport : zoom désactivé + viewport-fit cover pour bords écran iOS */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-        />
+        {/* Note : <meta name="viewport"> est dans _app.tsx (recommandation Next.js).
+           Le _document.tsx contient uniquement les meta tags statiques + assets. */}
 
         {/* Cache busting agressif */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
