@@ -169,7 +169,7 @@ export default function Home() {
       </Head>
 
       <main
-        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-3 lg:gap-5"
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5"
       >
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
@@ -264,7 +264,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-2 shrink-0">
               <Link
                 href="/analyzer"
-                className="bg-bg-card border border-white/[0.06] rounded-xl py-2 flex items-center justify-center gap-1.5"
+                className="bg-bg-card border border-white/[0.06] rounded-xl py-1.5 flex items-center justify-center gap-1.5"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
                   <circle cx="12" cy="12" r="9" />
@@ -274,7 +274,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/calendrier"
-                className="bg-bg-card border border-white/[0.06] rounded-xl py-2 flex items-center justify-center gap-1.5"
+                className="bg-bg-card border border-white/[0.06] rounded-xl py-1.5 flex items-center justify-center gap-1.5"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
                   <rect x="3" y="4" width="18" height="17" rx="2" />
@@ -376,11 +376,11 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border border-white/[0.06] rounded-2xl px-3 py-2.5 lg:py-4 relative flex flex-col justify-center items-center">
+    <div className="bg-bg-card border border-white/[0.06] rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
       {onInfo && (
         <button
           onClick={onInfo}
-          className="absolute top-1.5 right-1.5 w-4 h-4 lg:w-5 lg:h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[9px] lg:text-[10px] flex items-center justify-center transition"
+          className="absolute top-1 right-1 w-4 h-4 lg:w-5 lg:h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[9px] lg:text-[10px] flex items-center justify-center transition"
           aria-label={t("home.helpFor", { label })}
         >
           ?
@@ -389,7 +389,7 @@ function StatTile({
       <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/50 text-center">
         {label}
       </div>
-      <div className={`text-xl lg:text-3xl font-bold tabular-nums text-center mt-0.5 lg:mt-1.5 ${colorClass}`}>
+      <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center mt-0 lg:mt-1.5 ${colorClass}`}>
         <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
       </div>
     </div>
