@@ -260,30 +260,6 @@ export default function Home() {
               )}
             </section>
 
-            {/* Analyses / Calendrier */}
-            <div className="grid grid-cols-2 gap-2 shrink-0">
-              <Link
-                href="/analyzer"
-                className="bg-bg-card border border-white/[0.06] shadow-card rounded-xl py-1.5 flex items-center justify-center gap-1.5"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
-                  <circle cx="12" cy="12" r="9" />
-                  <path strokeLinecap="round" d="M12 3v9l6 4" />
-                </svg>
-                <span className="text-sm font-medium">{t("home.analyzer")}</span>
-              </Link>
-              <Link
-                href="/calendrier"
-                className="bg-bg-card border border-white/[0.06] shadow-card rounded-xl py-1.5 flex items-center justify-center gap-1.5"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
-                  <rect x="3" y="4" width="18" height="17" rx="2" />
-                  <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
-                </svg>
-                <span className="text-sm font-medium">{t("home.calendar")}</span>
-              </Link>
-            </div>
-
             {/* Stat tiles : 2 rangées séparées pour distribuer les gaps
                 équitablement via justify-between sur main (mobile + desktop) */}
             {stats && (
@@ -325,6 +301,30 @@ export default function Home() {
                 </div>
               </>
             )}
+
+            {/* Analyses / Calendrier — déplacés SOUS les stats */}
+            <div className="grid grid-cols-2 gap-2 shrink-0">
+              <Link
+                href="/analyzer"
+                className="bg-bg-card border card-border shadow-card rounded-xl py-1.5 flex items-center justify-center gap-1.5"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
+                  <circle cx="12" cy="12" r="9" />
+                  <path strokeLinecap="round" d="M12 3v9l6 4" />
+                </svg>
+                <span className="text-sm font-medium">{t("home.analyzer")}</span>
+              </Link>
+              <Link
+                href="/calendrier"
+                className="bg-bg-card border card-border shadow-card rounded-xl py-1.5 flex items-center justify-center gap-1.5"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent-blue">
+                  <rect x="3" y="4" width="18" height="17" rx="2" />
+                  <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
+                </svg>
+                <span className="text-sm font-medium">{t("home.calendar")}</span>
+              </Link>
+            </div>
           </>
         )}
       </main>
@@ -376,7 +376,7 @@ function StatTile({
   const colorClass =
     tone === "blue" ? "text-accent-blue" : tone === "red" ? "text-accent-red" : "text-accent-green";
   return (
-    <div className="bg-bg-card border border-accent-green/30 shadow-card rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
+    <div className="bg-bg-card border card-border shadow-card rounded-2xl px-3 py-1.5 lg:py-4 relative flex flex-col justify-center items-center">
       {onInfo && (
         <button
           onClick={onInfo}
