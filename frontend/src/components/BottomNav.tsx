@@ -83,7 +83,7 @@ export function BottomNav() {
       <Link
         key={tab.href}
         href={tab.href}
-        className={`flex flex-col items-center gap-1 py-2.5 transition ${
+        className={`nav-pulse flex flex-col items-center gap-1 py-2.5 transition ${
           active ? "text-accent-green" : "text-white/40 hover:text-white/70"
         }`}
       >
@@ -114,7 +114,7 @@ export function BottomNav() {
           )}
           <Link
             href="/today"
-            className={`relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition ${
+            className={`nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition ${
               todayActive
                 ? "bg-gradient-to-br from-accent-green to-accent-blue shadow-accent-green/30"
                 : hasPendingPick

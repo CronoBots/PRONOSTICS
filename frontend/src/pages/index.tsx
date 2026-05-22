@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
-import { DailyStatusCard } from "@/components/DailyStatusCard";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
@@ -94,7 +94,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasFilters, setHasFilters] = useState(false);
   const [infoOpen, setInfoOpen] = useState<StatKey | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -162,117 +162,79 @@ export default function Home() {
         className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-3 lg:pt-6 pb-4 flex flex-col gap-3 lg:gap-5"
       >
         {/* Header compact — caché sur desktop (DesktopHeader prend le relais) */}
-        <header className="lg:hidden flex items-center justify-between shrink-0">
-          {/* Slot gauche : streak indicator si série en cours */}
-          {stats && stats.current_streak !== 0 ? (
-            <div
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold tabular-nums border ${
-                stats.current_streak > 0
-                  ? "bg-accent-green/10 text-accent-green border-accent-green/30"
-                  : "bg-accent-red/10 text-accent-red border-accent-red/30"
-              }`}
-              title={t("home.streakInProgress")}
-            >
-              <span>{stats.current_streak > 0 ? "🔥" : "🥶"}</span>
-              <span>
-                {stats.current_streak > 0 ? "+" : ""}
-                {stats.current_streak}
-              </span>
-            </div>
-          ) : (
-            <div className="w-9 h-9" aria-hidden />
-          )}
-          <Link
-            href="/today"
-            className="flex items-center gap-1.5 font-bold"
-            aria-label={t("nav.todayPick")}
-          >
-            <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
-              NΞXBΞT
-            </span>
-            <span className="w-5 h-5 rounded-full bg-accent-blue/20 text-accent-blue flex items-center justify-center text-xs">
-              ›
-            </span>
-          </Link>
-          <Link
-            href="/compte"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
-            aria-label={t("home.menu")}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-              <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </Link>
+        <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0">
+          <div aria-hidden />
+          <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent text-center">
+            NΞXBΞT
+          </h1>
+          <div className="flex justify-end">
+            <ThemeToggle />
+          </div>
         </header>
 
         {loading && <HomeSkeleton />}
 
         {!loading && history && (
           <>
-            {/* Daily Status Card — moment de check-in quotidien */}
-            <DailyStatusCard history={history} hasPickToday={hasPickToday} />
-
-            {/* Chart : hauteur fixe (pas de flex-1 stretch) */}
-            <section className="relative h-[240px] lg:h-[360px]">
+            {/* Chart NΞXBΞT — fond vert plein, period pills intégrés dans le cadre */}
+            <section className="relative h-[300px] lg:h-[420px]" ref={menuRef}>
               <BankrollChart
                 picks={picks}
                 startingBankroll={startingBankroll}
                 variant="hero"
                 mode={opts.mode}
                 showValues={opts.showValues}
-              />
-
-              {/* Bouton ⋯ */}
-              <div className="absolute top-3 right-3" ref={menuRef}>
-                <button
-                  onClick={() => setMenuOpen((o) => !o)}
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition"
-                  aria-label={t("home.chartOptions")}
-                >
-                  ⋯
-                </button>
-                {menuOpen && (
-                  <ChartOptionsMenu
-                    opts={opts}
-                    onChange={(next) => setOpts(next)}
-                    onClose={() => setMenuOpen(false)}
-                  />
-                )}
-              </div>
-            </section>
-
-            {/* Filter pills */}
-            <div className="grid grid-cols-5 gap-1.5">
-              {PERIODS.map((p) => {
-                const labelKey =
-                  p === "1j"
-                    ? "period.day"
-                    : p === "1s"
-                      ? "period.week"
-                      : p === "1m"
-                        ? "period.month"
-                        : "period.year";
-                return (
+                topRight={
                   <button
-                    key={p}
-                    onClick={() => setPeriod(p)}
-                    className={`py-1 rounded-full text-[11px] font-medium border transition text-center ${
-                      period === p
-                        ? "bg-bg-card text-accent-green border-accent-green"
-                        : "bg-bg-card/60 text-white/70 border-white/10"
-                    }`}
+                    onClick={() => setMenuOpen((o) => !o)}
+                    className="nav-pulse w-7 h-7 rounded-full border border-white/70 flex items-center justify-center text-white"
+                    aria-label={t("home.chartOptions")}
                   >
-                    {t(labelKey)}
+                    <span className="block w-1 h-1 rounded-full bg-white" />
                   </button>
-                );
-              })}
-              <Link
-                href="/filtres"
-                className="py-1 rounded-full text-[11px] font-medium border bg-bg-card/60 text-white/70 border-white/10 text-center"
-              >
-                {t("home.filters")}
-              </Link>
-            </div>
+                }
+                footer={
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {PERIODS.map((p) => {
+                      const labelKey =
+                        p === "1j"
+                          ? "period.day"
+                          : p === "1s"
+                            ? "period.week"
+                            : p === "1m"
+                              ? "period.month"
+                              : "period.year";
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => setPeriod(p)}
+                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center ${
+                            period === p
+                              ? "bg-white text-accent-green border-white"
+                              : "bg-white/15 text-white border-white/30"
+                          }`}
+                        >
+                          {t(labelKey)}
+                        </button>
+                      );
+                    })}
+                    <Link
+                      href="/filtres"
+                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border bg-white/15 text-white border-white/30 text-center"
+                    >
+                      {t("home.filters")}
+                    </Link>
+                  </div>
+                }
+              />
+              {menuOpen && (
+                <ChartOptionsMenu
+                  opts={opts}
+                  onChange={(next) => setOpts(next)}
+                  onClose={() => setMenuOpen(false)}
+                />
+              )}
+            </section>
 
             {/* Analyses / Calendrier */}
             <div className="grid grid-cols-2 gap-2">
@@ -414,7 +376,7 @@ interface MenuProps {
 function ChartOptionsMenu({ opts, onChange }: MenuProps) {
   const { t } = useI18n();
   return (
-    <div className="absolute top-11 right-0 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
+    <div className="absolute top-12 right-3 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold">
         {t("home.chartData")}
       </div>

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import {
   CartesianGrid,
   LabelList,
@@ -21,6 +21,11 @@ interface Props {
   variant?: "default" | "hero";
   mode?: ChartMode;
   showValues?: boolean;
+  /** Contenu rendu en bas du container vert (variant hero uniquement),
+   *  utilisé typiquement pour les period pills 1j/1s/1m/1a. */
+  footer?: ReactNode;
+  /** Element rendu en absolute top-right (typiquement bouton ⋯). */
+  topRight?: ReactNode;
 }
 
 interface Point {
@@ -105,6 +110,8 @@ export function BankrollChart({
   variant = "default",
   mode = "capital",
   showValues = false,
+  footer,
+  topRight,
 }: Props) {
   const { t, lang } = useI18n();
   const locale = localeForLang(lang);
@@ -119,92 +126,94 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
-    // Style sparkline sombre (inspiré /stats StatsHero) :
-    // - fond gradient bg-card → bg-elevated
-    // - ligne verte/rouge selon trend (vs flashy green/blanc)
-    // - grid + axes très discrets
-    // - tooltip dark cohérent avec le reste de l'app
-    const lastVal = data[data.length - 1]?.value ?? 0;
-    const baseline = mode === "capital" ? startingBankroll : 0;
-    const positive = lastVal >= baseline;
-    const lineColor = positive ? "#10d9a3" : "#ff4d6d";
-
+    // Hero NΞXBΞT : fond vert plein (#10d9a3 = couleur exacte du logo),
+    // tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
+    // les period pills sont rendus via les slots topRight / footer.
     return (
-      <div className="h-full min-h-[180px] w-full rounded-2xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated border border-white/[0.06] shadow-card relative">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 8 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeWidth={1} vertical={false} />
-            <XAxis dataKey="label" hide />
-            <YAxis
-              stroke="rgba(255,255,255,0.25)"
-              tick={{ fontSize: 11, fill: "rgba(255,255,255,0.5)" }}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(v) => `${Math.round(v)}€`}
-              domain={["dataMin - 2", "dataMax + 2"]}
-              width={42}
-              tickCount={5}
-            />
-            <Tooltip
-              contentStyle={{
-                background: "rgb(var(--bg-card-rgb))",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              labelStyle={{ color: "rgba(255,255,255,0.5)" }}
-              formatter={(v: number) => [
-                `${v.toFixed(2)} €`,
-                mode === "capital" ? labels.capital : labels.benefit,
-              ]}
-              cursor={{ stroke: "rgba(255,255,255,0.3)", strokeWidth: 1 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={lineColor}
-              strokeWidth={2.5}
-              dot={showValues ? { fill: lineColor, r: 4 } : false}
-              connectNulls={false}
-              isAnimationActive={true}
-              animationDuration={1200}
-            >
-              {showValues && (
-                <LabelList
-                  dataKey="value"
-                  position="top"
-                  fill="rgba(255,255,255,0.85)"
-                  fontSize={11}
-                  formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
-                />
-              )}
-            </Line>
-            {hasProjection && (
+      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-green relative flex flex-col">
+        {topRight && (
+          <div className="absolute top-3 right-3 z-10">{topRight}</div>
+        )}
+        <div className="flex-1 min-h-[160px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 6 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
+              <XAxis dataKey="label" hide />
+              <YAxis
+                stroke="rgba(255,255,255,0.85)"
+                tick={{ fontSize: 11, fill: "#ffffff" }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(v) => `${Math.round(v)}€`}
+                domain={["dataMin - 2", "dataMax + 2"]}
+                width={42}
+                tickCount={6}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "rgba(0,0,0,0.55)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                  color: "#fff",
+                }}
+                labelStyle={{ color: "rgba(255,255,255,0.75)" }}
+                formatter={(v: number) => [
+                  `${v.toFixed(2)} €`,
+                  mode === "capital" ? labels.capital : labels.benefit,
+                ]}
+                cursor={{ stroke: "rgba(255,255,255,0.5)", strokeWidth: 1 }}
+              />
               <Line
                 type="monotone"
-                dataKey="ifWin"
-                stroke={lineColor}
-                strokeWidth={2.5}
-                strokeDasharray="6 5"
-                strokeOpacity={0.6}
-                dot={showValues ? { fill: lineColor, r: 4 } : false}
+                dataKey="value"
+                stroke="#ffffff"
+                strokeWidth={3}
+                dot={showValues ? { fill: "#fff", r: 4 } : false}
                 connectNulls={false}
                 isAnimationActive={true}
-                animationDuration={1200}
+                animationDuration={1000}
               >
                 {showValues && (
                   <LabelList
-                    dataKey="ifWin"
+                    dataKey="value"
                     position="top"
-                    fill="rgba(255,255,255,0.85)"
+                    fill="#ffffff"
                     fontSize={11}
                     formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
                   />
                 )}
               </Line>
-            )}
-          </LineChart>
-        </ResponsiveContainer>
+              {hasProjection && (
+                <Line
+                  type="monotone"
+                  dataKey="ifWin"
+                  stroke="#ffffff"
+                  strokeWidth={3}
+                  strokeDasharray="6 5"
+                  strokeOpacity={0.8}
+                  dot={showValues ? { fill: "#fff", r: 4 } : false}
+                  connectNulls={false}
+                  isAnimationActive={true}
+                  animationDuration={1000}
+                >
+                  {showValues && (
+                    <LabelList
+                      dataKey="ifWin"
+                      position="top"
+                      fill="#ffffff"
+                      fontSize={11}
+                      formatter={(v: number) => (v !== null ? `${v.toFixed(2)}` : "")}
+                    />
+                  )}
+                </Line>
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        {footer && (
+          <div className="px-3 pb-3 pt-1 border-t border-white/15">{footer}</div>
+        )}
       </div>
     );
   }
