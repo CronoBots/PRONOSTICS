@@ -50,9 +50,11 @@
   --bg-base: #f6fbf9;
   --bg-card: #ffffff;
   --bg-elevated: #eff6f3;
-  /* Accents : assombris pour le contraste, cohérents avec le green dominant */
-  --accent-green: #0d9b78;
-  --accent-greenDim: #097554;
+  /* Accents : on garde le teal signature #10D9A3 en LIGHT aussi (cohérence
+     avec la bannière et l'identité du brand). Le contraste sur fond clair
+     reste OK puisque c'est un teal saturé. */
+  --accent-green: #10d9a3;
+  --accent-greenDim: #0fb088;
   --accent-blue: #0e7490;             /* teal foncé, plus le violet */
   --accent-red: #e0344f;
   --accent-gold: #d97706;
