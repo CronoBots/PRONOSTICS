@@ -76,6 +76,8 @@ body {
   -webkit-text-size-adjust: 100%;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: auto;
+  /* Safety net : aucun élément ne doit causer de scroll horizontal */
+  overflow-x: hidden;
 }
 
 body.lock-scroll {
