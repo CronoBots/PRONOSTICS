@@ -67,43 +67,24 @@ function StatsSection({ title, rows }: { title: string; rows: StatRow[] }) {
 }
 
 function buildSections(stats: HistoryStats, t: TFn): { title: string; rows: StatRow[] }[] {
+  // Note v4: les KPI affichés dans <StatsHero> (bankroll, win rate, ROI, profit,
+  // drawdown, won/lost/pending) sont volontairement absents de ces sections
+  // pour éviter la redondance. Idem capital départ/actuel (dans le Hero).
   return [
     {
       title: t("statsPage.section.performances"),
       rows: [
         { label: t("statsPage.bets"), value: `${stats.total_picks}`, tone: "blue" },
-        { label: t("statsPage.profit"), value: `${fmtSigned(stats.profit)} €`, tone: signTone(stats.profit) },
-        { label: t("statsPage.roi"), value: `${fmtSigned(stats.roi_percent, "%")}`, tone: signTone(stats.roi_percent) },
         {
           label: t("statsPage.progression"),
           value: `${fmtSigned(stats.progression_percent, "%")}`,
           tone: signTone(stats.progression_percent),
-        },
-        { label: t("statsPage.successRate"), value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
-        {
-          label: t("statsPage.drawdownMax"),
-          value: `${stats.drawdown_max.toFixed(2)} €`,
-          tone: stats.drawdown_max > 0 ? "red" : "neutral",
-        },
-      ],
-    },
-    {
-      title: t("statsPage.section.capital"),
-      rows: [
-        { label: t("statsPage.capitalStart"), value: `${stats.starting_bankroll.toFixed(2)} €` },
-        {
-          label: t("statsPage.capitalCurrent"),
-          value: `${stats.current_bankroll.toFixed(2)} €`,
-          tone: signTone(stats.current_bankroll - stats.starting_bankroll),
         },
       ],
     },
     {
       title: t("statsPage.section.bilan"),
       rows: [
-        { label: t("statsPage.betsWon"), value: `${stats.won}`, tone: "green" },
-        { label: t("statsPage.betsLost"), value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
-        { label: t("statsPage.betsPending"), value: `${stats.pending}`, tone: "blue" },
         { label: t("statsPage.bestStreak"), value: `${stats.best_streak}`, tone: "green" },
         {
           label: t("statsPage.worstStreak"),
