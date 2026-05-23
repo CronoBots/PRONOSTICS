@@ -1,54 +1,76 @@
-# Watchlist NΞXBΞT — Samedi 23 mai 2026
+# Watchlist NΞXBΞT v2 — Samedi 23 mai 2026
 
-**Heure d'analyse** : 23/05/2026 ~10h00 Belgique (08h00 UTC)
+**Heure d'analyse v2** : 23/05/2026 ~11h20 Belgique (09h20 UTC)
 **Bankroll** : 25,00 € (post-loss combiné Ruud+Olympiakos 22/05)
-**Contexte sport** : Veille de Roland Garros (J-1, démarre dim 24/05) → **AB-1 active à fond** sur top-30 ATP. Final Four Euroleague dimanche. Pas de Champions League / Europa League ce soir. Pas de Top 14, pas de F1 jusqu'à demain.
+**Branche** : claude/agent-pickup-testing-PjfQi
+**Méthodologie** : v2 (commit f2741de — shrinkage + F2≥0.62 + F3≥+7% + 1 sharp obligatoire)
+**Contexte sport** : J-1 avant Roland Garros (démarre dimanche 24/05) → AB-1 actif sur top-10 ATP. Final Four Euroleague (final dimanche). NBA ECF + NHL ECF en cours.
 
-## Cartographie complète (≥ 15 events scannés)
+---
 
-| # | Match | Sport / Compétition | Kickoff UTC | Cote favori (estim.) | Premium ? | Note rapide |
-|---|-------|---------------------|-------------|----------------------|-----------|-------------|
-| 1 | Knicks @ Cavaliers (G3 ECF) | NBA Playoffs (Conf Finals) | 23/05 00:00 (sam soir US, dim 02:00 BE) | CLE 1.74 (-2.5) | ✅ premium | Knicks mènent 2-0, Cavs back-against-the-wall à domicile. Polymarket CLE 56% |
-| 2 | Canadiens @ Hurricanes (G2 ECF) | NHL Stanley Cup Conf Finals | 23/05 23:00 (sam 1h matin BE) | CAR ~1.48 (-205) | ✅ premium | MTL mène 1-0 après upset G1 6-2. CAR lourd favori chez eux |
-| 3 | **Navone vs Tien** (Geneva Final) | ATP 250 Geneva (clay) | 23/05 13:00 | Navone 1.77 | ⚠️ J-1 RG | Finale sans top-10, mais J-1 avant Roland Garros |
-| 4 | **Kalinina vs Marcinko** (Rabat Final) | WTA 250 Rabat (clay) | 23/05 12:00 | Kalinina 1.41 | ⚠️ J-1 RG | Kalinina 33-9 en 2026, n'a pas perdu un set du tournoi |
-| 5 | **Navarro vs Mboko** (Strasbourg Final) | WTA 250 Strasbourg (clay) | 23/05 ~13:00 | TBD (Mboko ~1.65) | ⚠️ J-1 RG | Mboko top seed, breakout star canadienne |
-| 6 | Rays @ Yankees | MLB regular season | 23/05 17:35 | NYY -144 (1.69) | non | Weathers (NYY) vs Rasmussen (TB). StatsInsider 60% NYY |
-| 7 | Dodgers @ Brewers | MLB regular season | 23/05 23:15 | LAD -182 (1.55) | non | Sasaki vs Gasser |
-| 8 | Astros @ Cubs | MLB regular season | 23/05 18:20 | TBD | non | Pas analysé en profondeur |
-| 9 | Pirates @ Blue Jays | MLB regular season | 23/05 19:07 | TOR favori | non | Pas analysé en profondeur |
-| 10 | Cardinals @ Reds | MLB regular season | 23/05 23:15 | TBD | non | Pas analysé en profondeur |
-| 11 | Twins @ Red Sox | MLB regular season | 23/05 20:10 | BOS favori | non | Pas analysé en profondeur |
-| 12 | Guardians @ Phillies | MLB regular season | 23/05 20:05 | PHI favori | non | Pas analysé en profondeur |
-| 13 | Nationals @ Braves | MLB regular season | 23/05 23:15 | ATL favori | non | Pas analysé en profondeur |
-| 14 | Tigers @ Orioles | MLB regular season | 23/05 20:15 | BAL favori | non | Pas analysé en profondeur |
-| 15 | Mariners @ Royals | MLB regular season | 23/05 20:10 | TBD | non | Pas analysé en profondeur |
-| 16 | White Sox @ Giants | MLB regular season | 23/05 22:05 | SF favori | non | Pas analysé en profondeur |
-| 17 | Rangers @ Angels | MLB regular season | 23/05 22:05 | TBD | non | Pas analysé en profondeur |
-| 18 | A's @ Diamondbacks | MLB regular season | 23/05 23:10 | ARI favori | non | Pas analysé en profondeur |
-| 19 | Liga MX / MLS various | Soccer mineur | varies | varies | non | Hors profil safe |
-| 20 | Bundesliga relegation 2nd leg | Soccer | Lundi 25/05 | hors fenêtre | non | F5 KO (>36h) |
+## Cartographie complète (≥ 15 events scannés en parallèle)
 
-**Évènements éliminés d'office** :
-- ❌ NBA Spurs/Thunder G3 : était hier vendredi 22/05 (déjà joué)
-- ❌ NHL Vegas/Colorado : pas de match aujourd'hui
-- ❌ Euroleague Final : dimanche 24/05 (J+1)
-- ❌ UFC : pas d'event ce soir (UFC Macau le 30/05)
-- ❌ Champions League / Europa League : déjà joués (EL 20/05, CL 30/05)
-- ❌ Roland Garros : Day 1 demain dimanche 24/05
-- ❌ F1 / MotoGP : courses dimanche
+| # | Match | Sport / Compétition | Kickoff UTC | Cote favori (estim.) | Premium ? | Sharp dispo ? |
+|---|-------|---------------------|-------------|----------------------|-----------|---------------|
+| 1 | **Navone vs Tien** (Geneva Final) | ATP 250 Geneva (clay) | 13:00 | Navone 1.77 | Premium tennis | Polymarket peu liquide |
+| 2 | **Mboko vs Navarro** (Strasbourg Final) | WTA 250 Strasbourg (clay) | 12:00 | Mboko 1.57 | Premium WTA | Stats Insider 59% |
+| 3 | **Kalinina vs Marcinko** (Rabat Final) | WTA 250 Rabat (clay) | 12:00 | Kalinina 1.41 | Premium WTA | Aucun sharp dispo |
+| 4 | **Hurricanes vs Canadiens G2** | NHL ECF | 23:00 | CAR ~1.48 (-205) | ✅ premium | Polymarket dispo |
+| 5 | **Knicks @ Cavaliers G3** | NBA ECF | 24:00 (00:00 24/05) | CLE 1.66 (-2.5) | ✅ premium | Polymarket + FanDuel models |
+| 6 | Hull vs Middlesbrough | Championship PO Final (Wembley) | 14:30 | équilibré | Premium foot | Betfair Exchange dispo |
+| 7 | Espanyol vs Real Sociedad | La Liga J38 | 19:00 | équilibré | Final day | Betfair dispo mais peu liquide |
+| 8 | Rays @ Yankees | MLB | 17:35 | NYY 1.69 | non | Pinnacle dispo |
+| 9 | Astros @ Cubs | MLB | 18:20 | équilibré | non | Pinnacle dispo |
+| 10 | Pirates @ Blue Jays | MLB | 19:07 | TOR favori | non | Pinnacle dispo |
+| 11 | Tigers @ Orioles | MLB | 20:05 | BAL favori | non | Pinnacle dispo |
+| 12 | Guardians @ Phillies | MLB | 20:05 | PHI favori | non | Pinnacle dispo |
+| 13 | White Sox @ Giants | MLB | 22:05 | SF favori | non | Pinnacle dispo |
+| 14 | Mariners @ Royals | MLB | 20:10 | équilibré | non | Pinnacle dispo |
+| 15 | Twins @ Red Sox | MLB | 20:10 | BOS favori | non | Pinnacle dispo |
+| 16 | Nationals @ Braves | MLB | 23:15 | ATL favori | non | Pinnacle dispo |
+| 17 | Mets @ Marlins | MLB | 22:10 | NYM favori | non | Pinnacle dispo |
+| 18 | Cardinals @ Reds | MLB | 23:15 | équilibré | non | Pinnacle dispo |
+| 19 | Dodgers @ Brewers | MLB | 23:15 | LAD 1.55 | non | Pinnacle dispo |
+| 20 | Rockies @ Diamondbacks | MLB | 02:10 | ARI favori lourd | non | Pinnacle dispo |
+| 21 | Rangers @ Angels | MLB | 02:05 | équilibré | non | Pinnacle dispo |
+| 22 | A's @ TBD | MLB | varies | varies | non | Pinnacle dispo |
 
-## Funnel candidates (top 5 pour pré-filtrage)
+**Évènements hors fenêtre** :
+- Roland Garros Day 1 (dimanche 24/05 09:00 UTC) — F5 limite, à monitorer demain
+- UFC Topuria-Gaethje (dimanche 24/05)
+- Euroleague Final (dimanche 24/05)
+- F1 Monaco Qualifs (samedi mais hors profil)
+- UEFA Conference League Final (mercredi 27/05)
 
-1. **Knicks @ Cavaliers G3** (cote CLE 1.74 ou NYK ~2.10)
-2. **Canadiens @ Hurricanes G2** (cote CAR ~1.48)
-3. **Navone vs Tien** Geneva Final (Navone 1.77)
-4. **Kalinina vs Marcinko** Rabat Final (Kalinina 1.41)
-5. **Mboko vs Navarro** Strasbourg Final (Mboko ~1.65)
+---
+
+## Funnel pré-filtrage v2 (top 5 retenus pour Étape 2/3)
+
+Critères stricts v2 :
+- F1 : cote bwin 1.50 ≤ x ≤ 3.00
+- F4 : ≥ 3 sources pros + ≥ 1 sharp (Polymarket / Pinnacle / Betfair Exchange)
+- Élimination immédiate des cotes < 1.50 (Kalinina 1.41 → F1 KO direct)
+
+1. **Navone vs Tien** Geneva Final — cote Navone 1.77 (F1 OK, modèle Dimers 58%)
+2. **Hurricanes vs Canadiens G2** — cote CAR 1.48 (F1 KO, < 1.50) — ÉLIMINÉ
+3. **Mboko vs Navarro** Strasbourg Final — cote Mboko 1.57 (F1 OK, Stats Insider 59%)
+4. **Knicks @ Cavaliers G3** — cote CLE 1.66 ou NYK ~2.20 (F1 OK)
+5. **Dodgers @ Brewers** — cote LAD 1.55 (F1 OK mais MLB AB-5 si > 2.50 NA, Sasaki ERA 5.09)
+
+**Éliminés en bloc** :
+- Kalinina (Rabat) cote 1.41 → F1 KO (sous 1.50)
+- Hurricanes G2 cote 1.48 → F1 KO (sous 1.50)
+- MLB sans pitcher matchup explicite (AB-5 + manque d'edge sourcé)
+- Hull/Middlesbrough (info insuffisante, marché volatil one-off Wembley)
+- Espanyol/Real Sociedad (no edge identifié)
+
+---
 
 ## Notes de cartographie
-- Aucun Grand Slam aujourd'hui (RG démarre demain).
-- AB-1 (top-10 ATP J-2/-1 avant GS) **non applicable** : ni Navone (ATP #44), ni Tien (ATP #75) n'est top-10 et aucun des 2 n'est dans le top-20.
-- Mais "économie de forces" reste un risque sur tout joueur ATP qui joue RG demain (cf Ruud 22/05). À vérifier dans Étape 3 si Navone/Tien sont engagés à RG.
-- Footabll de club européen quasi-terminé pour la saison (sauf relegation playoffs).
-- MLB : 14 matchs disponibles mais aucun "premium". Coverage pro standard.
+
+- **Pas de Grand Slam aujourd'hui** (RG démarre demain dimanche)
+- **AB-1** non applicable directement : Navone #44 et Tien #75 ne sont pas top-10 ATP
+- **MAIS** "économie de forces pré-RG" reste un risque générique sur tout joueur ATP engagé à RG demain — à vérifier dans Étape 3
+- **PC-3 (promo bwin)** : aucune promo combiné identifiée aujourd'hui (les boost bwin ce mois-ci demandent min 3 picks)
+- **Footabll européen** quasi-terminé (sauf Wembley Championship PO Final)
+- **MLB** : 14 matchs mais aucun "premium", coverage standard sans edge clair
