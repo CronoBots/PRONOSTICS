@@ -12,28 +12,32 @@ module.exports = {
           elevated: "rgb(var(--bg-elevated-rgb) / <alpha-value>)",
         },
         accent: {
-          // Palette NΞXBΞT : monochromatique teal/emerald (cohérent avec le logo).
-          // `accent-blue` n'est plus violet (#7c5cff) mais cyan-teal foncé pour
-          // s'harmoniser avec le green dominant.
-          green: "#10d9a3",      // émeraude vive (couleur signature du logo)
+          // Palette NΞXBΞT v5 — Cobalt Premium (24/05/2026).
+          // accent-blue est désormais la COULEUR DE MARQUE (cobalt du nouveau
+          // logo: N bleu / N blanc imbriques sur fond noir). Brand + CTA primaire.
+          // accent-green reste vert (sémantique gain universelle).
+          green: "#10d9a3",      // gains / win / profit positif
           greenDim: "#0fb088",
-          red: "#ff4d6d",        // rose punchy (signaux négatifs)
-          blue: "#0e7490",       // cyan-teal foncé (CTA secondaires, accents)
+          red: "#ff4d6d",        // pertes / loss
+          blue: "#2A4BFA",       // COBALT — couleur de marque, CTA primaire, brand
+          blueDim: "#1F36C4",
           gold: "#fcd34d",       // accent premium
         },
       },
       boxShadow: {
         card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.6)",
-        // Ombre plus subtile : utilisée sur le chart hero (le shadow-card
-        // était trop marqué sur la grande card verte).
+        // Ombre plus subtile : utilisée sur le chart hero
         "card-soft": "0 4px 12px -6px rgba(0,0,0,0.35)",
-        glow: "0 0 32px 0 rgba(16,217,163,0.25)",
+        // Glow signature désormais cobalt (au lieu de green)
+        glow: "0 0 32px 0 rgba(42,75,250,0.30)",
+        // Conservé pour les composants qui veulent un halo vert (gains)
+        "glow-green": "0 0 32px 0 rgba(16,217,163,0.25)",
       },
       backgroundImage: {
         // Pattern hexagonal subtil (utilisé en bg-hex pour les hero sections)
         // SVG inline = pas de file fetch supplémentaire
         "hex-pattern":
-          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92' width='80' height='92'><polygon points='40,2 76,23 76,69 40,90 4,69 4,23' fill='none' stroke='%2310d9a3' stroke-opacity='0.08' stroke-width='1.5'/></svg>\")",
+          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92' width='80' height='92'><polygon points='40,2 76,23 76,69 40,90 4,69 4,23' fill='none' stroke='%232A4BFA' stroke-opacity='0.08' stroke-width='1.5'/></svg>\")",
       },
       fontFamily: {
         sans: [

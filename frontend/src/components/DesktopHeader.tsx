@@ -58,14 +58,14 @@ export function DesktopHeader() {
   return (
     <header className="hidden lg:block sticky top-0 z-40 bg-bg-card/90 backdrop-blur border-b border-white/[0.06]">
       <div className="max-w-7xl mx-auto px-6 xl:px-8 h-16 flex items-center gap-6">
-        {/* Logo */}
+        {/* Logo + nom marque — couleur cobalt (couleur signature v5) */}
         <Link
           href="/"
           className="flex items-center gap-2 font-bold text-lg shrink-0"
           aria-label="NΞXBΞT"
         >
           <BrandLogo size={36} />
-          <span className="text-accent-green">NΞXBΞT</span>
+          <span className="text-accent-blue">NΞXBΞT</span>
         </Link>
 
         {/* Streak indicator (à côté du logo) */}
