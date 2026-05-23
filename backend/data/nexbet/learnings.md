@@ -53,6 +53,34 @@ modèles).
 donnent proba combinée 0.75³ = 42% — c'est sous notre seuil F2 (60%).
 **Action** : rejet automatique de tout combiné 3+ jambes.
 
+### AB-5 : MLB Moneyline cote > 2.50 sans matchup pitcher exceptionnel
+**Validé le** : 20/05/2026 (Tigers LOSS vs Cleveland, cote 2.73 boostée)
+**Description** : en MLB régulière, une cote ML > 2.50 indique une vraie
+infériorité de l'équipe pickée. Le baseball a une variance match-to-match
+extrêmement élevée (single game = 60% prédictif vs 80%+ NBA/NHL) — les
+"value bets" identifiés à cote 2.50+ sont souvent des trappes du modèle
+qui sous-pondère le lanceur du jour.
+**Action** : rejeter automatiquement tout MLB ML cote > 2.50 SAUF si :
+  - Top-5 ERA pitcher prévu pour notre équipe (confirmé via FanGraphs/MLB.com)
+  - ET lineup adverse faible vs son arm-side (lefty/righty splits explicites)
+  - ET ≥ 3 sources pros recommandent explicitement notre side
+**Cas observé** : Tigers 20/05 avait "Cleveland starter 0-6 ERA 4.15 road" comme
+edge supposé, mais on n'avait pas confirmé le lanceur Tigers (top-5 ERA ?).
+Hypothèse de pari = "le mauvais starter adverse compense tout" — faux.
+
+### AB-6 : Sources pros divergentes du pick
+**Validé le** : 22/05/2026 (combo Olympiakos LOSS, Stats Insider recommandait Navarro avant le pick Mboko 23/05 — pattern récurrent)
+**Description** : si ≥ 2 sources pros (Stats Insider, OddsShark, Bleacher
+Nation, Dimers, etc.) recommandent **explicitement l'AUTRE side** que notre
+pick, ET le book proba va dans le même sens public, c'est un signal que
+notre estimation est biaisée. Le marché n'a pas tort si 2+ sources pros
+indépendantes convergent contre nous.
+**Action** : si AB-6 déclenché → rejet automatique, ou minoration aggressive
+(-0.05 sur proba_shrunk au lieu du -0.03 standard "pas de sharp").
+**Distinction** : ne pas confondre avec un désaccord sharp légitime — AB-6
+concerne les sources pros ANALYTIQUES (avec rationale), pas juste les
+prédictions algo brutes.
+
 ---
 
 ## ✅ Patterns confirmés (boost de confiance)
@@ -93,6 +121,23 @@ du volume, EV nettement positif.
 **Action** : à chaque analyse quotidienne, scan rapide des promos bwin
 de la veille — si une promo est dispo sur un de nos candidats, c'est
 prioritaire.
+
+### PC-4 : NBA G1 underdog avec H2H fort + repos différentiel ≥ +2j
+**À monitorer** (n=1 — Spurs WIN G1 WCF 18/05/2026 à 2.70)
+**Description** : en NBA playoffs, un underdog à cote 2.50–2.80 qui a un
+H2H récent favorable (≥ 3 wins sur 5 H2H récents) ET un différentiel
+repos ≥ +2 jours en sa faveur a un edge réel sous-pondéré par les modèles
+mainstream. Spurs (5-1 H2H vs OKC, +3 jours repos) → cote 2.70 alors que
+la "vraie" proba était ~0.40-0.45 = value massive.
+**Conditions** (à confirmer) :
+- Sport NBA ou NHL (rest matters)
+- Game 1 d'une série playoffs
+- H2H saison régulière favorable underdog (≥ 3 wins sur 5)
+- Repos différentiel ≥ +2 jours en faveur underdog
+- ≥ 2 sources pros mentionnent explicitement le facteur fatigue/H2H
+**Action provisoire** : si pattern réuni → tier FLOOR autorisé même à
+cote 2.50-2.80 (sortie du F1 single strict v3, mise réduite 2€). À
+confirmer 2× supplémentaires avant codification ferme.
 
 ---
 
@@ -222,3 +267,33 @@ phase finale.
 - **Hebdomadaire** : relecture rapide des dernières entrées
 - **Mensuelle** : audit global, suppression patterns obsolètes,
   fusion patterns similaires
+
+---
+
+## 📈 Calibration historique (mise à jour après chaque pick résolu)
+
+> Table compacte des picks résolus pour suivre la calibration proba/outcome.
+> Source détaillée : `backend/data/nexbet/backtest_<date>.md`.
+
+### Picks résolus 17/05 → 22/05/2026 (n=6)
+
+| Date | Pick | Cote | model_proba | Outcome | Spread (m-b) |
+|---|---|---|---|---|---|
+| 17/05 | Svitolina WTA Rome | 2.30 | 0.50 | ✅ WIN | +7 pts |
+| 18/05 | Spurs WCF G1 | 2.70 | 0.40 | ✅ WIN | +3 pts |
+| 19/05 | Knicks ECF G1 | 2.00 | 0.55 | ✅ WIN | +4 pts |
+| 20/05 | Tigers MLB boosté | 2.73 | 0.55 | ❌ LOSS | +18 pts |
+| 21/05 | Combo Ruud+Knicks | 2.36 | 0.63 | ✅ WIN | +21 pts |
+| 22/05 | Combo Ruud+Olymp. | 2.25 | 0.54 | ❌ LOSS | +10 pts |
+
+**Stats globales** : Hit rate 4/6 = 66.7%, ROI +56% sur 30€ misés.
+
+**Insights de calibration** :
+- **Cotes wins moyennes** : 2.34 — **cotes losses moyennes** : 2.49.
+  Le sweet spot historique est ~2.00-2.30.
+- **Spread wins moyens** : +9 pts — **spread losses moyens** : +14 pts.
+  → Au-delà de **+10 pts d'edge estimé**, le modèle est probablement trop
+  optimiste (overconfidence). Renforcer le shrinkage (w_book adaptatif
+  proposé dans backtest_2026-05-23.md).
+- **Hit rate par sport** : NBA 2/2, Tennis 1/1, MLB 0/1, Combo 1/2.
+  NBA et Tennis dominent ; MLB single confirmé risqué (AB-5).
