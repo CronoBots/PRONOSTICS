@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280">
+  <title>NEXBET wordmark</title>
+  <text x="600" y="140"
+        font-family="'Arial Black', 'Helvetica Neue', Helvetica, Impact, 'DejaVu Sans', sans-serif"
+        font-weight="900"
+        font-size="220"
+        letter-spacing="-8"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        fill="#FC4C02"
+        stroke="#FC4C02"
+        stroke-width="4"
+        paint-order="stroke fill">NEXBET</text>
+</svg>

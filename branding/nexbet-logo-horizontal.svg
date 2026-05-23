@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 380" width="1500" height="380">
+  <title>NEXBET logo horizontal (light)</title>
+
+  <!-- Icon -->
+  <g transform="translate(20, 10)">
+    <rect width="360" height="360" rx="80" ry="80" fill="#FC4C02"/>
+    <rect x="80" y="90" width="200" height="30" rx="15" fill="#FFFFFF"/>
+    <path d="M 80 180 L 140 180 L 180 140 L 220 180 L 280 180 L 280 210 L 80 210 Z" fill="#FFFFFF"/>
+    <rect x="80" y="240" width="200" height="30" rx="15" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="420" y="195"
+        font-family="'Arial Black', 'Helvetica Neue', Helvetica, Impact, 'DejaVu Sans', sans-serif"
+        font-weight="900"
+        font-size="240"
+        letter-spacing="-8"
+        dominant-baseline="middle"
+        fill="#0B0B0B"
+        stroke="#0B0B0B"
+        stroke-width="4"
+        paint-order="stroke fill">NEXBET</text>
+
+  <!-- Tagline -->
+  <text x="424" y="345"
+        font-family="'Arial', 'Helvetica', 'DejaVu Sans', sans-serif"
+        font-weight="bold"
+        font-size="38"
+        letter-spacing="8"
+        fill="#FC4C02">DAILY PICKS · EDGE DRIVEN</text>
+</svg>
