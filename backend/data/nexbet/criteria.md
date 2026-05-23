@@ -6,7 +6,7 @@
 
 ## Filtres durs (NON négociables)
 
-### F1 — Cote (v3.2 — 23/05/2026, après backtest)
+### F1 — Cote (v3.3 — 23/05/2026, après test live)
 - **Single (défaut)** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
 - **Single PLAYOFF MODE** : 1.50 – 2.50 si F1-bis remplie (cf ci-dessous)
 - **Combiné 2 jambes (défaut)** : cote totale finale 1.60 – 2.20
@@ -21,24 +21,48 @@
 
 ### F1-bis — Playoff Mode (single cote 2.00-2.50)
 Pendant les Conference Finals et NBA/NHL Finals (typiquement mai-juin),
-autoriser cote single jusqu'à **2.50** SI **TOUTES** ces conditions sont
-remplies :
+autoriser cote single jusqu'à **2.50** SI **TOUTES** les conditions de
+**l'une des branches A ou B** sont remplies. Branche B ajoutée v3.3 après
+le test 23/05 qui a montré que la branche A (G1) seule rate les G2+ avec
+fort momentum série.
+
+**Conditions communes (toutes branches)** :
 - Sport NBA ou NHL (playoffs en cours)
 - `proba_shrunk` ≥ 0.40
 - ≥ 2 sources sharps disponibles (Polymarket, Pinnacle, ou ≥ 2 parmi
   Manifold/Kalshi/Polymarket via le pipeline backend)
+- ≥ 2 sources pros mentionnent **explicitement** le facteur fatigue,
+  H2H ou momentum comme edge
+- AB-6 (sources pros divergentes) reste blocking
+- Si toutes conditions OK → tier **FLOOR** (mise réduite 2€)
+
+#### Branche A — Game 1 d'une nouvelle série
+Spécifique au G1 (les équipes arrivent de séries différentes, le repos
+différentiel et le H2H pré-playoffs sont les principaux drivers d'edge).
 - H2H récent **favorable underdog** : ≥ 3 wins sur les 5 derniers H2H
   saison régulière + playoffs combinés
 - Différentiel repos ≥ +2 jours en faveur de l'underdog
-- ≥ 2 sources pros mentionnent **explicitement** le facteur fatigue OU H2H
-  comme edge
-
-Si toutes conditions OK → tier **FLOOR** (mise réduite 2€). PAS un coup
-de poker, un pick prudent sur underdog cohérent. AB-6 (sources pros
-divergentes) reste blocking comme partout.
 
 **Cas validé n=1** : Spurs WCF G1 (18/05/2026) — cote 2.70 → win +8.50€.
-À confirmer 2× supplémentaires avant promotion en STANDARD.
+
+#### Branche B — Game 2+ d'une série en cours
+Spécifique au G2/G3/G4+ (le repos est typiquement identique entre les 2
+équipes, c'est le momentum série qui devient le driver principal).
+Au moins **UNE** des sous-conditions suivantes doit être vraie :
+- **B.1** Underdog a ≥ 2 wins consécutifs dans la SÉRIE en cours
+  (ex Knicks 2-0 dans la série avant G3 23/05/2026)
+- **B.2** Underdog a 4-5 H2H pré-playoffs en sa faveur ET a GAGNÉ G1
+  (ex Habs 5-0 H2H pré-playoffs vs Hurricanes + G1 WIN 6-2 avant G2)
+
+**Définition d'underdog** : équipe dont la cote bwin > 2.00 (book_proba < 50%).
+La condition s'applique sur l'équipe pour laquelle on parie le ML.
+
+**Cas hypothétiques validants au 23/05/2026** (à confirmer si pickés) :
+- Knicks G3 ECF cote 2.20 (B.1 : 2-0 série) → outcome WIN 109-93
+- Habs G2 ECF cote ~2.50 (B.2 : 5-0 H2H + G1 WIN) → outcome à confirmer
+À noter qu'aucun de ces deux n'a été pické 23/05 (méthodo v3.2 sans B).
+Si v3.3 confirme 2 wins supplémentaires sur G2+ branche B, promotion
+possible en STANDARD.
 
 ### F2 — Probabilité estimée (shrunk) — par tier
 - **Single PREMIUM** : `proba_shrunk` ≥ 0.62
@@ -184,7 +208,7 @@ fenêtre cote 2.20→2.50 quand le boost est ≥ +20% permet de capter ces
 opportunités, qui sont structurellement rares (1 par semaine max selon
 les promos bwin observées).
 
-## Garantie "1 pick par jour" (v3.2 — 23/05/2026 post-backtest)
+## Garantie "1 pick par jour" (v3.3 — 23/05/2026 post-test-live)
 
 **Pivot de philosophie** : la promesse user est désormais "1 pick chaque
 jour", pas "discipline > volume". L'agent doit toujours produire un pick,
