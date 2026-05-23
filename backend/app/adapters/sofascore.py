@@ -1,0 +1,288 @@
+"""Adapter Sofascore — endpoints publics non-officiels (api.sofascore.com).
+
+Sofascore expose une API HTTP publique non-documentée mais accessible sans clé,
+utilisée par leur frontend. Source extrêmement riche : lineups officielles,
+H2H, stats matchs live, best players. Particulièrement utile pour :
+  - **Lineups officielles ~1h avant kickoff** → détecter "joueur clé out"
+    (anti-bias soccer/NBA/NHL)
+  - **H2H précis** par compétition (vs les fuzzy lookups Odds API)
+  - **Stats live** (xG, possession, shots) pendant un match
+
+⚠️ Protections Cloudflare : User-Agent réaliste obligatoire, rate-limit
+   conservateur (sinon 403). Pas d'auth requise pour le read public.
+
+Pas de clé API requise. Endpoints documentés via le frontend Sofascore et
+le repo open-source `tunjayoff/sofascore_scraper` (MIT).
+
+Endpoints utilisés :
+  GET /api/v1/sport/{sport}/scheduled-events/{date}
+  GET /api/v1/event/{event_id}
+  GET /api/v1/event/{event_id}/lineups
+  GET /api/v1/event/{event_id}/h2h/events
+  GET /api/v1/event/{event_id}/statistics
+
+Mapping sport interne → sport Sofascore :
+  football        → "football"
+  basketball      → "basketball"
+  tennis          → "tennis"
+  nhl             → "ice-hockey"
+  mlb             → "baseball"
+  nfl             → "american-football"
+"""
+
+from __future__ import annotations
+
+import asyncio
+import logging
+from datetime import date as _date_t
+from typing import Any
+
+import httpx
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+
+from app.config import get_settings
+
+logger = logging.getLogger(__name__)
+
+
+BASE_URL = "https://api.sofascore.com/api/v1"
+
+# User-Agent navigateur récent — Cloudflare bloque les UA Python par défaut
+DEFAULT_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.sofascore.com/",
+    "Origin": "https://www.sofascore.com",
+}
+
+# Mapping sport interne → slug Sofascore
+SPORT_SLUGS: dict[str, str] = {
+    "football": "football",
+    "basketball": "basketball",
+    "tennis": "tennis",
+    "nhl": "ice-hockey",
+    "mlb": "baseball",
+    "nfl": "american-football",
+    "rugby_league": "rugby",
+    "cricket": "cricket",
+    "mma": "mma",
+}
+
+# Rate-limit : ne pas dépasser ~5 req/sec pour éviter Cloudflare
+_RATE_LIMIT_SEMAPHORE: asyncio.Semaphore | None = None
+_RATE_LIMIT_DELAY_S = 0.25  # ~4 req/sec safe
+
+
+def _get_semaphore() -> asyncio.Semaphore:
+    global _RATE_LIMIT_SEMAPHORE
+    if _RATE_LIMIT_SEMAPHORE is None:
+        _RATE_LIMIT_SEMAPHORE = asyncio.Semaphore(3)
+    return _RATE_LIMIT_SEMAPHORE
+
+
+@retry(
+    reraise=True,
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=1, max=8),
+    retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
+)
+async def _fetch_json(endpoint: str, params: dict | None = None) -> dict | None:
+    url = f"{BASE_URL}{endpoint}"
+    timeout = get_settings().request_timeout_seconds
+    sem = _get_semaphore()
+    async with sem:
+        async with httpx.AsyncClient(timeout=timeout, headers=DEFAULT_HEADERS, follow_redirects=True) as client:
+            resp = await client.get(url, params=params or {})
+            if resp.status_code == 404:
+                return None
+            if resp.status_code == 403:
+                logger.warning("sofascore 403 (Cloudflare?) on %s — skip", endpoint)
+                return None
+            resp.raise_for_status()
+            await asyncio.sleep(_RATE_LIMIT_DELAY_S)
+            return resp.json()
+
+
+async def fetch_scheduled_events(sport: str, when: _date_t) -> list[dict]:
+    """Tous les matchs programmés pour un sport et une date donnée.
+
+    Format ISO date (YYYY-MM-DD). Retourne liste normalisée minimaliste.
+    """
+    slug = SPORT_SLUGS.get(sport)
+    if not slug:
+        logger.warning("sofascore: sport non supporté: %s", sport)
+        return []
+    date_iso = when.isoformat()
+    try:
+        data = await _fetch_json(f"/sport/{slug}/scheduled-events/{date_iso}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore scheduled-events KO for %s %s: %s", sport, date_iso, exc)
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_event(e, sport) for e in events]
+
+
+def _normalize_event(event: dict, sport: str) -> dict:
+    home = event.get("homeTeam", {})
+    away = event.get("awayTeam", {})
+    tournament = event.get("tournament", {})
+    status = event.get("status", {})
+    return {
+        "sport": sport,
+        "event_id": event.get("id"),
+        "slug": event.get("slug", ""),
+        "home_team": home.get("name", ""),
+        "home_team_id": home.get("id"),
+        "away_team": away.get("name", ""),
+        "away_team_id": away.get("id"),
+        "tournament_name": tournament.get("name", ""),
+        "tournament_id": tournament.get("id"),
+        "kickoff_ts": event.get("startTimestamp"),
+        "status_code": status.get("code"),
+        "status_description": status.get("description", ""),
+        "winner_code": event.get("winnerCode"),  # 1=home, 2=away, 3=draw, None=pending
+    }
+
+
+async def fetch_lineups(event_id: int) -> dict | None:
+    """Lineups officielles pour un event (publiées ~1h avant kickoff)."""
+    try:
+        data = await _fetch_json(f"/event/{event_id}/lineups")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore lineups KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    home_lineup = (data.get("home") or {}).get("players", [])
+    away_lineup = (data.get("away") or {}).get("players", [])
+    return {
+        "confirmed": data.get("confirmed", False),
+        "home_starters": [_extract_player(p) for p in home_lineup if not p.get("substitute")],
+        "home_bench": [_extract_player(p) for p in home_lineup if p.get("substitute")],
+        "away_starters": [_extract_player(p) for p in away_lineup if not p.get("substitute")],
+        "away_bench": [_extract_player(p) for p in away_lineup if p.get("substitute")],
+        "home_formation": (data.get("home") or {}).get("formation", ""),
+        "away_formation": (data.get("away") or {}).get("formation", ""),
+        "home_missing": [_extract_missing(p) for p in (data.get("home") or {}).get("missingPlayers", [])],
+        "away_missing": [_extract_missing(p) for p in (data.get("away") or {}).get("missingPlayers", [])],
+    }
+
+
+def _extract_player(slot: dict) -> dict:
+    player = slot.get("player", {})
+    return {
+        "id": player.get("id"),
+        "name": player.get("name", ""),
+        "position": slot.get("position", "") or player.get("position", ""),
+        "jersey": slot.get("jerseyNumber") or player.get("jerseyNumber"),
+        "captain": slot.get("captain", False),
+    }
+
+
+def _extract_missing(slot: dict) -> dict:
+    """Player absent (injured/suspended). Key info pour AB joueur-clé-out."""
+    player = slot.get("player", {})
+    return {
+        "id": player.get("id"),
+        "name": player.get("name", ""),
+        "reason": slot.get("reason", ""),  # ex "Injured", "Suspended"
+        "type": slot.get("type", ""),
+    }
+
+
+async def fetch_h2h_events(custom_event_id: int, limit: int = 10) -> list[dict]:
+    """Liste des derniers matchs H2H entre les 2 équipes de cet event."""
+    try:
+        data = await _fetch_json(f"/event/{custom_event_id}/h2h/events")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore h2h KO for %s: %s", custom_event_id, exc)
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_h2h(e) for e in events[:limit]]
+
+
+def _normalize_h2h(event: dict) -> dict:
+    home = event.get("homeTeam", {})
+    away = event.get("awayTeam", {})
+    return {
+        "kickoff_ts": event.get("startTimestamp"),
+        "home_team": home.get("name", ""),
+        "away_team": away.get("name", ""),
+        "home_score": (event.get("homeScore") or {}).get("display"),
+        "away_score": (event.get("awayScore") or {}).get("display"),
+        "winner_code": event.get("winnerCode"),
+        "tournament": (event.get("tournament") or {}).get("name", ""),
+    }
+
+
+async def fetch_statistics(event_id: int) -> dict | None:
+    """Stats live d'un match (xG, possession, shots, …). Marche pendant match."""
+    try:
+        data = await _fetch_json(f"/event/{event_id}/statistics")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore stats KO for %s: %s", event_id, exc)
+        return None
+    return data
+
+
+async def search_event_by_teams(
+    sport: str,
+    home_team: str,
+    away_team: str,
+    when: _date_t,
+) -> dict | None:
+    """Trouve l'event Sofascore correspondant aux 2 équipes pour une date.
+
+    Stratégie : pull les events du jour, fuzzy match sur les noms d'équipes.
+    """
+    events = await fetch_scheduled_events(sport, when)
+    if not events:
+        return None
+    norm_h = home_team.lower().strip()
+    norm_a = away_team.lower().strip()
+    for ev in events:
+        sof_h = ev["home_team"].lower()
+        sof_a = ev["away_team"].lower()
+        if _teams_match(norm_h, sof_h) and _teams_match(norm_a, sof_a):
+            return ev
+    # Fallback : essayer home et away inversés
+    for ev in events:
+        sof_h = ev["home_team"].lower()
+        sof_a = ev["away_team"].lower()
+        if _teams_match(norm_h, sof_a) and _teams_match(norm_a, sof_h):
+            return ev
+    return None
+
+
+def _teams_match(a: str, b: str) -> bool:
+    """Fuzzy match : substring OU au moins 1 token ≥ 4 chars en commun."""
+    a, b = a.strip(), b.strip()
+    if a in b or b in a:
+        return True
+    tokens_a = {t for t in a.split() if len(t) >= 4}
+    tokens_b = {t for t in b.split() if len(t) >= 4}
+    return bool(tokens_a & tokens_b)
+
+
+def has_key_player_out(lineups: dict | None, threshold: int = 1) -> tuple[bool, list[str]]:
+    """Détecte si une équipe a ≥ threshold joueur clé absent (titulaire/star).
+
+    Retourne (a_player_out, [noms_absents]).
+    Heuristique : un missing avec reason="Injured" est considéré clé si
+    `type` est "missing" (vs "doubtful" qui est incertain).
+    """
+    if not lineups:
+        return False, []
+    out_names: list[str] = []
+    for missing in lineups.get("home_missing", []) + lineups.get("away_missing", []):
+        if missing.get("type") in {"missing", "out"} and missing.get("reason") not in {"", None}:
+            out_names.append(missing["name"])
+    return len(out_names) >= threshold, out_names

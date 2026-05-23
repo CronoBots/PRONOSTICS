@@ -99,9 +99,11 @@ en Étape 5 décidera de la qualité finale.
 
 A. **Bash** : `python backend/scripts/analyze_match.py --sport <X> --home <Y> --away <Z>`
    (ou `--player-a / --player-b --surface --tour` pour tennis).
-   Ce script appelle 4 sources : stats officielles ligue + Polymarket +
-   **Manifold** + **Kalshi**, calcule la médiane des probas, signale les
-   désaccords > 10 pts entre sources. Retour JSON parsable.
+   Ce script appelle 5 sources : stats officielles ligue + Polymarket +
+   **Manifold** + **Kalshi** + **Sofascore** (lineups + H2H + détection
+   joueur clé absent). Calcule la médiane des probas, signale les désaccords
+   > 10 pts. Retour JSON parsable avec champ `sofascore` séparé pour le
+   contexte qualitatif (key_player_out, h2h_last5_summary).
 
 B. **WebFetch** boost bwin / blessures dernière minute (ce que le pipeline
    ne couvre PAS) :

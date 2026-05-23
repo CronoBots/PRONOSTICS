@@ -33,6 +33,7 @@ from app.adapters import (  # noqa: E402
     nba_stats,
     nhl_stats,
     polymarket,
+    sofascore,
     tennis_abstract,
 )
 
@@ -88,12 +89,16 @@ async def analyze_tennis(player_a: str, player_b: str, surface: str = "overall",
     else:
         print("    -> introuvable (Kalshi couvre surtout les GS et 1000s)")
 
-    return _summarize_multi(
+    sofascore_ctx = await _sofascore_context("tennis", player_a, player_b)
+
+    result = _summarize_multi(
         [prob_a_elo, prob_a_pm, prob_a_manifold, prob_a_kalshi],
         labels=["TennisAbstract Elo", "Polymarket", "Manifold", "Kalshi"],
         label_a=player_a,
         label_b=player_b,
     )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_nba(home: str, away: str) -> dict:
@@ -142,12 +147,16 @@ async def analyze_nba(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize_multi(
+    sofascore_ctx = await _sofascore_context("basketball", home, away)
+
+    result = _summarize_multi(
         [prob_home_nba, prob_home_pm, prob_home_m, prob_home_k],
         labels=["NBA Stats", "Polymarket", "Manifold", "Kalshi"],
         label_a=home,
         label_b=away,
     )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_nhl(home: str, away: str) -> dict:
@@ -196,12 +205,16 @@ async def analyze_nhl(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize_multi(
+    sofascore_ctx = await _sofascore_context("nhl", home, away)
+
+    result = _summarize_multi(
         [prob_home_nhl, prob_home_pm, prob_home_m, prob_home_k],
         labels=["NHL Stats", "Polymarket", "Manifold", "Kalshi"],
         label_a=home,
         label_b=away,
     )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_mlb(home: str, away: str) -> dict:
@@ -251,12 +264,65 @@ async def analyze_mlb(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize_multi(
+    sofascore_ctx = await _sofascore_context("mlb", home, away)
+
+    result = _summarize_multi(
         [prob_home_mlb, prob_home_pm, prob_home_m, prob_home_k],
         labels=["MLB Stats", "Polymarket", "Manifold", "Kalshi"],
         label_a=home,
         label_b=away,
     )
+    result["sofascore"] = sofascore_ctx
+    return result
+
+
+async def _sofascore_context(sport: str, home: str, away: str) -> dict:
+    """Contexte Sofascore : lineups + H2H + détection key player out.
+
+    Imprime le résumé et retourne un dict {sofascore_event_id, key_player_out,
+    missing_players, h2h_last5_summary} utilisable dans la trace.
+    """
+    print(f"\n  Méthode E : Sofascore (lineups + H2H)...")
+    from datetime import date as _d
+    event = await sofascore.search_event_by_teams(sport, home, away, _d.today())
+    if not event:
+        print("    -> event introuvable côté Sofascore (fuzzy match KO)")
+        return {"sofascore_event_id": None}
+
+    event_id = event["event_id"]
+    print(f"    -> match Sofascore #{event_id} : {event['home_team']} vs {event['away_team']}")
+
+    # Lineups (parfois pas encore publiés)
+    lineups = await sofascore.fetch_lineups(event_id)
+    key_out, missing = sofascore.has_key_player_out(lineups, threshold=1) if lineups else (False, [])
+
+    if lineups:
+        confirmed = lineups.get("confirmed", False)
+        n_missing_h = len(lineups.get("home_missing", []))
+        n_missing_a = len(lineups.get("away_missing", []))
+        tag = "✅ confirmés" if confirmed else "⏳ provisoires"
+        print(f"    -> lineups {tag} | absents : {n_missing_h} home / {n_missing_a} away")
+        if missing:
+            print(f"       ⚠️ Joueurs absents : {', '.join(missing[:5])}")
+    else:
+        print("    -> lineups pas encore publiés (généralement ~1h avant kickoff)")
+
+    # H2H 5 derniers
+    h2h = await sofascore.fetch_h2h_events(event_id, limit=5)
+    h2h_summary = ""
+    if h2h:
+        wins_home = sum(1 for m in h2h if m.get("winner_code") == 1)
+        wins_away = sum(1 for m in h2h if m.get("winner_code") == 2)
+        draws = sum(1 for m in h2h if m.get("winner_code") == 3)
+        h2h_summary = f"H2H 5 derniers : home {wins_home}W, away {wins_away}W, {draws}D"
+        print(f"    -> {h2h_summary}")
+
+    return {
+        "sofascore_event_id": event_id,
+        "key_player_out": key_out,
+        "missing_players": missing,
+        "h2h_last5_summary": h2h_summary,
+    }
 
 
 def _find_polymarket_prob(picks: list[dict], name_a: str, name_b: str) -> float | None:

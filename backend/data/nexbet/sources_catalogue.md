@@ -30,6 +30,13 @@ KALSHI_KEY=          # optionnel, lecture publique marche sans
 | **API-Football** | `api_football.py` | REST JSON (sous-domaine API-SPORTS) | Idem API-SPORTS | https://www.api-football.com/ |
 | **football-data.org** | `football_data.py` | REST JSON | Free tier, ligues majeures | https://www.football-data.org/ |
 | **TennisAbstract** | `tennis_abstract.py` | Scraping HTML | Gratuit | Aucune |
+| **Sofascore** | `sofascore.py` | REST JSON (endpoints publics non-officiels) | Gratuit, sans clé | Aucune |
+
+> **Sofascore en détail** : lineups officielles (~1h avant kickoff, crucial pour
+> AB "joueur clé out"), H2H par compétition, stats live (xG, possession, shots),
+> calendriers complets. Headers User-Agent navigateur obligatoires (Cloudflare).
+> Rate-limit interne : ~4 req/sec max. Pas utilisé dans `daily_candidates.py`
+> (volume trop élevé), mais branché dans `analyze_match.py` pour le pick final.
 
 ### Variables d'env
 ```env
@@ -90,6 +97,7 @@ network policy bloque les hôtes externes par défaut), ajoute ces hosts
 - `v1.hockey.api-sports.io`
 - `api.openweathermap.org`
 - `www.tennisabstract.com`
+- `api.sofascore.com`
 
 > **Note Belgique** : Polymarket bloque le trading mais l'API publique
 > `gamma-api.polymarket.com` reste accessible pour la lecture des markets.

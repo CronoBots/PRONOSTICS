@@ -24,6 +24,7 @@ from app.adapters import (
     nhl_stats,
     openweather,
     polymarket,
+    sofascore,
     tennis_abstract,
 )
 from app.config import get_settings
@@ -74,5 +75,6 @@ __all__ = [
     "nhl_stats",
     "openweather",
     "polymarket",
+    "sofascore",
     "tennis_abstract",
 ]
