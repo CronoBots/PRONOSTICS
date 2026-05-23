@@ -1,206 +1,239 @@
-# NΞXBΞT analyst — Format de sortie obligatoire
+# NΞXBΞT — Format de sortie obligatoire (v4.0 — Recap-only)
 
-> L'agent doit produire EXACTEMENT ce format pour que le pick soit
-> insérable directement dans `backend/scripts/picks_data.py` PICKS array
-> sans modification structurelle.
+> **v4.0** : l'agent ne produit plus un "Pick JSON unique". Il présente
+> un **TOP 3 ranking** chiffré, un verdict par candidat, et une
+> recommandation conditionnelle. C'est le user qui tranche.
 
-## Format JSON principal (cas pick simple)
+## Structure attendue de la réponse
 
-```json
-{
-  "date": "YYYY-MM-DD",
-  "sport": "football | basketball | tennis | nfl | mlb | nhl | ice_hockey | rugby | soccer | combo",
-  "league": "Ligue / tournoi / compétition (string descriptif lisible)",
-  "home_team": "Nom équipe domicile",
-  "away_team": "Nom équipe extérieur",
-  "kickoff": "YYYY-MM-DDTHH:MM:SS+00:00",
-  "pick": "Description courte du pari (ex: 'Carolina Hurricanes vainqueur du match')",
-  "odds": 1.83,
-  "odds_unboosted": null,
-  "model_probability": 0.62,
-  "tier": "premium | standard | floor | combo",
-  "headline": "1-2 phrases punchy qui résument le pourquoi du pick",
-  "rationale": [
-    "##🎯 Le match",
-    "Description du contexte général en 1 paragraphe.",
-    "Lieu, heure, enjeu.",
-    "##📊 Contexte récent",
-    "Forme, série, H2H, blessures importantes.",
-    "##🔥 Pourquoi ce pari",
-    "L'edge identifié, les patterns gagnants connus, les sources.",
-    "##📈 Confiance — modèles externes",
-    "ESPN BPI, FiveThirtyEight, Polymarket, autres : leurs probabilités.",
-    "Notre estimation : X% (justification de pourquoi on s'aligne / diverge).",
-    "Edge calculé : +Y points vs book.",
-    "##💰 Cote & marché",
-    "Cote sur bwin/DraftKings/FanDuel, où trouver. Mouvement de ligne.",
-    "##🧮 EV & mise",
-    "Calcul EV explicite. Kelly fraction. Mise retenue + justification.",
-    "##⚠️ Risques honnêtes",
-    "Risque 1 (proba estimée).",
-    "Risque 2.",
-    "Risque 3.",
-    "Aucun ne fait passer la proba sous le seuil critique mais ils s'additionnent.",
-    "##✅ Pourquoi c'est le pick du jour quand même",
-    "Synthèse en 2-3 phrases : ce qui fait que malgré les risques, le profil correspond à ce qu'on cherche."
-  ],
-  "sources": [
-    "https://exemple.com/source1",
-    "https://exemple.com/source2",
-    "https://exemple.com/source3"
-  ],
-  "stake": 5.0,
-  "outcome": "pending"
-}
-```
+L'agent doit produire **4 blocs obligatoires** dans cet ordre :
 
-## Format combiné (pick avec 2 jambes)
+### Bloc 1 — Watchlist (auditabilité)
 
-```json
-{
-  "date": "YYYY-MM-DD",
-  "sport": "combo",
-  "league": "Combiné — [Sport A jambe 1] + [Sport B jambe 2]",
-  "home_team": "Joueur/Équipe A + Joueur/Équipe B",
-  "away_team": "Adversaire A + Adversaire B",
-  "kickoff": "YYYY-MM-DDTHH:MM:SS+00:00 (heure de la 1ère jambe)",
-  "pick": "Combiné [JambeA] + [JambeB] (boosté bwin)",
-  "odds": 2.249,
-  "odds_unboosted": 1.82,
-  "model_probability": 0.62,
-  "headline": "...",
-  "rationale": [
-    "##🎯 Le combiné en 1 ligne",
-    "..."
-  ],
-  "sources": [...],
-  "stake": 5.0,
-  "outcome": "pending",
-  "legs": [
-    {
-      "sport": "tennis",
-      "league": "ATP / WTA, tournoi, surface",
-      "home_team": "Joueur A (NAT)",
-      "away_team": "Adversaire (NAT)",
-      "pick": "Joueur A vainqueur du match",
-      "kickoff": "...",
-      "odds": 1.28,
-      "outcome": "pending",
-      "notes": "Stats clés résumées en 1 phrase pour cette jambe."
-    },
-    {
-      "sport": "basketball",
-      "league": "NBA / Euroleague / autre",
-      "home_team": "Team A",
-      "away_team": "Team B",
-      "pick": "Team A vainqueur du match",
-      "kickoff": "...",
-      "odds": 1.42,
-      "outcome": "pending",
-      "notes": "Stats clés résumées."
-    }
-  ]
-}
-```
-
-## Champ `tier` (v3 — obligatoire)
-
-Chaque pick DOIT contenir un champ `tier` parmi :
-- `premium` : single cote 1.50-2.00, proba_shrunk ≥ 0.62, EV ≥ +5%, mise 5€
-- `standard` : single cote 1.50-2.00, proba_shrunk ≥ 0.58, EV ≥ +2%, mise 3€
-- `floor` : single cote 1.50-2.00, proba_shrunk ≥ 0.55, EV ≥ -2%, mise 1-2€
-- `combo` : 2 jambes proba ≥ 0.72, cote totale 1.60-2.20, EV ≥ +8%, mise 5€
-
-Le tier conditionne la mise et le wording de la confidence note.
-
-## Champs auto-calculés (NE PAS inclure dans l'output)
-
-Ces champs sont calculés par `build_history.py` automatiquement, l'agent
-N'A PAS à les fournir :
-
-- `book_probability` = `1 / odds`
-- `expected_value` = `model_probability × odds − 1`
-- `profit` (computed quand outcome ≠ pending)
-- `bankroll_after`
-- `engine` (toujours `claude_curated@1.0`)
-
-## Style des rationale
-
-### Format markdown lite
-Chaque entrée du tableau `rationale` est une string. On utilise des
-markdown headers `##` avec emojis pour structurer visuellement. La
-plateforme convertit ça en sections lisibles.
-
-### Tone of voice
-- **Factuel, sourcé** : éviter les superlatifs marketing
-- **Honnête sur les risques** : section "##⚠️ Risques honnêtes" obligatoire
-- **Belgo-friendly** : références à la cote bwin en priorité (le marché
-  Belge), heure en heure belge mentionnée
-- **Vocabulaire pro** : "EV", "edge", "moneyline", "ATS", "implicit
-  probability", "H2H" — la cible utilise ces termes
-- **Pas d'invention** : si un chiffre n'est pas sourcé, écrire
-  "selon X source" ou ne pas le citer
-- **Longueur** : 20-30 entrées rationale (assez pour défendre le pick,
-  pas trop pour rester lisible)
-
-### Headlines exemples (style à reproduire)
-
-✅ Bien : *"Combiné 'double favoris' BOOSTÉ par bwin (1,82 → 2,36, +30%) —
-Ruud (14-1 carrière à Geneva, 3 titres) + Knicks (10 wins consécutifs
-à MSG, 23-3 SU comme favori −6,5+ home). Proba combinée ~63%, EV +49%
-grâce au boost."*
-
-✅ Bien : *"Carolina à domicile en mode 'must-react' après leur première
-défaite des playoffs (6-2). Andersen a un GAA de 1.12 sur les 2
-premières rondes, les Canes étaient 8-0 avant Game 1, et historiquement
-Brind'Amour réagit fort après une défaite. Cote 1.83 = value à PNC Arena."*
-
-❌ À éviter : *"Pari du jour 🔥🔥 incroyable opportunité ne pas
-manquer !!!"* (marketing creux, aucune info actionable)
-
-### Section ## obligatoires dans rationale (ordre conseillé)
-
-1. **##🎯 Le match / Le combiné en 1 ligne** — contexte
-2. **##📊 Stats / Contexte récent** — chiffres clés
-3. **##🤝 H2H et profil tactique** (si applicable)
-4. **##📈 Confiance — modèles externes** — sources + notre estimation
-5. **##💰 Cote & marché** — cote + mouvement de ligne
-6. **##🧮 EV & mise** — calculs explicites
-7. **##⚠️ Risques honnêtes** — 3-5 risques identifiés, OBLIGATOIRE
-8. **##✅ Pourquoi c'est le pick du jour quand même** — synthèse finale
-
-## Sortie complète attendue par l'agent
-
-L'agent produit dans sa réponse finale :
-
-1. **Bloc 1 — Pick JSON** : entre ```json ... ``` (parsable directement)
-2. **Bloc 2 — Résumé FR de 5 lignes** : pour copier-coller dans la
-   conversation utilisateur, langage clair Belge
-3. **Bloc 3 — Trace de décision** : à écrire dans
-   `backend/data/nexbet/decisions/<YYYY-MM-DD>.md` (top candidats étudiés,
-   rejets motivés, sources, anomalies)
-4. **Bloc 4 — Confidence note** : format exact selon tier (v3) :
-   - tier `premium`  → "Confiance ÉLEVÉE — Premium pick"
-   - tier `standard` → "Confiance MODÉRÉE — Standard pick"
-   - tier `floor`    → "Confiance LIMITE — Daily floor pick, mise réduite"
-   - tier `combo`    → "Confiance ÉLEVÉE — Combo presque sûr"
-
-## En cas de "no pick today"
+Tableau Markdown ≥ 15 lignes, déjà écrit dans
+`decisions/<date>-watchlist.md`. La réponse à l'utilisateur peut référer
+au fichier ou inclure une version réduite (top 10).
 
 ```markdown
-# Aucun pick aujourd'hui — YYYY-MM-DD
-
-**Raison principale** : [quel filtre a tout éliminé]
-
-## Top 3 candidats étudiés et rejetés
-
-1. **[Match]** — [cote] — Rejeté car [filtre raté + explication]
-2. **[Match]** — [cote] — Rejeté car [filtre raté + explication]
-3. **[Match]** — [cote] — Rejeté car [filtre raté + explication]
-
-## Sources consultées
-- [URLs]
-
-## Note
-[Recommandation : revenir demain / situation exceptionnelle / etc.]
+| Match | Sport | Kickoff UTC | Cote favori | Coverage |
+|---|---|---|---|---|
+| Navone vs Tien | Tennis ATP | 13:00 | 1.77 | 4 sources |
+| ... | ... | ... | ... | ... |
 ```
+
+### Bloc 2 — TOP 3 candidats (analyse chiffrée)
+
+Pour chaque candidat (ranking par EV décroissant), produire la fiche
+suivante :
+
+```markdown
+### 🟢/🟡/🟠 #N — [Pick] (cote X.XX)
+
+| Champ | Valeur |
+|---|---|
+| Match | Team A vs Team B |
+| Compétition | League / Tournament |
+| Kickoff | YYYY-MM-DD HH:MM UTC (HH:MM Belgique) |
+| Cote bwin | X.XX |
+| Book proba | 0.XXX |
+| Model proba (médiane sources) | 0.XXX |
+| Sources accessibles | N convergentes |
+| `proba_shrunk` | 0.XXX (formule : (n_eff × model + 2 × book) / (n_eff + 2)) |
+| EV | +X.X% |
+| Verdict | 🟢 RECOMMANDÉ / 🟡 ACCEPTABLE / 🟠 BORDERLINE |
+| Mise paper si validé | X.XX € |
+
+**Sources accessibles** :
+- Source 1 (lastwordonsports.com) : "quote ou proba explicite" — X%
+- Source 2 (dimers.com) : "quote ou proba explicite" — X%
+- Source 3 (bleachernation.com) : "quote ou proba explicite" — X%
+
+**Alerts** :
+- ⚠️ AB / PC patterns identifiés (si applicable)
+- ⚠️ Risques honnêtes (3 max)
+
+**Pourquoi ce verdict** :
+1 paragraphe court (3-5 lignes) résumant l'analyse.
+```
+
+### Bloc 3 — Recommandation conditionnelle
+
+Format strict selon la disponibilité de candidats 🟢 / 🟡 :
+
+#### Cas A — Au moins 1 candidat 🟢 RECOMMANDÉ
+```markdown
+## 🎯 Recommandation conditionnelle
+
+**Mon TOP : [Pick] (verdict 🟢, EV +X.X%, proba_shrunk X.XX)**
+
+Justification : 3 sources convergentes, EV positif solide, anti-bias OK.
+
+**À ta décision** :
+- ✅ Valider → mise paper X € sur bankroll virtuel
+- ❌ Skip → noté en trace, aucune position
+- 🔄 Contre-pick → choisis un autre candidat (TOP 2 ou TOP 3)
+
+**Bankroll virtuel paper avant** : XX.XX €
+**Si win** : +X.XX € → XX.XX €
+**Si loss** : -X.XX € → XX.XX €
+```
+
+#### Cas B — Aucun 🟢, au moins 1 🟡 ACCEPTABLE
+```markdown
+## ⚠️ Recommandation conditionnelle
+
+**Aucun candidat 🟢 RECOMMANDÉ aujourd'hui.**
+
+**Le moins pire : [Pick] (verdict 🟡, EV +X.X%, proba_shrunk X.XX)**
+
+C'est jouable mais sans conviction forte. Tu peux skip sans regret.
+
+**À ta décision** :
+- ✅ Valider → mise paper X € (réduite par défaut sur 🟡)
+- ❌ Skip recommandé → aucune position
+- 🔄 Contre-pick → un autre TOP 2 / TOP 3 si tu vois quelque chose
+```
+
+#### Cas C — Aucun 🟢 ni 🟡 (que des 🟠 / 🔴)
+```markdown
+## 🛑 Recommandation conditionnelle
+
+**Rien de défendable aujourd'hui.**
+
+Le meilleur candidat dispo ([Pick]) est verdict 🟠 BORDERLINE
+(EV +X.X%, proche du seuil 0%).
+
+**Recommandation : SKIP cette journée.**
+
+La discipline v4 rétablit "EV ≥ +2% strict". Aucun pick paper
+aujourd'hui.
+```
+
+### Bloc 4 — Trace + commit
+
+Trace écrite dans `decisions/<date>.md` (toujours, même si skip) :
+- Heure analyse
+- Top 5 candidats étudiés avec calculs complets
+- Verdict par candidat
+- Décision finale du user (✅ / ❌ / 🔄)
+- Sources consultées (URLs)
+- Anomalies / doutes
+- Si pick validé : mise paper, bankroll virtuel après
+
+**Format trace TOP 5** (un bloc par candidat) :
+```markdown
+### Candidat N — [Pick] (cote X.XX)
+
+**Calculs** :
+- book_proba = 1 / X.XX = 0.XXX
+- model_proba (médiane sources) = 0.XXX (sources : ...)
+- n_eff = N
+- proba_shrunk = (N × 0.XXX + 2 × 0.XXX) / (N + 2) = 0.XXX
+- EV = 0.XXX × X.XX − 1 = +X.X%
+
+**Sources accessibles** :
+- URL 1 → proba explicite ou quote
+- URL 2 → proba explicite ou quote
+- URL 3 → proba explicite ou quote
+
+**Anti-bias** :
+- AB-1/2/4/5 status (déclenché ou NA)
+- AB-3 status (EXPERIMENTAL)
+- PC patterns identifiés (EXPERIMENTAL)
+
+**Verdict** : 🟢/🟡/🟠/🔴 — raison
+```
+
+## Format JSON paper position (uniquement si user valide)
+
+Après validation user (✅), append dans `paper_trading_log.md` :
+
+```json
+{
+  "date": "YYYY-MM-DD",
+  "verdict": "recommended | acceptable | borderline",
+  "pick": "Description courte",
+  "sport": "tennis | nba | nhl | mlb | soccer | combo",
+  "match": "Team A vs Team B",
+  "kickoff_utc": "YYYY-MM-DDTHH:MM:SS+00:00",
+  "odds_bwin": 1.77,
+  "model_probability": 0.555,
+  "book_probability": 0.565,
+  "ev": -0.018,
+  "stake_paper": 2.00,
+  "sources": ["url1", "url2", "url3"],
+  "anti_bias_notes": "AB-3 EXPERIMENTAL noted, no blocking",
+  "outcome": "pending",
+  "verification": {
+    "source_a": null,
+    "source_b": null,
+    "quote_a": null,
+    "quote_b": null,
+    "verified_at": null
+  },
+  "bankroll_virtual_before": 100.00,
+  "bankroll_virtual_after": null
+}
+```
+
+**Champs `verification`** remplis uniquement quand outcome confirmé
+par **2 sources distinctes avec quote textuelle** (voir method.md
+Étape 9).
+
+## Format outcome verification
+
+Quand le match est joué et que l'outcome doit être marqué :
+
+```markdown
+### Outcome verification — [Pick] — [Date]
+
+**Source A** ([URL]) cite textuellement :
+> "Quote exacte avec le score final"
+
+**Source B** ([URL]) cite textuellement :
+> "Quote exacte avec le score final"
+
+→ **OUTCOME = WIN/LOSS** sur le pick "[Description]"
+→ Mise paper : X.XX €
+→ Gain/perte : ±X.XX € (cote X.XX)
+→ Bankroll virtuel après : XX.XX €
+```
+
+**Si une seule source disponible ou pas de quote précise** :
+```markdown
+### Outcome verification — PENDING — [Pick] — [Date]
+
+Sources tentées :
+- URL 1 : pas de quote score final
+- URL 2 : URL 403 / pas accessible
+
+→ Outcome reste PENDING. Re-vérification demain.
+```
+
+**JAMAIS d'inférence** (G2/G3, SF/Final, score deviné).
+
+## Sections rationale (si user valide et veut copie pour bwin)
+
+Si le user valide le pick et veut le partager / le placer en réel
+(après les 30 jours paper), produire un **rationale court** (10-15
+lignes) sur demande explicite. Pas obligatoire en mode paper.
+
+Style :
+- **Factuel, sourcé** : éviter superlatifs marketing
+- **Honnête sur les risques** : 2-3 risques min
+- **Belgo-friendly** : cote bwin, heure belge
+- **Vocabulaire pro** : EV, edge, H2H, ATS
+
+## Anti-patterns interdits dans la sortie v4
+
+JAMAIS :
+- Produire un "Pick JSON unique" sans Bloc TOP 3 alternatives
+- Présenter un candidat verdict 🔴 dans le TOP 3 visible (rejets en
+  trace seulement)
+- Recommander explicitement un candidat 🟠 BORDERLINE sans avertir
+  "skip recommandé"
+- Auto-valider un pick (insertion automatique dans picks_data.py)
+- Marquer un outcome sans quote textuelle x2
+- Omettre la section "Recommandation conditionnelle"
+- Citer Sofascore / ATP / WTA officiels comme source primaire
+- Appliquer un boost de proba PC (tous EXPERIMENTAL n=1)
