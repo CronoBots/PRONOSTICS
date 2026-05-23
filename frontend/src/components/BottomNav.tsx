@@ -96,12 +96,12 @@ export function BottomNav() {
       >
         {leftTabs.map(renderTab)}
 
-        {/* Bouton central → /today (pari du jour), couleur du chart accent-green
-            étoile = identité forte "le pick du jour à ne pas rater" */}
+        {/* Bouton central → /today (pari du jour), couleur cobalt brand
+            (v5) — etoile = identite forte "le pick du jour a ne pas rater" */}
         <div className="flex justify-center -mt-7 relative">
           <Link
             href="/today"
-            className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-green shadow-accent-green/30 hover:shadow-accent-green/50"
+            className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-blue shadow-accent-blue/30 hover:shadow-accent-blue/50"
             aria-label={t("nav.todayPick")}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
@@ -111,7 +111,7 @@ export function BottomNav() {
           {todayActive && (
             <span
               aria-hidden
-              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-green"
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent-blue"
             />
           )}
         </div>

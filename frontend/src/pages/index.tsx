@@ -172,19 +172,21 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v5 — logo cobalt + nom NΞXBΞT a gauche, burger
-            menu a droite. Remplace la BrandBanner image (24/05/2026).
-            Cache sur desktop (DesktopHeader prend le relais). */}
-        <header className="lg:hidden flex items-center justify-between gap-2 shrink-0 py-1">
-          <Link href="/" className="flex items-center gap-2 min-w-0" aria-label="NΞXBΞT">
-            <BrandLogo size={32} rounded={8} className="shrink-0" />
-            <span className="text-lg font-bold tracking-tight text-accent-blue truncate">
-              NΞXBΞT
-            </span>
+        {/* Header compact v5.1 — grid 3 cols : logo gauche / titre centre /
+            burger droit. Le 'N' du titre reprend la couleur cobalt du logo,
+            le reste est en couleur foreground (blanc dark / noir bleute light)
+            via l'override theme-aware sur text-white. */}
+        <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
+          <Link href="/" aria-label="NΞXBΞT" className="justify-self-start">
+            <BrandLogo size={32} rounded={8} />
           </Link>
+          <h1 className="text-lg font-bold tracking-tight justify-self-center">
+            <span className="text-accent-blue">N</span>
+            <span className="text-white">ΞXBΞT</span>
+          </h1>
           <Link
             href="/compte"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5 justify-self-end"
             aria-label={t("home.menu")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
