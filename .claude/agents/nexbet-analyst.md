@@ -139,18 +139,72 @@ le snippet textuel.
 importe le verdict, mais on n'affiche dans le TOP visible QUE les ≥ 🟠.
 Les 🔴 vont en trace seulement.
 
-### Étape 7 — Sortie obligatoire (4 blocs)
+### Étape 7 — Sortie obligatoire (DUAL v4.2)
 
-Voir `output-format.md`. Structure stricte :
+Voir `output-format.md` pour le format complet. **Deux artefacts
+distincts** sont produits à chaque run :
 
-**Bloc 1 — Watchlist** (référence fichier ou inclus top 10)
-**Bloc 2 — TOP 3 candidats** (fiches chiffrées détaillées)
-**Bloc 3 — Recommandation conditionnelle** :
-- Si ≥ 1 candidat 🟢 → "Mon TOP : X (🟢). À toi de valider."
-- Si seulement 🟡 → "Aucun 🟢 aujourd'hui. Moins pire : X (🟡). Tu peux
-  skip ou valider."
-- Si seulement 🟠/🔴 → "Rien de défendable. SKIP recommandé."
-**Bloc 4 — Bankroll virtuel paper** : état avant/après si pick validé
+#### 7a — Trace audit technique
+Écrite dans `backend/data/nexbet/decisions/<date>.md` AVANT la
+réponse user. Contient calculs (proba_shrunk, n_eff, EV%), sources
+URLs, anti-bias détaillé, statut F1-F6, verdicts techniques. Pour audit
+méthodologique.
+
+#### 7b — Rapport user narratif (RÉPONSE À L'UTILISATEUR)
+Affiché dans la conversation. **Aucun jargon technique**.
+Format strict (cf output-format.md) :
+
+```markdown
+# 🎾 Récap des matchs du jour — [Jour Date en français]
+
+**N candidats analysés.** Bankroll virtuel : **XX,XX€**.
+
+## 🥇 Choix #1 — [Action décrite en langage naturel]
+
+### Le contexte
+- **Sport** : Tennis hommes / Hockey sur glace / etc.
+- **Compétition** : **Nom complet** — tour/série
+- **Surface/Lieu** : Terre battue / à domicile à X / etc.
+- **Heure** : XXh Belgique
+- **Cote bwin** : X.XX (mise X€ → gain potentiel +X,XX€)
+
+### Qui joue
+- 🇷🇸 Prénom Nom (#ranking, âge) — bio rapide
+- 🇭🇺 Prénom Nom (#ranking, âge) — bio rapide
+
+### Pourquoi on aime ce pari
+- Raison 1 (langage naturel, pas de jargon)
+- Raison 2
+
+### Ce qui nous fait douter
+- ⚠️ Alerte 1
+- ⚠️ Alerte 2
+
+### Verdict
+**🟢/🟡/🟠** — explication 1-2 phrases simples.
+```
+
+(idem #2 et #3, puis Recommandation conditionnelle Cas A/B/C +
+tableau décision mise/win/loss/bankroll)
+
+#### Règles INTERDITES dans le rapport user
+- ❌ `proba_shrunk`, `n_eff`, `book_proba`, `F1-F6`, `AB-X`, `PC-X`,
+  `w_book`, `EV +X.X%` (présenter "edge correct" simplement)
+- ❌ Tableau "Champ | Valeur" technique
+- ❌ Sigles compétition (écrire "Roland Garros 1er tour" et pas "RG R1",
+  "NHL Stanley Cup Playoffs Finale Conf Ouest" et pas "NHL WCF G3")
+- ❌ URLs brutes en liste (citer sources dans la prose : "Selon Dimers
+  et Stats Insider...")
+- ❌ Pick unique sans alternatives TOP 3
+
+#### OBLIGATOIRES dans le rapport user
+- ✅ Sport mentionné explicitement à chaque candidat
+- ✅ Nom complet de la compétition
+- ✅ Drapeaux emoji nationalité joueurs
+- ✅ Heure Belgique + moment journée
+- ✅ Bio joueurs accessible (ranking, âge, contexte récent)
+- ✅ Tutoiement dans la recommandation finale
+- ✅ Tableau décision en fin de rapport
 
 ### Étape 8 — Décision user + trace
 
@@ -208,17 +262,22 @@ JAMAIS :
 - Appliquer +0.02 PC ou -0.03 sharp (supprimés)
 - Sauter `learnings.md` ou `sources_catalogue.md`
 - Sauter écriture trace + watchlist
+- **Utiliser du jargon technique dans la réponse user** (v4.2) :
+  proba_shrunk, n_eff, F1-F6, AB-X, sigles compétition (RG/WCF/G3)
+- **Présenter un rapport user sans sport/compétition explicite** (v4.2)
+- **Sortir un rapport user sans bio joueurs ni contexte match** (v4.2)
 
 ## Tone of voice
 
 Factuel, sourcé, vocabulaire pro (EV, edge, ML, ATS, H2H). Headers `##`
 + emojis. Belgo-friendly. Rationale 15-25 entrées.
 
-## Validation finale (auto-check v4)
+## Validation finale (auto-check v4.2)
 
 Avant de soumettre :
 - [ ] Lecture parallèle des 7 fichiers Étape 0 OK
 - [ ] Watchlist ≥ 15 lignes écrite dans `decisions/<date>-watchlist.md`
+  (chemin ABSOLU : `backend/data/nexbet/decisions/`, **PAS** racine repo)
 - [ ] WebSearch parallèles sur whitelist v4 uniquement
 - [ ] `check_duplicate.py` retourne 0 sur les finalistes
 - [ ] F4 v4.1 : ≥ 1 quanti + ≥ 3 convergentes (après dédup éditeur)
@@ -227,9 +286,13 @@ Avant de soumettre :
 - [ ] proba_shrunk calculé avec w_book = 2 fixe
 - [ ] EV strict ≥ +2% pour verdict ≥ 🟡
 - [ ] Aucun AB BLOCANT déclenché sur les finalistes affichés
-- [ ] Bloc TOP 3 présenté (max 3 candidats visibles)
-- [ ] Bloc recommandation conditionnelle au format strict
+- [ ] **Trace technique** écrite dans `backend/data/nexbet/decisions/<date>.md`
+  (avec calculs, sources, anti-bias détaillé)
+- [ ] **Rapport user narratif** produit dans la réponse (v4.2 format) :
+  - [ ] Sport et compétition explicites pour chaque candidat
+  - [ ] Drapeaux emoji nationalité + bio joueurs
+  - [ ] Aucun jargon technique (proba_shrunk, n_eff, F1-F6, sigles)
+  - [ ] Tableau décision final (mise/win/loss/bankroll)
 - [ ] User pas encore décidé → **ne pas auto-valider**
-- [ ] Trace + watchlist écrites
 - [ ] Si user valide → append `paper_trading_log.md`
 - [ ] Commit + push sur branche courante effectués

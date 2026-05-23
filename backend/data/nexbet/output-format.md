@@ -1,174 +1,170 @@
-# NΞXBΞT — Format de sortie obligatoire (v4.0 — Recap-only)
+# NΞXBΞT — Format de sortie obligatoire (v4.2 — Narratif user-first)
 
-> **v4.0** : l'agent ne produit plus un "Pick JSON unique". Il présente
-> un **TOP 3 ranking** chiffré, un verdict par candidat, et une
-> recommandation conditionnelle. C'est le user qui tranche.
+> **v4.2 du 24/05/2026** : refonte du format de sortie. **Deux artefacts
+> distincts** sont désormais produits :
+>
+> 1. **Trace audit technique** dans `decisions/<date>.md` (calculs,
+>    sources, anti-bias, pour audit méthodologique)
+> 2. **Rapport user narratif** affiché dans la conversation (sport et
+>    compétition explicites, bio joueurs, langage accessible, sans
+>    jargon technique)
+>
+> Le user ne doit JAMAIS voir "proba_shrunk", "n_eff", "F4 KO" etc.
+> dans le rapport conversation — ces termes vont dans la trace.
 
-## Structure attendue de la réponse
+## 📋 Artefact 1 — Trace audit technique
 
-L'agent doit produire **4 blocs obligatoires** dans cet ordre :
+Écrite dans `backend/data/nexbet/decisions/<YYYY-MM-DD>.md`. Format
+inchangé depuis v4.1, contient :
 
-### Bloc 1 — Watchlist (auditabilité)
+### Sections obligatoires
+1. **En-tête** : date, heure analyse, bankroll virtuel paper, méthodologie
+2. **Étapes 1-5** : cartographie, pré-filtrage, analyse approfondie,
+   anti-bias, calculs
+3. **Pour chaque candidat TOP 5** :
+   - Calculs : book_proba, model_proba (médiane), n_eff, proba_shrunk, EV
+   - Sources : URLs complètes + quotes textuelles si extraites via snippet
+   - Anti-bias : statut AB-1/2/4/5 + EXPERIMENTAL AB-3/PC
+   - Verdict 🟢/🟡/🟠/🔴 + raison technique
+4. **Auto-checks v4.1** : checklist validée
+5. **Décision user** + sources consultées + anomalies/doutes
 
-Tableau Markdown ≥ 15 lignes, déjà écrit dans
-`decisions/<date>-watchlist.md`. La réponse à l'utilisateur peut référer
-au fichier ou inclure une version réduite (top 10).
+Voir `decisions/2026-05-24.md` (J1 cycle paper) pour le template de
+référence.
+
+## 🎤 Artefact 2 — Rapport user narratif (NOUVEAU v4.2)
+
+Affiché dans la conversation, lu par le user. **Aucun jargon
+technique**. Format strict ci-dessous.
+
+### Structure imposée
 
 ```markdown
-| Match | Sport | Kickoff UTC | Cote favori | Coverage |
-|---|---|---|---|---|
-| Navone vs Tien | Tennis ATP | 13:00 | 1.77 | 4 sources |
-| ... | ... | ... | ... | ... |
+# 🎾 Récap des matchs du jour — [Jour Date en français complet]
+
+**[N] candidats analysés pour [contexte court].** Bankroll virtuel : **XX,XX€**.
+
+---
+
+## 🥇 Choix #1 — [Description naturelle de l'action en français]
+
+### Le contexte
+- **Sport** : [Tennis hommes / Hockey sur glace / Basketball NBA / etc.]
+- **Compétition** : **[Nom complet — Roland Garros / NHL Stanley Cup Playoffs / etc.]** — [tour, série, manche]
+- **Surface/Lieu** : [Terre battue / À domicile à Denver / etc.]
+- **Heure** : [XXh Belgique] ([moment de la journée])
+- **Cote bwin** : **X.XX** (mise X€ → gain potentiel +X,XX€)
+
+### Qui joue
+- 🇷🇸 **[Prénom Nom]** ([#ranking ATP/club], [âge] ans) — [contexte rapide : forme récente, spécialité, classement notable]
+- 🇭🇺 **[Prénom Nom]** ([#ranking], [âge] ans) — [contexte rapide]
+
+### Pourquoi on aime ce pari
+- [Raison 1 en langage naturel : sources convergent, forme excellente, etc.]
+- [Raison 2 : stat factuelle accessible — pas de "proba_shrunk 0.588"]
+- [Raison 3 si applicable]
+
+### Ce qui nous fait douter
+- ⚠️ [Alerte 1 : H2H défavorable, blessure, etc.]
+- ⚠️ [Alerte 2]
+- ⚠️ [Alerte 3 si applicable]
+
+### Verdict
+**🟢 RECOMMANDÉ / 🟡 ACCEPTABLE / 🟠 BORDERLINE** — [explication en 1-2 phrases simples sans jargon].
+
+---
+
+## 🥈 Choix #2 — [Description] (idem structure)
+## 🥉 Choix #3 — [Description] (idem structure ; si 🟠, ajouter "DÉCONSEILLÉ" dans le titre)
+
+---
+
+# 🎯 Ma recommandation
+
+[Phrase claire selon Cas A/B/C, langage naturel] :
+- **Cas A (au moins 1 🟢)** : "Mon choix : **[Pick]** (🟢, edge solide). Tu peux te lancer."
+- **Cas B (que des 🟡)** : "Aucun pick fort aujourd'hui. Le moins risqué = **[Pick]** (🟡, edge correct mais marginal). **Tu peux skip sans regret.**"
+- **Cas C (que des 🟠/🔴)** : "Rien de défendable aujourd'hui. **Skip recommandé.**"
+
+| Décision | Mise | Si on gagne | Si on perd |
+|---|---|---|---|
+| ✅ **[Pick #1]** ([compétition heure]) | X,XX€ | +X,XX€ → XXX,XX€ | −X,XX€ → XX,XX€ |
+| 🔄 **[Pick #2]** ([compétition heure]) | X,XX€ | +X,XX€ → XXX,XX€ | −X,XX€ → XX,XX€ |
+| ❌ **Skip aujourd'hui** | 0€ | — | bankroll **XXX,XX€** inchangé |
+
+**Tu décides quoi ?**
 ```
 
-### Bloc 2 — TOP 3 candidats (analyse chiffrée)
+### Règles de style narratif (v4.2)
 
-Pour chaque candidat (ranking par EV décroissant), produire la fiche
-suivante :
+**OBLIGATOIRE** :
+- **Sport mentionné explicitement** dans chaque candidat (jamais juste "RG R1" — écrire "Tennis hommes — Roland Garros 1er tour")
+- **Nom complet de la compétition** ("Roland Garros (Grand Chelem)" et pas "RG", "NHL Stanley Cup Playoffs — Finale de Conférence Ouest" et pas "WCF")
+- **Drapeaux emoji** pour la nationalité des joueurs (🇷🇸 🇫🇷 🇺🇸 🇨🇦 🇧🇪 etc.)
+- **Heure en Belgique** + moment de la journée ("11h Belgique, dimanche matin")
+- **Bio joueurs accessible** : ranking, âge, nationalité, contexte récent ("Sort d'une série de 5 victoires", "vétéran de la terre battue", "rookie de l'année")
+- **Langage de présentateur sport**, pas de bookmaker technique
+- **Tutoiement** dans la recommandation finale ("Tu peux skip", "Tu décides")
 
-```markdown
-### 🟢/🟡/🟠 #N — [Pick] (cote X.XX)
+**INTERDIT dans la conversation user** :
+- ❌ `proba_shrunk`, `n_eff`, `book_proba`, `model_proba` (chiffres bruts)
+- ❌ `F1`, `F2`, `F3`, `F4`, `F5`, `F6` (codes de filtres)
+- ❌ `AB-1`, `PC-X`, `EV +X.X%` (présenter "edge calculé" simplement)
+- ❌ `w_book`, `dédup éditeur`, `snippet WebSearch`
+- ❌ Tableau avec "Champ | Valeur" et 10 lignes techniques
+- ❌ URLs de sources brutes (les sources sont citées en bio "Selon Dimers et Stats Insider" pas en liste d'URLs)
 
-| Champ | Valeur |
-|---|---|
-| Match | Team A vs Team B |
-| Compétition | League / Tournament |
-| Kickoff | YYYY-MM-DD HH:MM UTC (HH:MM Belgique) |
-| Cote bwin | X.XX |
-| Book proba | 0.XXX |
-| Model proba (médiane sources) | 0.XXX |
-| Sources accessibles | N convergentes |
-| `proba_shrunk` | 0.XXX (formule : (n_eff × model + 2 × book) / (n_eff + 2)) |
-| EV | +X.X% |
-| Verdict | 🟢 RECOMMANDÉ / 🟡 ACCEPTABLE / 🟠 BORDERLINE |
-| Mise paper si validé | X.XX € |
+**AUTORISÉ avec mesure** :
+- ⚠️ "Cote 1.78 chez bwin" (cote acceptable car compréhensible)
+- ⚠️ "+4.7% d'edge" si vraiment utile (sinon dire "edge correct mais marginal")
+- ⚠️ "H2H 0-1" (acceptable en jargon tennis, mais préciser "historique face-à-face")
+- ⚠️ "Mise 3€" (sans détail Kelly)
 
-**Sources accessibles** :
-- Source 1 (lastwordonsports.com) : "quote ou proba explicite" — X%
-- Source 2 (dimers.com) : "quote ou proba explicite" — X%
-- Source 3 (bleachernation.com) : "quote ou proba explicite" — X%
+**Émojis verdict** :
+- 🟢 RECOMMANDÉ (EV ≥ +5%, proba ≥ 0.60)
+- 🟡 ACCEPTABLE (EV ≥ +2%, proba ≥ 0.55)
+- 🟠 BORDERLINE / DÉCONSEILLÉ (EV entre 0 et +2%)
+- 🚨 (utilisé dans Alerts pour les signaux MAJEURS — blessure star, série 3-1, etc.)
+- ⚠️ (utilisé dans Alerts pour les warnings standards)
 
-**Alerts** :
-- ⚠️ AB / PC patterns identifiés (si applicable)
-- ⚠️ Risques honnêtes (3 max)
+## 🤝 Articulation Trace ↔ Rapport user
 
-**Pourquoi ce verdict** :
-1 paragraphe court (3-5 lignes) résumant l'analyse.
-```
+L'agent produit **TOUJOURS les deux** à chaque run :
 
-### Bloc 3 — Recommandation conditionnelle
+1. **D'abord** : la trace technique complète dans `decisions/<date>.md`
+   (l'agent peut être audité par moi/devs sans relire la conversation)
+2. **Ensuite** : le rapport narratif user-facing dans la réponse finale
+   à l'utilisateur (lisible directement sur mobile)
+3. **Si user valide** ✅ : ajout JSON dans `paper_trading_log.md` au
+   format spec v4.1 (déjà documenté)
 
-Format strict selon la disponibilité de candidats 🟢 / 🟡 :
+## Format JSON paper position (inchangé v4.1)
 
-#### Cas A — Au moins 1 candidat 🟢 RECOMMANDÉ
-```markdown
-## 🎯 Recommandation conditionnelle
-
-**Mon TOP : [Pick] (verdict 🟢, EV +X.X%, proba_shrunk X.XX)**
-
-Justification : 3 sources convergentes, EV positif solide, anti-bias OK.
-
-**À ta décision** :
-- ✅ Valider → mise paper X € sur bankroll virtuel
-- ❌ Skip → noté en trace, aucune position
-- 🔄 Contre-pick → choisis un autre candidat (TOP 2 ou TOP 3)
-
-**Bankroll virtuel paper avant** : XX.XX €
-**Si win** : +X.XX € → XX.XX €
-**Si loss** : -X.XX € → XX.XX €
-```
-
-#### Cas B — Aucun 🟢, au moins 1 🟡 ACCEPTABLE
-```markdown
-## ⚠️ Recommandation conditionnelle
-
-**Aucun candidat 🟢 RECOMMANDÉ aujourd'hui.**
-
-**Le moins pire : [Pick] (verdict 🟡, EV +X.X%, proba_shrunk X.XX)**
-
-C'est jouable mais sans conviction forte. Tu peux skip sans regret.
-
-**À ta décision** :
-- ✅ Valider → mise paper X € (réduite par défaut sur 🟡)
-- ❌ Skip recommandé → aucune position
-- 🔄 Contre-pick → un autre TOP 2 / TOP 3 si tu vois quelque chose
-```
-
-#### Cas C — Aucun 🟢 ni 🟡 (que des 🟠 / 🔴)
-```markdown
-## 🛑 Recommandation conditionnelle
-
-**Rien de défendable aujourd'hui.**
-
-Le meilleur candidat dispo ([Pick]) est verdict 🟠 BORDERLINE
-(EV +X.X%, proche du seuil 0%).
-
-**Recommandation : SKIP cette journée.**
-
-La discipline v4 rétablit "EV ≥ +2% strict". Aucun pick paper
-aujourd'hui.
-```
-
-### Bloc 4 — Trace + commit
-
-Trace écrite dans `decisions/<date>.md` (toujours, même si skip) :
-- Heure analyse
-- Top 5 candidats étudiés avec calculs complets
-- Verdict par candidat
-- Décision finale du user (✅ / ❌ / 🔄)
-- Sources consultées (URLs)
-- Anomalies / doutes
-- Si pick validé : mise paper, bankroll virtuel après
-
-**Format trace TOP 5** (un bloc par candidat) :
-```markdown
-### Candidat N — [Pick] (cote X.XX)
-
-**Calculs** :
-- book_proba = 1 / X.XX = 0.XXX
-- model_proba (médiane sources) = 0.XXX (sources : ...)
-- n_eff = N
-- proba_shrunk = (N × 0.XXX + 2 × 0.XXX) / (N + 2) = 0.XXX
-- EV = 0.XXX × X.XX − 1 = +X.X%
-
-**Sources accessibles** :
-- URL 1 → proba explicite ou quote
-- URL 2 → proba explicite ou quote
-- URL 3 → proba explicite ou quote
-
-**Anti-bias** :
-- AB-1/2/4/5 status (déclenché ou NA)
-- AB-3 status (EXPERIMENTAL)
-- PC patterns identifiés (EXPERIMENTAL)
-
-**Verdict** : 🟢/🟡/🟠/🔴 — raison
-```
-
-## Format JSON paper position (uniquement si user valide)
-
-Après validation user (✅), append dans `paper_trading_log.md` :
+Si user valide (✅), append dans `paper_trading_log.md` :
 
 ```json
 {
-  "date": "YYYY-MM-DD",
+  "id": "paper_YYYYMMDD_NN",
+  "date_proposed": "YYYY-MM-DD",
+  "date_validated": "YYYY-MM-DD HH:MM Belgique",
   "verdict": "recommended | acceptable | borderline",
   "pick": "Description courte",
   "sport": "tennis | nba | nhl | mlb | soccer | combo",
   "match": "Team A vs Team B",
   "kickoff_utc": "YYYY-MM-DDTHH:MM:SS+00:00",
-  "odds_bwin": 1.77,
-  "model_probability": 0.555,
-  "book_probability": 0.565,
-  "ev": -0.018,
-  "stake_paper": 2.00,
+  "odds_bwin": 1.78,
+  "model_probability": 0.640,
+  "book_probability": 0.562,
+  "ev": 0.047,
+  "stake_paper": 3.00,
   "sources": ["url1", "url2", "url3"],
   "anti_bias_notes": "AB-3 EXPERIMENTAL noted, no blocking",
   "outcome": "pending",
   "verification": {
-    "source_a": null,
-    "source_b": null,
-    "quote_a": null,
-    "quote_b": null,
+    "source_a_url": null,
+    "source_a_quote": null,
+    "source_b_url": null,
+    "source_b_quote": null,
     "verified_at": null
   },
   "bankroll_virtual_before": 100.00,
@@ -176,13 +172,9 @@ Après validation user (✅), append dans `paper_trading_log.md` :
 }
 ```
 
-**Champs `verification`** remplis uniquement quand outcome confirmé
-par **2 sources distinctes avec quote textuelle** (voir method.md
-Étape 9).
+## Format outcome verification (inchangé v4.1)
 
-## Format outcome verification
-
-Quand le match est joué et que l'outcome doit être marqué :
+Quand le match est joué (≥ 2h après kickoff), vérification stricte :
 
 ```markdown
 ### Outcome verification — [Pick] — [Date]
@@ -199,41 +191,20 @@ Quand le match est joué et que l'outcome doit être marqué :
 → Bankroll virtuel après : XX.XX €
 ```
 
-**Si une seule source disponible ou pas de quote précise** :
-```markdown
-### Outcome verification — PENDING — [Pick] — [Date]
+Si une seule source ou pas de quote précise → outcome reste PENDING.
 
-Sources tentées :
-- URL 1 : pas de quote score final
-- URL 2 : URL 403 / pas accessible
+## Anti-patterns interdits dans la sortie v4.2
 
-→ Outcome reste PENDING. Re-vérification demain.
-```
+JAMAIS dans la **conversation user** :
+- Tableau technique "Champ | Valeur | book_proba 0.XXX"
+- Termes méthodologiques (proba_shrunk, n_eff, F1-F6, AB-X, PC-X)
+- URLs brutes en liste (les sources doivent être citées dans la prose)
+- Verdict sans contexte sport+compétition
+- Description match en sigles ("RG R1", "WCF G3" → écrire en clair)
+- Pick unique sans présenter les alternatives TOP 3
+- Recommandation sans tableau décision (mise/win/loss/bankroll)
 
-**JAMAIS d'inférence** (G2/G3, SF/Final, score deviné).
-
-## Sections rationale (si user valide et veut copie pour bwin)
-
-Si le user valide le pick et veut le partager / le placer en réel
-(après les 30 jours paper), produire un **rationale court** (10-15
-lignes) sur demande explicite. Pas obligatoire en mode paper.
-
-Style :
-- **Factuel, sourcé** : éviter superlatifs marketing
-- **Honnête sur les risques** : 2-3 risques min
-- **Belgo-friendly** : cote bwin, heure belge
-- **Vocabulaire pro** : EV, edge, H2H, ATS
-
-## Anti-patterns interdits dans la sortie v4
-
-JAMAIS :
-- Produire un "Pick JSON unique" sans Bloc TOP 3 alternatives
-- Présenter un candidat verdict 🔴 dans le TOP 3 visible (rejets en
-  trace seulement)
-- Recommander explicitement un candidat 🟠 BORDERLINE sans avertir
-  "skip recommandé"
-- Auto-valider un pick (insertion automatique dans picks_data.py)
-- Marquer un outcome sans quote textuelle x2
-- Omettre la section "Recommandation conditionnelle"
-- Citer Sofascore / ATP / WTA officiels comme source primaire
-- Appliquer un boost de proba PC (tous EXPERIMENTAL n=1)
+JAMAIS dans la **trace `decisions/<date>.md`** :
+- Format narratif (la trace doit rester technique pour audit)
+- Omission des calculs détaillés
+- Pas de mention des sources URLs complètes
