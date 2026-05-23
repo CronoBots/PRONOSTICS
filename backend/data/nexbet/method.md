@@ -120,21 +120,26 @@ multi-tool** (gain ~3× sur le temps de l'étape) :
   combinée ≥ 0.60 (cas Ruud+Knicks 21/05)
 - "Underdog Cinderella playoffs" → flag jaune sur le favori opposé
 
-## Étape 5 — Calculs + tiering (v3)
+## Étape 5 — Calculs + tiering (v3.2 — shrinkage adaptatif)
 
 Pour chaque finaliste, calculer dans cet ordre :
 
 ```
 book_proba   = 1 / cote_bwin
 model_proba  = moyenne pondérée (sharp ×3, pro ×2, mainstream ×1)
+spread       = |model_proba − book_proba|
 n_eff        = nombre de sources solides (max 5)
-proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
+w_book       = 2 si spread ≤ 0.10
+             = 3 si 0.10 < spread ≤ 0.20  (anti-overconfidence modéré)
+             = 4 si spread > 0.20         (anti-overconfidence fort)
+proba_shrunk = (n_eff × model_proba + w_book × book_proba) / (n_eff + w_book)
 ```
 
 **Ajustements** sur `proba_shrunk` :
 - Pas de source sharp accessible : `-0.03`
-- PC-1/2/3 déclenché : `+0.02`
-- AB-1/2/3/4 déclenché : rejet immédiat
+- **AB-6 déclenché (≥ 2 sources pros recommandent l'autre side)** : `-0.05`
+- PC-1/2/3/4 déclenché : `+0.02`
+- AB-1/2/3/4/5 déclenché : rejet immédiat
 
 Puis :
 ```

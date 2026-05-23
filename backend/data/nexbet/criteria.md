@@ -6,14 +6,39 @@
 
 ## Filtres durs (NON négociables)
 
-### F1 — Cote (resserré v3 — 23/05/2026)
-- **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
-- **Combiné 2 jambes** : cote totale finale 1.60 – 2.20
+### F1 — Cote (v3.2 — 23/05/2026, après backtest)
+- **Single (défaut)** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
+- **Single PLAYOFF MODE** : 1.50 – 2.50 si F1-bis remplie (cf ci-dessous)
+- **Combiné 2 jambes (défaut)** : cote totale finale 1.60 – 2.20
+- **Combiné 2 jambes BOOST MODE** : 1.60 – 2.50 si boost bwin ≥ +20%
 - **Combiné jambe individuelle** : 1.20 – 1.45 (= proba implicite 0.69 – 0.83
   par jambe, "presque sûre")
-- **Pourquoi le resserrement** : profil utilisateur veut "presque sûr",
-  cote au-dessus de 2.00 implique proba < 50% au book = trop risqué.
-  Sous 1.50, EV trop sensible aux erreurs d'estimation.
+- **Pourquoi v3.2** : le backtest 17-22/05 montre que v3 strict (cote ≤ 2.00)
+  aurait coupé 70% des gains historiques en période playoffs majeurs (Spurs
+  2.70 WIN, Svitolina 2.30 WIN, Combo Ruud+Knicks 2.36 WIN). F1-bis et combo
+  élargi récupèrent ces opportunités sous conditions strictes pour ne pas
+  relâcher la discipline.
+
+### F1-bis — Playoff Mode (single cote 2.00-2.50)
+Pendant les Conference Finals et NBA/NHL Finals (typiquement mai-juin),
+autoriser cote single jusqu'à **2.50** SI **TOUTES** ces conditions sont
+remplies :
+- Sport NBA ou NHL (playoffs en cours)
+- `proba_shrunk` ≥ 0.40
+- ≥ 2 sources sharps disponibles (Polymarket, Pinnacle, ou ≥ 2 parmi
+  Manifold/Kalshi/Polymarket via le pipeline backend)
+- H2H récent **favorable underdog** : ≥ 3 wins sur les 5 derniers H2H
+  saison régulière + playoffs combinés
+- Différentiel repos ≥ +2 jours en faveur de l'underdog
+- ≥ 2 sources pros mentionnent **explicitement** le facteur fatigue OU H2H
+  comme edge
+
+Si toutes conditions OK → tier **FLOOR** (mise réduite 2€). PAS un coup
+de poker, un pick prudent sur underdog cohérent. AB-6 (sources pros
+divergentes) reste blocking comme partout.
+
+**Cas validé n=1** : Spurs WCF G1 (18/05/2026) — cote 2.70 → win +8.50€.
+À confirmer 2× supplémentaires avant promotion en STANDARD.
 
 ### F2 — Probabilité estimée (shrunk) — par tier
 - **Single PREMIUM** : `proba_shrunk` ≥ 0.62
@@ -22,14 +47,28 @@
 - **Combo jambe individuelle** : `proba_shrunk` ≥ 0.72 ("presque sûre")
 - **Combo combinée** : ≥ 0.55 (produit des 2 jambes)
 - **Plafond utile** : 0.85 (au-delà cote trop basse pour respecter F1)
-- **Comment estimer** :
+- **Comment estimer (v3.2 — shrinkage adaptatif)** :
   1. `model_proba` = moyenne pondérée sources (sharp ×3, pro ×2,
      mainstream ×1)
-  2. `proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)`
+  2. `spread = |model_proba − book_proba|` (en points décimaux : 0.10 = 10 pts)
+  3. `w_book` adaptatif (anti-overconfidence) :
+     - spread ≤ 0.10 → `w_book = 2` (cas normal)
+     - 0.10 < spread ≤ 0.20 → `w_book = 3` (méfiance, modèle probablement
+       trop optimiste — backtest confirme overconfidence > 10 pts)
+     - spread > 0.20 → `w_book = 4` (méfiance forte, le book sait quelque
+       chose qu'on ignore)
+  4. `proba_shrunk = (n_eff × model_proba + w_book × book_proba) / (n_eff + w_book)`
      où `n_eff` = nombre de sources solides (max 5), `book_proba = 1/cote`
-  3. Bonus/malus : pas de sharp = -0.03 ; PC déclenché = +0.02
+  5. Bonus/malus :
+     - Pas de sharp dispo → `-0.03`
+     - AB-6 déclenché (≥ 2 sources pros recommandent l'autre side) → `-0.05`
+     - PC déclenché → `+0.02`
 - **Champ stocké** : `proba_shrunk` devient `model_probability` dans le
   JSON final (plus honnête que l'estimation brute).
+- **Pourquoi w_book adaptatif** : le backtest 17-22/05 montre que les 2
+  losses (Tigers, Combo Olympiakos) avaient spread +14 et +18 pts vs les
+  wins à +9 pts en moyenne. Renforcer book_proba quand spread grand
+  amortit l'overconfidence du modèle.
 
 ### F3 — Expected Value — par tier
 - **Single PREMIUM** : EV ≥ +5%
@@ -124,20 +163,28 @@ peut être un "trap public" — vérifier avec Pinnacle ou sharps.
 ### Référence
 Kelly criterion : `fraction = (proba × cote − 1) / (cote − 1)`.
 
-## Combiné (parlay) — règles spécifiques v3
+## Combiné (parlay) — règles spécifiques v3.2
 
 Un combiné est autorisé SI :
 - **2 jambes maximum** (jamais 3+, variance trop élevée)
 - **Chaque jambe** : `proba_shrunk` ≥ 0.72 ET cote individuelle 1.20-1.45
 - **Probabilité combinée** ≥ 0.55 (= produit des probas shrunk)
-- **Cote combinée finale** : 1.60 – 2.20 (après boost si applicable)
+- **Cote combinée finale** :
+  - 1.60 – 2.20 (défaut, sans boost ou boost < +20%)
+  - **1.60 – 2.50 (BOOST MODE)** : si boost bwin ≥ +20% sur le combiné
 - **EV combinée** ≥ +8% (boost bwin fortement recommandé pour atteindre)
 - **Pas de corrélation** : sports différents ou ligues différentes
   obligatoire (jamais 2 matchs du même tournoi le même jour)
 - **Préférence** : combiné AVEC boost bwin prioritaire vs single
   équivalent.
 
-## Garantie "1 pick par jour" (v3 — 23/05/2026)
+**Pourquoi BOOST MODE** : le backtest valide que le boost bwin transforme
+un combo +14% EV en +49% EV (cas Ruud+Knicks 21/05 WIN). Élargir la
+fenêtre cote 2.20→2.50 quand le boost est ≥ +20% permet de capter ces
+opportunités, qui sont structurellement rares (1 par semaine max selon
+les promos bwin observées).
+
+## Garantie "1 pick par jour" (v3.2 — 23/05/2026 post-backtest)
 
 **Pivot de philosophie** : la promesse user est désormais "1 pick chaque
 jour", pas "discipline > volume". L'agent doit toujours produire un pick,
