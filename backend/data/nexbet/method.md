@@ -78,9 +78,9 @@ intéressant".
 `python backend/scripts/check_duplicate.py "<home_team>" "<away_team>"`.
 Exit code ≠ 0 → drop (match déjà pické < 7j).
 
-**Short-circuit** : si 0 finaliste après pré-filtrage → sortir directement
-"no pick today" SANS faire Étape 3. Inutile de fetcher en profondeur
-des candidats déjà morts.
+**PAS de short-circuit "no pick"** (v3) : tant qu'au moins 1 candidat a
+une cote dans la fenêtre 1.50-2.00, on continue. Le tier FLOOR sert de
+fallback. Le skip n'est autorisé que pour les cas extrêmes (criteria.md).
 
 ## Étape 3 — Analyse approfondie (top 5, PARALLÈLE)
 
@@ -120,7 +120,7 @@ multi-tool** (gain ~3× sur le temps de l'étape) :
   combinée ≥ 0.60 (cas Ruud+Knicks 21/05)
 - "Underdog Cinderella playoffs" → flag jaune sur le favori opposé
 
-## Étape 5 — Calculs formels + shrinkage (NOUVEAU v2)
+## Étape 5 — Calculs + tiering (v3)
 
 Pour chaque finaliste, calculer dans cet ordre :
 
@@ -132,7 +132,7 @@ proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
 ```
 
 **Ajustements** sur `proba_shrunk` :
-- Pas de source sharp : `-0.03`
+- Pas de source sharp accessible : `-0.03`
 - PC-1/2/3 déclenché : `+0.02`
 - AB-1/2/3/4 déclenché : rejet immédiat
 
@@ -143,6 +143,20 @@ Kelly = (proba_shrunk × cote_bwin − 1) / (cote_bwin − 1)
 ```
 
 **`proba_shrunk` devient `model_probability` dans le JSON final.**
+
+**Affecter un tier** à chaque candidat (voir criteria.md table tiers) :
+- 🟢 PREMIUM, 🟡 STANDARD, 🟠 FLOOR, 🔵 COMBO
+
+**Cascade de sélection** (ordre strict) :
+1. Combo éligible AVEC boost bwin → priorité absolue
+2. Sinon meilleur PREMIUM (max `EV × proba_shrunk`)
+3. Sinon meilleur STANDARD
+4. Sinon meilleur FLOOR (mise réduite 1-2€)
+5. Sinon (vraiment rien dans la fenêtre cote 1.50-2.00) : voir cas
+   extrêmes criteria.md — sinon FLOOR avec malus EV même négatif
+
+**La promesse user est "1 pick par jour"** : ne pas skipper sauf cas
+techniques.
 
 **Garder uniquement** les candidats qui respectent les 6 filtres durs
 de `criteria.md` (F1-F6).

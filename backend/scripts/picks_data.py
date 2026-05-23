@@ -55,6 +55,7 @@ class Pick(TypedDict, total=False):
     odds: float
     odds_unboosted: float          # cote sans boost (si applicable)
     model_probability: float
+    tier: str                      # v3: premium | standard | floor | combo
     headline: str                  # 1 phrase punchy en haut de l'analyse
     rationale: list[str]
     sources: list[str]

@@ -6,21 +6,22 @@
 
 ## Filtres durs (NON négociables)
 
-### F1 — Cote
-- **Min** : 1.50
-- **Max** : 3.00 (au-delà = trop spéculatif, hors profil "safe")
-- **Sweet spot** : 1.70 – 2.40
-- **Pourquoi** : sous 1.50, l'EV est trop sensible aux erreurs d'estimation
-  de proba ; au-dessus de 3.00, on sort du profil "safe favorite" et le
-  variance devient trop forte sur le bankroll.
+### F1 — Cote (resserré v3 — 23/05/2026)
+- **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
+- **Combiné 2 jambes** : cote totale finale 1.60 – 2.20
+- **Combiné jambe individuelle** : 1.20 – 1.45 (= proba implicite 0.69 – 0.83
+  par jambe, "presque sûre")
+- **Pourquoi le resserrement** : profil utilisateur veut "presque sûr",
+  cote au-dessus de 2.00 implique proba < 50% au book = trop risqué.
+  Sous 1.50, EV trop sensible aux erreurs d'estimation.
 
-### F2 — Probabilité estimée (shrunk)
-- **Min** : 0.62 (`proba_shrunk` ≥ 62%) — **relevé de 0.60 → 0.62 le 23/05/2026**
-- **Recommandé** : 0.65 – 0.78
-- **Plafond utile** : 0.85 (au-delà la cote sera trop basse pour respecter F1)
-- **Pourquoi** : à 62%+ on a une marge de sécurité contre le biais
-  d'optimisme. Le seuil 0.60 d'origine était trop sensible (un pick à
-  0.61 = 1pt au-dessus du seuil, le moindre biais tuait l'EV).
+### F2 — Probabilité estimée (shrunk) — par tier
+- **Single PREMIUM** : `proba_shrunk` ≥ 0.62
+- **Single STANDARD** : `proba_shrunk` ≥ 0.58
+- **Single FLOOR** : `proba_shrunk` ≥ 0.55 (fallback "garantir 1 pick/jour")
+- **Combo jambe individuelle** : `proba_shrunk` ≥ 0.72 ("presque sûre")
+- **Combo combinée** : ≥ 0.55 (produit des 2 jambes)
+- **Plafond utile** : 0.85 (au-delà cote trop basse pour respecter F1)
 - **Comment estimer** :
   1. `model_proba` = moyenne pondérée sources (sharp ×3, pro ×2,
      mainstream ×1)
@@ -30,25 +31,24 @@
 - **Champ stocké** : `proba_shrunk` devient `model_probability` dans le
   JSON final (plus honnête que l'estimation brute).
 
-### F3 — Expected Value
-- **Min** : +7% (EV > 0.07) — **relevé de +5% → +7% le 23/05/2026**
-- **Recommandé** : +10% à +25%
-- **Formule** : `EV = (proba_shrunk × cote) − 1` (utiliser la proba
-  shrunk, pas la model brute)
-- **Pourquoi** : +5% laissait trop de bruit passer. +7% garantit un
-  edge net même après variance d'estimation ±2pts.
-- **Exception "boost bookmaker"** : si bwin / DraftKings / FanDuel offre un
-  boost qui amène l'EV au-dessus de +30%, on peut accepter une proba
-  shrunk légèrement plus basse (min 0.57 dans ce cas) car le boost
-  compense.
+### F3 — Expected Value — par tier
+- **Single PREMIUM** : EV ≥ +5%
+- **Single STANDARD** : EV ≥ +2%
+- **Single FLOOR** : EV ≥ -2% (on accepte un edge marginalement négatif
+  uniquement si c'est l'option la plus safe disponible — la mise sera
+  réduite à 1-2€)
+- **Combo** : EV ≥ +8% (boost bwin recommandé pour atteindre ce seuil)
+- **Formule** : `EV = (proba_shrunk × cote) − 1` (toujours proba shrunk,
+  pas la model brute).
 
 ### F4 — Sources externes
-- **Min** : 3 sources pros indépendantes confirmant la lecture, **dont
-  au moins 1 source sharp** (Polymarket, Pinnacle, Betfair Exchange) —
-  **règle "1 sharp obligatoire" ajoutée le 23/05/2026**.
-- Si aucune source sharp n'est accessible sur le pick : appliquer le
-  malus `-0.03` sur `proba_shrunk` (cf F2) ET noter le risque dans la
-  rationale.
+- **Min PREMIUM/STANDARD** : 3 sources pros indépendantes, **dont 1 sharp
+  recommandée** (Polymarket, Pinnacle, Betfair Exchange).
+- **Min FLOOR** : 2 sources pros indépendantes suffisent.
+- **Pas de sharp accessible** : malus `-0.03` sur `proba_shrunk` ET noter
+  le risque dans la rationale. Pas blocking pour permettre 1 pick/jour
+  même sur tournois mineurs où sharps illiquides (cf observation v2
+  Geneva 23/05).
 - **Sources whitelist** (qualité prouvée) — voir learnings.md section
   "Sources fiables par sport". Privilégier dans cet ordre :
   - NBA : ESPN BPI, FiveThirtyEight, OddsShark, BleacherNation, NBC Sports
@@ -106,49 +106,59 @@ totals).
 Si > 75% du public est sur notre side ET la line est restée stable, ça
 peut être un "trap public" — vérifier avec Pinnacle ou sharps.
 
-## Mise (stake)
+## Mise (stake) — par tier
 
-### Standard
-- **Mise par défaut** : 5,00 €
-- **Mise sweet spot** : 5 – 10 € (entre 1/5 et 2/5 du bankroll cible 25€)
+| Tier | Conditions résumées | Mise | Communication |
+|---|---|---|---|
+| 🟢 **PREMIUM** | proba_shrunk ≥ 0.62, EV ≥ +5%, sharp dispo | 5 € | "Confiance ÉLEVÉE — Premium pick" |
+| 🟡 **STANDARD** | proba_shrunk ≥ 0.58, EV ≥ +2% | 3 € | "Confiance MODÉRÉE — Standard pick" |
+| 🟠 **FLOOR** | proba_shrunk ≥ 0.55, EV ≥ -2% | 1-2 € | "Confiance LIMITE — Daily floor pick" |
+| 🔵 **COMBO** | 2 jambes proba ≥ 0.72 each, EV ≥ +8% | 5 € | "Combo presque sûr" |
 
 ### Adjustement Kelly
-- Si EV ≥ +20% ET proba ≥ 0.70 : autoriser mise jusqu'à 10 €
-- Si EV ≥ +30% (cas boost bookmaker) ET proba ≥ 0.62 : autoriser jusqu'à
-  bankroll × 0.30 (Kelly safe).
-- Si EV entre +5% et +10% : limiter à 5 € (ne pas sur-miser sur edges
-  marginaux).
+- Si EV ≥ +20% ET proba_shrunk ≥ 0.70 : autoriser mise jusqu'à 10 €
+- Si EV ≥ +30% (cas boost bookmaker) ET proba_shrunk ≥ 0.62 : autoriser
+  jusqu'à bankroll × 0.30 (Kelly safe).
 - **Ne JAMAIS dépasser** 50% du bankroll courant en mise unique (cap dur).
 
 ### Référence
-Voir Kelly criterion : `fraction_optimale = (proba × cote − 1) / (cote − 1)`.
-Pour bankroll 25€, proba 0.65, cote 1.85 → fraction = 0.20 = 5€ (cohérent
-avec notre mise standard).
+Kelly criterion : `fraction = (proba × cote − 1) / (cote − 1)`.
 
-## Combiné (parlay) — règles spécifiques
+## Combiné (parlay) — règles spécifiques v3
 
 Un combiné est autorisé SI :
 - **2 jambes maximum** (jamais 3+, variance trop élevée)
-- **Chaque jambe** respecte individuellement F1 + F2 (proba ≥ 0.70 minimum
-  pour chaque, sinon proba combinée < 0.50)
-- **Probabilité combinée** ≥ 0.55 (= produit des probas individuelles)
-- **Pas de corrélation** entre les jambes (sports différents ou ligues
-  différentes idéal ; jamais 2 matchs du même tournoi le même jour)
-- **Cote combinée** ≥ 1.80
-- **EV combinée** ≥ +10%
-- **Préférence** : si un combiné se présente AVEC boost bookmaker (bwin
-  fait des promos régulières sur combos), il devient prioritaire vs pick
-  solo équivalent.
+- **Chaque jambe** : `proba_shrunk` ≥ 0.72 ET cote individuelle 1.20-1.45
+- **Probabilité combinée** ≥ 0.55 (= produit des probas shrunk)
+- **Cote combinée finale** : 1.60 – 2.20 (après boost si applicable)
+- **EV combinée** ≥ +8% (boost bwin fortement recommandé pour atteindre)
+- **Pas de corrélation** : sports différents ou ligues différentes
+  obligatoire (jamais 2 matchs du même tournoi le même jour)
+- **Préférence** : combiné AVEC boost bwin prioritaire vs single
+  équivalent.
 
-## Cas de rejet (no pick today)
+## Garantie "1 pick par jour" (v3 — 23/05/2026)
 
-L'agent DOIT produire "no pick today" plutôt qu'un mauvais pick si :
-- Aucun candidat ne passe F1+F2+F3+F4 simultanément
-- Les top 3 candidats ont des sources qui divergent fortement
-- Quota API épuisé ET impossible de vérifier les cotes en cross-bookmaker
-- Plus de 3 défaites consécutives récentes ET pas de candidat à proba ≥ 0.75
-  (mode "circuit breaker" pour protéger le bankroll)
+**Pivot de philosophie** : la promesse user est désormais "1 pick chaque
+jour", pas "discipline > volume". L'agent doit toujours produire un pick,
+en descendant la cascade des tiers jusqu'à trouver un candidat :
 
-Le message "no pick today" doit expliquer POURQUOI (quel filtre a tout
-éliminé) et lister les 3 meilleurs candidats étudiés avec leur reason de
-rejet, pour traçabilité.
+1. Essayer **PREMIUM** d'abord (single ou combo qui passent tout)
+2. Sinon **STANDARD** (single avec proba_shrunk ≥ 0.58, EV ≥ +2%)
+3. Sinon **FLOOR** (meilleur candidat dispo, mise réduite 1-2€)
+
+Le tier choisi DOIT être indiqué :
+- Dans le JSON : champ `tier` (string : `premium`, `standard`, `floor`,
+  `combo`)
+- Dans la confidence note : "Confiance [ÉLEVÉE/MODÉRÉE/LIMITE] — [tier]
+  pick"
+- Dans la trace : explication pourquoi pas un tier supérieur
+
+## Cas RARE de "no pick today" (uniquement)
+
+Seuls 3 scénarios autorisent encore le skip :
+- **Aucun event sportif** dans la fenêtre 36h (cas extrême)
+- **Circuit breaker bankroll** : 4 losses consécutives ET bankroll < 10€
+- **Quota API + WebFetch + WebSearch tous KO** simultanément (panne tech)
+
+Dans tous les autres cas, l'agent produit au minimum un pick FLOOR.

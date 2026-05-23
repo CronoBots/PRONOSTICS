@@ -18,6 +18,7 @@
   "odds": 1.83,
   "odds_unboosted": null,
   "model_probability": 0.62,
+  "tier": "premium | standard | floor | combo",
   "headline": "1-2 phrases punchy qui résument le pourquoi du pick",
   "rationale": [
     "##🎯 Le match",
@@ -102,6 +103,16 @@
 }
 ```
 
+## Champ `tier` (v3 — obligatoire)
+
+Chaque pick DOIT contenir un champ `tier` parmi :
+- `premium` : single cote 1.50-2.00, proba_shrunk ≥ 0.62, EV ≥ +5%, mise 5€
+- `standard` : single cote 1.50-2.00, proba_shrunk ≥ 0.58, EV ≥ +2%, mise 3€
+- `floor` : single cote 1.50-2.00, proba_shrunk ≥ 0.55, EV ≥ -2%, mise 1-2€
+- `combo` : 2 jambes proba ≥ 0.72, cote totale 1.60-2.20, EV ≥ +8%, mise 5€
+
+Le tier conditionne la mise et le wording de la confidence note.
+
 ## Champs auto-calculés (NE PAS inclure dans l'output)
 
 Ces champs sont calculés par `build_history.py` automatiquement, l'agent
@@ -168,8 +179,11 @@ L'agent produit dans sa réponse finale :
 3. **Bloc 3 — Trace de décision** : à écrire dans
    `backend/data/nexbet/decisions/<YYYY-MM-DD>.md` (top candidats étudiés,
    rejets motivés, sources, anomalies)
-4. **Bloc 4 — Confidence note** : 1 phrase auto-évaluative ("Confiance
-   élevée car X + Y" ou "Confiance modérée car Z")
+4. **Bloc 4 — Confidence note** : format exact selon tier (v3) :
+   - tier `premium`  → "Confiance ÉLEVÉE — Premium pick"
+   - tier `standard` → "Confiance MODÉRÉE — Standard pick"
+   - tier `floor`    → "Confiance LIMITE — Daily floor pick, mise réduite"
+   - tier `combo`    → "Confiance ÉLEVÉE — Combo presque sûr"
 
 ## En cas de "no pick today"
 
