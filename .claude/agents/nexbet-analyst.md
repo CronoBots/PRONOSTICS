@@ -103,18 +103,26 @@ Pour chaque finaliste, croiser avec `learnings.md` :
 
 **SUPPRIMÉS v4** : AB-6, F1-bis Branches A & B.
 
-### Étape 5 — Calculs v4 (simplifiés)
+### Étape 5 — Calculs v4.1 (simplifiés + dédup éditeur)
 
 Pour chaque finaliste :
 ```
-book_proba   = 1 / cote_bwin
-model_proba  = MÉDIANE des probas explicites des sources accessibles
-                (min 3 sources, sinon F4 KO)
-n_eff        = min(nombre de sources avec proba explicite, 5)
-w_book       = 2  (FIXE — pas d'adaptatif)
-proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
-EV           = proba_shrunk × cote_bwin − 1
+book_proba    = 1 / cote_bwin
+sources_dédup = MÉDIANE interne par domaine racine
+                (ex: goal.com x2 → 1 source effective)
+model_proba   = MÉDIANE des % chiffrés des sources dédupliquées
+n_eff         = nombre de sources quantitatives dédupliquées (max 5)
+                Min 1 quanti + 3 convergentes (quanti OU quali) sinon F4 KO
+                Sources quali convergentes valident F4 mais ne comptent
+                PAS dans n_eff (poids fort sur book quand peu de quanti)
+w_book        = 2 (FIXE)
+proba_shrunk  = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
+EV            = proba_shrunk × cote_bwin − 1
 ```
+
+**Sources snippet** (v4.1) : % lu via snippet WebSearch est accepté
+comme source quantitative si la trace tag "via snippet" + reproduit
+le snippet textuel.
 
 **Pas de malus "no sharp"** : pas pénalisé. Pas de bonus PC : tous EXP.
 
@@ -213,7 +221,9 @@ Avant de soumettre :
 - [ ] Watchlist ≥ 15 lignes écrite dans `decisions/<date>-watchlist.md`
 - [ ] WebSearch parallèles sur whitelist v4 uniquement
 - [ ] `check_duplicate.py` retourne 0 sur les finalistes
-- [ ] Min 3 sources avec proba explicite par finaliste
+- [ ] F4 v4.1 : ≥ 1 quanti + ≥ 3 convergentes (après dédup éditeur)
+- [ ] Dédup éditeur appliquée (N articles même domaine = 1 source)
+- [ ] Sources snippet taguées "via snippet" si utilisées
 - [ ] proba_shrunk calculé avec w_book = 2 fixe
 - [ ] EV strict ≥ +2% pour verdict ≥ 🟡
 - [ ] Aucun AB BLOCANT déclenché sur les finalistes affichés

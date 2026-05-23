@@ -76,6 +76,10 @@ un seul message** :
 - covers.com
 - lineups.com
 - fanduel.com/research
+- goal.com (soccer)
+- sportsgambler.com (soccer)
+- rotowire.com (utile tennis GS)
+- cbssports.com (snippets multi-sports)
 
 **Sources INACCESSIBLES (à ne plus citer comme primaires)** :
 - ATP/WTA officiels (403)
@@ -83,9 +87,11 @@ un seul message** :
 - TennisTemple (403)
 - Polymarket / Pinnacle / Betfair via WebFetch (JS-rendered ou auth)
 
-Si on veut citer une source sharp (Polymarket), uniquement via les URLs
-trouvées en WebSearch ET en mentionnant explicitement que la proba
-exacte n'a pas pu être lue.
+**Polymarket via snippet** (v4.1) : si un snippet WebSearch contient un
+% chiffrable (ex : "Polymarket Pirates 59¢" → 59%), la source est
+**autorisée comme quantitative** et compte 1× dans `n_eff`. Reproduire
+le snippet textuel dans la trace. Si pas de % chiffrable dans le
+snippet → citer URL en trace mais ignorer pour calcul.
 
 **Extraire pour chaque candidat** :
 - Cote sur 2-3 books (bwin priorité)
@@ -112,23 +118,30 @@ Pour chaque finaliste, croiser avec `learnings.md`. Règles actives v4 :
   qualitatif, pas comme bonus mathématique. (Pas de +0.02 automatique
   tant que n ≥ 3.)
 
-## Étape 5 — Calculs simplifiés v4
+## Étape 5 — Calculs simplifiés v4.1
 
 Pour chaque candidat :
 
 ```
 book_proba   = 1 / cote_bwin
-model_proba  = MÉDIANE des probas sources accessibles (min 3)
-                (si moins de 3 sources avec proba explicite : skip
-                 candidat — F4 KO)
-n_eff        = nombre de sources accessibles avec proba explicite (max 5)
-w_book       = 2  (fixe — pas de w_book adaptatif, sample n=6 insuffisant)
+sources_dédup = MÉDIANE interne des % chiffrés par domaine racine
+                (ex: goal.com x2 → 1 source dédupliquée)
+model_proba  = MÉDIANE des % chiffrés des sources dédupliquées
+                (min 1 quanti + 3 convergentes au total — sinon F4 KO)
+n_eff        = nombre de sources quantitatives dédupliquées (max 5)
+                Sources qualitatives convergentes valident F4 mais
+                ne comptent PAS dans n_eff
+w_book       = 2  (fixe — pas de w_book adaptatif)
 proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
 EV           = proba_shrunk × cote_bwin − 1
 ```
 
 **Pas de malus sharp automatique** : si pas de Pinnacle/Polymarket
 accessible, on l'accepte. C'est noté dans la trace mais pas pénalisé.
+
+**Sources snippet** (v4.1) : un % lu via snippet WebSearch (sans
+WebFetch direct) est accepté comme source quantitative à condition que
+la trace identifie "via snippet" et reproduise le snippet textuel.
 
 **Si AB-1/2/4/5 déclenché** : rejet immédiat (pas affiché dans top 3).
 

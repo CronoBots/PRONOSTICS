@@ -23,16 +23,24 @@
 - **Combo combinée** : ≥ 0.55 (produit des 2 jambes)
 - **Plafond utile** : 0.85 (au-delà cote trop basse pour F1)
 
-**Méthode de calcul (v4 simplifié)** :
+**Méthode de calcul (v4.1)** :
 1. `book_proba = 1 / cote`
-2. `model_proba = MÉDIANE des probas explicites sources accessibles`
-   - **Min 3 sources** avec proba explicite (sinon F4 KO, candidat rejeté)
-   - Pas de pondération sharp×3 / pro×2 — médiane simple, résistance aux
-     outliers
+2. `model_proba = MÉDIANE des probas % chiffrées disponibles`
+   - **Min 1 source quantitative + 3 sources convergentes** (voir F4
+     v4.1 pour règle complète)
+   - **Après dédup éditeur** (médiane interne sur articles d'un même
+     domaine, comptée 1× ensuite)
+   - Pas de pondération sharp×3 / pro×2 — médiane simple, résistance
+     aux outliers
 3. `w_book = 2` (FIXE — pas d'adaptatif. Sample n=6 insuffisant pour
    calibrer w_book ∈ {2,3,4})
-4. `n_eff = min(nombre de sources avec proba explicite, 5)`
+4. `n_eff = min(nombre de sources quantitatives effectives après dédup, 5)`
+   - Min 1, max 5. Sources qualitatives convergentes ne comptent PAS
+     dans `n_eff` (mais valident F4 convergence)
 5. `proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)`
+   - Si n_eff = 1 (une seule source quanti + 2-3 quali convergentes) :
+     poids book ⅔, signal modèle ⅓ → garde-fou intégré contre source
+     unique
 
 **Bonus/malus** :
 - **Pas de malus "no sharp"** : on n'a structurellement pas accès aux
@@ -50,25 +58,39 @@
   perdant à long terme. Le tier FLOOR de v3 (EV ≥ -2%) est supprimé.
 - **Formule** : `EV = proba_shrunk × cote − 1`
 
-### F4 — Sources externes
-- **Minimum** : **3 sources pros indépendantes** avec proba explicite ou
-  recommandation claire
-- Sources whitelist (testées accessibles via WebSearch + WebFetch
-  occasionnel) — voir `sources_catalogue.md` pour la liste à jour :
+### F4 — Sources externes (v4.1, ajusté 23/05 post test à blanc)
+- **Minimum quantitatif** : ≥ **1 source pro** avec **proba % chiffrée
+  explicite** (sinon model_proba incalculable → F4 KO)
+- **Minimum global** : ≥ **3 sources pros convergentes** sur le même
+  pick recommandé (quanti OU quali — un "we pick X" sans % compte comme
+  source qualitative convergente si X est aussi notre pick)
+- **Dédup éditeur** (NOUVEAU v4.1) : N articles du même domaine racine
+  = **1 source effective**. Médiane interne sur les %, puis compté
+  1× dans `n_eff`. Ex : `goal.com/top-apps` + `goal.com/tipsters`
+  = 1 source. `tennis-tonic.com` + `lastwordonsports.com` = 2 sources
+  (éditeurs distincts). En cas de doute sur le domaine racine,
+  inspecter le footer/about pour identifier l'éditeur juridique.
+- **Sources snippet** (NOUVEAU v4.1, formalisé) : une proba lue via
+  snippet WebSearch (sans WebFetch direct) est **acceptée comme source
+  quantitative** à condition que la trace l'identifie explicitement
+  "via snippet" et reproduise le snippet textuel. Compte 1× quanti.
+- Sources whitelist (testées accessibles) — voir `sources_catalogue.md`
+  pour la liste à jour :
   - **Multi-sports** : bleachernation.com, covers.com, lineups.com,
     cbssports.com (snippets), fanduel.com/research
   - **NBA** : ESPN BPI (via snippets), BleacherNation
   - **NHL** : Covers, Lineups, OddsShark (snippets)
   - **Tennis** : Tennis Tonic, Last Word on Sports, Dimers,
-    Stats Insider, Tennis Up to Date
+    Stats Insider, Tennis Up to Date, rotowire.com (utile en GS)
   - **MLB** : OddsShark, Action Network (snippets), FanGraphs (snippets)
   - **Soccer** : Goal.com, SportsGambler, dailysports.net
-- **Sources sharp à citer si trouvées via WebSearch mais sans accès au
-  data** : Polymarket, Pinnacle proxy. Citer l'URL, noter "data
-  non-lue", **ne PAS l'utiliser pour calculer model_proba**
-- **Sources INACCESSIBLES** (403 confirmé) — à ne plus citer :
-  ATP/WTA officiels, Sofascore, TennisTemple
-- Si moins de 3 sources avec proba explicite → candidat **rejeté F4**
+- **Sources sharp via snippet** : Polymarket, Pinnacle proxy. Si le
+  snippet contient un % chiffrable (ex : "Polymarket 59¢" → 59%),
+  **autorisée comme source quantitative** (compte dans `n_eff`). Sinon
+  citer URL en trace mais ignorer pour calcul.
+- **Sources INACCESSIBLES** (403 confirmé) — à ne plus citer comme
+  primaires : ATP/WTA officiels, Sofascore, TennisTemple
+- Si < 1 quanti OU < 3 convergentes (après dédup éditeur) → **F4 KO**
 
 ### F5 — Kickoff dans la fenêtre
 - **Min** : 1h après l'heure courante

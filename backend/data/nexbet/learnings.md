@@ -11,6 +11,40 @@
 
 ---
 
+## 🔧 Hotfix v4.1 — 23/05/2026 ~17h (post test à blanc)
+
+Après le test à blanc v4.0 sur la journée 23/05 (5 candidats analysés,
+tous verdict 🔴, recommandation SKIP), 4 anomalies remontées par
+l'agent ont été ajustées :
+
+### Changements v4.0 → v4.1
+
+| Anomalie | Avant (v4.0) | Après (v4.1) |
+|---|---|---|
+| **F4 sources** | 3 sources avec % chiffré requis | **1 quanti + 3 convergentes** (quanti OU quali). Cavaliers G3 désormais analysable même si 1 seule source % chiffré + 3 picks qualitatifs convergents |
+| **Dédup éditeur** | Non formalisée (Goal.com x2 comptait pour 2) | **N articles du même domaine = 1 source effective**. Médiane interne d'abord, comptée 1× dans `n_eff` |
+| **Snippet WebSearch** | "URL citable, data non-lue" | **Snippet avec % chiffrable = source quantitative valide**. Compte 1× dans `n_eff` si "via snippet" tagué + snippet textuel reproduit |
+| **Tennis période GS** | Non documenté | Note explicite : tennis sera sous-représenté 24/05 → 09/06 (Roland Garros). **Pas de compensation artificielle** — déplétion acceptée |
+
+### Garde-fou intégré
+
+Avec F4 v4.1, un candidat peut passer avec `n_eff = 1` (1 seule source
+quanti + 2-3 quali convergentes). Dans ce cas, `proba_shrunk` =
+(1 × model + 2 × book) / 3 → **poids book ⅔, signal modèle ⅓**.
+Naturellement, l'EV calculé est très proche de 0 (book domine), donc
+seuls les vrais edges robustes passent F3 ≥ +2%. Pas besoin d'autre
+garde-fou.
+
+### Rétro-test sur le test à blanc 23/05
+
+Avec v4.1 appliqué rétroactivement :
+- **Cavaliers G3** : 1 quanti FanDuel 57.6% + 3 quali convergents (Bleacher Nation, Covers, autre) → F4 OK. `proba_shrunk = (1 × 0.576 + 2 × 0.606)/3 = 0.596`. EV = 0.596 × 1.65 − 1 = **−1.6%** → 🔴 F3 KO (toujours rejeté, mais désormais analysé)
+- **Middlesbrough** : 2 articles Goal.com dédupliqués = 1 source (médiane 54.6/60 = 57.3%) + 1 source Sportytrader 31% = 2 sources quanti effectives. EV recalculé. F4 OK (Sportytrader recommande Hull → divergence pick → F4 KO convergence)
+- **Pirates** : 3 quanti convergents (Dimers, FanDuel, Polymarket snippet) → F4 OK. EV reste −1.59% → 🔴 F3 KO
+- **Verdict global identique** : Cas C SKIP. v4.1 n'a pas changé le verdict, mais a amélioré la transparence du funnel.
+
+---
+
 ## 🆕 Pivot v4.0 — 23/05/2026
 
 ### Pourquoi la refonte

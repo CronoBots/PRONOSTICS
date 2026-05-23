@@ -31,6 +31,11 @@ contenu lisible. À utiliser en priorité comme source pour `model_proba`.
 Ces sources sont souvent en 403 sur WebFetch direct, MAIS les snippets
 WebSearch contiennent souvent la proba/prediction utile.
 
+**Règle v4.1** : un % chiffré lu via snippet WebSearch est **accepté
+comme source quantitative** (compte 1× dans `n_eff`) à condition que la
+trace identifie "via snippet" et reproduise le snippet textuel. Ex :
+*"Polymarket Pirates 59¢"* → proba = 0.59, source quanti.
+
 | Source | URL | Sports | Note |
 |---|---|---|---|
 | **ESPN** | espn.com | NBA, NFL, MLB, NHL | BPI dans snippets |
@@ -118,6 +123,15 @@ une nouvelle clé.
 4. Stats Insider
 5. Tennis Up to Date
 6. Profootballnetwork (parfois)
+7. Rotowire (utile en phase GS R1-R3)
+
+**Note Grand Slam — Roland Garros 24/05 → 09/06/2026** :
+AB-1 strict actif sur top-10 ATP J-1/J-2 → bloque les analyses tier 1.
+Outsiders R1/R2 fortement déconseillés (variance élevée, coverage
+faible). Tennis sera sous-représenté dans le funnel paper pendant 15j.
+**Pas de compensation artificielle** : on accepte la déplétion plutôt
+que d'analyser des matchs sous-couverts. Privilégier NBA/NHL/MLB/soccer
+en attendant. Biais documenté, à monitorer dans l'audit fin de cycle.
 
 ### MLB
 1. OddsShark (snippets)
