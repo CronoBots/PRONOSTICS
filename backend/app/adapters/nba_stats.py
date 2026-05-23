@@ -187,8 +187,15 @@ async def predict_match_from_stats(home_team: str, away_team: str, season: str =
         return None
 
     # Modèle simpliste : net_rating + 3 points d'avantage maison
-    home_net = home_summary.get("net_rating", 0) or 0
-    away_net = away_summary.get("net_rating", 0) or 0
+    home_net_raw = home_summary.get("net_rating")
+    away_net_raw = away_summary.get("net_rating")
+    if home_net_raw is None or away_net_raw is None:
+        logger.warning(
+            "nba_stats: net_rating manquant (home=%s, away=%s) — modèle dégradé (fallback 0)",
+            home_net_raw, away_net_raw,
+        )
+    home_net = home_net_raw if home_net_raw is not None else 0
+    away_net = away_net_raw if away_net_raw is not None else 0
     HOME_ADVANTAGE = 3.0  # points typiques en NBA régulière
     margin = (home_net - away_net) + HOME_ADVANTAGE
 

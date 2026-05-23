@@ -41,6 +41,17 @@ class ApiFootballAdapter(BaseAdapter):
             logger.warning("api_football fetch failed: %s", exc)
             return []
 
+        # Log les erreurs API (le payload errors est un dict des erreurs par champ)
+        errors = payload.get("errors")
+        if isinstance(errors, dict) and errors:
+            logger.warning("api_football reports errors: %s", errors)
+        elif isinstance(errors, list) and errors:
+            logger.warning("api_football reports errors: %s", errors)
+
+        # Log le compteur (API-Football retourne `results` count + paging)
+        results_count = payload.get("results", 0)
+        logger.info("api_football: %d fixtures retournées pour %s", results_count, when.isoformat())
+
         fixtures = payload.get("response", [])
         results: list[MatchInput] = []
         for fx in fixtures:
