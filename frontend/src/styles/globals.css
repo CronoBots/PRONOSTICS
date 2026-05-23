@@ -12,26 +12,29 @@
 
 :root,
 :root[data-theme="dark"] {
-  /* Theme NΞXBΞT — charcoal teinté teal (cohérent avec le logo green/blanc).
-     Avant : violet-bleu sombre (#0a0b1e). Maintenant : charcoal-teal subtil. */
-  --bg-base-rgb: 9 17 16;          /* #091110 — charcoal avec sous-ton teal */
-  --bg-card-rgb: 14 26 24;         /* #0e1a18 */
-  --bg-elevated-rgb: 22 38 34;     /* #162622 */
-  --bg-base: #091110;
-  --bg-card: #0e1a18;
-  --bg-elevated: #162622;
-  /* Accent green = couleur exacte du logo (#10d9a3) — couleur signature */
+  /* Theme NΞXBΞT v5 — palette Cobalt Premium (24/05/2026).
+     Refonte vers la nouvelle identité visuelle (logo bleu cobalt + blanc
+     sur noir profond). Conserve `accent-green` en vert (sémantique gain
+     universelle) et `accent-red` (perte). Le bleu cobalt devient la
+     couleur de marque (logo, CTA primaire, brand). */
+  --bg-base-rgb: 10 11 18;          /* #0A0B12 — noir profond légèrement bleuté */
+  --bg-card-rgb: 18 20 30;          /* #12141E */
+  --bg-elevated-rgb: 28 31 44;      /* #1C1F2C */
+  --bg-base: #0A0B12;
+  --bg-card: #12141E;
+  --bg-elevated: #1C1F2C;
+  /* Accent vert : gains / win / progression positive (sémantique universelle) */
   --accent-green: #10d9a3;
   --accent-greenDim: #0fb088;
-  /* Avant accent-blue était violet #7c5cff → on passe en cyan-teal foncé pour
-     cohérence avec la palette green dominante du logo. */
-  --accent-blue: #0e7490;
+  /* Accent bleu = COULEUR DE MARQUE = cobalt du logo. CTA primaire, brand text. */
+  --accent-blue: #2A4BFA;
+  --accent-blueDim: #1F36C4;
   --accent-red: #ff4d6d;
   --accent-gold: #fcd34d;
-  --foreground: #e7f3ec;            /* tirage léger vers le teal aussi */
-  --foreground-rgb: 231 243 236;
+  --foreground: #F0F2FF;            /* blanc cassé avec très léger sous-ton bleu */
+  --foreground-rgb: 240 242 255;
   /* Surfaces glassy au-dessus du base (white-alpha en dark) */
-  --surface-1: 255 255 255; /* utilisé en rgba(var(--surface-1) / X) */
+  --surface-1: 255 255 255;
   --border-base: 255 255 255;
   --text-base: 255 255 255;
 
@@ -43,25 +46,28 @@
 }
 
 :root[data-theme="light"] {
-  /* Theme NΞXBΞT light — blanc avec sous-ton teal très léger (cohérent logo) */
-  --bg-base-rgb: 246 251 249;        /* #f6fbf9 — slight teal undertone */
-  --bg-card-rgb: 255 255 255;        /* #ffffff */
-  --bg-elevated-rgb: 239 246 243;    /* #eff6f3 */
-  --bg-base: #f6fbf9;
-  --bg-card: #ffffff;
-  --bg-elevated: #eff6f3;
+  /* Theme NΞXBΞT v5 — light Cobalt Premium. Blanc cassé avec accent
+     cobalt assombri pour contraste sur fond clair. */
+  --bg-base-rgb: 248 250 255;        /* #F8FAFF — blanc cassé léger sous-ton bleu */
+  --bg-card-rgb: 255 255 255;        /* #FFFFFF */
+  --bg-elevated-rgb: 240 244 255;    /* #F0F4FF */
+  --bg-base: #F8FAFF;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F0F4FF;
   /* Accents : assombris en light pour le contraste sur fond clair */
   --accent-green: #0d9b78;
   --accent-greenDim: #097554;
-  --accent-blue: #0e7490;             /* teal foncé, plus le violet */
+  /* Bleu cobalt assombri (lisible sur fond blanc) */
+  --accent-blue: #1E3FE0;
+  --accent-blueDim: #1530B5;
   --accent-red: #e0344f;
   --accent-gold: #d97706;
-  --foreground: #0a2620;
-  --foreground-rgb: 10 38 32;
-  /* Sur fond clair, les "white-alpha" deviennent du noir-alpha */
-  --surface-1: 26 27 46;
-  --border-base: 26 27 46;
-  --text-base: 26 27 46;
+  --foreground: #0A0E2A;             /* noir bleuté (cohérent avec brand) */
+  --foreground-rgb: 10 14 42;
+  /* Sur fond clair, les "white-alpha" deviennent du noir-alpha bleuté */
+  --surface-1: 10 14 42;
+  --border-base: 10 14 42;
+  --text-base: 10 14 42;
 
   color-scheme: light;
 }
@@ -145,35 +151,36 @@ a:active {
    (qui ciblent "white") vers la couleur foreground sombre, en
    préservant l'opacité originale. Évite de refactorer 60+ fichiers.
    ============================================================ */
-[data-theme="light"] .text-white { color: rgb(26 27 46); }
-[data-theme="light"] .text-white\/90 { color: rgb(26 27 46 / 0.92); }
-[data-theme="light"] .text-white\/80 { color: rgb(26 27 46 / 0.86); }
-[data-theme="light"] .text-white\/70 { color: rgb(26 27 46 / 0.78); }
-[data-theme="light"] .text-white\/60 { color: rgb(26 27 46 / 0.7); }
-[data-theme="light"] .text-white\/55 { color: rgb(26 27 46 / 0.62); }
-[data-theme="light"] .text-white\/50 { color: rgb(26 27 46 / 0.56); }
-[data-theme="light"] .text-white\/40 { color: rgb(26 27 46 / 0.48); }
-[data-theme="light"] .text-white\/30 { color: rgb(26 27 46 / 0.38); }
-[data-theme="light"] .text-white\/20 { color: rgb(26 27 46 / 0.28); }
+/* Refonte v5 — palette Cobalt : text-base sombre = #0A0E2A (noir bleuté) */
+[data-theme="light"] .text-white { color: rgb(10 14 42); }
+[data-theme="light"] .text-white\/90 { color: rgb(10 14 42 / 0.92); }
+[data-theme="light"] .text-white\/80 { color: rgb(10 14 42 / 0.86); }
+[data-theme="light"] .text-white\/70 { color: rgb(10 14 42 / 0.78); }
+[data-theme="light"] .text-white\/60 { color: rgb(10 14 42 / 0.7); }
+[data-theme="light"] .text-white\/55 { color: rgb(10 14 42 / 0.62); }
+[data-theme="light"] .text-white\/50 { color: rgb(10 14 42 / 0.56); }
+[data-theme="light"] .text-white\/40 { color: rgb(10 14 42 / 0.48); }
+[data-theme="light"] .text-white\/30 { color: rgb(10 14 42 / 0.38); }
+[data-theme="light"] .text-white\/20 { color: rgb(10 14 42 / 0.28); }
 
-[data-theme="light"] .border-white\/5 { border-color: rgb(26 27 46 / 0.08); }
-[data-theme="light"] .border-white\/10 { border-color: rgb(26 27 46 / 0.12); }
-[data-theme="light"] .border-white\/15 { border-color: rgb(26 27 46 / 0.16); }
-[data-theme="light"] .border-white\/20 { border-color: rgb(26 27 46 / 0.2); }
-[data-theme="light"] .border-white\/30 { border-color: rgb(26 27 46 / 0.3); }
+[data-theme="light"] .border-white\/5 { border-color: rgb(10 14 42 / 0.08); }
+[data-theme="light"] .border-white\/10 { border-color: rgb(10 14 42 / 0.12); }
+[data-theme="light"] .border-white\/15 { border-color: rgb(10 14 42 / 0.16); }
+[data-theme="light"] .border-white\/20 { border-color: rgb(10 14 42 / 0.2); }
+[data-theme="light"] .border-white\/30 { border-color: rgb(10 14 42 / 0.3); }
 
-[data-theme="light"] .bg-white\/5 { background-color: rgb(26 27 46 / 0.04); }
-[data-theme="light"] .bg-white\/10 { background-color: rgb(26 27 46 / 0.06); }
-[data-theme="light"] .bg-white\/15 { background-color: rgb(26 27 46 / 0.08); }
-[data-theme="light"] .bg-white\/20 { background-color: rgb(26 27 46 / 0.1); }
-[data-theme="light"] .bg-white\/25 { background-color: rgb(26 27 46 / 0.12); }
+[data-theme="light"] .bg-white\/5 { background-color: rgb(10 14 42 / 0.04); }
+[data-theme="light"] .bg-white\/10 { background-color: rgb(10 14 42 / 0.06); }
+[data-theme="light"] .bg-white\/15 { background-color: rgb(10 14 42 / 0.08); }
+[data-theme="light"] .bg-white\/20 { background-color: rgb(10 14 42 / 0.1); }
+[data-theme="light"] .bg-white\/25 { background-color: rgb(10 14 42 / 0.12); }
 
 /* divide-y avec white */
 [data-theme="light"] .divide-white\/5 > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgb(26 27 46 / 0.08);
+  border-color: rgb(10 14 42 / 0.08);
 }
 [data-theme="light"] .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgb(26 27 46 / 0.12);
+  border-color: rgb(10 14 42 / 0.12);
 }
 
 /* Ring : ring-white/X devient ring-foreground/X en light */

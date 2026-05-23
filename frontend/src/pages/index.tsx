@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
-import { BrandBanner } from "@/components/BrandBanner";
+import { BrandLogo } from "@/components/BrandLogo";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
@@ -172,22 +172,25 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact — banner NΞXBΞT centré + burger menu à droite.
-            Caché sur desktop (DesktopHeader prend le relais). */}
-        <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
-          <div aria-hidden />
-          <BrandBanner height={36} className="mx-auto" />
-          <div className="flex justify-end">
-            <Link
-              href="/compte"
-              className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5"
-              aria-label={t("home.menu")}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-                <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </Link>
-          </div>
+        {/* Header compact v5 — logo cobalt + nom NΞXBΞT a gauche, burger
+            menu a droite. Remplace la BrandBanner image (24/05/2026).
+            Cache sur desktop (DesktopHeader prend le relais). */}
+        <header className="lg:hidden flex items-center justify-between gap-2 shrink-0 py-1">
+          <Link href="/" className="flex items-center gap-2 min-w-0" aria-label="NΞXBΞT">
+            <BrandLogo size={32} rounded={8} className="shrink-0" />
+            <span className="text-lg font-bold tracking-tight text-accent-blue truncate">
+              NΞXBΞT
+            </span>
+          </Link>
+          <Link
+            href="/compte"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5"
+            aria-label={t("home.menu")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+              <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </Link>
         </header>
 
         {loading && <HomeSkeleton />}
