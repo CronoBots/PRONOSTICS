@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app.adapters.odds_api import OddsApiAdapter  # noqa: E402
-from app.adapters import polymarket  # noqa: E402
+from app.adapters import kalshi, manifold, polymarket  # noqa: E402
 from app.config import DATA_DIR, get_settings  # noqa: E402
 from app.services.fair_odds import (  # noqa: E402
     blend_with_polymarket,
@@ -205,10 +205,40 @@ def pick_favorite_from_book(book_odds: dict[str, float]) -> tuple[str, float] | 
     return fav, book_odds[fav]
 
 
-def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
-    """Transforme un event Odds API + Polymarket en ligne CSV.
+def match_extra_sharps(
+    event: dict,
+    manifold_picks: list[dict],
+    kalshi_picks: list[dict],
+) -> tuple[float | None, float | None]:
+    """Pour un event Odds API, cherche les proba Manifold et Kalshi correspondantes.
+
+    Retourne (manifold_prob, kalshi_prob) pour la team home — None si non trouvé.
+    Le mapping suit la convention : si la question/title mentionne home AVANT
+    away, le prob renvoyé est celui de home. Sinon on inverse.
+    """
+    home = event.get("home_team", "")
+    away = event.get("away_team", "")
+    if not home or not away:
+        return None, None
+
+    m_prob = manifold.find_prob_for_match(manifold_picks, home, away) if manifold_picks else None
+    k_prob = kalshi.find_prob_for_match(kalshi_picks, home, away) if kalshi_picks else None
+    return m_prob, k_prob
+
+
+def process_event(
+    event: dict,
+    polymarket_pick: dict | None,
+    manifold_prob: float | None = None,
+    kalshi_prob: float | None = None,
+) -> dict | None:
+    """Transforme un event Odds API + sharps en ligne CSV.
 
     Returns None si l'event ne respecte pas nos critères (cote hors range, pas de book…).
+    Les sharps Manifold/Kalshi sont reportés tels quels dans le CSV ; le calcul
+    de `combined_prob` reste basé sur Polymarket (source historique) pour ne pas
+    casser la calibration de safety_score. La consultation croisée se fait côté
+    agent NΞXBΞT à l'Étape 3.
     """
     books = extract_books_odds(event)
     if not books:
@@ -273,6 +303,17 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
     if minutes_until is not None and minutes_until < 30:
         safety = round(safety * 0.5, 1)  # -50% sur le safety si imminent
 
+    # Si manifold/kalshi mappent l'inverse (fav_outcome != home), on inverse aussi
+    m_prob_oriented = _orient_to_fav(manifold_prob, event, fav_outcome)
+    k_prob_oriented = _orient_to_fav(kalshi_prob, event, fav_outcome)
+
+    # Sharp consensus = médiane des sharps disponibles côté favori
+    sharps_for_fav = [
+        p for p in [pm_prob, m_prob_oriented, k_prob_oriented]
+        if p is not None and 0 < p < 1
+    ]
+    sharp_consensus = round(sum(sharps_for_fav) / len(sharps_for_fav), 4) if sharps_for_fav else None
+
     return {
         "sport_key": event.get("sport_key", ""),
         "sport_title": event.get("sport_title", ""),
@@ -286,11 +327,27 @@ def process_event(event: dict, polymarket_pick: dict | None) -> dict | None:
         "book_cote": round(preferred_cote, 3) if preferred_cote else None,
         "median_cote": median_cote,
         "polymarket_prob_pct": round(pm_prob * 100, 1) if pm_prob else None,
+        "manifold_prob_pct": round(m_prob_oriented * 100, 1) if m_prob_oriented else None,
+        "kalshi_prob_pct": round(k_prob_oriented * 100, 1) if k_prob_oriented else None,
+        "sharp_consensus_pct": round(sharp_consensus * 100, 1) if sharp_consensus else None,
+        "n_sharps": len(sharps_for_fav),
         "combined_prob_pct": round((combined_prob or fair_prob) * 100, 1),
         "edge_vs_book_pct": round(edge * 100, 2),
         "n_books": n_books,
         "safety_score": safety,
     }
+
+
+def _orient_to_fav(prob: float | None, event: dict, fav_outcome: str) -> float | None:
+    """Manifold/Kalshi find_prob_for_match retournent la proba de la home team.
+    Si le favori du marché est l'away, on inverse pour avoir la proba du favori.
+    """
+    if prob is None:
+        return None
+    home = event.get("home_team", "")
+    if fav_outcome and home and fav_outcome.lower() == home.lower():
+        return prob
+    return 1.0 - prob
 
 
 # Dict global qui capture les métadonnées du dernier appel Odds API
@@ -434,11 +491,23 @@ async def main() -> None:
     run_time = datetime.now(timezone.utc)
     logger.info("=== daily_candidates pour %s (run %s UTC) ===", target_date, run_time.isoformat())
 
-    # 1. Pull sources en parallèle
+    # 1. Pull sources en parallèle (Odds API + 3 sharp markets)
     odds_events_task = fetch_odds_api_events(target_date)
     polymarket_picks_task = polymarket.fetch_all_candidate_picks()
-    odds_events, polymarket_picks = await asyncio.gather(
-        odds_events_task, polymarket_picks_task, return_exceptions=False
+    manifold_picks_task = manifold.fetch_active_sports_markets()
+    kalshi_picks_task = kalshi.fetch_all_sports_markets()
+    odds_events, polymarket_picks, manifold_picks, kalshi_picks = await asyncio.gather(
+        odds_events_task,
+        polymarket_picks_task,
+        manifold_picks_task,
+        kalshi_picks_task,
+        return_exceptions=False,
+    )
+    logger.info(
+        "Sources sharp pull : polymarket=%d, manifold=%d, kalshi=%d",
+        len(polymarket_picks),
+        len(manifold_picks),
+        len(kalshi_picks),
     )
 
     if not odds_events:
@@ -476,11 +545,12 @@ async def main() -> None:
             )
     associations = match_polymarket_to_oddsapi(pm_pre_filtered, odds_events)
 
-    # 3. Process chaque event
+    # 3. Process chaque event (avec sharps Manifold + Kalshi)
     rows: list[dict] = []
     for event in odds_events:
         pm_pick = associations.get(event.get("id"))
-        row = process_event(event, pm_pick)
+        m_prob, k_prob = match_extra_sharps(event, manifold_picks, kalshi_picks)
+        row = process_event(event, pm_pick, manifold_prob=m_prob, kalshi_prob=k_prob)
         if row:
             rows.append(row)
 

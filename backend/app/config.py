@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     football_data_token: str = ""
     odds_api_key: str = ""
 
+    # Nouvelles sources (Niveau 2)
+    kalshi_key: str = ""              # facultatif : lecture publique fonctionne sans clé
+    balldontlie_key: str = ""         # requise depuis 2024 (free signup)
+    api_sports_key: str = ""          # requise (free 100 req/jour)
+    openweather_key: str = ""         # requise (free 1000 req/jour)
+
     database_url: str = f"sqlite:///{DATA_DIR}/pronostics.db"
     log_level: str = "INFO"
 
@@ -27,7 +33,13 @@ class Settings(BaseSettings):
 
     @property
     def has_any_real_source(self) -> bool:
-        return bool(self.api_football_key or self.football_data_token or self.odds_api_key)
+        return bool(
+            self.api_football_key
+            or self.football_data_token
+            or self.odds_api_key
+            or self.balldontlie_key
+            or self.api_sports_key
+        )
 
 
 @lru_cache
