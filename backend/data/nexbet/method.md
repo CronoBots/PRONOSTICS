@@ -1,20 +1,30 @@
-# NΞXBΞT analyst — Procédure obligatoire (checklist)
+# NΞXBΞT analyst — Procédure obligatoire (checklist v2)
 
 > Cette checklist est NON négociable. L'agent doit la suivre dans l'ordre
 > et compléter chaque étape avant de passer à la suivante. Aucun
 > raccourci, même si l'agent "pense" déjà connaître la réponse.
 
-## Étape 0 — Init (lecture obligatoire)
+## ⚡ Règles d'efficacité (v2 — 23/05/2026)
 
-Avant TOUTE recherche, l'agent doit :
+1. **Parallélisme obligatoire** : tout appel indépendant (lectures
+   fichiers, WebSearch cartographie, WebFetch sur un même candidat)
+   doit partir en UN SEUL message multi-tool. Réduit le temps total
+   de ~50%.
+2. **Short-circuit dès filtre F1-F6 KO** : si Étape 2 vide le pool,
+   sortir "no pick today" sans faire l'Étape 3.
+3. **Watchlist écrite AVANT pré-filtrage** dans
+   `decisions/<date>-watchlist.md` — auditabilité du funnel.
+4. **`check_duplicate.py` sur chaque finaliste** avant Étape 3.
 
-1. Lire `backend/data/nexbet/criteria.md` (rappel des seuils)
-2. Lire `backend/data/nexbet/learnings.md` (patterns + anti-bias)
-3. Lire `backend/data/nexbet/output-format.md` (format JSON cible)
-4. Lire les 5 derniers picks dans `backend/scripts/picks_data.py` (style
-   + contexte récent)
-5. Note la date courante et l'heure (UTC + Belgique)
-6. Note le bankroll courant (dernier `bankroll_after` dans history)
+## Étape 0 — Init (lecture parallèle obligatoire)
+
+Avant TOUTE recherche, lancer **un seul message multi-Read** :
+
+1. `backend/data/nexbet/criteria.md` (rappel des seuils F1-F6 + shrinkage)
+2. `backend/data/nexbet/learnings.md` (patterns + anti-bias)
+3. `backend/data/nexbet/output-format.md` (format JSON cible)
+4. `backend/scripts/picks_data.py` (5 derniers picks pour style + anti-dup)
+5. Noter date courante (UTC + Belgique) + bankroll courant.
 
 ## Étape 1 — Cartographie (cast wide net)
 
@@ -36,14 +46,18 @@ Sports à scanner systématiquement (selon saison) :
   boxe HBO/Showtime
 - 🐎 Autres : F1 (dimanche), MotoGP, Euroleague basket, etc.
 
-**Méthode de cartographie** :
-1. WebSearch : "[sport] schedule [date] [year]" pour chaque sport actif
+**Méthode de cartographie (PARALLÈLE)** :
+1. **Un seul message** avec N WebSearch parallèles, une recherche par
+   sport actif. Ne JAMAIS faire ces recherches en séquence.
 2. Liste sortie : `[match] | [sport/ligue] | [kickoff UTC] | [favori
    approximatif si évident]`
 3. Marquer les matchs "premium" (playoffs, finales, gros derby) — ils
    ont des analyses pros plus nombreuses
 4. **Sortie attendue** : tableau Markdown avec ≥ 15 lignes, daté et
    timestampé
+5. **Écrire immédiatement** dans
+   `backend/data/nexbet/decisions/<date>-watchlist.md` — auditabilité
+   du funnel (combien d'events scannés vs retenus).
 
 ## Étape 2 — Pré-filtrage rapide
 
@@ -57,18 +71,27 @@ Réduire à **5–8 candidats sérieux** en éliminant :
 - Matchs dans des compétitions inconnues / faible liquidité (ex : ligues
   mineures sans coverage pro)
 
-**Sortie** : top 5–8 avec une cote indicative + 1 phrase "pourquoi
+**Sortie** : top 5 max avec une cote indicative + 1 phrase "pourquoi
 intéressant".
 
-## Étape 3 — Analyse approfondie (top 5)
+**Anti-duplication** : avant de garder un finaliste, exécuter
+`python backend/scripts/check_duplicate.py "<home_team>" "<away_team>"`.
+Exit code ≠ 0 → drop (match déjà pické < 7j).
 
-Pour CHAQUE candidat du top 5, faire 3 WebFetch sur des sources pros :
+**Short-circuit** : si 0 finaliste après pré-filtrage → sortir directement
+"no pick today" SANS faire Étape 3. Inutile de fetcher en profondeur
+des candidats déjà morts.
+
+## Étape 3 — Analyse approfondie (top 5, PARALLÈLE)
+
+Pour CHAQUE candidat, lancer **les 3 WebFetch dans un seul message
+multi-tool** (gain ~3× sur le temps de l'étape) :
 
 1. Site spécialisé sport (ESPN, ATP, NHL.com…)
 2. Analyse pari pro (OddsShark, Covers, Lineups, Action Network,
    StatsInsider, BleacherNation…)
-3. Source sharps / consensus (Polymarket si dispo, sinon Pinnacle line
-   ou agrégateur de consensus pros type SportsBettingPolls)
+3. **Source sharp OBLIGATOIRE** (Polymarket, Pinnacle proxy, Betfair
+   Exchange). Si absente, malus -0.03 sur `proba_shrunk` (cf F2/F4).
 
 **Extraire pour chaque match** :
 - Cote sur 3+ books (bwin obligatoire si possible, sinon DK/FanDuel)
@@ -97,14 +120,29 @@ Pour CHAQUE candidat du top 5, faire 3 WebFetch sur des sources pros :
   combinée ≥ 0.60 (cas Ruud+Knicks 21/05)
 - "Underdog Cinderella playoffs" → flag jaune sur le favori opposé
 
-## Étape 5 — Application des critères
+## Étape 5 — Calculs formels + shrinkage (NOUVEAU v2)
 
-Pour chaque finaliste, calculer formellement :
-- `book_proba = 1 / cote_bwin`
-- `model_proba = moyenne pondérée des estimations sources` (pondération :
-  source sharp > source pro > source mainstream)
-- `EV = model_proba × cote_bwin − 1`
-- `Kelly_fraction = (model_proba × cote_bwin − 1) / (cote_bwin − 1)`
+Pour chaque finaliste, calculer dans cet ordre :
+
+```
+book_proba   = 1 / cote_bwin
+model_proba  = moyenne pondérée (sharp ×3, pro ×2, mainstream ×1)
+n_eff        = nombre de sources solides (max 5)
+proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
+```
+
+**Ajustements** sur `proba_shrunk` :
+- Pas de source sharp : `-0.03`
+- PC-1/2/3 déclenché : `+0.02`
+- AB-1/2/3/4 déclenché : rejet immédiat
+
+Puis :
+```
+EV    = proba_shrunk × cote_bwin − 1
+Kelly = (proba_shrunk × cote_bwin − 1) / (cote_bwin − 1)
+```
+
+**`proba_shrunk` devient `model_probability` dans le JSON final.**
 
 **Garder uniquement** les candidats qui respectent les 6 filtres durs
 de `criteria.md` (F1-F6).

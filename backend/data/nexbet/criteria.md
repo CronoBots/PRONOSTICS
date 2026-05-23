@@ -14,28 +14,41 @@
   de proba ; au-dessus de 3.00, on sort du profil "safe favorite" et le
   variance devient trop forte sur le bankroll.
 
-### F2 — Probabilité estimée
-- **Min** : 0.60 (60%)
+### F2 — Probabilité estimée (shrunk)
+- **Min** : 0.62 (`proba_shrunk` ≥ 62%) — **relevé de 0.60 → 0.62 le 23/05/2026**
 - **Recommandé** : 0.65 – 0.78
 - **Plafond utile** : 0.85 (au-delà la cote sera trop basse pour respecter F1)
-- **Pourquoi** : à 60%+ on est plus souvent gagnant que perdant sur le
-  long terme, ce qui protège l'expérience utilisateur (≤ 4 losses
-  consécutives statistiquement rares).
-- **Comment estimer** : moyenne pondérée des sources externes (ESPN BPI,
-  FiveThirtyEight, Polymarket, OddsShark consensus, statsinsider) +
-  ajustement personnel selon learnings.md.
+- **Pourquoi** : à 62%+ on a une marge de sécurité contre le biais
+  d'optimisme. Le seuil 0.60 d'origine était trop sensible (un pick à
+  0.61 = 1pt au-dessus du seuil, le moindre biais tuait l'EV).
+- **Comment estimer** :
+  1. `model_proba` = moyenne pondérée sources (sharp ×3, pro ×2,
+     mainstream ×1)
+  2. `proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)`
+     où `n_eff` = nombre de sources solides (max 5), `book_proba = 1/cote`
+  3. Bonus/malus : pas de sharp = -0.03 ; PC déclenché = +0.02
+- **Champ stocké** : `proba_shrunk` devient `model_probability` dans le
+  JSON final (plus honnête que l'estimation brute).
 
 ### F3 — Expected Value
-- **Min** : +5% (EV > 0.05)
+- **Min** : +7% (EV > 0.07) — **relevé de +5% → +7% le 23/05/2026**
 - **Recommandé** : +10% à +25%
-- **Formule** : `EV = (proba × cote) − 1`
+- **Formule** : `EV = (proba_shrunk × cote) − 1` (utiliser la proba
+  shrunk, pas la model brute)
+- **Pourquoi** : +5% laissait trop de bruit passer. +7% garantit un
+  edge net même après variance d'estimation ±2pts.
 - **Exception "boost bookmaker"** : si bwin / DraftKings / FanDuel offre un
   boost qui amène l'EV au-dessus de +30%, on peut accepter une proba
-  légèrement plus basse (min 0.55 dans ce cas) car le boost compense.
+  shrunk légèrement plus basse (min 0.57 dans ce cas) car le boost
+  compense.
 
 ### F4 — Sources externes
-- **Min** : 3 sources pros indépendantes confirmant la lecture (favori
-  ou direction du marché).
+- **Min** : 3 sources pros indépendantes confirmant la lecture, **dont
+  au moins 1 source sharp** (Polymarket, Pinnacle, Betfair Exchange) —
+  **règle "1 sharp obligatoire" ajoutée le 23/05/2026**.
+- Si aucune source sharp n'est accessible sur le pick : appliquer le
+  malus `-0.03` sur `proba_shrunk` (cf F2) ET noter le risque dans la
+  rationale.
 - **Sources whitelist** (qualité prouvée) — voir learnings.md section
   "Sources fiables par sport". Privilégier dans cet ordre :
   - NBA : ESPN BPI, FiveThirtyEight, OddsShark, BleacherNation, NBC Sports
