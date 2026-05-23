@@ -75,7 +75,7 @@ export default function FiltresPage() {
       <Head>
         <title>{t("filtres.titleTab")}</title>
       </Head>
-      <main className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-32">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-32">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => router.back()}

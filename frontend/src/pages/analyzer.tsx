@@ -42,7 +42,7 @@ export default function AnalyzerPage() {
         <title>{t("analyzer.titleTab")}</title>
       </Head>
 
-      <main className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex items-center gap-3 mb-4">
           <Link
             href="/"

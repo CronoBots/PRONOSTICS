@@ -1,141 +1,202 @@
-# NΞXBΞT analyst — Critères de filtrage
+# NΞXBΞT — Critères de filtrage (v4.0 — Recap-only)
 
-> Référence obligatoire pour l'agent. Tout candidat doit passer CHAQUE
-> filtre pour entrer en short-list. Pas de pick produit si la short-list
-> est vide après filtrage.
+> **Refonte v4.0 du 23/05/2026** : suppression des tiers PREMIUM/STANDARD/
+> FLOOR, suppression de F1-bis Playoff Mode et BOOST MODE. Méthodologie
+> simplifiée, EV minimum strict +2%, mode paper trading 30 jours. L'agent
+> présente, le user décide.
 
 ## Filtres durs (NON négociables)
 
 ### F1 — Cote
-- **Min** : 1.50
-- **Max** : 3.00 (au-delà = trop spéculatif, hors profil "safe")
-- **Sweet spot** : 1.70 – 2.40
-- **Pourquoi** : sous 1.50, l'EV est trop sensible aux erreurs d'estimation
-  de proba ; au-dessus de 3.00, on sort du profil "safe favorite" et le
-  variance devient trop forte sur le bankroll.
+- **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
+- **Combiné 2 jambes** : cote totale 1.60 – 2.20 (avec OU sans boost
+  bwin — pas d'élargissement à 2.50)
+- **Combiné jambe individuelle** : 1.20 – 1.45 (proba implicite
+  0.69 – 0.83 par jambe)
+- **F1-bis SUPPRIMÉ** (Playoff Mode 2.00-2.50 supprimé — basé sur n=1
+  Spurs + un faux outcome Knicks G3 confondu avec G2)
 
-### F2 — Probabilité estimée
-- **Min** : 0.60 (60%)
-- **Recommandé** : 0.65 – 0.78
-- **Plafond utile** : 0.85 (au-delà la cote sera trop basse pour respecter F1)
-- **Pourquoi** : à 60%+ on est plus souvent gagnant que perdant sur le
-  long terme, ce qui protège l'expérience utilisateur (≤ 4 losses
-  consécutives statistiquement rares).
-- **Comment estimer** : moyenne pondérée des sources externes (ESPN BPI,
-  FiveThirtyEight, Polymarket, OddsShark consensus, statsinsider) +
-  ajustement personnel selon learnings.md.
+### F2 — Probabilité estimée (shrunk)
+- **Minimum recommandable** : `proba_shrunk` ≥ 0.55
+- **Cible RECOMMANDÉ** : `proba_shrunk` ≥ 0.60
+- **Combo jambe individuelle** : `proba_shrunk` ≥ 0.72
+- **Combo combinée** : ≥ 0.55 (produit des 2 jambes)
+- **Plafond utile** : 0.85 (au-delà cote trop basse pour F1)
 
-### F3 — Expected Value
-- **Min** : +5% (EV > 0.05)
-- **Recommandé** : +10% à +25%
-- **Formule** : `EV = (proba × cote) − 1`
-- **Exception "boost bookmaker"** : si bwin / DraftKings / FanDuel offre un
-  boost qui amène l'EV au-dessus de +30%, on peut accepter une proba
-  légèrement plus basse (min 0.55 dans ce cas) car le boost compense.
+**Méthode de calcul (v4.1)** :
+1. `book_proba = 1 / cote`
+2. `model_proba = MÉDIANE des probas % chiffrées disponibles`
+   - **Min 1 source quantitative + 3 sources convergentes** (voir F4
+     v4.1 pour règle complète)
+   - **Après dédup éditeur** (médiane interne sur articles d'un même
+     domaine, comptée 1× ensuite)
+   - Pas de pondération sharp×3 / pro×2 — médiane simple, résistance
+     aux outliers
+3. `w_book = 2` (FIXE — pas d'adaptatif. Sample n=6 insuffisant pour
+   calibrer w_book ∈ {2,3,4})
+4. `n_eff = min(nombre de sources quantitatives effectives après dédup, 5)`
+   - Min 1, max 5. Sources qualitatives convergentes ne comptent PAS
+     dans `n_eff` (mais valident F4 convergence)
+5. `proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)`
+   - Si n_eff = 1 (une seule source quanti + 2-3 quali convergentes) :
+     poids book ⅔, signal modèle ⅓ → garde-fou intégré contre source
+     unique
 
-### F4 — Sources externes
-- **Min** : 3 sources pros indépendantes confirmant la lecture (favori
-  ou direction du marché).
-- **Sources whitelist** (qualité prouvée) — voir learnings.md section
-  "Sources fiables par sport". Privilégier dans cet ordre :
-  - NBA : ESPN BPI, FiveThirtyEight, OddsShark, BleacherNation, NBC Sports
-  - Tennis : ATP Tour officiel, Tennis Tonic, Stats Insider, Last Word
-    on Sports, Dimers
-  - NHL : OddsShark, Covers, Lineups, NHL.com, CBS Sports
-  - MLB : OddsShark, FanGraphs, BaseballReference, Action Network
-  - Soccer : FootballOranje, WhoScored, FBref, OPTAJoe, Football Whispers
-- **Sources sharps (validation cross)** : Polymarket, Pinnacle line (si
-  accessible). Si sharps divergent fortement du consensus public, c'est
-  un signal — soit on suit les sharps, soit on note le désaccord dans
-  les risques.
+**Bonus/malus** :
+- **Pas de malus "no sharp"** : on n'a structurellement pas accès aux
+  sharps via WebFetch (403). Pénaliser systématiquement = biais. Si on
+  veut un signal sharp, le citer qualitativement dans la trace
+- **AB-1/2/4/5 déclenché** : rejet immédiat (candidat exclu du TOP)
+- **PC bonus +0.02** : SUPPRIMÉ en v4 (tous les PC sont EXPERIMENTAL n=1,
+  pas de fondement statistique pour bonus mathématique)
+
+### F3 — Expected Value (STRICT v4)
+- **Minimum recommandable** : EV ≥ **+2%**
+- **Cible RECOMMANDÉ** : EV ≥ **+5%**
+- **Combo** : EV ≥ **+5%** (sans boost) OU ≥ **+15%** (avec boost bwin)
+- **PAS de tolérance EV négatif** : un pick à EV < 0% est mathématiquement
+  perdant à long terme. Le tier FLOOR de v3 (EV ≥ -2%) est supprimé.
+- **Formule** : `EV = proba_shrunk × cote − 1`
+
+### F4 — Sources externes (v4.1, ajusté 23/05 post test à blanc)
+- **Minimum quantitatif** : ≥ **1 source pro** avec **proba % chiffrée
+  explicite** (sinon model_proba incalculable → F4 KO)
+- **Minimum global** : ≥ **3 sources pros convergentes** sur le même
+  pick recommandé (quanti OU quali — un "we pick X" sans % compte comme
+  source qualitative convergente si X est aussi notre pick)
+- **Dédup éditeur** (NOUVEAU v4.1) : N articles du même domaine racine
+  = **1 source effective**. Médiane interne sur les %, puis compté
+  1× dans `n_eff`. Ex : `goal.com/top-apps` + `goal.com/tipsters`
+  = 1 source. `tennis-tonic.com` + `lastwordonsports.com` = 2 sources
+  (éditeurs distincts). En cas de doute sur le domaine racine,
+  inspecter le footer/about pour identifier l'éditeur juridique.
+- **Sources snippet** (NOUVEAU v4.1, formalisé) : une proba lue via
+  snippet WebSearch (sans WebFetch direct) est **acceptée comme source
+  quantitative** à condition que la trace l'identifie explicitement
+  "via snippet" et reproduise le snippet textuel. Compte 1× quanti.
+- Sources whitelist (testées accessibles) — voir `sources_catalogue.md`
+  pour la liste à jour :
+  - **Multi-sports** : bleachernation.com, covers.com, lineups.com,
+    cbssports.com (snippets), fanduel.com/research
+  - **NBA** : ESPN BPI (via snippets), BleacherNation
+  - **NHL** : Covers, Lineups, OddsShark (snippets)
+  - **Tennis** : Tennis Tonic, Last Word on Sports, Dimers,
+    Stats Insider, Tennis Up to Date, rotowire.com (utile en GS)
+  - **MLB** : OddsShark, Action Network (snippets), FanGraphs (snippets)
+  - **Soccer** : Goal.com, SportsGambler, dailysports.net
+- **Sources sharp via snippet** : Polymarket, Pinnacle proxy. Si le
+  snippet contient un % chiffrable (ex : "Polymarket 59¢" → 59%),
+  **autorisée comme source quantitative** (compte dans `n_eff`). Sinon
+  citer URL en trace mais ignorer pour calcul.
+- **Sources INACCESSIBLES** (403 confirmé) — à ne plus citer comme
+  primaires : ATP/WTA officiels, Sofascore, TennisTemple
+- Si < 1 quanti OU < 3 convergentes (après dédup éditeur) → **F4 KO**
 
 ### F5 — Kickoff dans la fenêtre
-- **Min** : 1h après l'heure courante (sinon plus de marge pour analyse,
-  cote a déjà bougé)
-- **Max** : 36h dans le futur (au-delà, line non stable, blessures
-  inconnues)
-- **Cas idéal** : 6h – 24h dans le futur (line établie, news intégrées,
-  pas de rush).
+- **Min** : 1h après l'heure courante
+- **Max** : 36h dans le futur
+- **Idéal** : 6h – 24h
 
 ### F6 — Liquidité du marché
-- **Min** : 2 bookmakers majeurs offrent la cote (bwin + DraftKings
-  minimum, idéalement + FanDuel ou Pinnacle).
-- **Pourquoi** : 1 seul book = risque de cote artificielle / arb pas
-  exploitable.
+- **Min** : 2 bookmakers majeurs (bwin + 1 autre)
+- 1 seul book = risque cote artificielle, rejet
 
-## Filtres souples (à pondérer)
+## Filtres souples (à pondérer en trace)
 
-### S1 — Pas de blessure incertaine sur joueur clé
-Si un joueur majeur a un statut "questionnable" ou "game-time decision",
-attendre une heure avant le match si possible, ou rejeter le pick.
+### S1 — Blessure incertaine sur joueur clé
+Si "questionnable" / "GTD" sur joueur majeur, attendre 1h avant kickoff
+si possible, ou flag dans verdict.
 
-### S2 — Pas de "trap game"
-Trap = match où l'équipe favorite est sous-motivée (ex : déjà qualifiée,
-match milieu de série de playoffs avec déjà 3-0 avance, jour de repos
-avant gros match suivant).
+### S2 — Trap game
+Equipe favorite sous-motivée (qualifiée, repos avant gros match suivant).
 
-### S3 — Coaching matchup favorable
-Vérifier que le coach de l'équipe pickée a un H2H favorable contre le
-coach adverse OU qu'il est connu pour réagir bien dans la situation
-courante (ex : Thibodeau adjustments G1→G2 documentés).
+### S3 — Coaching matchup
+H2H coach vs coach (Thibodeau ajustements G1→G2 par ex).
 
-### S4 — État mental / momentum
-Underdog avec gros momentum playoff (Cinderella run) est un signal de
-prudence sur le favori. Vérifier si le favori est "complacent" après une
-G1 win.
+### S4 — Cinderella momentum
+Underdog avec 5+ wins inattendus en playoffs → prudence sur favori.
 
-### S5 — Surface / conditions
-Tennis : vérifier si la surface favorise le style du joueur.
-Foot/baseball outdoor : vérifier météo (pluie, vent fort changent les
-totals).
+### S5 — Surface / météo
+Tennis : style vs surface. Outdoor : pluie / vent.
 
 ### S6 — Public money %
-Si > 75% du public est sur notre side ET la line est restée stable, ça
-peut être un "trap public" — vérifier avec Pinnacle ou sharps.
+Si > 75% public ET line stable → trap public possible.
 
-## Mise (stake)
+## Verdict par candidat (v4 — l'agent présente)
 
-### Standard
-- **Mise par défaut** : 5,00 €
-- **Mise sweet spot** : 5 – 10 € (entre 1/5 et 2/5 du bankroll cible 25€)
+| Verdict | EV | proba_shrunk | Notes |
+|---|---|---|---|
+| 🟢 **RECOMMANDÉ** | ≥ +5% | ≥ 0.60 | Mise théorique 5€ paper si user valide |
+| 🟡 **ACCEPTABLE** | ≥ +2% | ≥ 0.55 | Mise théorique 3€ paper si user valide |
+| 🟠 **BORDERLINE** | 0 à +2% | ≥ 0.55 | Mise théorique 1€ paper si user valide (avertir) |
+| 🔴 **INSUFFISANT** | < 0% OU < 0.55 OU F4 KO | — | Ne pas présenter dans TOP 3 visible (mais lister rejets en trace) |
 
-### Adjustement Kelly
-- Si EV ≥ +20% ET proba ≥ 0.70 : autoriser mise jusqu'à 10 €
-- Si EV ≥ +30% (cas boost bookmaker) ET proba ≥ 0.62 : autoriser jusqu'à
-  bankroll × 0.30 (Kelly safe).
-- Si EV entre +5% et +10% : limiter à 5 € (ne pas sur-miser sur edges
-  marginaux).
-- **Ne JAMAIS dépasser** 50% du bankroll courant en mise unique (cap dur).
+**Tier FLOOR de v3 SUPPRIMÉ** : on n'accepte plus EV ≥ -2%. La discipline
+mathématique est rétablie.
 
-### Référence
-Voir Kelly criterion : `fraction_optimale = (proba × cote − 1) / (cote − 1)`.
-Pour bankroll 25€, proba 0.65, cote 1.85 → fraction = 0.20 = 5€ (cohérent
-avec notre mise standard).
+## Mise théorique (mode paper trading uniquement)
 
-## Combiné (parlay) — règles spécifiques
+| Verdict | Mise paper |
+|---|---|
+| 🟢 RECOMMANDÉ | 5,00 € |
+| 🟡 ACCEPTABLE | 3,00 € |
+| 🟠 BORDERLINE | 1,00 € |
+| 🔴 INSUFFISANT | 0 € (pas de position) |
+
+**Bankroll virtuel paper** : commence à 100,00 € le 24/05/2026. Évolue
+selon outcomes vérifiés (règle 2 sources + quote, voir method.md
+Étape 9).
+
+**Pas de Kelly criterion en v4** : la pondération Kelly suppose un modèle
+calibré. Notre modèle n'a pas été calibré sur ≥ 30 picks → Kelly serait
+prématuré. Mises fixes par verdict.
+
+## Cas spéciaux v4
+
+### Aucun candidat dans F1 (cote 1.50-2.00)
+**Output** : "Aucun candidat dans la fenêtre cote 1.50-2.00 aujourd'hui."
+Pas de fallback. Pas de paper position.
+
+### Aucun candidat 🟢 ou 🟡
+**Output** : "Aucun candidat défendable aujourd'hui." Top 3 affiché
+quand même (informationnel) avec verdict 🟠/🔴. User peut override mais
+recommandation = skip.
+
+### Promotion vers mode bet réel
+Après 30 jours paper :
+- Audit dans `paper_trading_log.md`
+- Hit rate ≥ 55% sur 🟢+🟡 résolus + ROI virtuel ≥ +5% → promotion
+- Sinon → itération v4.x ou prolongation paper
+
+## Anti-bias actifs v4 (synthèse — détail dans learnings.md)
+
+### BLOCANTS (rejet automatique)
+- **AB-1** : Top-10 ATP J-2/J-1 avant Grand Slam
+- **AB-2** : Perdant 1-3 série playoffs (sauf cote ≥ 2.50 + proba ≥ 0.75)
+- **AB-4** : Combiné 3+ jambes
+- **AB-5** : MLB ML cote > 2.50 sans matchup pitcher exceptionnel
+
+### EXPERIMENTAL (note dans trace, pas blocking)
+- **AB-3** : Cinderella playoff momentum (n=1)
+
+### SUPPRIMÉS en v4
+- **AB-6** : "Sources pros divergentes" — overfit n=1 sur cas Olympiakos
+- **F1-bis Branche A** : G1 underdog H2H + repos — overfit n=1 Spurs
+- **F1-bis Branche B** : G2+ momentum série — overfit n=0 (basé sur
+  faux outcome Knicks G3 confondu avec G2)
+
+### Patterns PC (tous EXPERIMENTAL n=1 en v4)
+- PC-1, PC-2, PC-3, PC-4 : utiliser comme signaux qualitatifs dans la
+  rationale, pas comme bonus mathématique. Promotion à BLOCKING ou
+  bonus si n ≥ 3 cas validés.
+
+## Combiné (parlay) — règles v4
 
 Un combiné est autorisé SI :
-- **2 jambes maximum** (jamais 3+, variance trop élevée)
-- **Chaque jambe** respecte individuellement F1 + F2 (proba ≥ 0.70 minimum
-  pour chaque, sinon proba combinée < 0.50)
-- **Probabilité combinée** ≥ 0.55 (= produit des probas individuelles)
-- **Pas de corrélation** entre les jambes (sports différents ou ligues
-  différentes idéal ; jamais 2 matchs du même tournoi le même jour)
-- **Cote combinée** ≥ 1.80
-- **EV combinée** ≥ +10%
-- **Préférence** : si un combiné se présente AVEC boost bookmaker (bwin
-  fait des promos régulières sur combos), il devient prioritaire vs pick
-  solo équivalent.
-
-## Cas de rejet (no pick today)
-
-L'agent DOIT produire "no pick today" plutôt qu'un mauvais pick si :
-- Aucun candidat ne passe F1+F2+F3+F4 simultanément
-- Les top 3 candidats ont des sources qui divergent fortement
-- Quota API épuisé ET impossible de vérifier les cotes en cross-bookmaker
-- Plus de 3 défaites consécutives récentes ET pas de candidat à proba ≥ 0.75
-  (mode "circuit breaker" pour protéger le bankroll)
-
-Le message "no pick today" doit expliquer POURQUOI (quel filtre a tout
-éliminé) et lister les 3 meilleurs candidats étudiés avec leur reason de
-rejet, pour traçabilité.
+- **2 jambes max** (jamais 3+, AB-4)
+- **Chaque jambe** : `proba_shrunk` ≥ 0.72 ET cote individuelle 1.20-1.45
+- **Probabilité combinée** ≥ 0.55
+- **Cote combinée** : 1.60 – 2.20 (avec OU sans boost — pas d'élargissement)
+- **EV combinée** : ≥ +5% (sans boost) ou ≥ +15% (avec boost ≥ +20%)
+- **Pas de corrélation** : sports/ligues différents, jamais 2 matchs du
+  même tournoi

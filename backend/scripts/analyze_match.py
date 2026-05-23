@@ -26,10 +26,14 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app.adapters import (  # noqa: E402
+    balldontlie,
+    kalshi,
+    manifold,
     mlb_stats,
     nba_stats,
     nhl_stats,
     polymarket,
+    sofascore,
     tennis_abstract,
 )
 
@@ -67,10 +71,34 @@ async def analyze_tennis(player_a: str, player_b: str, surface: str = "overall",
     else:
         print("    -> introuvable dans les marchés actifs")
 
-    # Méthode C : sera ajoutée quand on aura un scraper de cotes bookmakers tennis
-    print("\n  Méthode C : marché bookmakers consensus → ajouter manuellement via WebSearch sur 3 books")
+    # Méthode C : Manifold Markets (backup sharp universel)
+    print("\n  Méthode C : Manifold Markets...")
+    manifold_picks = await manifold.fetch_active_sports_markets()
+    prob_a_manifold = manifold.find_prob_for_match(manifold_picks, player_a, player_b)
+    if prob_a_manifold is not None:
+        print(f"    -> proba A = {prob_a_manifold*100:.1f}% (Manifold)")
+    else:
+        print("    -> introuvable")
 
-    return _summarize(prob_a_elo, prob_a_pm, label_a=player_a, label_b=player_b)
+    # Méthode D : Kalshi (sharp US, surtout tournois majeurs ATP/WTA)
+    print("\n  Méthode D : Kalshi (sharp US régulé)...")
+    kalshi_picks = await kalshi.fetch_all_sports_markets()
+    prob_a_kalshi = kalshi.find_prob_for_match(kalshi_picks, player_a, player_b)
+    if prob_a_kalshi is not None:
+        print(f"    -> proba A = {prob_a_kalshi*100:.1f}% (Kalshi)")
+    else:
+        print("    -> introuvable (Kalshi couvre surtout les GS et 1000s)")
+
+    sofascore_ctx = await _sofascore_context("tennis", player_a, player_b)
+
+    result = _summarize_multi(
+        [prob_a_elo, prob_a_pm, prob_a_manifold, prob_a_kalshi],
+        labels=["TennisAbstract Elo", "Polymarket", "Manifold", "Kalshi"],
+        label_a=player_a,
+        label_b=player_b,
+    )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_nba(home: str, away: str) -> dict:
@@ -103,7 +131,32 @@ async def analyze_nba(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize(prob_home_nba, prob_home_pm, label_a=home, label_b=away)
+    print("\n  Méthode C : Manifold Markets...")
+    m_picks = await manifold.fetch_active_sports_markets()
+    prob_home_m = manifold.find_prob_for_match(m_picks, home, away)
+    if prob_home_m is not None:
+        print(f"    -> proba home = {prob_home_m*100:.1f}% (Manifold)")
+    else:
+        print("    -> introuvable")
+
+    print("\n  Méthode D : Kalshi (sharp US)...")
+    k_picks = await kalshi.fetch_all_sports_markets()
+    prob_home_k = kalshi.find_prob_for_match(k_picks, home, away)
+    if prob_home_k is not None:
+        print(f"    -> proba home = {prob_home_k*100:.1f}% (Kalshi)")
+    else:
+        print("    -> introuvable")
+
+    sofascore_ctx = await _sofascore_context("basketball", home, away)
+
+    result = _summarize_multi(
+        [prob_home_nba, prob_home_pm, prob_home_m, prob_home_k],
+        labels=["NBA Stats", "Polymarket", "Manifold", "Kalshi"],
+        label_a=home,
+        label_b=away,
+    )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_nhl(home: str, away: str) -> dict:
@@ -136,7 +189,32 @@ async def analyze_nhl(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize(prob_home_nhl, prob_home_pm, label_a=home, label_b=away)
+    print("\n  Méthode C : Manifold Markets...")
+    m_picks = await manifold.fetch_active_sports_markets()
+    prob_home_m = manifold.find_prob_for_match(m_picks, home, away)
+    if prob_home_m is not None:
+        print(f"    -> proba home = {prob_home_m*100:.1f}% (Manifold)")
+    else:
+        print("    -> introuvable")
+
+    print("\n  Méthode D : Kalshi (sharp US)...")
+    k_picks = await kalshi.fetch_all_sports_markets()
+    prob_home_k = kalshi.find_prob_for_match(k_picks, home, away)
+    if prob_home_k is not None:
+        print(f"    -> proba home = {prob_home_k*100:.1f}% (Kalshi)")
+    else:
+        print("    -> introuvable")
+
+    sofascore_ctx = await _sofascore_context("nhl", home, away)
+
+    result = _summarize_multi(
+        [prob_home_nhl, prob_home_pm, prob_home_m, prob_home_k],
+        labels=["NHL Stats", "Polymarket", "Manifold", "Kalshi"],
+        label_a=home,
+        label_b=away,
+    )
+    result["sofascore"] = sofascore_ctx
+    return result
 
 
 async def analyze_mlb(home: str, away: str) -> dict:
@@ -170,7 +248,81 @@ async def analyze_mlb(home: str, away: str) -> dict:
     else:
         print("    -> introuvable")
 
-    return _summarize(prob_home_mlb, prob_home_pm, label_a=home, label_b=away)
+    print("\n  Méthode C : Manifold Markets...")
+    m_picks = await manifold.fetch_active_sports_markets()
+    prob_home_m = manifold.find_prob_for_match(m_picks, home, away)
+    if prob_home_m is not None:
+        print(f"    -> proba home = {prob_home_m*100:.1f}% (Manifold)")
+    else:
+        print("    -> introuvable")
+
+    print("\n  Méthode D : Kalshi (sharp US)...")
+    k_picks = await kalshi.fetch_all_sports_markets()
+    prob_home_k = kalshi.find_prob_for_match(k_picks, home, away)
+    if prob_home_k is not None:
+        print(f"    -> proba home = {prob_home_k*100:.1f}% (Kalshi)")
+    else:
+        print("    -> introuvable")
+
+    sofascore_ctx = await _sofascore_context("mlb", home, away)
+
+    result = _summarize_multi(
+        [prob_home_mlb, prob_home_pm, prob_home_m, prob_home_k],
+        labels=["MLB Stats", "Polymarket", "Manifold", "Kalshi"],
+        label_a=home,
+        label_b=away,
+    )
+    result["sofascore"] = sofascore_ctx
+    return result
+
+
+async def _sofascore_context(sport: str, home: str, away: str) -> dict:
+    """Contexte Sofascore : lineups + H2H + détection key player out.
+
+    Imprime le résumé et retourne un dict {sofascore_event_id, key_player_out,
+    missing_players, h2h_last5_summary} utilisable dans la trace.
+    """
+    print(f"\n  Méthode E : Sofascore (lineups + H2H)...")
+    from datetime import date as _d
+    event = await sofascore.search_event_by_teams(sport, home, away, _d.today())
+    if not event:
+        print("    -> event introuvable côté Sofascore (fuzzy match KO)")
+        return {"sofascore_event_id": None}
+
+    event_id = event["event_id"]
+    print(f"    -> match Sofascore #{event_id} : {event['home_team']} vs {event['away_team']}")
+
+    # Lineups (parfois pas encore publiés)
+    lineups = await sofascore.fetch_lineups(event_id)
+    key_out, missing = sofascore.has_key_player_out(lineups, threshold=1) if lineups else (False, [])
+
+    if lineups:
+        confirmed = lineups.get("confirmed", False)
+        n_missing_h = len(lineups.get("home_missing", []))
+        n_missing_a = len(lineups.get("away_missing", []))
+        tag = "✅ confirmés" if confirmed else "⏳ provisoires"
+        print(f"    -> lineups {tag} | absents : {n_missing_h} home / {n_missing_a} away")
+        if missing:
+            print(f"       ⚠️ Joueurs absents : {', '.join(missing[:5])}")
+    else:
+        print("    -> lineups pas encore publiés (généralement ~1h avant kickoff)")
+
+    # H2H 5 derniers
+    h2h = await sofascore.fetch_h2h_events(event_id, limit=5)
+    h2h_summary = ""
+    if h2h:
+        wins_home = sum(1 for m in h2h if m.get("winner_code") == 1)
+        wins_away = sum(1 for m in h2h if m.get("winner_code") == 2)
+        draws = sum(1 for m in h2h if m.get("winner_code") == 3)
+        h2h_summary = f"H2H 5 derniers : home {wins_home}W, away {wins_away}W, {draws}D"
+        print(f"    -> {h2h_summary}")
+
+    return {
+        "sofascore_event_id": event_id,
+        "key_player_out": key_out,
+        "missing_players": missing,
+        "h2h_last5_summary": h2h_summary,
+    }
 
 
 def _find_polymarket_prob(picks: list[dict], name_a: str, name_b: str) -> float | None:
@@ -193,6 +345,60 @@ def _find_polymarket_prob(picks: list[dict], name_a: str, name_b: str) -> float 
         if norm_a in q:
             return pick["polymarket_prob"]
     return None
+
+
+def _summarize_multi(
+    probs: list[float | None],
+    labels: list[str],
+    label_a: str,
+    label_b: str,
+) -> dict:
+    """Synthèse multi-sources (N méthodes). Affiche la médiane + écart inter-sources.
+
+    Plus robuste que `_summarize` (limité à 2 sources) : tolère 0..N sources None
+    et calcule un score de confiance basé sur n_sources + spread.
+    """
+    valid = [(p, l) for p, l in zip(probs, labels) if p is not None]
+    if not valid:
+        print("\n❌ Aucune méthode n'a retourné de probabilité — analyse impossible.")
+        return {"error": "no_data"}
+
+    values = [p for p, _ in valid]
+    med = median(values)
+    print(f"\n📊 Synthèse multi-sources ({len(valid)}/{len(probs)} dispo) :")
+    for p, l in valid:
+        delta = (p - med) * 100
+        print(f"  {l:20s} : {p*100:.1f}% (Δ vs médiane : {delta:+.1f}pts)")
+    print(f"\n  → Médiane proba {label_a} : {med*100:.1f}%")
+    print(f"  → Médiane proba {label_b} : {(1-med)*100:.1f}%")
+
+    spread = (max(values) - min(values)) * 100 if len(values) > 1 else 0
+    if spread > 10:
+        print(f"  ⚠️ Désaccord important entre sources (spread {spread:.0f} pts)")
+    if len(valid) < 2:
+        print("  ⚠️ Une seule source — fragile, croiser avec WebSearch")
+
+    print("\n💡 Recommandation :")
+    if med >= 0.75:
+        print(f"  ✅ Pick SAFE : {label_a} à proba ≥ 75% → candidat sérieux")
+    elif med >= 0.65:
+        print(f"  🟡 Pick MARGINAL : {label_a} à proba 65-75% → acceptable en combiné")
+    elif med <= 0.25:
+        print(f"  ✅ Pick SAFE : {label_b} à proba ≥ 75% (inverse)")
+    elif med <= 0.35:
+        print(f"  🟡 Pick MARGINAL : {label_b} à proba 65-75%")
+    else:
+        print(f"  ❌ Pas safe : proba autour de 50%, à éviter pour 'mode safety'")
+
+    return {
+        "prob_a": round(med, 4),
+        "prob_b": round(1 - med, 4),
+        "n_sources": len(valid),
+        "sources_detail": [{"label": l, "prob": round(p, 4)} for p, l in valid],
+        "spread_pct": round(spread, 1),
+        "label_a": label_a,
+        "label_b": label_b,
+    }
 
 
 def _summarize(prob_method_a: float | None, prob_method_b: float | None, label_a: str, label_b: str) -> dict:

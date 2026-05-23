@@ -14,6 +14,19 @@ from app.adapters.api_football import ApiFootballAdapter
 from app.adapters.football_data import FootballDataAdapter
 from app.adapters.mock import MockAdapter
 from app.adapters.odds_api import OddsApiAdapter
+from app.adapters import (
+    api_sports,
+    balldontlie,
+    kalshi,
+    manifold,
+    mlb_stats,
+    nba_stats,
+    nhl_stats,
+    openweather,
+    polymarket,
+    sofascore,
+    tennis_abstract,
+)
 from app.config import get_settings
 from app.schemas import MatchInput
 
@@ -52,4 +65,16 @@ __all__ = [
     "MockAdapter",
     "resolve_adapter",
     "fetch_daily",
+    # Modules (sans classe BaseAdapter)
+    "api_sports",
+    "balldontlie",
+    "kalshi",
+    "manifold",
+    "mlb_stats",
+    "nba_stats",
+    "nhl_stats",
+    "openweather",
+    "polymarket",
+    "sofascore",
+    "tennis_abstract",
 ]

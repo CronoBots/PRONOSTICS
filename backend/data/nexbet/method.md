@@ -1,183 +1,253 @@
-# NΞXBΞT analyst — Procédure obligatoire (checklist)
+# NΞXBΞT — Procédure obligatoire (v4.0 — Recap-only mode)
 
-> Cette checklist est NON négociable. L'agent doit la suivre dans l'ordre
-> et compléter chaque étape avant de passer à la suivante. Aucun
-> raccourci, même si l'agent "pense" déjà connaître la réponse.
+> **Pivot v4.0 du 23/05/2026** : l'agent ne décide plus. Il cartographie,
+> analyse et présente un **TOP 3** chiffré au user, qui tranche. Aucun
+> pick automatique n'est inséré dans `picks_data.py`. Mode **paper
+> trading 30 jours** actif jusqu'au 23/06/2026. Aucun bet réel pendant
+> cette période — toutes les positions sont théoriques.
 
-## Étape 0 — Init (lecture obligatoire)
+## ⚡ Règles d'efficacité (conservées de v3)
 
-Avant TOUTE recherche, l'agent doit :
+1. **Parallélisme obligatoire** : tout appel indépendant (lectures
+   fichiers, WebSearch cartographie) doit partir en UN SEUL message
+   multi-tool.
+2. **Watchlist écrite AVANT pré-filtrage** dans
+   `decisions/<date>-watchlist.md` — auditabilité du funnel.
+3. **`check_duplicate.py` sur chaque finaliste** avant Étape 3.
+4. **Aucune décision automatique** — l'agent présente, le user tranche.
 
-1. Lire `backend/data/nexbet/criteria.md` (rappel des seuils)
-2. Lire `backend/data/nexbet/learnings.md` (patterns + anti-bias)
-3. Lire `backend/data/nexbet/output-format.md` (format JSON cible)
-4. Lire les 5 derniers picks dans `backend/scripts/picks_data.py` (style
-   + contexte récent)
-5. Note la date courante et l'heure (UTC + Belgique)
-6. Note le bankroll courant (dernier `bankroll_after` dans history)
+## Étape 0 — Init (lecture parallèle obligatoire)
+
+Lancer **un seul message multi-Read** :
+1. `backend/data/nexbet/criteria.md` (rappel des seuils v4)
+2. `backend/data/nexbet/learnings.md` (patterns + anti-bias actifs)
+3. `backend/data/nexbet/output-format.md` (format TOP 3)
+4. `backend/data/nexbet/sources_catalogue.md` (whitelist accessible)
+5. `backend/data/nexbet/paper_trading_log.md` (dernières positions virtuelles)
+6. `backend/scripts/picks_data.py` (uniquement pour anti-dup)
+
+Noter : date courante (UTC + Belgique), bankroll virtuel courant (paper),
+bankroll réel courant (info contextuelle, **non utilisé** pour les
+calculs de mise).
 
 ## Étape 1 — Cartographie (cast wide net)
 
-**Objectif** : lister TOUS les évènements sportifs majeurs des prochaines
-36h, sans pré-filtrer. Au minimum **15 matchs** doivent être identifiés.
+Sports à scanner systématiquement selon la saison. Au minimum **15 matchs**
+identifiés.
 
-Sports à scanner systématiquement (selon saison) :
-- 🏀 **NBA** : playoffs (rounds, conf finals, NBA Finals), saison régulière
-- 🏒 **NHL** : Stanley Cup playoffs, saison régulière
-- ⚾ **MLB** : saison régulière (162 matchs/an), playoffs October-November
-- 🎾 **ATP / WTA** : tournois en cours (vérifier ATP Calendar pour
-  les tournois live cette semaine — Grand Slams = priorité)
-- ⚽ **Football** : Premier League / La Liga / Bundesliga / Ligue 1 /
-  Serie A / Champions League / Europa League / Coupes nationales
-- 🏈 **NFL** : saison régulière août-janvier, playoffs janvier, Super Bowl
-  février ; preseason juillet-août
-- 🏉 **Rugby** : Six Nations (jan-mar), Top 14, URC, Champions Cup
-- 🥊 **Boxe / MMA** : UFC events (généralement samedi soir), événements
-  boxe HBO/Showtime
-- 🐎 Autres : F1 (dimanche), MotoGP, Euroleague basket, etc.
+**Méthode parallèle** :
+1. **Un seul message** avec N WebSearch parallèles, une recherche par
+   sport actif.
+2. Liste sortie : `| Match | Sport | Kickoff UTC | Cote favori |`
+3. Marquer les matchs "premium" (playoffs, finales) — coverage pros
+   plus dense.
+4. **Sortie attendue** : tableau ≥ 15 lignes, daté.
+5. **Écrire immédiatement** dans
+   `decisions/<date>-watchlist.md`.
 
-**Méthode de cartographie** :
-1. WebSearch : "[sport] schedule [date] [year]" pour chaque sport actif
-2. Liste sortie : `[match] | [sport/ligue] | [kickoff UTC] | [favori
-   approximatif si évident]`
-3. Marquer les matchs "premium" (playoffs, finales, gros derby) — ils
-   ont des analyses pros plus nombreuses
-4. **Sortie attendue** : tableau Markdown avec ≥ 15 lignes, daté et
-   timestampé
+## Étape 2 — Pré-filtrage strict
 
-## Étape 2 — Pré-filtrage rapide
+Éliminer en bloc :
+- Cote favori < 1.50 OU > 2.00 (single, F1 strict)
+- Combo : cote totale > 2.20 OU < 1.60 (sans boost)
+- Sport hors compétence
+- Doublon avec pick récent (`check_duplicate.py`)
+- Pas de coverage pro accessible dispo (F4 impossible)
 
-Réduire à **5–8 candidats sérieux** en éliminant :
+**Réduction à max 5 candidats** sérieux.
 
-- Matchs avec favori "trop favori" (cote < 1.30 sur principal book) →
-  EV trop faible
-- Matchs avec aucune info récente / line non publiée
-- Matchs où les 2 équipes ont des dossiers similaires (cote ~ 1.90 / 1.90
-  = pure cointoss, pas de value à exploiter)
-- Matchs dans des compétitions inconnues / faible liquidité (ex : ligues
-  mineures sans coverage pro)
+## Étape 3 — Analyse approfondie (top 5, PARALLÈLE)
 
-**Sortie** : top 5–8 avec une cote indicative + 1 phrase "pourquoi
-intéressant".
+Pour chaque candidat, lancer **les 3 WebSearch + WebFetch parallèles dans
+un seul message** :
 
-## Étape 3 — Analyse approfondie (top 5)
+1. **WebSearch** : preview + prédiction pro sur le match
+2. **WebSearch** : modèle ML / probabilité explicite (Dimers, Stats
+   Insider, BleacherNation)
+3. **WebSearch** : injuries / lineup / news 24h
 
-Pour CHAQUE candidat du top 5, faire 3 WebFetch sur des sources pros :
+**Sources whitelist obligatoires** (testées accessibles, voir
+`sources_catalogue.md`) :
+- lastwordonsports.com
+- bleachernation.com
+- dimers.com
+- statsinsider.com.au
+- tennistonic.com
+- covers.com
+- lineups.com
+- fanduel.com/research
+- goal.com (soccer)
+- sportsgambler.com (soccer)
+- rotowire.com (utile tennis GS)
+- cbssports.com (snippets multi-sports)
 
-1. Site spécialisé sport (ESPN, ATP, NHL.com…)
-2. Analyse pari pro (OddsShark, Covers, Lineups, Action Network,
-   StatsInsider, BleacherNation…)
-3. Source sharps / consensus (Polymarket si dispo, sinon Pinnacle line
-   ou agrégateur de consensus pros type SportsBettingPolls)
+**Sources INACCESSIBLES (à ne plus citer comme primaires)** :
+- ATP/WTA officiels (403)
+- Sofascore (403)
+- TennisTemple (403)
+- Polymarket / Pinnacle / Betfair via WebFetch (JS-rendered ou auth)
 
-**Extraire pour chaque match** :
-- Cote sur 3+ books (bwin obligatoire si possible, sinon DK/FanDuel)
-- Probabilité estimée par chaque source (souvent données explicitement
-  ou déductible via la cote implicite recommandée)
-- H2H récent (3 dernières confrontations)
-- Forme récente des deux équipes (5 derniers matchs)
-- Blessures clés (injury report fresh)
-- Facteurs contextuels : home/away advantage, surface (tennis), météo
-  (outdoor sports), trajet/repos, motivation (déjà qualifié ou non)
-- Coaching matchup + tendances coach dans la situation
-- Cas spéciaux : boost bookmaker dispo, ligne qui a bougé fortement
-  dans la journée
+**Polymarket via snippet** (v4.1) : si un snippet WebSearch contient un
+% chiffrable (ex : "Polymarket Pirates 59¢" → 59%), la source est
+**autorisée comme quantitative** et compte 1× dans `n_eff`. Reproduire
+le snippet textuel dans la trace. Si pas de % chiffrable dans le
+snippet → citer URL en trace mais ignorer pour calcul.
 
-## Étape 4 — Consultation des learnings
+**Extraire pour chaque candidat** :
+- Cote sur 2-3 books (bwin priorité)
+- Probabilité explicite par source si disponible
+- H2H récent + forme 5 derniers
+- Blessures, lineup confirmée si publiée
 
-**Pour chaque finaliste**, croiser avec `learnings.md` :
-- Y a-t-il un pattern qui valide ce pick ? (boost EV)
-- Y a-t-il un anti-pattern qui invalide ? (rejet automatique)
-- Le sport / la situation a-t-il un track record dans les picks passés ?
+## Étape 4 — Application learnings + anti-bias
 
-**Exemples concrets** (mis à jour via learnings.md) :
-- "ATP top-10 J-2 avant Grand Slam" → flag rouge (cas Ruud 22/05)
-- "NBA Game 2 home après blow loss G1" → flag vert (cas Knicks 21/05)
-- "Combiné boosté bwin double favoris à domicile" → flag vert si proba
-  combinée ≥ 0.60 (cas Ruud+Knicks 21/05)
-- "Underdog Cinderella playoffs" → flag jaune sur le favori opposé
+Pour chaque finaliste, croiser avec `learnings.md`. Règles actives v4 :
 
-## Étape 5 — Application des critères
+**Anti-bias BLOCANTS (rejet automatique)** :
+- AB-1 : Top-10 ATP J-2/J-1 avant Grand Slam
+- AB-2 : Perdant 1-3 série playoffs
+- AB-4 : Combiné 3+ jambes
+- AB-5 : MLB ML > 2.50 sans matchup pitcher exceptionnel
 
-Pour chaque finaliste, calculer formellement :
-- `book_proba = 1 / cote_bwin`
-- `model_proba = moyenne pondérée des estimations sources` (pondération :
-  source sharp > source pro > source mainstream)
-- `EV = model_proba × cote_bwin − 1`
-- `Kelly_fraction = (model_proba × cote_bwin − 1) / (cote_bwin − 1)`
+**Anti-bias EXPERIMENTAUX (note, pas blocking)** :
+- AB-3 : Cinderella playoff momentum (n=1)
+- AB-6 supprimé (overfit n=1)
 
-**Garder uniquement** les candidats qui respectent les 6 filtres durs
-de `criteria.md` (F1-F6).
+**Patterns confirmés (boost de confiance, +0.02 proba_shrunk)** :
+- Tous les PC sont **EXPERIMENTAL n=1 en v4** : utiliser comme signal
+  qualitatif, pas comme bonus mathématique. (Pas de +0.02 automatique
+  tant que n ≥ 3.)
 
-Si après ce filtre il reste :
-- **0 candidat** → produire "no pick today" + justification + top 3 rejetés
-- **1 candidat** → c'est le pick
-- **2+ candidats** → choisir celui avec le meilleur ratio
-  `(EV × proba)` (priorise les picks à la fois +EV ET safe), tie-break sur
-  la qualité des sources
+## Étape 5 — Calculs simplifiés v4.1
 
-## Étape 6 — Considérer le combiné
+Pour chaque candidat :
 
-Si 2 picks indépendants passent tous les filtres avec proba individuelle
-≥ 0.70 ET un bookmaker offre un boost sur le combiné, calculer :
-- `proba_combo = p1 × p2`
-- `cote_combo = c1 × c2 × (1 + boost)` (boost typique +20-30% bwin)
-- `EV_combo = proba_combo × cote_combo − 1`
+```
+book_proba   = 1 / cote_bwin
+sources_dédup = MÉDIANE interne des % chiffrés par domaine racine
+                (ex: goal.com x2 → 1 source dédupliquée)
+model_proba  = MÉDIANE des % chiffrés des sources dédupliquées
+                (min 1 quanti + 3 convergentes au total — sinon F4 KO)
+n_eff        = nombre de sources quantitatives dédupliquées (max 5)
+                Sources qualitatives convergentes valident F4 mais
+                ne comptent PAS dans n_eff
+w_book       = 2  (fixe — pas de w_book adaptatif)
+proba_shrunk = (n_eff × model_proba + 2 × book_proba) / (n_eff + 2)
+EV           = proba_shrunk × cote_bwin − 1
+```
 
-Si `EV_combo > max(EV_pick1, EV_pick2) × 1.5` ET proba_combo ≥ 0.55, le
-combiné devient le pick prioritaire. Sinon, garder le solo.
+**Pas de malus sharp automatique** : si pas de Pinnacle/Polymarket
+accessible, on l'accepte. C'est noté dans la trace mais pas pénalisé.
 
-**Règle d'or combiné** : jamais 3 jambes, jamais corrélé (même
-tournoi/ligue), jamais sans boost (sans boost le combiné perd vs picks
-indépendants).
+**Sources snippet** (v4.1) : un % lu via snippet WebSearch (sans
+WebFetch direct) est accepté comme source quantitative à condition que
+la trace identifie "via snippet" et reproduise le snippet textuel.
 
-## Étape 7 — Composition du pick final
+**Si AB-1/2/4/5 déclenché** : rejet immédiat (pas affiché dans top 3).
 
-Produire l'output au format `output-format.md` :
-1. Objet JSON `Pick` complet (insérable directement dans
-   `picks_data.py PICKS`)
-2. Headline (1-2 lignes)
-3. Rationale (20-30 entrées, format markdown lite)
-4. Sources (3-6 URLs concrètes)
-5. Champs calculés : stake (selon Kelly ajusté), potential_profit, etc.
+## Étape 6 — Verdict par candidat (présentation, pas décision)
 
-## Étape 8 — Trace de décision
+Affecter à chaque candidat un **verdict** parmi :
 
-Écrire un fichier `backend/data/nexbet/decisions/<YYYY-MM-DD>.md`
-contenant :
-- Heure de l'analyse
-- Top 5 candidats étudiés (avec leur cote / proba / EV)
-- Pick choisi + raison
-- Picks rejetés + raisons
-- Sources consultées (toutes, pas seulement celles citées dans le pick)
-- Notes (anomalies détectées, doutes restants)
+| Verdict | Conditions | Couleur |
+|---|---|---|
+| 🟢 **RECOMMANDÉ** | EV ≥ +5%, proba_shrunk ≥ 0.60, ≥ 3 sources convergentes | Vert |
+| 🟡 **ACCEPTABLE** | EV ≥ +2%, proba_shrunk ≥ 0.55 | Jaune |
+| 🟠 **BORDERLINE** | EV entre 0% et +2%, proba_shrunk ≥ 0.55 | Orange |
+| 🔴 **INSUFFISANT** | EV < 0% OU proba_shrunk < 0.55 OU F4 KO | Rouge |
 
-Ce fichier permet de **reviewer la décision après coup** quand le
-résultat est connu, et alimente la mise à jour de `learnings.md`.
+**Aucun tier "FLOOR" autorisé** : EV < 0% = INSUFFISANT, fin de
+discussion. Pas de mise théorique avec EV négatif.
 
-## Cas spéciaux
+## Étape 7 — Sortie obligatoire (format TOP 3)
 
-### Quota Odds API épuisé
-Sauter les calls automatiques, fonctionner 100% via WebSearch +
-WebFetch sur les sites pros. Mentionner dans la trace de décision
-"Mode manuel (Odds API down)".
+Voir `output-format.md`. Structure imposée :
 
-### Aucun match qualifié
-Output "no pick today" + ENCORE explication détaillée. C'est OK de
-sauter un jour ; "la discipline > le volume" est la marque de fabrique
-NΞXBΞT.
+1. **Section Watchlist** : tableau cartographie complet
+2. **Section TOP 3 candidats** : ranking par EV décroissant
+   - Pour chaque : cote, model_proba, EV, verdict, sources, alerts
+3. **Section Recommandation conditionnelle** :
+   - Si ≥ 1 candidat 🟢 RECOMMANDÉ → "Mon TOP = X (verdict 🟢). À toi de
+     valider."
+   - Si seulement 🟡 ACCEPTABLE → "Aucun candidat 🟢 aujourd'hui. Le moins
+     pire est X (🟡). Tu peux skip ou valider."
+   - Si seulement 🟠 / 🔴 → "Rien de défendable aujourd'hui. Skip recommandé."
+4. **Section Anti-bias** : règles actives sur le pick proposé
+5. **Section Paper trading** : si le user valide, mise théorique appliquée
+   au bankroll virtuel (criteria.md table mises)
 
-### Désaccord fort entre sources sharps et public
-Si Polymarket et le book grand public sont à > 10 points de proba
-implicite d'écart, c'est un signal. Soit suivre les sharps (souvent
-mieux informés), soit noter le désaccord dans les risques et baisser
-la mise.
+## Étape 8 — Décision user + trace
 
-### Boost bookmaker exceptionnel découvert tard
-Si en cours d'analyse on découvre un boost bwin de +30% sur un pick à
-proba 0.62, refaire le calcul EV avec le boost — il peut transformer un
-candidat médiocre en pick prioritaire.
+L'utilisateur répond :
+- ✅ **VALIDÉ** → ajouter au `paper_trading_log.md` comme position
+  virtuelle (mode paper trading)
+- ❌ **SKIP** → noter "skip user" dans trace
+- 🔄 **CONTRE-PICK** → user choisit un autre candidat de la liste
 
-### Multiple Grand Slams simultanés
-Période 24-mai-2026 est juste avant Roland Garros. Méfiance accrue sur
-les picks ATP J-2/J-1 (cf learnings.md "Ruud Geneva SF 22/05 loss").
+**Trace écrite** dans `decisions/<date>.md` (toujours) :
+- Heure d'analyse
+- Top 5 candidats avec calculs complets
+- Verdict de l'agent
+- Décision finale du user
+- Sources consultées (toutes URLs)
+- Anomalies / doutes
+
+**Commit + push** sur la branche courante.
+
+## Étape 9 — Outcome verification (lendemain ou plus tard)
+
+**RÈGLE STRICTE v4** : tout outcome `win` / `loss` exige **2 sources
+distinctes** avec **quote textuelle exacte** du score final.
+
+Format trace outcome :
+```
+Source A (URL) cite : "Player X defeated Player Y, 6-3 6-4"
+Source B (URL) cite : "Final score: X def. Y 6-3 6-4"
+→ OUTCOME = WIN (sur le pick X)
+```
+
+Si une seule source disponible ou pas de quote précise → outcome
+**reste PENDING**. Aucune inférence (G2 vs G3, SF vs Final). Pas de
+mise à jour bankroll virtuel.
+
+**Vérification mensuelle obligatoire** (review mode paper) :
+- Hit rate par verdict (🟢/🟡)
+- ROI virtuel cumulé
+- Audit des calibrations (proba estimée vs outcome réel)
+
+## Cas spéciaux v4
+
+### Aucun candidat passe F1 (cote 1.50-2.00)
+Output : "Aucun candidat dans la fenêtre cote 1.50-2.00 aujourd'hui."
++ top 3 rejetés listés avec raison. **Pas de fallback FLOOR**.
+
+### Tous candidats verdict 🔴
+Output : "Rien de défendable aujourd'hui. Skip recommandé."
++ top 3 listés. Le user peut quand même override.
+
+### Source single point of failure
+Si 2/3 sources accessibles d'une même famille (ex : tennis tonic, last
+word on sports — deux sites du même éditeur ?) → noter dans la trace
+le risque de corrélation des sources.
+
+## Conditions de sortie du mode paper (vers bet réel)
+
+Après 30 jours (≥ 24 picks paper, dont ≥ 12 verdict 🟢 + 🟡 résolus) :
+- Si **hit rate global ≥ 55%** ET **ROI virtuel ≥ +5%** → promotion
+  vers mode réel
+- Si non → itération méthodologie v4.x ou prolongation paper
+
+Décision documentée dans `paper_trading_log.md` section "Audit fin de
+cycle".
+
+## Anti-patterns interdits (v4)
+
+JAMAIS :
+- Insérer un pick dans `picks_data.py` automatiquement (mode paper)
+- Marquer un outcome sans 2 quotes textuelles distinctes
+- Citer Sofascore, ATP/WTA officiels comme source primaire (403)
+- Recommander un candidat avec EV < +2%
+- Sortir un "TOP 1 unique" sans présenter les alternatives
+- Appliquer un boost de proba via PC (tous EXPERIMENTAL n=1 en v4)
+- Sauter la lecture `learnings.md`
+- Sauter l'écriture `decisions/<date>.md` et `paper_trading_log.md`

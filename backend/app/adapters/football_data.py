@@ -42,7 +42,13 @@ class FootballDataAdapter(BaseAdapter):
             return []
 
         matches = payload.get("matches", [])
-        return [self._normalize(m) for m in matches]
+        results: list[MatchInput] = []
+        for m in matches:
+            try:
+                results.append(self._normalize(m))
+            except (KeyError, ValueError, TypeError) as exc:
+                logger.debug("football_data: skip malformed match: %s", exc)
+        return results
 
     def _normalize(self, m: dict[str, Any]) -> MatchInput:
         return MatchInput(
