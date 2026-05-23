@@ -51,7 +51,7 @@ function PillLabel(props: {
         dominantBaseline="middle"
         fontSize={10}
         fontWeight={700}
-        fill="#0a7e63"
+        fill="#152082"
       >
         {text}
       </text>
@@ -201,8 +201,8 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
-    // Hero NΞXBΞT : fond vert plein (#10d9a3 = couleur exacte du logo),
-    // tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
+    // Hero NΞXBΞT v5 : fond plein cobalt (#2A4BFA = couleur exacte du nouveau
+    // logo), tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
     // les period pills sont rendus via les slots topRight / footer.
     // Génère des ticks Y à intervalles RÉGULIERS (pas calé sur les valeurs
     // brutes des picks pour éviter une échelle type "2, 4, 7, 16").
@@ -214,7 +214,7 @@ export function BankrollChart({
     const niceTicks = niceTickArray(dataMin, dataMax, 5);
     const yDomain: [number, number] = [niceTicks[0], niceTicks[niceTicks.length - 1]];
     return (
-      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-green relative flex flex-col border border-white/[0.06] shadow-card-soft">
+      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-blue relative flex flex-col border border-white/[0.06] shadow-card-soft">
         {topRight && (
           <div className="absolute top-3 right-3 z-10">{topRight}</div>
         )}

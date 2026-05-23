@@ -112,7 +112,7 @@ export function Onboarding({ forceShow = false, onClose }: OnboardingProps = {})
               <span
                 key={i}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === step ? "w-8 bg-accent-green" : "w-2 bg-white/15"
+                  i === step ? "w-8 bg-accent-blue" : "w-2 bg-white/15"
                 }`}
               />
             ))}
