@@ -61,7 +61,11 @@ export default function App({ Component, pageProps }: AppProps) {
             >
               {showNav && <DesktopHeader />}
               <div
-                className={`flex-1 flex flex-col min-h-0 ${
+                // Mobile: overflow-y-auto autorise le scroll interne quand la
+                // page depasse le viewport (la wrapper outer a height strict).
+                // Desktop (lg): overflow-visible -> body scroll natif via
+                // lg:h-auto lg:min-h-screen sur l'outer wrapper.
+                className={`flex-1 flex flex-col min-h-0 overflow-y-auto lg:overflow-visible ${
                   showNav ? "pb-[calc(var(--safe-bottom)+5.5rem)] lg:pb-0" : ""
                 }`}
               >
