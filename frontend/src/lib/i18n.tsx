@@ -494,7 +494,10 @@ const fr: Dict = {
   "period.week": "1s",
   "period.month": "1m",
   "period.year": "1a",
-  // Analyzer page
+  // Stats page sub-tabs (overview = current /stats KPI content;
+  // general/period/sport come from the Analyzer components fused into /stats)
+  "stats.tab.overview": "Aperçu",
+  // Analyzer sub-tabs (consumed inside /stats since v4 — analyzer page removed)
   "analyzer.titleTab": "Analyses — NΞXBΞT",
   "analyzer.title": "Analyses",
   "analyzer.tab.general": "Général",
@@ -1144,10 +1147,13 @@ const en: Dict = {
   "period.week": "1w",
   "period.month": "1m",
   "period.year": "1y",
-  // Analyzer page
+  // Stats page sub-tabs (overview = current /stats KPI content;
+  // general/period/sport come from the Analyzer components fused into /stats)
+  "stats.tab.overview": "Overview",
+  // Analyzer sub-tabs (consumed inside /stats since v4 — analyzer page removed)
   "analyzer.titleTab": "Insights — NΞXBΞT",
   "analyzer.title": "Insights",
-  "analyzer.tab.general": "Overview",
+  "analyzer.tab.general": "Trends",
   "analyzer.tab.period": "Period",
   "analyzer.tab.sport": "Sport",
   "analyzer.section.statesBreakdown": "Status breakdown",

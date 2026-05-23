@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
+import { AnalyzerGeneral } from "@/components/AnalyzerGeneral";
+import { AnalyzerPeriode } from "@/components/AnalyzerPeriode";
+import { AnalyzerSport } from "@/components/AnalyzerSport";
 import { Header } from "@/components/Header";
 import { Skeleton } from "@/components/Skeleton";
 import { StatsHero } from "@/components/StatsHero";
@@ -9,6 +12,7 @@ import { useI18n } from "@/lib/i18n";
 import { History, HistoryStats } from "@/lib/types";
 
 type TFn = (key: string, vars?: Record<string, string | number>) => string;
+type Tab = "overview" | "general" | "periode" | "sport";
 
 function fmtSigned(n: number, suffix = "") {
   const sign = n > 0 ? "+" : "";
@@ -150,6 +154,7 @@ export default function StatsPage() {
   const { t } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<Tab>("overview");
 
   useEffect(() => {
     let cancelled = false;
@@ -164,7 +169,15 @@ export default function StatsPage() {
   }, []);
 
   const stats = history?.stats;
+  const picks = history?.picks ?? [];
   const sections = stats ? buildSections(stats, t) : [];
+
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "overview", label: t("stats.tab.overview") },
+    { id: "general", label: t("analyzer.tab.general") },
+    { id: "periode", label: t("analyzer.tab.period") },
+    { id: "sport", label: t("analyzer.tab.sport") },
+  ];
 
   return (
     <>
@@ -174,6 +187,23 @@ export default function StatsPage() {
 
       <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <Header title={t("statsPage.title")} stats={stats} />
+
+        {/* Sous-tabs */}
+        <div className="flex gap-2 mb-5 overflow-x-auto -mx-1 px-1">
+          {TABS.map((tabDef) => (
+            <button
+              key={tabDef.id}
+              onClick={() => setTab(tabDef.id)}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition border ${
+                tab === tabDef.id
+                  ? "bg-accent-green/15 border-accent-green/40 text-accent-green"
+                  : "bg-bg-card border-white/[0.06] text-white/60 hover:text-white"
+              }`}
+            >
+              {tabDef.label}
+            </button>
+          ))}
+        </div>
 
         {loading && (
           <div className="space-y-5 animate-fade-in">
@@ -191,10 +221,17 @@ export default function StatsPage() {
 
         {!loading && stats && history && (
           <div>
-            <StatsHero picks={history.picks} stats={stats} />
-            {sections.map((s) => (
-              <StatsSection key={s.title} title={s.title} rows={s.rows} />
-            ))}
+            {tab === "overview" && (
+              <>
+                <StatsHero picks={history.picks} stats={stats} />
+                {sections.map((s) => (
+                  <StatsSection key={s.title} title={s.title} rows={s.rows} />
+                ))}
+              </>
+            )}
+            {tab === "general" && <AnalyzerGeneral picks={picks} />}
+            {tab === "periode" && <AnalyzerPeriode picks={picks} />}
+            {tab === "sport" && <AnalyzerSport picks={picks} />}
           </div>
         )}
       </main>
