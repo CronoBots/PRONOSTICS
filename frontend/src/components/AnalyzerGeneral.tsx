@@ -4,7 +4,6 @@ import { useI18n } from "@/lib/i18n";
 import {
   breakdownByState,
   computeProfitFactor,
-  computeStakeRatio,
   statsByStakeBucket,
 } from "@/lib/stats";
 import { HistoryPick } from "@/lib/types";
@@ -68,7 +67,6 @@ export function AnalyzerGeneral({ picks }: Props) {
   const total = states.reduce((s, x) => s + x.count, 0);
   const data = states.filter((s) => s.count > 0);
   const pf = computeProfitFactor(picks);
-  const sr = computeStakeRatio(picks);
   const buckets = statsByStakeBucket(picks);
 
   return (
@@ -183,25 +181,6 @@ export function AnalyzerGeneral({ picks }: Props) {
         rows={[
           { label: t("analyzer.profitTotal"), value: `${pf.totalGains.toFixed(2)} €`, tone: "green" },
           { label: t("analyzer.lossTotal"), value: `${pf.totalLosses.toFixed(2)} €`, tone: "red" },
-        ]}
-      />
-
-      {/* Ratio Mise / Profit */}
-      <BigStatCard
-        title={t("analyzer.stakeRatio")}
-        value={sr.ratio === 0 ? "—" : sr.ratio.toFixed(2)}
-        tone={sr.profit >= 0 ? "neutral" : "red"}
-        rows={[
-          {
-            label: t("analyzer.stakeTotal"),
-            value: `${sr.totalStake.toFixed(2)} €`,
-            tone: "neutral",
-          },
-          {
-            label: t("analyzer.benefit"),
-            value: fmtSigned(sr.profit),
-            tone: sr.profit >= 0 ? "green" : "red",
-          },
         ]}
       />
 
