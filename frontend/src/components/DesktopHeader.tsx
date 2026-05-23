@@ -19,7 +19,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/stats", labelKey: "nav.stats" },
   { href: "/analyzer", labelKey: "home.analyzer" },
   { href: "/calendrier", labelKey: "home.calendar" },
-  { href: "/demain", labelKey: "demain.title" },
   { href: "/mes-paris", labelKey: "perso.title" },
   { href: "/plus", labelKey: "nav.plus" },
 ];
