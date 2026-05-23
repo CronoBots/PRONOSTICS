@@ -22,6 +22,7 @@ env/
 backend/data/*.db
 backend/data/*.sqlite
 backend/data/cache/
+backend/data/candidates/*.debug.txt
 
 # Node
 node_modules/

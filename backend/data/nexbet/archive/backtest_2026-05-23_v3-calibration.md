@@ -1,8 +1,20 @@
-# Backtest NΞXBΞT — 23/05/2026
+# Backtest NΞXBΞT — 23/05/2026 [ARCHIVE v3.3]
 
+> ⚠️ **DOCUMENT ARCHIVÉ — méthodologie v3.3 OBSOLÈTE**
+>
+> Ce backtest a été produit AVANT le pivot v4.0 (23/05/2026 ~14h30 Belgique).
+> Il référence des éléments **supprimés** en v4.0 :
+> - Tier FLOOR (autorisait EV ≥ -2%)
+> - F1-bis Playoff Mode (cotes 2.00-2.50 sur playoff)
+> - Bonus PC +0.02 proba (proximité Grand Slam, etc.)
+> - Malus sharp -0.03 proba
+>
+> Pour la méthodologie courante v4.2 : voir `method.md`, `criteria.md`,
+> `learnings.md`. Ne PAS utiliser ce backtest comme référence active.
+>
 > Audit complet des 6 picks résolus (17/05 → 22/05) + 1 pending (23/05).
-> Objectif : calibrer les seuils v3, identifier les biais d'estimation,
-> proposer des ajustements `criteria.md` / `learnings.md`.
+> Objectif (à l'époque v3.3) : calibrer les seuils v3, identifier les biais
+> d'estimation, proposer des ajustements `criteria.md` / `learnings.md`.
 
 ## 1. Dataset analysé
 
