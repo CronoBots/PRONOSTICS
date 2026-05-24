@@ -13,18 +13,43 @@ Bot Discord pour la communauté NEXBET (pronostics sportifs paper trading).
 
 Toutes les commandes utilisent des embeds **cobalt v5** (cohérent avec l'app web).
 
+## 🆔 Identifiants du bot NΞXBΞT (publics)
+
+- **Application ID** : `1508193166635958332`
+- **Public Key** : `63b44e092bff944881c32565701bbe800861578adb5593cdf6981165c17f53a1`
+- **Bot Token** : 🔒 SECRET — configurer dans `.env` ou Railway env vars, jamais commit
+
+## 🔗 URLs d'invitation prêtes à l'emploi
+
+Choisis selon les permissions voulues :
+
+### 🟢 MVP (lecture seule + slash commands)
+Permissions : Send Messages, Embed Links, Read Message History, Use Slash Commands, Add Reactions
+```
+https://discord.com/api/oauth2/authorize?client_id=1508193166635958332&scope=bot+applications.commands&permissions=84032
+```
+
+### 🟡 Modération communauté (recommandé pour public)
+Ajoute : Manage Messages, Manage Roles, Moderate Members (timeout)
+```
+https://discord.com/api/oauth2/authorize?client_id=1508193166635958332&scope=bot+applications.commands&permissions=1099780063040
+```
+
+### 🔴 Admin complet (à utiliser uniquement pour tests)
+```
+https://discord.com/api/oauth2/authorize?client_id=1508193166635958332&scope=bot+applications.commands&permissions=8
+```
+
+Clique l'URL → choisis ton serveur → **Authorize**.
+
 ## 🚀 Setup en 5 minutes
 
-### 1. Créer le bot sur Discord Developer Portal
+### 1. Créer le bot sur Discord Developer Portal (si pas déjà fait)
 
-1. Aller sur https://discord.com/developers/applications
-2. Cliquer **New Application** → nommer **NEXBET Bot**
-3. Onglet **Bot** → **Reset Token** → copier le token (à mettre dans `.env`)
-4. **Privileged Gateway Intents** → activer **Server Members Intent**
-5. Onglet **OAuth2 > URL Generator** :
-   - Scopes : `bot`, `applications.commands`
-   - Bot Permissions : `Send Messages`, `Embed Links`, `Use Slash Commands`, `Manage Messages` (pour les commandes admin), `Read Message History`
-   - Copier l'URL générée → l'ouvrir → choisir ton serveur → **Authorize**
+1. https://discord.com/developers/applications → **New Application** → "NEXBET Bot"
+2. Onglet **Bot** → **Reset Token** → copier le token (à mettre dans `.env`)
+3. **Privileged Gateway Intents** → activer **Server Members Intent**
+4. Inviter le bot via une des URLs ci-dessus
 
 ### 2. Installation locale (pour tester)
 
