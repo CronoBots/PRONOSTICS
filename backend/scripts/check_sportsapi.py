@@ -1,10 +1,12 @@
 """
-Script de test rapide pour vérifier que ta clé API-Sports fonctionne.
+Script CLI de vérification API-Sports (renommé de test_sportsapi.py en
+v4.4 pour éviter que pytest le découvre — c'est un script CLI manuel,
+pas un test pytest).
 
 Usage :
     cd /home/user/PRONOSTICS
     export API_SPORTS_KEY=ta_cle_ici   # ou dans .env
-    python backend/scripts/test_sportsapi.py
+    python backend/scripts/check_sportsapi.py
 
 Le script :
 1. Vérifie que la clé répond (quota + plan)

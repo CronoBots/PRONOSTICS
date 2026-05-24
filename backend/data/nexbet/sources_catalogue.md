@@ -38,7 +38,7 @@
 - Plan Pro $19/mois par sport, ou bundle ~$30-50/mois
 
 **Wrapper Python** : `backend/scripts/sportsapi.py`
-**Test rapide** : `python backend/scripts/test_sportsapi.py`
+**Test rapide** : `python backend/scripts/check_sportsapi.py`
 
 ⚠️ **TENNIS NON COUVERT par API-Sports.** Pour ATP/WTA/GS, continuer
 avec : WebSearch whitelist (Tennis Tonic, Dimers, LWOS, Stats Insider)
