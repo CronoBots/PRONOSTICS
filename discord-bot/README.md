@@ -73,21 +73,73 @@ Test : dans ton serveur, tape `/picks` → tu dois voir le bot autocomplete.
 
 Le bot doit tourner en continu pour répondre aux commandes. Options :
 
-#### Option A — Railway (recommandé, free tier 500h/mois)
-1. Aller sur https://railway.app/ → **Login with GitHub**
-2. **New Project > Deploy from GitHub repo** → choisir `CronoBots/PRONOSTICS`
-3. Settings > **Root Directory** : `discord-bot`
-4. **Variables** : ajouter `DISCORD_BOT_TOKEN` (depuis ton .env)
-5. **Deploy** — le `Procfile` détecte automatiquement le worker
-6. Logs visibles dans l'onglet Deployments
+#### Option A — Fly.io (recommandé, free tier 3 VMs)
 
-#### Option B — VPS (Hetzner CX11 ~4€/mois, Mac mini, etc.)
+**Pré-requis** : installer `flyctl` CLI sur ton Mac
+
+```bash
+brew install flyctl
+flyctl auth signup       # créer un compte (CB demandée pour anti-abus, $0 tant que free tier)
+# OU si déjà un compte :
+flyctl auth login
+```
+
+**Déploiement (depuis le dossier `discord-bot/`)** :
+
+```bash
+cd discord-bot
+
+# 1. Initialise l'app Fly.io (utilise le fly.toml existant)
+flyctl launch --no-deploy --copy-config --name nexbet-bot --region cdg
+
+# 2. Injecte le bot token en secret (NE jamais commit en clair)
+flyctl secrets set DISCORD_BOT_TOKEN=ton_nouveau_token_ici
+
+# 3. Deploy
+flyctl deploy
+
+# 4. Vérifie les logs
+flyctl logs
+```
+
+Tu dois voir : `Connecté en tant que NEXBET Bot#XXXX`.
+
+**Ressources free tier** : 3 VMs shared-cpu-1x 256MB. Le bot utilise ~80MB. Largement dans la marge.
+
+**Commands utiles** :
+- `flyctl status` — état du bot
+- `flyctl logs` — logs en live
+- `flyctl secrets list` — vars d'env
+- `flyctl deploy` — redéployer après modif code (git push n'auto-deploy pas)
+- `flyctl ssh console` — shell dans la VM
+
+#### Option B — Self-host sur ton Mac (fallback no-CB)
+
+Si tu ne veux pas créer de compte Fly.io, tu peux faire tourner le bot
+directement sur ton Mac via `tmux` (persiste si tu fermes le terminal) :
+
 ```bash
 git clone https://github.com/CronoBots/PRONOSTICS.git
 cd PRONOSTICS/discord-bot
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-# Setup systemd ou pm2 ou tmux pour 24/7
+
+# Crée .env avec ton bot token
+cp .env.example .env
+# Édite .env : remplis DISCORD_BOT_TOKEN
+
+# Lance dans tmux (survit à la fermeture du terminal)
+brew install tmux  # si pas installé
+tmux new -s nexbet-bot
+python bot.py
+
+# Détacher tmux : Ctrl+B puis D
+# Réattacher plus tard : tmux attach -t nexbet-bot
+# Stopper : tmux kill-session -t nexbet-bot
 ```
+
+⚠️ **Le Mac doit rester allumé et connecté à internet**. Si tu le mets
+en veille, le bot se déconnecte.
 
 #### Option C — Replit (free tier, mais doit être pingé pour rester actif)
 1. Importer le repo
