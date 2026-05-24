@@ -1,4 +1,4 @@
-# NΞXBΞT — Base de connaissances (v4.2)
+# NΞXBΞT — Base de connaissances (v4.3)
 
 > Mémoire long terme de l'agent. Mis à jour après chaque pick résolu
 > (paper ou réel). L'agent DOIT lire ce fichier au début de chaque
@@ -12,6 +12,7 @@
 | **v4.0** | 23/05/2026 ~14h30 | Pivot recap-only, EV strict ≥ +2%, suppression Tier FLOOR / F1-bis / bonus PC / malus sharp, paper trading 30 jours. Toutes les règles overfit (AB-6, F1-bis Branches A/B) déclassées EXPERIMENTAL |
 | **v4.1** | 23/05/2026 ~17h | Hotfix F4 : 1 quanti + 3 convergentes (au lieu de 3 quanti), dédup éditeur (N articles même domaine = 1 source), snippet WebSearch quanti accepté, w_book = 2 fixe (pas adaptatif) |
 | **v4.2** | 24/05/2026 | Dual artefact obligatoire : trace technique (`decisions/<date>.md`) + rapport user narratif (sport/compétition explicites, bio joueurs, langage accessible, sans jargon proba_shrunk/F1-F6/AB-X). Interdit citer "agrégateur snippet" sans composition explicite |
+| **v4.3** | 24/05/2026 matin | **Recadrage AB-1** : blocant uniquement sur tournois warm-up ATP 250/500 à J-2/J-1 d'un GS, **PAS** sur les GS eux-mêmes (top-10 ATP analysables normalement à RG R1, Wimbledon R1 etc.). **F1 combo** : jambes 1.20-1.50 (+0.05), total 1.60-2.50 (+0.30) pour permettre triples combinés de favoris écrasants. Question user "pourquoi écarter les top-10 ?" légitime — overgeneralisation v4.0 corrigée. |
 
 ---
 
@@ -97,18 +98,38 @@ Si non : itération v4.x ou prolongation paper.
 
 ## 📌 Anti-bias rules — BLOCANTS v4 (rejet automatique)
 
-### AB-1 : Top-10 ATP en J-2/J-1 avant Grand Slam
-**Statut v4** : ✅ ACTIF blocking
+### AB-1 : Top-10 ATP en tournoi de PRÉPARATION à J-2/J-1 d'un GS (RECADRÉ v4.3)
+**Statut v4.3** : ✅ ACTIF blocking (portée réduite)
 **Validé le** : 22/05/2026 (Ruud loss Geneva SF, 2 jours avant Roland Garros)
-**Description** : un top joueur ATP en SF/finale d'un tournoi warm-up
-(250/500) juste avant un Grand Slam économise systématiquement ses
-forces — load cardio moyen 80% vs 95% en condition normale.
-**Action** : rejet automatique de tout pari sur un top-10 ATP ≤ 48h
-avant un GS, sauf si le joueur est explicitement éliminé de la
-préparation GS.
-**Note v4** : la théorie ATP/GS est solide même si n=1 — promotion à
-blocking justifiée car le mécanisme est documenté (load management,
-prize structure GS vs ATP 250). À ré-évaluer après ≥ 3 cas.
+**Recadré le** : 24/05/2026 matin (question légitime user "pourquoi écarter top-10 partout ?")
+
+**Description** : un top-10 ATP en SF/finale d'un **tournoi warm-up
+(ATP 250/500)** à J-2/J-1 d'un Grand Chelem économise systématiquement
+ses forces — load cardio moyen 80% vs 95% en condition normale.
+Le mécanisme est documenté économiquement : prize money + points ATP ×5
+au GS, le warm-up est secondaire.
+
+**Action — RECADRÉE v4.3** :
+- 🚨 **BLOCANT** : top-10 ATP dans un **tournoi de préparation ATP
+  250/500** à J-2/J-1 d'un GS proche. Ex : Ruud à Geneva 22/05 (RG le 24/05),
+  Sinner à Hambourg J-1 US Open, Alcaraz à Halle J-1 Wimbledon, etc.
+- ✅ **NON BLOCANT** : top-10 ATP **dans le GS lui-même** (R1/R2/R3
+  etc.). Au contraire — c'est leur priorité absolue, ils jouent à fond.
+  Ex : Djokovic vs Mpetshi Perricard à RG R1, Sinner à RG R3, Zverev
+  finale RG, etc. → tous analysables normalement par F1-F6.
+- ⚠️ **Zone grise** : top-10 dans un Masters 1000 à J-7/J-5 d'un GS →
+  documenter en trace mais ne pas blocking automatiquement (load
+  management possible mais pas systématique).
+
+**Pourquoi le recadrage v4.3** :
+La règle initiale ("≤ 48h avant un GS") était overgeneralisation sur
+n=1. Le pattern réel était "tournoi warm-up secondaire avant GS prime"
+— pas le GS lui-même. Bloquer Djokovic à RG R1 alors qu'il est grand
+favori cote 1.10 contre un wildcard #200 ATP était absurde.
+
+**Note v4.3** : la théorie load management ATP→GS reste solide. Le
+recadrage clarifie le contexte d'application. À ré-évaluer après ≥ 3
+cas dans le cadre recadré.
 
 ### AB-2 : Pari sur le perdant d'une série playoffs déjà à 3-1
 **Statut v4** : ✅ ACTIF blocking

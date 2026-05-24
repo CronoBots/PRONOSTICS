@@ -1,5 +1,11 @@
-# NΞXBΞT — Procédure obligatoire (v4.2 — Recap-only + Narratif user-first)
+# NΞXBΞT — Procédure obligatoire (v4.3 — Recap-only + Narratif + AB-1 recadré)
 
+> **v4.3 (24/05/2026 matin)** : AB-1 recadré (blocant uniquement warm-up
+> ATP 250/500 avant GS, PAS le GS lui-même). F1 combo élargi : jambes
+> 1.20-1.50, total 1.60-2.50. **Recherche active de combinés** quand
+> jambes "clean" (favoris écrasants indépendants). Cf. `learnings.md`
+> section AB-1 v4.3 + `criteria.md` section F1.
+>
 > **v4.2 (24/05/2026)** : dual artefact obligatoire à chaque run — trace
 > technique (`decisions/<date>.md`) + rapport user narratif (sport et
 > compétition explicites, bio joueurs, langage accessible, sans jargon).

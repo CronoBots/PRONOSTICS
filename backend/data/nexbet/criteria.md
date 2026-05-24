@@ -1,7 +1,11 @@
-# NΞXBΞT — Critères de filtrage (v4.2 — Recap-only + Narratif)
+# NΞXBΞT — Critères de filtrage (v4.3 — Recap-only + Narratif + AB-1 recadré)
 
+> **v4.3 (24/05/2026 matin)** : recadrage AB-1 — désormais BLOCANT
+> uniquement sur tournois warm-up ATP 250/500 à J-2/J-1 d'un GS, **PAS**
+> sur les GS eux-mêmes. La règle initiale (n=1 Ruud à Geneva) était trop
+> large. Extension F1 combo jambe individuelle 1.20-1.50.
 > **v4.2 (24/05/2026)** : dual artefact obligatoire — trace technique +
-> rapport user narratif. Critères filtrage F1-F6 inchangés depuis v4.1.
+> rapport user narratif.
 > **v4.0 (23/05/2026)** : suppression des tiers PREMIUM/STANDARD/FLOOR,
 > suppression de F1-bis Playoff Mode et BOOST MODE. Méthodologie
 > simplifiée, EV minimum strict +2%, mode paper trading 30 jours.
@@ -11,10 +15,11 @@
 
 ### F1 — Cote
 - **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
-- **Combiné 2 jambes** : cote totale 1.60 – 2.20 (avec OU sans boost
-  bwin — pas d'élargissement à 2.50)
-- **Combiné jambe individuelle** : 1.20 – 1.45 (proba implicite
-  0.69 – 0.83 par jambe)
+- **Combiné 2-3 jambes** : cote totale 1.60 – 2.50 (avec OU sans boost
+  bwin — élargie de 2.20 à 2.50 en v4.3 pour permettre les triples
+  combinés de favoris écrasants)
+- **Combiné jambe individuelle** : 1.20 – 1.50 (proba implicite
+  0.67 – 0.83 par jambe) — **élargi en v4.3** (était 1.20-1.45)
 - **F1-bis SUPPRIMÉ** (Playoff Mode 2.00-2.50 supprimé — basé sur n=1
   Spurs + un faux outcome Knicks G3 confondu avec G2)
 
