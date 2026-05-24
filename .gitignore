@@ -17,6 +17,7 @@ env/
 .env.local
 .env.*.local
 !.env.example
+discord-bot/.env
 
 # Données
 backend/data/*.db
