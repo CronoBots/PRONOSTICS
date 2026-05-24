@@ -162,8 +162,9 @@ discord-bot/
 │   └── nexbet_data.py  # Fetch GitHub raw avec cache 5 min
 ├── requirements.txt    # discord.py, dotenv, aiohttp
 ├── .env.example        # Template (à copier en .env)
-├── Procfile            # Railway worker
-└── runtime.txt         # Python 3.12 (pour Heroku-like)
+├── Dockerfile          # Build image Fly.io
+├── fly.toml            # Config Fly.io (region cdg, VM 256MB)
+└── .dockerignore       # Exclusions build Docker
 ```
 
 ## 🔮 Roadmap v2
