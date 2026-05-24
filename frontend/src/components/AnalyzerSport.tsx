@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { CHART_COLORS } from "@/lib/chartColors";
 import { statsBySport } from "@/lib/stats";
 import { HistoryPick } from "@/lib/types";
 
@@ -17,7 +18,7 @@ interface Props {
 }
 
 const TOOLTIP_STYLE = {
-  background: "#14172c",
+  background: CHART_COLORS.bg,
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: 8,
   fontSize: 12,
@@ -116,7 +117,7 @@ export function AnalyzerSport({ picks }: Props) {
               />
               <Bar dataKey="profit" radius={[4, 4, 0, 0]}>
                 {rows.map((r) => (
-                  <Cell key={r.sport} fill={r.profit >= 0 ? "#10d9a3" : "#ff4d6d"} />
+                  <Cell key={r.sport} fill={r.profit >= 0 ? CHART_COLORS.positive : CHART_COLORS.negative} />
                 ))}
               </Bar>
             </BarChart>
@@ -154,8 +155,8 @@ export function AnalyzerSport({ picks }: Props) {
               />
               <Bar dataKey="success_rate" radius={[4, 4, 0, 0]}>
                 {successRows.map((r) => {
-                  let color = "#10d9a3";
-                  if (r.success_rate < 50) color = "#ff4d6d";
+                  let color: string = CHART_COLORS.positive;
+                  if (r.success_rate < 50) color = CHART_COLORS.negative;
                   else if (r.success_rate < 70) color = "#fcd34d";
                   return <Cell key={r.sport} fill={color} />;
                 })}

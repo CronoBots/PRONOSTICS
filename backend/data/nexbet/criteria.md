@@ -1,9 +1,11 @@
-# NΞXBΞT — Critères de filtrage (v4.0 — Recap-only)
+# NΞXBΞT — Critères de filtrage (v4.2 — Recap-only + Narratif)
 
-> **Refonte v4.0 du 23/05/2026** : suppression des tiers PREMIUM/STANDARD/
-> FLOOR, suppression de F1-bis Playoff Mode et BOOST MODE. Méthodologie
-> simplifiée, EV minimum strict +2%, mode paper trading 30 jours. L'agent
-> présente, le user décide.
+> **v4.2 (24/05/2026)** : dual artefact obligatoire — trace technique +
+> rapport user narratif. Critères filtrage F1-F6 inchangés depuis v4.1.
+> **v4.0 (23/05/2026)** : suppression des tiers PREMIUM/STANDARD/FLOOR,
+> suppression de F1-bis Playoff Mode et BOOST MODE. Méthodologie
+> simplifiée, EV minimum strict +2%, mode paper trading 30 jours.
+> L'agent présente, le user décide.
 
 ## Filtres durs (NON négociables)
 
@@ -90,6 +92,33 @@
   citer URL en trace mais ignorer pour calcul.
 - **Sources INACCESSIBLES** (403 confirmé) — à ne plus citer comme
   primaires : ATP/WTA officiels, Sofascore, TennisTemple
+
+### F4 — Risques corrélation modèle (NOUVEAU v4.2)
+
+Si 2 sources donnent **proba EXACTEMENT identique** (ex : Dimers 64% et
+Stats Insider 64% sur le même match), suspecter modèle partagé ou
+cross-citation. **Décision défensive** : compter 1× dans `n_eff` (au lieu
+de 2×). Cf. J1 24/05 — Kecmanović analysé avec n_eff=1 défensif.
+
+Si snippet "agrégateur" générique (ex : "consensus betting sites 65%"),
+exiger **composition explicite** (d'où vient ce 65% ?). Si la source
+originaire est ambiguë → **F4 KO** sur ce candidat. Pas de quanti
+acceptée sans domaine identifiable.
+
+### F4 — Seuil EV ≥ +2% : comportement aux limites
+
+Un pick avec EV exactement +2.0% à +2.5% est **techniquement
+ACCEPTABLE** (🟡) selon la formule. MAIS la marge d'erreur en
+estimation `proba_shrunk` (~±1-2%) suggère un edge réel très faible.
+
+**Guidance pratique** :
+- EV +2.0% à +2.5% : 🟡 ACCEPTABLE mais **réduire mise de 50%** (1,50 €
+  au lieu de 3,00 € en paper)
+- Documenter dans rationale : "Borderline, edge marginal — sensible à
+  l'erreur d'estimation"
+- User peut skip sans regret
+
+Exemple J1 (24/05) : Međedović EV +2.0% pile → 🟡 avec caveat.
 - Si < 1 quanti OU < 3 convergentes (après dédup éditeur) → **F4 KO**
 
 ### F5 — Kickoff dans la fenêtre

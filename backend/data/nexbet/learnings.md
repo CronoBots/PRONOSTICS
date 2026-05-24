@@ -1,13 +1,17 @@
-# NΞXBΞT — Base de connaissances (v4.0)
+# NΞXBΞT — Base de connaissances (v4.2)
 
 > Mémoire long terme de l'agent. Mis à jour après chaque pick résolu
 > (paper ou réel). L'agent DOIT lire ce fichier au début de chaque
 > analyse.
 
-> **Refonte v4.0 du 23/05/2026** : purge des règles overfit (AB-6,
-> F1-bis Branches A/B). Toutes les règles ajoutées sur n=1 sont
-> marquées **EXPERIMENTAL** et ne sont plus blocking. Mode paper
-> trading 30 jours actif.
+## 🔄 Versions — changelog synthétique
+
+| Version | Date | Changements clés |
+|---|---|---|
+| **v3.3** | jusqu'au 23/05/2026 ~14h | Tier FLOOR (EV ≥ -2%), F1-bis Playoff Mode, bonus PC +0.02, malus sharp -0.03, auto-validation pick unique. **ARCHIVÉ** (cf. `archive/backtest_2026-05-23_v3-calibration.md`) |
+| **v4.0** | 23/05/2026 ~14h30 | Pivot recap-only, EV strict ≥ +2%, suppression Tier FLOOR / F1-bis / bonus PC / malus sharp, paper trading 30 jours. Toutes les règles overfit (AB-6, F1-bis Branches A/B) déclassées EXPERIMENTAL |
+| **v4.1** | 23/05/2026 ~17h | Hotfix F4 : 1 quanti + 3 convergentes (au lieu de 3 quanti), dédup éditeur (N articles même domaine = 1 source), snippet WebSearch quanti accepté, w_book = 2 fixe (pas adaptatif) |
+| **v4.2** | 24/05/2026 | Dual artefact obligatoire : trace technique (`decisions/<date>.md`) + rapport user narratif (sport/compétition explicites, bio joueurs, langage accessible, sans jargon proba_shrunk/F1-F6/AB-X). Interdit citer "agrégateur snippet" sans composition explicite |
 
 ---
 
