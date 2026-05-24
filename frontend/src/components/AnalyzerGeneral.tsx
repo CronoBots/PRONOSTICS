@@ -1,5 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
+import { formatSignedAmount as fmtSigned } from "@/lib/format";
 import { useI18n } from "@/lib/i18n";
 import {
   breakdownByState,
@@ -10,11 +11,6 @@ import { HistoryPick } from "@/lib/types";
 
 interface Props {
   picks: HistoryPick[];
-}
-
-function fmtSigned(n: number, suffix = " €") {
-  const sign = n > 0 ? "+" : "";
-  return `${sign}${n.toFixed(2)}${suffix}`;
 }
 
 function BigStatCard({

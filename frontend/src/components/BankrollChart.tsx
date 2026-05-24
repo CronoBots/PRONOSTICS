@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { CHART_COLORS } from "@/lib/chartColors";
 import { localeForLang, useI18n } from "@/lib/i18n";
 import { HistoryPick } from "@/lib/types";
 
@@ -51,7 +52,7 @@ function PillLabel(props: {
         dominantBaseline="middle"
         fontSize={10}
         fontWeight={700}
-        fill="#152082"
+        fill={CHART_COLORS.brandDark}
       >
         {text}
       </text>
@@ -298,7 +299,7 @@ export function BankrollChart({
   const lastVal = data[data.length - 1]?.value ?? 0;
   const baseline = mode === "capital" ? startingBankroll : 0;
   const positive = lastVal >= baseline;
-  const color = positive ? "#10d9a3" : "#ff4d6d";
+  const color = positive ? CHART_COLORS.positive : CHART_COLORS.negative;
 
   return (
     <div className="h-64 md:h-80 w-full">
@@ -325,7 +326,7 @@ export function BankrollChart({
           />
           <Tooltip
             contentStyle={{
-              background: "#14172c",
+              background: CHART_COLORS.bg,
               border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: 8,
               fontSize: 12,

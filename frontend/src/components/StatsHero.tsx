@@ -6,6 +6,7 @@
 import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
 
 import { AnimatedNumber } from "@/components/AnimatedNumber";
+import { CHART_COLORS } from "@/lib/chartColors";
 import { useI18n } from "@/lib/i18n";
 import { HistoryPick, HistoryStats } from "@/lib/types";
 
@@ -25,7 +26,7 @@ export function StatsHero({ picks, stats }: Props) {
   }
 
   const bankrollIsPositive = stats.current_bankroll >= stats.starting_bankroll;
-  const trendColor = bankrollIsPositive ? "#10d9a3" : "#ff4d6d";
+  const trendColor = bankrollIsPositive ? CHART_COLORS.positive : CHART_COLORS.negative;
   const multiplier = stats.current_bankroll / stats.starting_bankroll;
 
   return (
