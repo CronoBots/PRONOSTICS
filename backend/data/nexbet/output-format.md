@@ -26,8 +26,35 @@ inchangé depuis v4.1, contient :
    - Sources : URLs complètes + quotes textuelles si extraites via snippet
    - Anti-bias : statut AB-1/2/4/5 + EXPERIMENTAL AB-3/PC
    - Verdict 🟢/🟡/🟠/🔴 + raison technique
-4. **Auto-checks v4.1** : checklist validée
+4. **Auto-checks v4.2** : checklist validée (cf. nexbet-analyst.md)
 5. **Décision user** + sources consultées + anomalies/doutes
+
+### Template snippet WebSearch obligatoire (v4.1, formalisé v4.2)
+
+Quand une source quantitative est lue via snippet (pas WebFetch direct),
+la trace DOIT reproduire le snippet **verbatim** entre guillemets :
+
+```markdown
+**[Nom source]** ([URL]) cite **via snippet** :
+> "Quote textuelle exacte du snippet, incluant le % chiffré"
+
+→ proba modèle = 0.XX (compte 1× quanti dans n_eff)
+```
+
+Exemple réel J1 (24/05/2026) :
+
+```markdown
+**Stats Insider** (statsinsider.com.au) cite **via snippet** :
+> "One predictive analytics model gives Kecmanovic a 64% chance to advance past R1"
+
+→ proba modèle = 0.64
+```
+
+**Sans snippet textuel reproduit** → source rejetée, F4 KO sur ce
+candidat. Pas de quanti acceptée sans traçabilité.
+
+**Source agrégateur anonyme** (ex : "consensus 65%" sans composition) →
+rejet F4 sauf si domaine identifiable explicitement.
 
 Voir `decisions/2026-05-24.md` (J1 cycle paper) pour le template de
 référence.

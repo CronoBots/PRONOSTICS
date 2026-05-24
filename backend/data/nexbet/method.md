@@ -1,10 +1,20 @@
-# NΞXBΞT — Procédure obligatoire (v4.0 — Recap-only mode)
+# NΞXBΞT — Procédure obligatoire (v4.2 — Recap-only + Narratif user-first)
 
-> **Pivot v4.0 du 23/05/2026** : l'agent ne décide plus. Il cartographie,
+> **v4.2 (24/05/2026)** : dual artefact obligatoire à chaque run — trace
+> technique (`decisions/<date>.md`) + rapport user narratif (sport et
+> compétition explicites, bio joueurs, langage accessible, sans jargon).
+>
+> **Pivot v4.0 (23/05/2026)** : l'agent ne décide plus. Il cartographie,
 > analyse et présente un **TOP 3** chiffré au user, qui tranche. Aucun
 > pick automatique n'est inséré dans `picks_data.py`. Mode **paper
 > trading 30 jours** actif jusqu'au 23/06/2026. Aucun bet réel pendant
 > cette période — toutes les positions sont théoriques.
+>
+> ⚠️ **Pipeline backend dégradé (mai 2026)** : The Odds API quota
+> épuisé (498/500). La méthodologie v4.1+ s'appuie 100% sur WebSearch
+> sur les sources whitelistées (cf. `sources_catalogue.md`) plutôt que
+> sur l'API quantitative. Les fichiers `candidates/<date>.csv` générés
+> par `daily_candidates.py` peuvent être partiels ou vides.
 
 ## ⚡ Règles d'efficacité (conservées de v3)
 

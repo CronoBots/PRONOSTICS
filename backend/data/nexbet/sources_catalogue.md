@@ -1,9 +1,17 @@
-# Catalogue des sources NΞXBΞT (v4.0 — Whitelist accessibilité)
+# Catalogue des sources NΞXBΞT (v4.2 — Whitelist accessibilité)
 
-> **Refonte v4.0 du 23/05/2026** : reclassement des sources par
+> **v4.2 (24/05/2026)** : règle dédup corrélation modèle ajoutée (cf.
+> bas de fichier). Pas de changement sur la whitelist elle-même.
+>
+> **Refonte v4.0 (23/05/2026)** : reclassement des sources par
 > **accessibilité réelle** testée via WebFetch + WebSearch. La hiérarchie
 > Tier 1/2/3 de v3 (basée sur la qualité théorique) est remplacée par
 > une matrice **ACCESSIBLE / 403-FORBIDDEN / SNIPPET-ONLY**.
+>
+> ⚠️ **The Odds API** : quota free tier épuisé (498/500 fin mai 2026).
+> Pipeline backend `daily_candidates.py` peut générer des CSV partiels
+> ou vides. L'agent s'appuie sur WebSearch whitelist plutôt que sur
+> l'API quantitative.
 
 ## 🟢 ACCESSIBLE — Sources primaires v4
 
@@ -172,6 +180,34 @@ Pour chaque source :
 Au moins **3 sources accessibles** avec proba ou pick explicite. Sinon
 F4 KO, candidat rejeté.
 
+## Risques corrélation modèle (v4.2)
+
+Quand 2 sources whitelistées donnent une proba **exactement identique**
+sur un même match (ex : Dimers 64% et Stats Insider 64% sur Kecmanović
+au J1 24/05), suspecter un **modèle partagé** ou cross-citation :
+- Décision défensive : compter **1× dans `n_eff`** (pas 2×)
+- Documenter dans la trace : "Dédup défensive — Dimers 64% = Stats
+  Insider 64% (suspect modèle partagé)"
+- Médiane interne sur les % avant l'inclusion (devrait être triviale si
+  identiques)
+
+Domaines suspects d'utiliser un modèle commun (à surveiller) :
+- Dimers + Stats Insider (parfois alignés au %)
+- Lineups + Covers (cross-pollination probable sur NHL/NBA)
+- FanDuel Research + Action Network (data partagée probable)
+
+Quand le doute persiste, **n_eff = nombre de modèles distincts
+estimés**, pas nombre de domaines.
+
+## Snippet "agrégateur" anonyme — INTERDIT (v4.2)
+
+Un snippet du type "consensus betting sites give X 65%" sans
+composition explicite n'est PAS une source quantitative valide :
+- Pas de domaine identifiable → F4 KO sur ce candidat
+- Exiger la liste des sources composantes ou rejeter
+- Cf. J1 (24/05) — Međedović "aggregator snippet 65%" sans provenance
+  → à éviter dans les runs futurs
+
 ## Health-check des sources (mensuel)
 
 Tous les mois, tester un WebFetch sur 3 URLs de chaque catégorie 🟢 pour
@@ -181,3 +217,4 @@ détecter les régressions :
 - Documenter les changements dans ce fichier
 
 Date du dernier health-check : **2026-05-23**.
+Prochain health-check programmé : **2026-06-23** (fin cycle paper).
