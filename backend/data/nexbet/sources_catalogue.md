@@ -1,19 +1,50 @@
-# Catalogue des sources NΞXBΞT (v4.2 — Whitelist accessibilité)
+# Catalogue des sources NΞXBΞT (v4.4 — API-Sports intégrée)
 
-> **v4.2 (24/05/2026)** : règle dédup corrélation modèle ajoutée (cf.
-> bas de fichier). Pas de changement sur la whitelist elle-même.
+> **v4.4 (24/05/2026 soir)** : intégration **API-Sports** (api-sports.io)
+> comme source quantitative officielle pour foot/basket/hockey/baseball.
+> API officielle, légalement clean, tarif raisonnable. Tennis reste sur
+> WebSearch whitelist.
 >
-> **Refonte v4.0 (23/05/2026)** : reclassement des sources par
-> **accessibilité réelle** testée via WebFetch + WebSearch. La hiérarchie
-> Tier 1/2/3 de v3 (basée sur la qualité théorique) est remplacée par
-> une matrice **ACCESSIBLE / 403-FORBIDDEN / SNIPPET-ONLY**.
->
-> ⚠️ **The Odds API** : quota free tier épuisé (498/500 fin mai 2026).
-> Pipeline backend `daily_candidates.py` peut générer des CSV partiels
-> ou vides. L'agent s'appuie sur WebSearch whitelist plutôt que sur
-> l'API quantitative.
+> **v4.2 (24/05/2026)** : règle dédup corrélation modèle ajoutée.
+> **Refonte v4.0 (23/05/2026)** : reclassement par accessibilité réelle.
 
-## 🟢 ACCESSIBLE — Sources primaires v4
+## 🟢 ACCESSIBLE — Source officielle API (NOUVEAU v4.4)
+
+### API-Sports (api-sports.io) — Mode direct
+
+**Statut** : 🟢 ACCESSIBLE — clé `API_SPORTS_KEY` configurée
+**Type** : API JSON officielle (légalement clean, TOS clairs)
+**Authentification** : header `x-apisports-key` (clé en variable d'env)
+**Doc** : https://www.api-sports.io/documentation
+
+**Couverture** :
+- ⚽ Football (Premier League, Bundesliga, Liga, Serie A, Ligue 1, CL, EL, EFL, Coupe de France, etc.)
+- 🏀 Basketball (NBA + Euroleague + NCAA)
+- 🏒 Hockey (NHL + KHL)
+- ⚾ Baseball (MLB + KBO + NPB)
+- 🏈 NFL, 🏎 F1, 🏉 Rugby, 🏐 Volley, 🤝 Handball, 🥊 MMA
+
+**Endpoints clés pour NEXBET** :
+- `fixtures` : schedule par sport + date (cartographie auto)
+- `odds` : cotes multi-bookmakers (Pinnacle, Bet365, Bwin, DK, etc.)
+- `predictions` (foot only) : modèle API-Sports → **source quanti #1**
+- `fixtures/headtohead` : H2H structuré (10 derniers matchs)
+- `fixtures/lineups` : compositions/blessures (foot)
+- `injuries` : blessures actuelles (foot)
+- `teams/statistics` : stats équipe par saison
+
+**Limites du plan free** :
+- 100 req/jour par sport
+- Plan Pro $19/mois par sport, ou bundle ~$30-50/mois
+
+**Wrapper Python** : `backend/scripts/sportsapi.py`
+**Test rapide** : `python backend/scripts/test_sportsapi.py`
+
+⚠️ **TENNIS NON COUVERT par API-Sports.** Pour ATP/WTA/GS, continuer
+avec : WebSearch whitelist (Tennis Tonic, Dimers, LWOS, Stats Insider)
++ SofaScore API optionnel (cf section 🟡 SNIPPET-ONLY).
+
+## 🟢 ACCESSIBLE — Sources primaires v4 (whitelist WebSearch)
 
 Ces sources passent les requêtes WebFetch sans 403 ET fournissent du
 contenu lisible. À utiliser en priorité comme source pour `model_proba`.

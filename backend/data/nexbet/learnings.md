@@ -13,6 +13,7 @@
 | **v4.1** | 23/05/2026 ~17h | Hotfix F4 : 1 quanti + 3 convergentes (au lieu de 3 quanti), dédup éditeur (N articles même domaine = 1 source), snippet WebSearch quanti accepté, w_book = 2 fixe (pas adaptatif) |
 | **v4.2** | 24/05/2026 | Dual artefact obligatoire : trace technique (`decisions/<date>.md`) + rapport user narratif (sport/compétition explicites, bio joueurs, langage accessible, sans jargon proba_shrunk/F1-F6/AB-X). Interdit citer "agrégateur snippet" sans composition explicite |
 | **v4.3** | 24/05/2026 matin | **Recadrage AB-1** : blocant uniquement sur tournois warm-up ATP 250/500 à J-2/J-1 d'un GS, **PAS** sur les GS eux-mêmes (top-10 ATP analysables normalement à RG R1, Wimbledon R1 etc.). **F1 combo** : jambes 1.20-1.50 (+0.05), total 1.60-2.50 (+0.30) pour permettre triples combinés de favoris écrasants. Question user "pourquoi écarter les top-10 ?" légitime — overgeneralisation v4.0 corrigée. |
+| **v4.4** | 24/05/2026 soir | **Intégration API-Sports** (api-sports.io) comme source quantitative officielle pour foot/basket/hockey/baseball. Wrapper Python `backend/scripts/sportsapi.py` avec 10 endpoints clés. Predictions API-Sports = nouvelle source quanti #1 pour foot (= n_eff +1 dans calculs proba_shrunk). Tennis reste sur WebSearch whitelist (API-Sports ne couvre pas tennis). Clé en variable d'env `API_SPORTS_KEY`. |
 
 ---
 
