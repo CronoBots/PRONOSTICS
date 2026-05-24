@@ -1,0 +1,26 @@
+# Configuration Fly.io pour le bot Discord NΞXBΞT.
+# - Région CDG (Paris) → latence optimale depuis Belgique
+# - VM shared-cpu-1x 256MB → dans le free tier (3 VMs gratuites)
+# - Pas de [http_service] : bot websocket sortant uniquement
+# - Auto-restart on crash, always running (pas de scale-to-zero)
+
+app = "nexbet-bot"
+primary_region = "cdg"
+
+[build]
+
+[env]
+  PYTHONUNBUFFERED = "1"
+  # Note : DISCORD_BOT_TOKEN injecté via `flyctl secrets set DISCORD_BOT_TOKEN=...`
+  # (jamais en clair ici)
+  DISCORD_APP_ID = "1508193166635958332"
+  DISCORD_PUBLIC_KEY = "63b44e092bff944881c32565701bbe800861578adb5593cdf6981165c17f53a1"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[deploy]
+  strategy = "immediate"
