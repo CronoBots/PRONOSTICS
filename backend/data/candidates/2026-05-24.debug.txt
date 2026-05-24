@@ -1,0 +1,43 @@
+=== Daily candidates debug — 2026-05-24 ===
+Run timestamp UTC : 2026-05-24T07:45:47.591075+00:00
+
+--- Odds API ---
+Status /sports endpoint         : 200
+Quota used / remaining          : 498 / 2
+Sports actifs trouvés           : 57
+Échantillon sports              : americanfootball_ncaaf, americanfootball_nfl, americanfootball_nfl_preseason, americanfootball_ufl, aussierules_afl, baseball_kbo, baseball_mlb, baseball_ncaa
+Events retournés (après filtre) : 0
+
+--- Per-sport detail (top 15) ---
+  americanfootball_ncaaf         : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  americanfootball_nfl           : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  americanfootball_nfl_preseason : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  americanfootball_ufl           : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  aussierules_afl                : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  baseball_kbo                   : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  baseball_mlb                   : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  baseball_ncaa                  : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  baseball_npb                   : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  basketball_euroleague          : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  basketball_nba                 : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  basketball_wnba                : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  boxing_boxing                  : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  cricket_ipl                    : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+  cricket_t20_blast              : 0/0 kept | status=error err=Client error '401 Unauthorized' for url 'https://a
+
+--- Bookmakers vus dans events retenus (top 15) ---
+
+--- Sample 5 premiers events Odds API ---
+
+--- Polymarket ---
+Picks bruts retournés          : 5
+Picks dans fenêtre 36h        : 0
+Sample 3 premiers picks Polymarket :
+
+--- Résultat final ---
+Candidats retenus dans CSV     : 0
+→ AUCUN candidat retenu. Causes possibles :
+  1. Quota Odds API épuisé (vérifier x-requests-remaining dans logs)
+  2. Tous les events ont < 2 bookmakers (illiquide)
+  3. Toutes les cotes hors range 1.10-2.50
+  4. Aucun match dans la fenêtre kickoff (filtre trop agressif)
