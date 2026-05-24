@@ -1,106 +1,117 @@
-# Watchlist 2026-05-24 (Dimanche) — Run matin v4.2 actualisé
+# Watchlist 2026-05-24 (Dimanche) — Re-analyse v4.3
 
-> **Run matin Belgique** — méthodologie v4.2 (dual artefact + dédup
-> corrélation modèle + anti-agrégateur). Bankroll virtuel : **100,00 €**.
+> **Re-analyse v4.3** : AB-1 recadré (top-10 ATP au GS = analysables).
+> F1 combo élargi (jambes 1.20-1.50, total 1.60-2.50).
+> Recherche active de combinés clean (favoris écrasants indépendants).
+> Bankroll virtuel : **100,00 €**. J1 cycle paper.
+> Heure analyse : 11h25 UTC (13h25 Belgique).
 > Pipeline backend dégradé → 100% WebSearch whitelist v4.2.
-> Note : un premier run a été effectué à minuit ; cette analyse est
-> indépendante et remplace celle de minuit.
+>
+> Note : cette watchlist remplace celle du run matin v4.2 (qui écartait
+> à tort tous les top-10 ATP RG R1 via l'ancien AB-1 trop large).
 
 ## Contexte journée
 
-- **Roland Garros R1 — Day 1** : premier jour Grand Chelem terre battue
-- **NBA WCF G4** : Thunder @ Spurs (OKC mène 2-1, Spurs home dimanche soir)
-- **NBA ECF** : Knicks vs Cavs 3-0 — pas de match dimanche (G4 lundi 25/05)
-- **NHL WCF G3** : Avalanche @ Vegas (Vegas mène 2-0, retour à T-Mobile)
-- **NHL ECF** : Hurricanes vs Canadiens — pas de match dimanche (G3 lundi)
-- **EPL Final Day** (J38) : 10 matchs simultanés à 16h UK
-- **EFL League One Playoff Final** : Stockport vs Bolton @ Wembley 13h UK
+- **Roland Garros R1 — Day 1** : premier dimanche GS terre battue,
+  14 courts simultanés. **Top-10 ATP analysables** (AB-1 v4.3 recadré).
+- **NBA WCF G4** : Thunder @ Spurs (OKC mène 2-1, Spurs home dimanche soir
+  US → 01h10 Belgique lundi)
+- **NBA ECF** : Knicks vs Cavs 3-0, pas de match dimanche
+- **NHL WCF G3** : Avalanche @ Vegas (Vegas mène 2-0, retour à T-Mobile,
+  21h UTC / 23h Belgique dimanche)
+- **NHL ECF G3** : Hurricanes vs Canadiens 1-1, programmé lundi 25/05
+- **EPL Final Day** (J38) : 10 matchs simultanés à 16h UK / 17h Belgique
+- **EFL Championship Final** : Hull vs Boro joué hier 23/05, retiré
 - **MLB Sunday slate** : 14 matchs étalés sur la journée
 
-## Cartographie large (20 matchs)
+## Cartographie large (18 matchs)
 
-| # | Match | Sport / Compétition | Kickoff UTC | Cote favori (book) | Coverage whitelist |
+| # | Match | Sport / Compétition | Kickoff UTC | Cote favori (snippet) | Coverage whitelist |
 |---|---|---|---|---|---|
-| 1 | Spurs vs Thunder G4 | NBA — WCF | 2026-05-25 00:00 | Spurs ~1.85 (FD home -1.5) | FanDuel, Lineups, Covers, Yahoo, OffshoreSB, SportsLine |
-| 2 | Avalanche @ Vegas G3 | NHL — WCF | 2026-05-25 00:00 | COL ML 1.69 (-144) / VGK 2.20 (+120) | Lineups, Covers, OddsShark, Sportskeeda, ESPN, SI |
-| 3 | Djokovic vs Mpetshi Perricard | Tennis — Roland Garros R1 | 2026-05-24 ~18:00 | Djokovic ~1.30 | TennisNerd, Puntodebreak |
-| 4 | Zverev vs Bonzi | Tennis — Roland Garros R1 | 2026-05-24 ~13:00 | Zverev ~1.20 | TennisNerd |
-| 5 | Fritz vs Basavareddy | Tennis — Roland Garros R1 | 2026-05-24 ~15:00 | Fritz ~1.40 | TennisNerd |
-| 6 | Wawrinka vs jeune FR | Tennis — Roland Garros R1 | 2026-05-24 | jeune FR favori | TennisNerd |
-| 7 | Monfils vs Gaston | Tennis — Roland Garros R1 | 2026-05-24 | Monfils léger fav | TennisNerd |
-| 8 | Cilic vs Kouamé | Tennis — Roland Garros R1 | 2026-05-24 | Cilic léger fav | Puntodebreak |
-| 9 | Liverpool vs Brentford | Soccer — Premier League J38 | 2026-05-24 15:00 | LIV 1.80 | Dimers, Sportsgambler, Sportskeeda, SportyTrader, Dailysports, Squawka, BetMines |
-| 10 | Manchester City vs Aston Villa | Soccer — Premier League J38 | 2026-05-24 15:00 | MCI 1.34 | Dimers, Covers, Sportsgambler, Dailysports, Sportskeeda |
-| 11 | Brighton vs Manchester United | Soccer — Premier League J38 | 2026-05-24 15:00 | BHA ~2.10 / Draw 3.20 | FanDuel, BetMGM, Dimers |
-| 12 | Crystal Palace vs Arsenal | Soccer — Premier League J38 | 2026-05-24 15:00 | ARS ~1.85 | Dailysports |
-| 13 | West Ham vs Leeds | Soccer — Premier League J38 | 2026-05-24 15:00 | WHU ~1.95 | OLBG |
-| 14 | Stockport vs Bolton | Soccer — EFL League One Playoff Final | 2026-05-24 12:00 | Pile/face (~1.90 chacun) | Sportinglife, Racing Post, MightyTips, William Hill, Squawka, Betfred, Freetips, Fanbanter |
-| 15 | Pittsburgh @ Toronto | MLB | 2026-05-24 16:15 | TOR favori | Lineups |
-| 16 | Cleveland @ Philadelphia | MLB | 2026-05-24 17:35 | PHI favori | OddsShark |
-| 17 | Dodgers @ Milwaukee | MLB | 2026-05-24 18:10 | LAD favori | FanGraphs snippets |
-| 18 | Yankees vs Rays | MLB | 2026-05-24 17:35 | NYY favori | OddsShark |
-| 19 | Mets @ Marlins | MLB | 2026-05-24 17:40 | NYM favori | Action Network |
-| 20 | Cubs vs Astros | MLB | 2026-05-24 18:20 | Pick'em | OddsShark |
+| 1 | Djokovic vs Mpetshi Perricard | Tennis — Roland Garros R1 (night) | 24/05 ~19:00 | Djokovic ~1.10 | Sportskeeda, Britwatch, LWOS, FreeTips, Dailysports, Tenngrand, TennisConnected, SportsMole |
+| 2 | Zverev vs Bonzi | Tennis — Roland Garros R1 Chatrier | 24/05 ~12:30 | Zverev -10000 (~1.01) | BleacherNation, LWOS, Tennis Tonic |
+| 3 | Fritz vs Basavareddy | Tennis — Roland Garros R1 Lenglen | 24/05 ~13:00 | Fritz -325 (~1.30) | BleacherNation, Sportytrader, CBS |
+| 4 | Khachanov vs Gea | Tennis — Roland Garros R1 Lenglen | 24/05 09:00 | Khachanov -426 (~1.22) | Dimers 82%, Stats Insider 84%, Polymarket 80%, BleacherNation, Tennis Tonic, LionTips, Protipster |
+| 5 | Fonseca vs Pavlovic | Tennis — Roland Garros R1 | 24/05 (day) | Fonseca -2500 (~1.04) | Stats Zone, BleacherNation (wrist concern) |
+| 6 | Sabalenka vs Bouzas | Tennis F — Roland Garros R1 | 24/05 (day) | Sabalenka ~1.05 | Tennis.com, Tennis Majors |
+| 7 | Gauff vs Townsend | Tennis F — Roland Garros R1 | 24/05 (day) | Gauff ~1.15 | Tennis.com |
+| 8 | Swiatek vs Jones | Tennis F — Roland Garros R1 | 24/05 (day) | Swiatek ~1.04 | Sports Interaction, Tennis.com |
+| 9 | Andreeva vs Ferro | Tennis F — Roland Garros R1 Chatrier | 24/05 (day) | Andreeva ~1.10 | Schedule confirmed |
+| 10 | Bencic vs Kraus | Tennis F — Roland Garros R1 Chatrier | 24/05 12:00 | Bencic ~1.20 | Schedule confirmed |
+| 11 | Spurs vs Thunder G4 | NBA — Conference Finals Ouest | 25/05 00:10 UTC (01h10 Belgique lundi) | Spurs -120 (~1.83) / Thunder +102 | Lineups, Yahoo, Covers, NBC, NBA.com, OddsShark, DK Network |
+| 12 | Avalanche @ Vegas G3 | NHL — Conference Final Ouest | 24/05 21:00 UTC (23h Belgique) | Vegas ~1.74 (58%) | Lineups, ESPN, NHL.com snippet |
+| 13 | Toronto vs Pittsburgh | MLB — Saison régulière | 24/05 17:30 UTC | Blue Jays -164 (~1.61) | FanDuel, Sportskeeda, PicksAndParlays |
+| 14 | Arizona vs Colorado | MLB — Saison régulière | 24/05 20:10 UTC | D-Backs -188 (~1.53), 69.4% | FanDuel |
+| 15 | West Ham vs Leeds | EPL — MW38 finale | 24/05 15:00 UTC | West Ham favori | FanDuel, OLBG, BetMGM |
+| 16 | Tottenham vs Everton | EPL — MW38 finale | 24/05 15:00 UTC | Spurs favoris | FanDuel, OLBG, BetMGM |
+| 17 | LAD vs MIL | MLB — Saison régulière | 24/05 18:10 UTC | Dodgers favoris | FanDuel |
+| 18 | SD vs SAC (A's) | MLB — Saison régulière | 24/05 20:10 UTC | Padres favoris | FanDuel |
 
-## Pré-filtrage F1-F6 + AB
+## Changement v4.3 vs v4.2 watchlist matin
+
+**Avant (v4.2 matin)** : Djokovic, Zverev, Fritz écartés en bloc via
+AB-1 trop large + F1 (cote < 1.50 sur singles).
+
+**Maintenant (v4.3)** :
+- **AB-1 recadré** : top-10 ATP au GS = NON BLOCANT. Au contraire, leurs
+  matchs R1 sont prioritaires car ils jouent à fond (priorité absolue
+  saison).
+- **F1 combo jambes 1.20-1.50** : Djokovic (~1.10) trop bas, **mais
+  Fritz (~1.30) et Khachanov (~1.22) éligibles jambe combo**.
+  Mpetshi/Bonzi/Basavareddy hors fenêtre (cote favori > 1.50 fenêtre
+  single).
+- Recherche **combinés clean** activée : 2 favoris top-15 ATP au GS R1
+  cote ~1.22 × ~1.30 = ~1.59 (sous la borne 1.60) — il faut ajouter une
+  3e jambe pour atteindre la fenêtre 1.60-2.50.
+
+## Pré-filtrage F1-F6 + AB v4.3
 
 ### Éliminations immédiates
 
 | Match | Raison | Filtre |
 |---|---|---|
-| Djokovic vs Mpetshi (R1 RG) | Cote 1.30 < 1.50 + AB-1 BLOCKING top-10 ATP J GS | F1 + AB-1 |
-| Zverev vs Bonzi (R1 RG) | Cote 1.20 < 1.50 + AB-1 BLOCKING top-10 ATP J GS | F1 + AB-1 |
-| Fritz vs Basavareddy (R1 RG) | Cote ~1.40 < 1.50 + AB-1 BLOCKING top-10 ATP J GS | F1 + AB-1 |
-| Wawrinka, Monfils, Cilic R1 | Cote favori probable < 1.50 + coverage chiffrée insuffisante | F1 + F4 |
-| Manchester City vs Villa | Cote 1.34 < 1.50 | F1 |
-| Pittsburgh @ Toronto MLB | Couverture mince + AB-5 risque trap MLB | F4 + AB-5 |
-| Cleveland @ Philadelphia, Dodgers @ Milwaukee, Yankees vs Rays | Coverage chiffrée à valider, AB-5 si ML > 2.50 underdog | F4 / AB-5 |
+| Djokovic vs Mpetshi (single) | Cote 1.10 < 1.50 (single) ET < 1.20 (combo jambe) | F1 |
+| Zverev vs Bonzi (single) | Cote 1.01 < 1.50 ET < 1.20 (combo jambe) | F1 |
+| Fonseca vs Pavlovic (single) | Cote 1.04 < 1.50, blessure poignet S1 risque | F1 + S1 |
+| Sabalenka, Swiatek, Gauff, Andreeva R1 | Cotes 1.04-1.15 < 1.20 (combo jambe) | F1 |
+| Bencic vs Kraus | Cote 1.20 limite, coverage Bencic chiffrée mince | F4 |
+| Arizona vs Colorado (MLB ML) | Cote 1.53 < bornes intéressantes singles | F1 limite, garder en back-up |
+| LAD vs MIL, SD vs A's | Coverage chiffrée trop mince | F4 |
 
-### Anti-dup (check_duplicate.py)
+### Candidats survivants pour analyse approfondie
 
-| Pick | Résultat | Action |
-|---|---|---|
-| Spurs vs Thunder | **DUPLICATE** : pické 18/05 (G1 WCF) | NOTE : G4 ≠ G1, série différente match — accepté avec warning |
-| Vegas vs Colorado | OK aucun pick récent 7j | Accepté |
-| Liverpool vs Brentford | OK | Accepté |
-| Brighton vs Manchester United | OK | Accepté |
-| Bolton vs Stockport | OK | Accepté |
-
-### Candidats finaux (top 5 à approfondir)
-
-| # | Pick envisagé | Sport | Cote indicative | Note pré-analyse |
+| # | Pick envisagé | Sport | Cote indicative | Type |
 |---|---|---|---|---|
-| C1 | **Spurs ML G4** vs Thunder | NBA WCF | ~1.85 | Home, FanDuel 56.2%, blessures Fox/Harper à vérifier |
-| C2 | **Vegas ML G3** vs Avalanche | NHL WCF | ~2.20 (+120) — HORS F1 si > 2.00 | À vérifier — possible F1 KO |
-| C3 | **Colorado ML G3** @ Vegas | NHL WCF | 1.69 | Favori road, Cale Makar OUT — risque S1 |
-| C4 | **Liverpool ML** vs Brentford | EPL J38 | ~1.80 | Anfield, modèle Dimers 60.1% — value possible |
-| C5 | **Brighton ML** vs Manchester United | EPL J38 | ~2.10 — limite F1 supérieure | Modèle ~48%, BHA Europa motiv |
-| C6 | **Stockport ou Bolton ML** | EFL Playoff Final | ~1.90 chacun | Pile/face, F4 KO probable |
+| C1 | **Spurs ML G4** vs Thunder | NBA WCF | ~1.83 | Single F1 OK |
+| C2 | **Vegas ML G3** vs Colorado | NHL WCF | ~1.74 | Single F1 OK |
+| C3 | **Toronto ML** vs Pittsburgh | MLB | ~1.61 | Single F1 OK limite |
+| C4 | **Khachanov ML** vs Gea | Tennis RG R1 | ~1.22 | Jambe combo (F1 combo) |
+| C5 | **Fritz ML** vs Basavareddy | Tennis RG R1 | ~1.30 | Jambe combo (F1 combo) |
+| C6 | **Combiné Khachanov + Fritz + Vegas G3** | Multi-sport | ~1.22 × 1.30 × 1.74 = **2.76** > 2.50 | HORS F1 combo total |
+| C6 bis | **Combiné Khachanov + Fritz** | Tennis × 2 | ~1.22 × 1.30 = **1.59** | Légèrement < 1.60 mais bord inférieur |
+| C6 ter | **Combiné Khachanov + Vegas G3** | Tennis + NHL | ~1.22 × 1.74 = **2.12** | F1 combo OK ✓ |
+| C6 quat | **Combiné Fritz + Vegas G3** | Tennis + NHL | ~1.30 × 1.74 = **2.26** | F1 combo OK ✓ |
+| C7 | **Diamondbacks ML** vs Rockies | MLB | ~1.53 | F1 KO (cote < 1.50 ? non, à la limite) — coverage mince |
 
-Coverage MLB jugée insuffisante après tri (pas de matchup pitcher
-exceptionnel identifié + AB-5 limite, sources Dimers/StatsInsider
-peu actives sur MLB régulier). On se concentre sur NBA/NHL/EPL où la
-coverage est dense.
+### Anti-dup
 
-## AB-1 actif (Roland Garros J1)
+- Spurs vs Thunder : pické en G1 (18/05). G4 série en cours, accepté avec warning.
+- Vegas vs Colorado : aucun pick récent. OK.
+- Tennis RG R1 : nouveau cycle GS, OK.
 
-Liste indicative top-10 ATP en R1 ce dimanche 24/05 (Day 1) :
-- Djokovic — BLOQUÉ
-- Zverev (#2) — BLOQUÉ
-- Fritz (#7) — BLOQUÉ
-- Les autres top-10 (Sinner, Alcaraz, Shelton, etc.) joueront Lundi/Mardi
-  — pas concernés par AB-1 ce dimanche
+## AB-1 v4.3 (top-10 ATP au GS = NON BLOCANT)
 
-→ Tennis Roland Garros R1 exclu en bloc côté favoris top-10 ce dimanche.
-Les outsiders potentiels (Bonzi, Mpetshi, Basavareddy) écartés (coverage
-insuffisante côté underdog, F4 KO probable, et AB-1 protège aussi des
-spreads top-10 R1).
+- Djokovic, Zverev, Fritz, Khachanov **analysables** au GS. ✓
+- Cas hypothétique J-1 GS sur tournoi 250/500 (e.g. Ruud Geneva 22/05) → reste BLOCANT.
+- Ici tous les top-10 ATP sont AU Roland Garros lui-même (R1) → priorité absolue, économie de force impossible.
 
-## Décision pré-analyse
+## Plan analyse approfondie
 
-- Funnel : 20 matchs → 5 candidats sérieux après F1/AB-1
-- Analyse approfondie sur **C1 (Spurs G4)**, **C3 (Colorado G3)** ou
-  **C2 (Vegas G3)** selon F1, **C4 (Liverpool)**, **C5 (Brighton)**,
-  **C6 (Stockport ou Bolton)**
-- Tennis Roland Garros R1 : **rien à recommander** (AB-1 bloque favoris,
-  outsiders sous-couverts)
+Top 5-6 candidats à creuser :
+- **C1 Spurs ML G4** (single)
+- **C2 Vegas ML G3** (single)
+- **C3 Toronto ML** (single, MLB risk AB-5 à vérifier)
+- **C4 Khachanov ML** (jambe combo + éval single hors fenêtre)
+- **C5 Fritz ML** (jambe combo)
+- **Combinés** : Khachanov+Vegas (~2.12), Fritz+Vegas (~2.26),
+  Khachanov+Fritz+Vegas (~2.76 hors fenêtre)
