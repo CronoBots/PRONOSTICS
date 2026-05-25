@@ -66,7 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 // Desktop (lg): overflow-visible -> body scroll natif via
                 // lg:h-auto lg:min-h-screen sur l'outer wrapper.
                 className={`flex-1 flex flex-col min-h-0 overflow-y-auto lg:overflow-visible ${
-                  showNav ? "pb-[calc(var(--safe-bottom)+4.75rem)] lg:pb-0" : ""
+                  showNav ? "pb-[calc(var(--safe-bottom)+4rem)] lg:pb-0" : ""
                 }`}
               >
                 <Component {...pageProps} />

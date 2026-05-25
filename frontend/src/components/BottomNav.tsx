@@ -84,7 +84,7 @@ export function BottomNav() {
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
       <div
         className="max-w-md mx-auto grid grid-cols-5 relative items-end"
-        style={{ paddingBottom: "calc(var(--safe-bottom) + 0.75rem)" }}
+        style={{ paddingBottom: "var(--safe-bottom)" }}
       >
         {leftTabs.map(renderTab)}
 
