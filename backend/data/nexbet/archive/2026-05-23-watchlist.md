@@ -1,4 +1,4 @@
-# Watchlist NΞXBΞT v3 — Samedi 23 mai 2026
+# Watchlist NEXBET v3 — Samedi 23 mai 2026
 
 **Heure d'analyse v3** : 23/05/2026 ~11h55 Belgique (09h55 UTC)
 **Bankroll d'entrée** : 25,00 € (post-loss combiné Ruud+Olympiakos 22/05)

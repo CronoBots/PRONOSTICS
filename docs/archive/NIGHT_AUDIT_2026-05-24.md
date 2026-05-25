@@ -49,7 +49,7 @@ Puis 4 vagues d'exécution + push.
   gain/perte préservée vert/rouge)
 - **📊 Mode actuel : Paper trading (24/05 → 23/06/2026)** — bankroll
   virtuel 100€, bankroll réel 25€ gelé, lien vers paper_trading_log.md
-- **Méthodologie NΞXBΞT (v4.2)** — résumé F1-F6 + recap-only + dual
+- **Méthodologie NEXBET (v4.2)** — résumé F1-F6 + recap-only + dual
   artefact, lien vers method.md
 - Note "The Odds API quota épuisé (498/500)" dans tableau config sources
 

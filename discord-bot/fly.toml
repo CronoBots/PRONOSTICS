@@ -1,4 +1,4 @@
-# Configuration Fly.io pour le bot Discord NΞXBΞT.
+# Configuration Fly.io pour le bot Discord NEXBET.
 # - Région CDG (Paris) → latence optimale depuis Belgique
 # - VM shared-cpu-1x 256MB → dans le free tier (3 VMs gratuites)
 # - Pas de [http_service] : bot websocket sortant uniquement

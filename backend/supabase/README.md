@@ -1,4 +1,4 @@
-# 🗃 Setup Supabase pour NΞXBΞT
+# 🗃 Setup Supabase pour NEXBET
 
 Ce dossier contient les migrations SQL et la doc de setup du backend
 Supabase (auth + DB) qui remplace le mock localStorage de la Phase 1.
@@ -218,7 +218,7 @@ plus simple (plan gratuit 3000 emails/mois).
 | Champ | Valeur |
 |---|---|
 | Sender email | `no-reply@ton-domaine.com` |
-| Sender name | `NΞXBΞT` |
+| Sender name | `NEXBET` |
 | Host | `smtp.resend.com` |
 | Port | `465` (SSL/TLS) |
 | Username | `resend` |

@@ -165,7 +165,7 @@ export default function FiltresPage() {
             placeholder={t("filtres.select")}
             value={form.tipster}
             options={[
-              { value: "wtf", label: "NΞXBΞT (Trust the Algorithm)" },
+              { value: "wtf", label: "NEXBET (Trust the Algorithm)" },
               { value: "self", label: t("filtres.tipsterMe") },
             ]}
             onChange={(v) => update("tipster", v)}

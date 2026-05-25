@@ -238,7 +238,7 @@ def process_event(
     Les sharps Manifold/Kalshi sont reportés tels quels dans le CSV ; le calcul
     de `combined_prob` reste basé sur Polymarket (source historique) pour ne pas
     casser la calibration de safety_score. La consultation croisée se fait côté
-    agent NΞXBΞT à l'Étape 3.
+    agent NEXBET à l'Étape 3.
     """
     books = extract_books_odds(event)
     if not books:

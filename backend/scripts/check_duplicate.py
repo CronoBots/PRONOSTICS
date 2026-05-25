@@ -1,4 +1,4 @@
-"""Anti-duplication checker pour NΞXBΞT.
+"""Anti-duplication checker pour NEXBET.
 
 Vérifie si un match (home_team, away_team) a déjà été pické dans les
 7 derniers jours. Empêche l'agent de re-picker le même évènement.

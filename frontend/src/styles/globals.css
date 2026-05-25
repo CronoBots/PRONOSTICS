@@ -12,7 +12,7 @@
 
 :root,
 :root[data-theme="dark"] {
-  /* Theme NΞXBΞT v6 — palette Cyan AX (25/05/2026).
+  /* Theme NEXBET v6 — palette Cyan AX (25/05/2026).
      Aligne la palette CSS sur le nouveau logo AX (monogramme blanc +
      cyan #0DC2FA sur fond noir). Conserve `accent-green` en vert
      (sémantique gain universelle) et `accent-red` (perte). Le cyan
@@ -46,7 +46,7 @@
 }
 
 :root[data-theme="light"] {
-  /* Theme NΞXBΞT v6 — light Cyan AX. Blanc cassé avec accent cyan
+  /* Theme NEXBET v6 — light Cyan AX. Blanc cassé avec accent cyan
      assombri pour contraste sur fond clair (AA). */
   --bg-base-rgb: 248 250 255;        /* #F8FAFF — blanc cassé léger sous-ton bleu */
   --bg-card-rgb: 255 255 255;        /* #FFFFFF */

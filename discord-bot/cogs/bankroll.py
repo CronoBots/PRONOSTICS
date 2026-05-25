@@ -51,7 +51,7 @@ class BankrollCog(commands.Cog):
 
     @app_commands.command(
         name="bankroll",
-        description="État du bankroll virtuel paper trading NΞXBΞT (100€ initial)",
+        description="État du bankroll virtuel paper trading NEXBET (100€ initial)",
     )
     async def bankroll(self, interaction: discord.Interaction):
         await interaction.response.defer(thinking=True)
@@ -64,7 +64,7 @@ class BankrollCog(commands.Cog):
         sign = "+" if progression >= 0 else ""
 
         embed = discord.Embed(
-            title="💰 Bankroll Virtuel NΞXBΞT",
+            title="💰 Bankroll Virtuel NEXBET",
             description=(
                 f"**Cycle paper trading actif** (24/05 → 23/06/2026)\n"
                 f"Bankroll réel **25,00 €** gelé pendant le cycle."
@@ -101,7 +101,7 @@ class BankrollCog(commands.Cog):
             value=f"🔴 {n_loss}",
             inline=True,
         )
-        embed.set_footer(text="NΞXBΞT v4.3 • Source: paper_trading_log.md")
+        embed.set_footer(text="NEXBET v4.3 • Source: paper_trading_log.md")
 
         await interaction.followup.send(embed=embed)
 

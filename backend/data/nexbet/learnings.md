@@ -1,4 +1,4 @@
-# NΞXBΞT — Base de connaissances (v4.6)
+# NEXBET — Base de connaissances (v4.6)
 
 > Mémoire long terme de l'agent. Mis à jour après chaque pick résolu
 > (paper ou réel). L'agent DOIT lire ce fichier au début de chaque

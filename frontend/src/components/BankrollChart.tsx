@@ -202,7 +202,7 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
-    // Hero NΞXBΞT v6 : fond aligné sur StatsHero (gradient bg-card →
+    // Hero NEXBET v6 : fond aligné sur StatsHero (gradient bg-card →
     // bg-elevated, theme-aware). Ligne data dynamique vert/rouge selon
     // trend (gain vs perte), échelle Y en vert sémantique. Ligne projection
     // ifWin reste blanche+pointillée pour distinguer "réel" vs "scénario".

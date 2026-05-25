@@ -1,4 +1,4 @@
-# NΞXBΞT — Format de sortie obligatoire (v4.2 — Narratif user-first)
+# NEXBET — Format de sortie obligatoire (v4.2 — Narratif user-first)
 
 > **v4.2 du 24/05/2026** : refonte du format de sortie. **Deux artefacts
 > distincts** sont désormais produits :

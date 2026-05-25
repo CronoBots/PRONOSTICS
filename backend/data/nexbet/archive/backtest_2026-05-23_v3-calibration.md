@@ -1,4 +1,4 @@
-# Backtest NΞXBΞT — 23/05/2026 [ARCHIVE v3.3]
+# Backtest NEXBET — 23/05/2026 [ARCHIVE v3.3]
 
 > ⚠️ **DOCUMENT ARCHIVÉ — méthodologie v3.3 OBSOLÈTE**
 >

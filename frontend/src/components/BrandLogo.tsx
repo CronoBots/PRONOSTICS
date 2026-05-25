@@ -1,5 +1,5 @@
 /**
- * Logo NΞXBΞT — variantes PNG.
+ * Logo NEXBET — variantes PNG.
  *
  * Trois variantes :
  * - "mark"     : monogramme AX seul, carré transparent (`logo.png`, 512×512).
@@ -21,7 +21,7 @@ interface Props {
   background?: string;
   /** Optionnel : className additionnelle */
   className?: string;
-  /** Alt text. Défaut "NΞXBΞT". */
+  /** Alt text. Défaut "NEXBET". */
   alt?: string;
   /** "mark" (défaut) | "wordmark" (mark + texte) | "banner" (texte seul) */
   variant?: "mark" | "wordmark" | "banner";
@@ -36,7 +36,7 @@ export function BrandLogo({
   rounded,
   background = "transparent",
   className = "",
-  alt = "NΞXBΞT",
+  alt = "NEXBET",
   variant = "mark",
 }: Props) {
   if (variant === "wordmark" || variant === "banner") {

@@ -53,7 +53,7 @@ export default function RegisterPage() {
   return (
     <>
       <Head>
-        <title>{`${t("auth.register")} — NΞXBΞT`}</title>
+        <title>{`${t("auth.register")} — NEXBET`}</title>
       </Head>
       <main className="min-h-screen flex flex-col relative">
         {/* Back button — flottant en haut à gauche */}
@@ -71,7 +71,7 @@ export default function RegisterPage() {
         <div className="bg-accent-green flex-1 flex items-center justify-center py-16 min-h-[280px]">
           <div className="text-center">
             <BrandLogo size={120} className="mx-auto mb-3" />
-            <div className="text-white font-bold text-2xl tracking-tight">NΞXBΞT</div>
+            <div className="text-white font-bold text-2xl tracking-tight">NEXBET</div>
             <div className="text-white/80 text-xs mt-1 tracking-wider">Trust the Algorithm</div>
           </div>
         </div>

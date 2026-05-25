@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="docs/assets/brand/nexbet-banner.png" alt="NΞXBΞT — BET · WIN · REPEAT" width="640" />
+  <img src="docs/assets/brand/nexbet-banner.png" alt="NEXBET — BET · WIN · REPEAT" width="640" />
 </p>
 
-# PRONOSTICS — NΞXBΞT
+# PRONOSTICS — NEXBET
 
 Plateforme de pronostics sportifs quotidiens. Le backend Python agrège des matchs
 via WebSearch sur sources whitelistées + APIs (Football-Data.org, API-Football,
 The Odds API quand quota dispo), calcule des probabilités via la méthodologie
-**NΞXBΞT v4.6**, et expose les résultats via un frontend Next.js déployé en
+**NEXBET v4.6**, et expose les résultats via un frontend Next.js déployé en
 statique sur GitHub Pages.
 
 ## 🟦 Identité visuelle (logo AX cyan — 25/05/2026)
@@ -127,7 +127,7 @@ Le frontend lit `backend/data/history.json` et les fichiers générés. Avant
 `next build`, le script `frontend/scripts/copy-predictions.js` copie les JSON
 dans `frontend/public/data/`.
 
-## Méthodologie NΞXBΞT (v4.2)
+## Méthodologie NEXBET (v4.2)
 
 L'agent NEXBET cartographie chaque jour les matchs disponibles, applique les
 filtres F1-F6 (cote 1.50-2.00, anti-duplication, sources whitelist, EV strict

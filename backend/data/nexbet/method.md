@@ -1,4 +1,4 @@
-# NΞXBΞT — Procédure obligatoire (v4.6 — Focus foot/basket/tennis)
+# NEXBET — Procédure obligatoire (v4.6 — Focus foot/basket/tennis)
 
 > **v4.6 (25/05/2026)** : **focus stratégique foot / basket / tennis
 > UNIQUEMENT**. NHL, MLB, NFL, F1, MMA, rugby suspendus du scan

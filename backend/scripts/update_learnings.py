@@ -1,4 +1,4 @@
-"""Calibration helper pour NΞXBΞT learnings.
+"""Calibration helper pour NEXBET learnings.
 
 Calcule le Brier score moyen sur les picks résolus (win/loss) et suggère
 un ajustement de seuil F2 si l'agent est systématiquement biaisé.
@@ -90,7 +90,7 @@ def main() -> int:
     picks = _load_picks()
     stats = compute_calibration(picks)
 
-    print("=== NΞXBΞT Calibration Report ===")
+    print("=== NEXBET Calibration Report ===")
     if stats["n"] == 0:
         print("Aucun pick résolu (win/loss) à analyser.")
         return 0

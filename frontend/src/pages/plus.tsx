@@ -34,7 +34,7 @@ export default function PlusPage() {
         <PlusMenu showAccountSection />
 
         <div className="text-center text-[10px] text-white/30 mt-8">
-          NΞXBΞT · Trust the Algorithm · v0.2 · {new Date().getFullYear()}
+          NEXBET · Trust the Algorithm · v0.2 · {new Date().getFullYear()}
         </div>
       </main>
     </>

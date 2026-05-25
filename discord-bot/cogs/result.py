@@ -20,7 +20,7 @@ class ResultCog(commands.Cog):
 
     @app_commands.command(
         name="result",
-        description="Annonce le résultat d'un pick NΞXBΞT (admin only)",
+        description="Annonce le résultat d'un pick NEXBET (admin only)",
     )
     @app_commands.describe(
         pick="Description courte du pick (ex: 'Kecmanović ML RG R1')",
@@ -57,7 +57,7 @@ class ResultCog(commands.Cog):
             inline=True,
         )
         embed.set_footer(
-            text=f"Annoncé par {interaction.user.display_name} • NΞXBΞT v4.3"
+            text=f"Annoncé par {interaction.user.display_name} • NEXBET v4.3"
         )
 
         await interaction.response.send_message(embed=embed)

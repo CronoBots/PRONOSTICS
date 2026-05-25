@@ -1,4 +1,4 @@
-# NΞXBΞT — Watchlist TEST À BLANC v4.0 — 2026-05-23
+# NEXBET — Watchlist TEST À BLANC v4.0 — 2026-05-23
 
 > **MODE TEST À BLANC** — aucune position paper créée. Cycle paper démarre 24/05.
 > Heure analyse : 16h11 Belgique (14h11 UTC), samedi 23/05/2026.

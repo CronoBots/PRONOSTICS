@@ -1,4 +1,4 @@
-# NΞXBΞT — Paper Trading Log v4.0
+# NEXBET — Paper Trading Log v4.0
 
 > **Mode paper trading 30 jours** — démarrage 24/05/2026, fin prévue
 > 23/06/2026. Pendant cette période, **aucun bet réel n'est placé**.

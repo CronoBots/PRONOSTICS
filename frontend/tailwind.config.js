@@ -12,7 +12,7 @@ module.exports = {
           elevated: "rgb(var(--bg-elevated-rgb) / <alpha-value>)",
         },
         accent: {
-          // Palette NΞXBΞT v6 — Cyan AX (25/05/2026).
+          // Palette NEXBET v6 — Cyan AX (25/05/2026).
           // accent-blue est la COULEUR DE MARQUE — cyan du nouveau logo AX
           // (monogramme blanc + cyan sur fond noir). Brand + CTA primaire.
           // accent-green reste vert (sémantique gain universelle).

@@ -1,5 +1,5 @@
 """
-NΞXBΞT Discord Bot — entry point.
+NEXBET Discord Bot — entry point.
 
 Bot de la communauté NEXBET (pronostics sportifs paper trading).
 - Commandes slash interactives (/picks, /bankroll, /stats, /result)
@@ -46,7 +46,7 @@ class NexbetBot(commands.Bot):
         super().__init__(
             command_prefix="!",  # legacy fallback, on utilise principalement slash
             intents=intents,
-            description="Bot NΞXBΞT — pronostics sportifs paper trading",
+            description="Bot NEXBET — pronostics sportifs paper trading",
         )
 
     async def setup_hook(self):

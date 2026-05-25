@@ -1,4 +1,4 @@
-# NΞXBΞT — Trace TEST À BLANC v4.0 — 2026-05-23
+# NEXBET — Trace TEST À BLANC v4.0 — 2026-05-23
 
 > **MODE TEST À BLANC** — aucune position paper créée, aucune écriture dans `paper_trading_log.md`. Cycle paper démarre 24/05.
 

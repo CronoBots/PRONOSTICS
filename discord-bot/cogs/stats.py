@@ -19,7 +19,7 @@ class StatsCog(commands.Cog):
 
     @app_commands.command(
         name="stats",
-        description="Stats globales NΞXBΞT — win rate, ROI, drawdown, bankroll",
+        description="Stats globales NEXBET — win rate, ROI, drawdown, bankroll",
     )
     async def stats(self, interaction: discord.Interaction):
         await interaction.response.defer(thinking=True)
@@ -39,7 +39,7 @@ class StatsCog(commands.Cog):
         color = GREEN if bankroll_positive else RED
 
         embed = discord.Embed(
-            title="📊 Stats NΞXBΞT — Historique complet",
+            title="📊 Stats NEXBET — Historique complet",
             description="Picks résolus depuis le démarrage de la plateforme.",
             color=color,
         )
@@ -88,7 +88,7 @@ class StatsCog(commands.Cog):
             inline=True,
         )
 
-        embed.set_footer(text="NΞXBΞT v4.3 • Source: history.json")
+        embed.set_footer(text="NEXBET v4.3 • Source: history.json")
         embed.url = "https://cronobots.github.io/PRONOSTICS/stats"
 
         await interaction.followup.send(embed=embed)

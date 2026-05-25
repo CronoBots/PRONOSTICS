@@ -1,4 +1,4 @@
-# 🤖 NΞXBΞT Discord Bot
+# 🤖 NEXBET Discord Bot
 
 Bot Discord pour la communauté NEXBET (pronostics sportifs paper trading).
 
@@ -13,7 +13,7 @@ Bot Discord pour la communauté NEXBET (pronostics sportifs paper trading).
 
 Toutes les commandes utilisent des embeds **cobalt v5** (cohérent avec l'app web).
 
-## 🆔 Identifiants du bot NΞXBΞT (publics)
+## 🆔 Identifiants du bot NEXBET (publics)
 
 - **Application ID** : `1508193166635958332`
 - **Public Key** : `63b44e092bff944881c32565701bbe800861578adb5593cdf6981165c17f53a1`

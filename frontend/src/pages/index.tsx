@@ -191,7 +191,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NΞXBΞT — Trust the Algorithm</title>
+        <title>NEXBET — Trust the Algorithm</title>
       </Head>
 
       <main
@@ -205,7 +205,7 @@ export default function Home() {
           <ProfileButton size={36} />
           <Link
             href="/"
-            aria-label="NΞXBΞT"
+            aria-label="NEXBET"
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           >
             <BrandLogo variant="banner" size={60} />
@@ -225,7 +225,7 @@ export default function Home() {
 
         {!loading && history && (
           <>
-            {/* Chart NΞXBΞT — fond gradient bg-card → bg-elevated (aligné sur
+            {/* Chart NEXBET — fond gradient bg-card → bg-elevated (aligné sur
                 StatsHero de la page /stats pour cohérence visuelle). Period pills
                 intégrés dans le cadre. Hauteur explicite en dvh (s'adapte à l'URL
                 bar mobile) au lieu de flex-1 qui était mal interprété sur Safari

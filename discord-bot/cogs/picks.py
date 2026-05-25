@@ -30,7 +30,7 @@ class PicksCog(commands.Cog):
             embed = discord.Embed(
                 title="🛌 Pas encore d'analyse aujourd'hui",
                 description=(
-                    "L'agent NΞXBΞT n'a pas encore tourné pour ce jour.\n\n"
+                    "L'agent NEXBET n'a pas encore tourné pour ce jour.\n\n"
                     "Lance `/nexbet-analyst` côté Claude Code ou attends "
                     "le run automatique du matin."
                 ),
@@ -42,7 +42,7 @@ class PicksCog(commands.Cog):
         # Extrait les sections clés de la trace markdown (heuristique simple)
         title_line = next(
             (l for l in trace.splitlines() if l.startswith("# ")),
-            "# Trace NΞXBΞT du jour",
+            "# Trace NEXBET du jour",
         )
         title = title_line.lstrip("# ").strip()
 
@@ -68,7 +68,7 @@ class PicksCog(commands.Cog):
             url=f"https://github.com/CronoBots/PRONOSTICS/blob/main/backend/data/nexbet/decisions/{title.split('—')[-1].strip().lower().replace(' ', '-')}.md"
             if "—" in title else None,
         )
-        embed.set_footer(text="NΞXBΞT v4.3 • Paper trading 100€ virtuel")
+        embed.set_footer(text="NEXBET v4.3 • Paper trading 100€ virtuel")
         embed.add_field(
             name="📂 Trace complète",
             value="`backend/data/nexbet/decisions/<date>.md` sur le repo",

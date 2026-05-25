@@ -159,7 +159,7 @@ export function PlusMenu({ showAccountSection = false }: Props) {
 
       <InfoSheet title="Comment ça marche" open={open === "howto"} onClose={() => setOpen(null)}>
         <ol className="space-y-2 list-decimal list-inside text-sm">
-          <li>Chaque jour, <strong>NΞXBΞT (l'IA)</strong> analyse les matchs disponibles (foot, basket, tennis).</li>
+          <li>Chaque jour, <strong>NEXBET (l'IA)</strong> analyse les matchs disponibles (foot, basket, tennis).</li>
           <li>Sources croisées : forme récente, blessures, H2H, statistiques avancées.</li>
           <li>Identification du <strong>value bet</strong> du jour : cote 1.50–2.00 + probabilité estimée supérieure à celle du bookmaker.</li>
           <li>Le pick est publié avant le match, avec rationale détaillée et sources vérifiables.</li>
@@ -190,14 +190,14 @@ export function PlusMenu({ showAccountSection = false }: Props) {
           </ul>
         </div>
         <p className="text-[10px] text-white/40 mt-4 italic">
-          NΞXBΞT est un service d'analyse statistique informatif. Nous ne prenons aucun pari
+          NEXBET est un service d'analyse statistique informatif. Nous ne prenons aucun pari
           et ne touchons aucune commission sur les mises placées chez les bookmakers.
         </p>
       </InfoSheet>
 
       <InfoSheet title="Mentions légales" open={open === "legal"} onClose={() => setOpen(null)}>
         <p className="text-xs">
-          <strong>Service</strong> : NΞXBΞT · Trust the Algorithm<br />
+          <strong>Service</strong> : NEXBET · Trust the Algorithm<br />
           <strong>Éditeur</strong> : CronoBots<br />
           <strong>Hébergement</strong> : GitHub Pages<br />
           <strong>Contact</strong> : via la page Compte

@@ -1,8 +1,8 @@
 /**
  * Tracker de paris personnels — table `personal_bets` (Supabase) + fallback localStorage.
  *
- * Différent du track record officiel NΞXBΞT (qui vient des JSON statiques publics) :
- * c'est ICI que l'utilisateur log SES propres paris, séparément des picks NΞXBΞT.
+ * Différent du track record officiel NEXBET (qui vient des JSON statiques publics) :
+ * c'est ICI que l'utilisateur log SES propres paris, séparément des picks NEXBET.
  *
  * Mode Supabase : CRUD via la table public.personal_bets (RLS user_id = auth.uid()).
  * Mode mock (dev local ou utilisateur non connecté) : localStorage key `pronostics.personal_bets`.

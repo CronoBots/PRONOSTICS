@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
  * le relais en dessous de lg). Sticky en haut, fond bg-card semi-transparent
  * avec backdrop-blur pour cohérence avec BottomNav.
  *
- * Structure : [Logo NΞXBΞT] · [Streak indicator] · [Menu horizontal] · [Pick du
+ * Structure : [Logo NEXBET] · [Streak indicator] · [Menu horizontal] · [Pick du
  * jour CTA] · [Compte]
  */
 export function DesktopHeader() {
@@ -62,10 +62,10 @@ export function DesktopHeader() {
         <Link
           href="/"
           className="flex items-center gap-2 font-bold text-lg shrink-0"
-          aria-label="NΞXBΞT"
+          aria-label="NEXBET"
         >
           <BrandLogo size={36} />
-          <span className="text-accent-blue">NΞXBΞT</span>
+          <span className="text-accent-blue">NEXBET</span>
         </Link>
 
         {/* Streak indicator (à côté du logo) */}

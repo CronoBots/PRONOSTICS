@@ -1,4 +1,4 @@
-# NΞXBΞT analyst — Système d'analyse quotidienne
+# NEXBET analyst — Système d'analyse quotidienne
 
 > Agent IA spécialisé qui produit chaque jour LE pick safe value bet
 > selon une méthodologie reproductible et évolutive.
@@ -12,7 +12,7 @@ mémoire, donc :
   Grand Slam, perdu le 22/05)
 - Pas d'amélioration au fil du temps
 
-Le système NΞXBΞT analyst corrige ça avec :
+Le système NEXBET analyst corrige ça avec :
 1. **Méthode obligatoire** (`method.md`) → checklist 8 étapes que l'agent
    ne peut pas zapper
 2. **Critères stricts** (`criteria.md`) → seuils numériques objectifs
@@ -44,7 +44,7 @@ backend/data/nexbet/
 ### 1. Lancer l'analyse du jour
 
 Dans la conversation Claude Code, dis simplement :
-> "Lance l'analyse NΞXBΞT pour aujourd'hui"
+> "Lance l'analyse NEXBET pour aujourd'hui"
 > ou
 > "Pick d'aujourd'hui ?"
 > ou
@@ -170,7 +170,7 @@ la cote sur bwin AU MOMENT du placement réel du pari.
 **Q : Que faire si l'agent dit "no pick today" mais qu'on veut absolument
 parier ?**
 R : Ne PAS forcer. Le "no pick today" est un signal valide. Si on parie
-quand même, on est en pur gambling — hors profil NΞXBΞT.
+quand même, on est en pur gambling — hors profil NEXBET.
 
 **Q : Puis-je modifier learnings.md manuellement ?**
 R : Oui, mais ajouter une date de validation + référence (pick précédent

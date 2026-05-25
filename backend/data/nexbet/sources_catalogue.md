@@ -1,4 +1,4 @@
-# Catalogue des sources NΞXBΞT (v4.6 — Focus foot/basket/tennis)
+# Catalogue des sources NEXBET (v4.6 — Focus foot/basket/tennis)
 
 > **Cleanup ciblé (25/05/2026 soir)** : promotion d'**API-Sports en
 > source quanti PRIORITÉ #1** pour foot/basket. Résolution de
