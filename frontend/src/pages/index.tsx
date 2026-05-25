@@ -172,20 +172,16 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v6.2 — layout style page /stats : mark AX 40px à
-            gauche, bannière texte NEXBET au centre (fond transparent),
-            burger compte à droite. Pas de redondance car la bannière
-            centrale ne contient que le texte NEXBET (le mark est déjà à gauche). */}
-        <header className="lg:hidden grid grid-cols-[auto_1fr_auto] items-center gap-2 shrink-0 py-1">
-          <Link href="/" aria-label="NΞXBΞT" className="justify-self-start">
-            <BrandLogo size={40} rounded={10} />
+        {/* Header compact v6.3 — bannière NEXBET seule (recadrée serrée) à
+            gauche, burger compte vert à droite. Pas de mark séparé (la
+            bannière contient déjà toute l'identité brand). */}
+        <header className="lg:hidden flex items-center justify-between gap-2 shrink-0 py-1">
+          <Link href="/" aria-label="NΞXBΞT">
+            <BrandLogo variant="banner" size={44} />
           </Link>
-          <span className="justify-self-center">
-            <BrandLogo variant="banner" size={42} />
-          </span>
           <Link
             href="/compte"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5 justify-self-end"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5"
             aria-label={t("home.menu")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
