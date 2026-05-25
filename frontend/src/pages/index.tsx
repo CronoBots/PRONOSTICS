@@ -194,13 +194,13 @@ export default function Home() {
       </Head>
 
       <main
-        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col flex-1 min-h-0 justify-between lg:gap-5 lg:justify-start lg:flex-none"
       >
         {/* Header compact v6.5 — bannière NEXBET centrée par rapport à la
             PAGE (positionnement absolu, indépendant du burger). Burger en
             blanc theme-aware (text-white → noir bleuté en light mode via
             l'override de globals.css). */}
-        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 mb-2 min-h-[52px]">
+        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 min-h-[52px]">
           <Link
             href="/"
             aria-label="NΞXBΞT"
@@ -228,7 +228,7 @@ export default function Home() {
                 intégrés dans le cadre. Hauteur explicite en dvh (s'adapte à l'URL
                 bar mobile) au lieu de flex-1 qui était mal interprété sur Safari
                 iOS dans un layout flex-col imbriqué (chart écrasé). */}
-            <section className="relative flex-1 min-h-[180px] lg:h-[420px] lg:flex-none" ref={menuRef}>
+            <section className="relative h-[300px] shrink-0 lg:h-[420px] lg:flex-none" ref={menuRef}>
               <BankrollChart
                 picks={filteredPicks}
                 startingBankroll={startingBankroll}
@@ -292,10 +292,10 @@ export default function Home() {
                 rangée 1 état actuel (Bankroll, Bénéfice),
                 rangée 2 performance (ROI, Progression),
                 rangée 3 volume/précision (Paris, Win Rate).
-                flex-1 → la grille remplit l'espace restant entre le chart
-                et le bottom nav, auto-rows-fr → rows réparties également. */}
+                Hauteur fixe + shrink-0 : la grille ne s'étire pas, l'espace
+                entre chart/stats/nav est réparti par justify-between du main. */}
             {stats && (
-              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 flex-1 min-h-[180px]">
+              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 h-[220px] shrink-0 lg:h-auto">
                 <StatTile
                   label={t("home.statBankroll")}
                   value={stats.current_bankroll}
