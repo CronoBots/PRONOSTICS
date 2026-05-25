@@ -1,19 +1,21 @@
 /**
  * Logo NΞXBΞT — version PNG transparente.
  *
- * Deux variantes :
+ * Trois variantes :
  * - "mark"     : monogramme AX seul, carré (`logo.png`, 512×512). `size` = côté.
- * - "wordmark" : monogramme AX + texte NEXBET + tagline (`logo-wordmark.png`,
- *                513×400, ratio ~1.28:1). `size` = HAUTEUR ; largeur calculée
- *                automatiquement pour préserver le ratio (pas d'écrasement).
+ * - "wordmark" : mark AX + texte NEXBET + tagline (`logo-wordmark.png`,
+ *                513×400). `size` = HAUTEUR ; largeur auto via ratio.
+ * - "banner"   : texte NEXBET + tagline horizontal SANS le mark AX
+ *                (`logo-banner.png`, 616×200, ratio 3.08:1). À combiner avec
+ *                un mark séparé. `size` = HAUTEUR ; largeur auto.
  *
- * Polyvalent : se pose sur n'importe quel fond.
+ * Tous fond transparent. Polyvalent : se pose sur n'importe quel fond.
  */
 
 interface Props {
-  /** Taille en px. Pour mark = côté du carré ; pour wordmark = hauteur. Défaut 64. */
+  /** Taille en px. Pour mark = côté du carré ; pour wordmark/banner = hauteur. */
   size?: number;
-  /** Border-radius en px (uniquement si background fourni). Ignoré en wordmark. */
+  /** Border-radius en px (uniquement si background fourni). Ignoré en wordmark/banner. */
   rounded?: number;
   /** Optionnel : couleur de fond derrière le logo. Par défaut transparent. */
   background?: string;
@@ -21,12 +23,13 @@ interface Props {
   className?: string;
   /** Alt text. Défaut "NΞXBΞT". */
   alt?: string;
-  /** "mark" (défaut) = monogramme seul ; "wordmark" = monogramme + texte */
-  variant?: "mark" | "wordmark";
+  /** "mark" (défaut) | "wordmark" (mark + texte) | "banner" (texte seul) */
+  variant?: "mark" | "wordmark" | "banner";
 }
 
 const BASE = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
-const WORDMARK_RATIO = 513 / 400; // ratio largeur/hauteur du PNG source
+const WORDMARK_RATIO = 513 / 400; // ratio largeur/hauteur du PNG wordmark
+const BANNER_RATIO = 616 / 200;   // ratio largeur/hauteur du PNG banner horizontal
 
 export function BrandLogo({
   size = 64,
@@ -36,11 +39,13 @@ export function BrandLogo({
   alt = "NΞXBΞT",
   variant = "mark",
 }: Props) {
-  if (variant === "wordmark") {
-    const width = Math.round(size * WORDMARK_RATIO);
+  if (variant === "wordmark" || variant === "banner") {
+    const ratio = variant === "banner" ? BANNER_RATIO : WORDMARK_RATIO;
+    const width = Math.round(size * ratio);
+    const src = variant === "banner" ? `${BASE}/logo-banner.png` : `${BASE}/logo-wordmark.png`;
     return (
       <img
-        src={`${BASE}/logo-wordmark.png`}
+        src={src}
         alt={alt}
         width={width}
         height={size}
