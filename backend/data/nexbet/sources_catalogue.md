@@ -1,48 +1,86 @@
-# Catalogue des sources NΞXBΞT (v4.4 — API-Sports intégrée)
+# Catalogue des sources NΞXBΞT (v4.5 — SofaScore API intégrée)
 
-> **v4.4 (24/05/2026 soir)** : intégration **API-Sports** (api-sports.io)
-> comme source quantitative officielle pour foot/basket/hockey/baseball.
-> API officielle, légalement clean, tarif raisonnable. Tennis reste sur
-> WebSearch whitelist.
+> **v4.5 (25/05/2026)** : intégration **SofaScore API** (api.sofascore.com)
+> comme source de cartographie tennis prioritaire + signal Win Probability.
+> Couverture tennis manquante de v4.4 désormais couverte. ⚠️ API non-officielle
+> (TOS gris, usage perso toléré).
 >
-> **v4.2 (24/05/2026)** : règle dédup corrélation modèle ajoutée.
-> **Refonte v4.0 (23/05/2026)** : reclassement par accessibilité réelle.
+> **v4.4 (24/05)** : intégration API-Sports pour foot/basket/hockey/baseball.
+> **Refonte v4.0 (23/05)** : reclassement par accessibilité réelle.
 
-## 🟢 ACCESSIBLE — Source officielle API (NOUVEAU v4.4)
+## 🟢 ACCESSIBLE — Source officielle API
 
-### API-Sports (api-sports.io) — Mode direct
+### API-Sports (api-sports.io) — Mode direct (v4.4)
 
-**Statut** : 🟢 ACCESSIBLE — clé `API_SPORTS_KEY` configurée
-**Type** : API JSON officielle (légalement clean, TOS clairs)
-**Authentification** : header `x-apisports-key` (clé en variable d'env)
-**Doc** : https://www.api-sports.io/documentation
+[Section existante — voir doc complète v4.4 plus bas]
+
+### SofaScore API (api.sofascore.com) — Reverse-engineered (NOUVEAU v4.5)
+
+**Statut** : 🟢 ACCESSIBLE — réponse JSON confirmée par user 25/05/2026
+**Type** : API JSON non-officielle (frontend SofaScore reverse-engineered)
+**Authentification** : aucune (juste User-Agent navigateur)
+**Cloudflare** : bypass via `cloudscraper` Python si nécessaire
+
+**⚠️ TOS** : API non-documentée publiquement. Usage perso (paper trading,
+analyse) **toléré** par la communauté. Usage commercial large = risqué
+légalement. NEXBET = usage perso solo dev, OK.
 
 **Couverture** :
-- ⚽ Football (Premier League, Bundesliga, Liga, Serie A, Ligue 1, CL, EL, EFL, Coupe de France, etc.)
-- 🏀 Basketball (NBA + Euroleague + NCAA)
-- 🏒 Hockey (NHL + KHL)
-- ⚾ Baseball (MLB + KBO + NPB)
-- 🏈 NFL, 🏎 F1, 🏉 Rugby, 🏐 Volley, 🤝 Handball, 🥊 MMA
+- 🎾 Tennis (ATP/WTA/Grand Chelems/Challengers — **comble le gap API-Sports**)
+- ⚽ Football (toutes ligues mondiales)
+- 🏀 Basketball (NBA, Euroleague, etc.)
+- 🏒 Hockey (NHL, KHL, etc.)
+- ⚾ Baseball (MLB, etc.)
+- 🏈 NFL, 🏎 F1, 🥊 MMA, rugby, etc.
 
-**Endpoints clés pour NEXBET** :
-- `fixtures` : schedule par sport + date (cartographie auto)
-- `odds` : cotes multi-bookmakers (Pinnacle, Bet365, Bwin, DK, etc.)
-- `predictions` (foot only) : modèle API-Sports → **source quanti #1**
-- `fixtures/headtohead` : H2H structuré (10 derniers matchs)
-- `fixtures/lineups` : compositions/blessures (foot)
-- `injuries` : blessures actuelles (foot)
-- `teams/statistics` : stats équipe par saison
+**Endpoints clés NEXBET** :
+- `/sport/{sport}/scheduled-events/{date}` — **cartographie auto par jour**
+- `/event/{id}/win-probability` — ⭐ **signal proba modèle propriétaire**
+  (signal différenciant absent des autres sources whitelist)
+- `/event/{id}/odds/1/all` — cotes multi-bookmakers consolidées
+- `/event/{id}/h2h` — historique face-à-face structuré
+- `/event/{id}/lineups` — compositions (foot)
+- `/event/{id}/statistics` — stats détaillées (xG, aces, etc.)
+- `/event/{id}` — détails match
+- `/search/players/{query}` — recherche joueur
 
-**Limites du plan free** :
-- 100 req/jour par sport
-- Plan Pro $19/mois par sport, ou bundle ~$30-50/mois
+**Data par event (riche)** :
+- Ranking ATP/WTA en temps réel
+- Seed (TS#, WC, Q, LL)
+- Venue + court (Philippe-Chatrier, Suzanne-Lenglen, etc.)
+- groundType (Red clay, Hard, Grass)
+- status.code (0=NotStarted, 100=Ended, 70=Canceled)
+- winnerCode (1=home, 2=away si fini)
+- startTimestamp Unix précis
+- userCount (proxy popularité / intérêt marché)
 
-**Wrapper Python** : `backend/scripts/sportsapi.py`
-**Test rapide** : `python backend/scripts/check_sportsapi.py`
+**Wrapper Python** : `backend/scripts/sofascore.py`
+- Classe `SofaScore` avec rate limiting auto (1 req/sec)
+- Cloudscraper fallback pour bypass Cloudflare
+- Helpers : `filter_top_n_atp()`, `filter_by_round()`, `summarize_event()`
 
-⚠️ **TENNIS NON COUVERT par API-Sports.** Pour ATP/WTA/GS, continuer
-avec : WebSearch whitelist (Tennis Tonic, Dimers, LWOS, Stats Insider)
-+ SofaScore API optionnel (cf section 🟡 SNIPPET-ONLY).
+**Rate limit** : ~30 req/min toléré, >100/min = ban IP probable
+**Stabilité** : API peut changer sans préavis (frontend update = endpoints
+peuvent bouger). À monitorer.
+
+**Installation** :
+```bash
+pip install cloudscraper requests
+```
+
+**Usage** :
+```python
+from sofascore import SofaScore, filter_top_n_atp, summarize_event
+
+s = SofaScore()
+events = s.scheduled_events("tennis", "2026-05-25")  # cartographie
+top10 = filter_top_n_atp(events, n=10)               # filtre top-10 ATP
+
+# Pour un match spécifique
+event_id = top10[0]["id"]
+wp = s.win_probability(event_id)  # signal modèle
+h2h = s.h2h(event_id)             # historique
+```
 
 ## 🟢 ACCESSIBLE — Sources primaires v4 (whitelist WebSearch)
 
