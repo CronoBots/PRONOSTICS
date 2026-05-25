@@ -172,17 +172,21 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v6.4 — bannière NEXBET centrée (H + V) par
-            rapport au burger, layout grid 3 cols avec placeholder gauche
-            pour centrage parfait. */}
-        <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
-          <span className="justify-self-start" />
-          <Link href="/" aria-label="NΞXBΞT" className="justify-self-center">
-            <BrandLogo variant="banner" size={44} />
+        {/* Header compact v6.5 — bannière NEXBET centrée par rapport à la
+            PAGE (positionnement absolu, indépendant du burger). Burger en
+            blanc theme-aware (text-white → noir bleuté en light mode via
+            l'override de globals.css). */}
+        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 min-h-[52px]">
+          <Link
+            href="/"
+            aria-label="NΞXBΞT"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          >
+            <BrandLogo variant="banner" size={60} />
           </Link>
           <Link
             href="/compte"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5 justify-self-end"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/5"
             aria-label={t("home.menu")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
