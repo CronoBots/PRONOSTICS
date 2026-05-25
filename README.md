@@ -1,22 +1,33 @@
+<p align="center">
+  <img src="docs/assets/brand/nexbet-wordmark.png" alt="NΞXBΞT" width="320" />
+</p>
+
 # PRONOSTICS — NΞXBΞT
 
 Plateforme de pronostics sportifs quotidiens. Le backend Python agrège des matchs
 via WebSearch sur sources whitelistées + APIs (Football-Data.org, API-Football,
 The Odds API quand quota dispo), calcule des probabilités via la méthodologie
-**NΞXBΞT v4.2**, et expose les résultats via un frontend Next.js déployé en
+**NΞXBΞT v4.6**, et expose les résultats via un frontend Next.js déployé en
 statique sur GitHub Pages.
 
-## 🟦 Identité visuelle v5 — Cobalt Premium (24/05/2026)
+## 🟦 Identité visuelle (logo AX cyan — 25/05/2026)
 
-Le projet utilise la palette **Cobalt** (bleu `#2A4BFA`) comme couleur de marque :
-logo (un "N" cobalt stylisé), CTA primaires, brand text, glow shadows.
-La sémantique gain/perte reste universelle :
+Le projet utilise le monogramme **AX** (blanc + cyan) avec wordmark **NEXBET**
+("BET · WIN · REPEAT" en tagline). Trois sources brand sont conservées dans
+`docs/assets/brand/` :
+
+- `nexbet-wordmark.png` — logo complet avec wordmark (header, splash, presentations)
+- `nexbet-mark-square.png` — monogramme AX sur fond noir (avatar GitHub/Discord)
+- `nexbet-mark-transparent.png` — monogramme AX transparent (favicon, watermark)
+
+Les tailles dérivées (favicon, PWA icons, OG image) sont dans `frontend/public/`
+et `frontend/public/icons/`.
+
+Côté palette CSS : `#2A4BFA` cobalt reste la couleur brand actuelle de Tailwind
+(`frontend/tailwind.config.js`). Le cyan du nouveau logo pourra être harmonisé
+plus tard si besoin. La sémantique gain/perte reste universelle :
 - 🟢 vert `#10D9A3` pour les gains/wins/profits
 - 🔴 rouge `#FF4D6D` pour les pertes/losses
-- 🟦 cobalt = **brand uniquement** (pas sémantique)
-
-Cf. `frontend/tailwind.config.js` et `frontend/src/styles/globals.css` pour les
-tokens et thème light/dark.
 
 ## 📊 Mode actuel : Paper trading (24/05 → 23/06/2026)
 
@@ -73,10 +84,12 @@ PRONOSTICS/
 │   │   ├── styles/globals.css     # Theme tokens light/dark + palette v5
 │   │   └── lib/                   # i18n, dataSource, types, auth
 │   └── public/
-│       ├── logo.png               # Logo cobalt transparent 512×512
-│       ├── logo-square.png        # Logo cobalt fond noir 512×512 (OG)
+│       ├── logo.png               # AX transparent 512×512
+│       ├── logo-square.png        # AX fond noir 512×512
+│       ├── favicon.ico            # multi-tailles 16/32/48
 │       ├── favicon-32.png         # Favicon onglet navigateur
-│       ├── apple-touch-icon.png   # Icon iOS home screen
+│       ├── apple-touch-icon.png   # Icon iOS home screen 180×180
+│       ├── icons/                 # PWA icons + OG image
 │       └── data/                  # JSON copiés via prebuild script
 ├── .claude/
 │   └── agents/nexbet-analyst.md   # Spec de l'agent IA NEXBET

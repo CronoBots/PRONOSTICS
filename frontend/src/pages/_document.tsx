@@ -20,6 +20,7 @@ export default function Document() {
 
         {/* PWA installable */}
         <link rel="manifest" href="/PRONOSTICS/manifest.json" />
+        <link rel="icon" href="/PRONOSTICS/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/PRONOSTICS/favicon-32.png" />
         <link rel="apple-touch-icon" href="/PRONOSTICS/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
