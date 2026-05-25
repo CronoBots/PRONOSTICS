@@ -264,10 +264,25 @@ export default function Home() {
               )}
             </section>
 
-            {/* Stat tiles 2x2 : une seule grille pour garantir des hauteurs
-                égales sur les 4 cards (grid stretch par défaut) */}
+            {/* Stat tiles 2x3 : BANKROLL et WIN RATE ajoutés depuis l'ancien
+                StatsHero de /stats (rapatriement v6.6 — la page /stats n'a
+                plus de graphique, ses infos clés sont sur la home). */}
             {stats && (
-              <div className="grid grid-cols-2 grid-rows-2 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-4 lg:grid-rows-1 shrink-0">
+              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 shrink-0">
+                <StatTile
+                  label={t("home.statBankroll")}
+                  value={stats.current_bankroll}
+                  decimals={2}
+                  suffix="€"
+                  tone={stats.current_bankroll >= stats.starting_bankroll ? "green" : "red"}
+                />
+                <StatTile
+                  label={t("home.statWinRate")}
+                  value={stats.win_rate}
+                  decimals={0}
+                  suffix="%"
+                  tone="green"
+                />
                 <StatTile
                   label={t("home.statParis")}
                   value={settledCount}

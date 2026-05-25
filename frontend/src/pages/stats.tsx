@@ -7,7 +7,6 @@ import { AnalyzerSport } from "@/components/AnalyzerSport";
 import { Header } from "@/components/Header";
 import { InfoSheet } from "@/components/InfoSheet";
 import { Skeleton } from "@/components/Skeleton";
-import { StatsHero } from "@/components/StatsHero";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History, HistoryPick, HistoryStats } from "@/lib/types";
@@ -186,7 +185,9 @@ export default function StatsPage() {
           <div>
             {tab === "overview" && (
               <>
-                <StatsHero picks={picks} stats={stats} />
+                {/* StatsHero retiré v6.6 — le graphique est sur la home, et
+                    bankroll/win rate sont désormais dans les stat tiles de
+                    la home. Pas de duplication ici. */}
 
                 {/* Grille flat — tous les KPI cumules */}
                 <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6">

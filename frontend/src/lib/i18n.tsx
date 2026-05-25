@@ -51,6 +51,8 @@ const fr: Dict = {
   "home.statBenefice": "BÉNÉFICE",
   "home.statRoi": "ROI",
   "home.statProgression": "PROGRESSION",
+  "home.statBankroll": "BANKROLL",
+  "home.statWinRate": "WIN RATE",
   "home.helpFor": "Aide {label}",
   // Stat infos (home modals)
   "statInfo.paris.title": "Nombre de paris",
@@ -723,6 +725,8 @@ const en: Dict = {
   "home.statBenefice": "PROFIT",
   "home.statRoi": "ROI",
   "home.statProgression": "GROWTH",
+  "home.statBankroll": "BANKROLL",
+  "home.statWinRate": "WIN RATE",
   "home.helpFor": "Help {label}",
   // Stat infos
   "statInfo.paris.title": "Number of bets",
