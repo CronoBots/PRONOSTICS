@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/brand/nexbet-wordmark.png" alt="NΞXBΞT" width="320" />
+  <img src="docs/assets/brand/nexbet-banner.png" alt="NΞXBΞT — BET · WIN · REPEAT" width="640" />
 </p>
 
 # PRONOSTICS — NΞXBΞT
@@ -13,15 +13,21 @@ statique sur GitHub Pages.
 ## 🟦 Identité visuelle (logo AX cyan — 25/05/2026)
 
 Le projet utilise le monogramme **AX** (blanc + cyan) avec wordmark **NEXBET**
-("BET · WIN · REPEAT" en tagline). Trois sources brand sont conservées dans
+("BET · WIN · REPEAT" en tagline). Cinq sources brand sont conservées dans
 `docs/assets/brand/` :
 
-- `nexbet-wordmark.png` — logo complet avec wordmark (header, splash, presentations)
+- `nexbet-banner.png` — bannière horizontale 1280×853 fond blanc (header README, présentations)
+- `nexbet-banner-social.png` — bannière 1280×640 ratio 2:1 (GitHub social preview)
+- `nexbet-wordmark.png` — logo complet 1500×1500 fond noir (splash, hero)
 - `nexbet-mark-square.png` — monogramme AX sur fond noir (avatar GitHub/Discord)
 - `nexbet-mark-transparent.png` — monogramme AX transparent (favicon, watermark)
 
-Les tailles dérivées (favicon, PWA icons, OG image) sont dans `frontend/public/`
-et `frontend/public/icons/`.
+Les tailles dérivées (favicon, PWA icons, OG image, logo-wordmark recadré
+pour le header app) sont dans `frontend/public/` et `frontend/public/icons/`.
+
+> 💡 **GitHub social preview** : pour afficher la bannière quand le repo
+> est partagé sur Twitter/Discord/Slack, va dans **Settings → General →
+> Social preview → Upload** et choisis `nexbet-banner-social.png`.
 
 Côté palette CSS : `#2A4BFA` cobalt reste la couleur brand actuelle de Tailwind
 (`frontend/tailwind.config.js`). Le cyan du nouveau logo pourra être harmonisé
