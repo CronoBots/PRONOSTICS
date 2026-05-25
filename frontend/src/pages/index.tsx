@@ -214,13 +214,13 @@ export default function Home() {
                 topRight={
                   <button
                     onClick={() => setMenuOpen((o) => !o)}
-                    style={{ borderColor: "#ffffff" }}
+                    style={{ borderColor: "var(--accent-blue)" }}
                     className="nav-pulse w-7 h-7 rounded-full border flex items-center justify-center gap-[2px]"
                     aria-label={t("home.chartOptions")}
                   >
-                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
-                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
-                    <span className="block w-[3px] h-[3px] rounded-full bg-white" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-blue" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-blue" />
+                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-blue" />
                   </button>
                 }
                 footer={
@@ -238,9 +238,9 @@ export default function Home() {
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          style={{ color: "#ffffff", borderColor: "#ffffff" }}
+                          style={{ color: "var(--accent-blue)", borderColor: "var(--accent-blue)" }}
                           className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center ${
-                            period === p ? "bg-white/35" : "bg-transparent"
+                            period === p ? "bg-accent-blue/25" : "bg-transparent"
                           }`}
                         >
                           {t(labelKey)}
@@ -249,7 +249,7 @@ export default function Home() {
                     })}
                     <Link
                       href="/filtres"
-                      style={{ color: "#ffffff", borderColor: "#ffffff" }}
+                      style={{ color: "var(--accent-blue)", borderColor: "var(--accent-blue)" }}
                       className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center bg-transparent"
                     >
                       {t("home.filters")}

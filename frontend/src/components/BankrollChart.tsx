@@ -231,8 +231,8 @@ export function BankrollChart({
               <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
               <XAxis dataKey="label" hide />
               <YAxis
-                stroke="rgba(255,255,255,0.85)"
-                tick={{ fontSize: 11, fill: "#ffffff" }}
+                stroke="var(--accent-blue)"
+                tick={{ fontSize: 11, fill: "var(--accent-blue)" }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${Math.round(v)}€`}
