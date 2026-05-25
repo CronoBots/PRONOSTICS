@@ -90,13 +90,24 @@ Au minimum **15 matchs** identifiés sur les 3 sports actifs combinés.
 
 ## Étape 3 — Analyse approfondie (top 5, PARALLÈLE)
 
-Pour chaque candidat, lancer **les 3 WebSearch + WebFetch parallèles dans
-un seul message** :
+Pour chaque candidat, lancer **les appels parallèles dans un seul message** :
+
+### Step 3a — API quanti primaire (v4.6 — PRIORITÉ #1)
+
+**Selon le sport du candidat** :
+- ⚽ **Foot** ou 🏀 **Basket** → `python` appel `backend/scripts/sportsapi.py`
+  endpoints `/predictions?fixture={id}` + `/odds?fixture={id}` + `/injuries`
+  → `model_proba` API-Sports = **1 source quanti garantie** dans `n_eff`
+- 🎾 **Tennis** → `python` appel `backend/scripts/sofascore.py` endpoints
+  `/event/{id}/win-probability` + `/h2h` + `/odds/1/all`
+  → `model_proba` SofaScore = **1 source quanti garantie** dans `n_eff`
+
+### Step 3b — WebSearch complémentaires (parallèle)
 
 1. **WebSearch** : preview + prédiction pro sur le match
 2. **WebSearch** : modèle ML / probabilité explicite (Dimers, Stats
    Insider, BleacherNation)
-3. **WebSearch** : injuries / lineup / news 24h
+3. **WebSearch** : injuries / lineup / news 24h (si non couvert par 3a)
 
 **Sources whitelist obligatoires** (testées accessibles, voir
 `sources_catalogue.md`) :

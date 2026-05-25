@@ -83,7 +83,7 @@ pas même équipe). Exemples :
 
 ## Procédure obligatoire
 
-### Étape 0 — Init (lecture parallèle)
+### Étape 0 — Init (lecture parallèle + check API key)
 
 Lire en parallèle (un seul message multi-Read) :
 1. `backend/data/nexbet/method.md`
@@ -93,6 +93,12 @@ Lire en parallèle (un seul message multi-Read) :
 5. `backend/data/nexbet/sources_catalogue.md`
 6. `backend/data/nexbet/paper_trading_log.md` (état bankroll virtuel)
 7. `backend/scripts/picks_data.py` (anti-dup uniquement)
+
+**Check préalable v4.6** : avant l'Étape 1, vérifier que la clé
+`API_SPORTS_KEY` est dispo en environnement (cf
+`backend/scripts/check_sportsapi.py`). Si absente → noter dans la trace
+"API-Sports inactif (clé manquante), fallback WebSearch seul pour
+foot/basket" et continuer (mode dégradé). SofaScore ne demande pas de clé.
 
 Noter : date UTC + heure belge, bankroll virtuel paper, picks récents.
 
@@ -121,19 +127,31 @@ mode dégradé (Odds API quota épuisé).
 - Doublon (`check_duplicate.py` exit ≠ 0)
 - < 3 sources accessibles dispo (F4 KO)
 
-### Étape 3 — Analyse approfondie (parallèle, sources whitelist)
+### Étape 3 — Analyse approfondie (parallèle, API quanti + sources whitelist)
 
-Pour chaque candidat survivant, **un seul message multi-tool** :
+Pour chaque candidat survivant, **un seul message multi-tool** combinant
+**API quanti primaire** + WebSearch complémentaires.
+
+**Step 3a — API quanti primaire (PRIORITÉ #1 v4.6)** :
+- ⚽ foot / 🏀 basket → `Bash` appel `python backend/scripts/sportsapi.py`
+  (ou import direct) endpoints `/predictions`, `/odds`, `/injuries` →
+  donne `model_proba` API-Sports comptée comme **1 source quanti garantie**
+- 🎾 tennis → `Bash` appel `python backend/scripts/sofascore.py` endpoints
+  `/event/{id}/win-probability`, `/h2h`, `/odds/1/all` → donne
+  `model_proba` SofaScore comptée comme **1 source quanti garantie**
+
+**Step 3b — WebSearch complémentaires (parallèle, dans le MÊME message)** :
 - WebSearch preview + prediction pro
 - WebSearch modèle ML (Dimers, Stats Insider, BleacherNation)
-- WebSearch injuries / lineups 24h
+- WebSearch injuries / lineups 24h (si non couvert par 3a)
 
-**Whitelist v4 (accessible)** : lastwordonsports.com, bleachernation.com,
+**Whitelist v4.6 (accessible)** : lastwordonsports.com, bleachernation.com,
 dimers.com, statsinsider.com.au, tennistonic.com, covers.com,
 lineups.com, fanduel.com/research, goal.com, sportsgambler.com,
 cbssports.com (snippets).
 
-**FORBIDDEN** (403 confirmé) : atptour.com, wtatennis.com, sofascore.com,
+**FORBIDDEN** (403 confirmé) : atptour.com, wtatennis.com,
+sofascore.com (frontend HTML — utiliser l'API JSON via wrapper Python),
 tennistemple.com. Citer URL si trouvée en search mais data non-lue.
 
 Extraire pour chaque candidat :

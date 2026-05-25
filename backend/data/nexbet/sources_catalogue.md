@@ -1,10 +1,15 @@
 # Catalogue des sources NΞXBΞT (v4.6 — Focus foot/basket/tennis)
 
+> **Cleanup ciblé (25/05/2026 soir)** : promotion d'**API-Sports en
+> source quanti PRIORITÉ #1** pour foot/basket. Résolution de
+> l'incohérence triple SofaScore (legacy 🔴 supprimée, adapter app
+> obsolète vs wrapper scripts v4.5 clarifié). Whitelists par sport
+> nettoyées. Sources qui ne couvrent QUE NHL/MLB/NFL retirées des
+> tables actives (déplacées en "archive sports suspendus").
+>
 > **v4.6 (25/05/2026)** : **focus stratégique foot / basket / tennis
 > UNIQUEMENT**. Sources US sports (NHL, MLB, NFL) marquées "inactives
-> v4.6" mais conservées dans la doc pour réactivation future. Whitelist
-> par sport simplifiée aux 3 sports actifs en tête, US sports archivés
-> en fin de section.
+> v4.6" mais conservées dans la doc pour réactivation future.
 >
 > **v4.5 (25/05/2026)** : intégration **SofaScore API** (api.sofascore.com)
 > comme source de cartographie tennis prioritaire + signal Win Probability.
@@ -14,13 +19,59 @@
 > **v4.4 (24/05)** : intégration API-Sports pour foot/basket/hockey/baseball.
 > **Refonte v4.0 (23/05)** : reclassement par accessibilité réelle.
 
-## 🟢 ACCESSIBLE — Source officielle API
+## 🟢 ACCESSIBLE — Sources officielles API (priorité #1 v4.6)
 
-### API-Sports (api-sports.io) — Mode direct (v4.4)
+### ⭐ API-Sports (api-sports.io) — PRIORITÉ #1 foot/basket (v4.4, promu v4.6)
 
-[Section existante — voir doc complète v4.4 plus bas]
+**Statut** : 🟢 ACCESSIBLE — clé requise (free signup 100 req/jour)
+**Type** : API REST officielle, documentée publiquement
+**Authentification** : header `x-apisports-key` (clé dans `.env` → `API_SPORTS_KEY`)
+**Couverture v4.6 (sports actifs)** :
+- ⚽ **Football** : toutes ligues mondiales (Premier League, Bundesliga,
+  Ligue 1, La Liga, Serie A, Champions League, Coupes nationales, etc.)
+- 🏀 **Basketball** : NBA + Euroleague + ligues européennes
+- 🎾 Tennis : **NON couvert** → utiliser SofaScore en remplacement
+- 🏒 NHL, ⚾ MLB, 🏈 NFL, 🏎 F1, 🥊 MMA : couverts mais hors scope v4.6
 
-### SofaScore API (api.sofascore.com) — Reverse-engineered (NOUVEAU v4.5)
+**Endpoints clés NEXBET** :
+- `/fixtures?date={YYYY-MM-DD}` — cartographie matchs du jour par ligue
+- `/fixtures/headtohead?h2h={team1}-{team2}` — historique face-à-face
+- `/predictions?fixture={id}` — ⭐ **proba modèle propriétaire** (compte
+  comme source quanti #1 dans n_eff)
+- `/odds?fixture={id}` — cotes multi-bookmakers (dont bwin)
+- `/injuries?team={id}&season={year}` — blessures équipe
+- `/lineups?fixture={id}` — compositions confirmées
+- `/standings?league={id}&season={year}` — classement saison
+- `/players/topscorers` — meilleurs buteurs ligue
+
+**Plan Free** : 100 req/jour, 10 req/min (largement suffisant pour le
+scan quotidien NEXBET — typiquement 30-50 req/jour pour 5-10 candidats).
+**Plan Pro** ($19/mois) : 7500 req/jour si scaling.
+
+**Wrapper Python** : `backend/scripts/sportsapi.py`
+- Classe `SportsAPI` avec rate limiting, retry exponentiel, status check
+- `LEAGUE_IDS` constante avec IDs ligues principales pré-mappés
+- Exception `SportsAPIError` pour erreurs auth/quota/rate-limit
+
+**Script de test** : `backend/scripts/check_sportsapi.py` (CLI)
+```bash
+python backend/scripts/check_sportsapi.py
+```
+
+**Activation** :
+1. Inscription gratuite sur https://api-sports.io
+2. Récupérer la clé dans dashboard "My Access"
+3. Ajouter `API_SPORTS_KEY=ta_cle` dans `.env` racine repo
+4. Tester avec `check_sportsapi.py`
+
+**Usage NEXBET** : appel systématique aux endpoints `/predictions` et
+`/odds` pour chaque candidat foot ou basket pendant l'Étape 3 (analyse
+approfondie). Le `%` de prédiction renvoyé compte comme **1 source
+quantitative dans `n_eff`** (avec tag `api-sports` dans la trace).
+
+---
+
+### ⭐ SofaScore API (api.sofascore.com) — PRIORITÉ #1 tennis (NOUVEAU v4.5)
 
 **Statut** : 🟢 ACCESSIBLE — réponse JSON confirmée par user 25/05/2026
 **Type** : API JSON non-officielle (frontend SofaScore reverse-engineered)
@@ -149,65 +200,82 @@ si trouvées dans un autre snippet, en mentionnant que la data n'a pas pu
 |---|---|---|---|
 | **ATP Tour officiel** | atptour.com | Cloudflare 403 | Citer URL si présente dans search, data non lue |
 | **WTA Tour officiel** | wtatennis.com | 403 | Citer URL si présente dans search |
-| **Sofascore** | sofascore.com / api.sofascore.com | 403 User-Agent + Cloudflare | Aucun — abandonner |
 | **TennisTemple** | tennistemple.com | 403 | Aucun — abandonner |
-| **NHL.com** | nhl.com | 403 fréquent | Snippets WebSearch parfois OK |
+| **NHL.com** | nhl.com | 403 fréquent | Snippets WebSearch parfois OK (sport hors scope v4.6 de toute façon) |
 | **NBA.com** | nba.com | 403 fréquent | Snippets WebSearch parfois OK |
 | **Polymarket frontend** | polymarket.com | JS-rendered | URL citable, data non lue |
 | **Pinnacle** | pinnacle.com | Login required + geo-block | Aucun — abandonner |
 | **Betfair Exchange** | betfair.com | Login required | Aucun — abandonner |
 | **Tennis Abstract** | tennisabstract.com | Souvent 403 | Limited |
 
-## 🔵 PIPELINE BACKEND — Sources API du repo (status réel v4)
+> **Note** : SofaScore via `sofascore.com` (frontend HTML) reste inaccessible
+> en 403, MAIS l'API JSON `api.sofascore.com` accédée via `cloudscraper`
+> fonctionne — cf. section 🟢 SofaScore API ci-dessus. Ne pas confondre.
+> L'ancien adapter `backend/app/adapters/sofascore.py` (requests simples)
+> est obsolète, utiliser `backend/scripts/sofascore.py` (cloudscraper).
 
-Ces sources sont branchées sur `daily_candidates.py` / `analyze_match.py`
-MAIS sont actuellement non opérationnelles dans l'environnement Claude
-Code Web.
+## 🔵 PIPELINE BACKEND — Wrappers Python du repo (status v4.6)
 
-| Source | Adapter | Status v4 | Cause |
+Statut des wrappers/adapters Python branchés sur `daily_candidates.py` /
+`analyze_match.py` et utilisables directement par l'agent via `Bash`.
+
+| Source | Chemin | Statut v4.6 | Note |
 |---|---|---|---|
-| The Odds API | `odds_api.py` | ❌ Quota épuisé | 498/500 req utilisés en mai 2026 |
-| Polymarket Gamma | `polymarket.py` | ⚠️ Accessible mais data peu liquide tennis | OK pour NBA/NHL playoffs |
-| Manifold Markets | `manifold.py` | ⚠️ Accessible mais marchés rares | Sports premium uniquement |
-| Kalshi | `kalshi.py` | ⚠️ Accessible | Sample limité |
-| NBA Stats API | `nba_stats.py` | ✅ Accessible | Stats historiques OK |
-| NHL Stats API | `nhl_stats.py` | ✅ Accessible | Stats historiques OK |
-| MLB Stats API | `mlb_stats.py` | ✅ Accessible | Stats historiques OK |
-| Tennis Abstract | `tennis_abstract.py` | ⚠️ Scraping fragile | 403 intermittent |
-| Sofascore | `sofascore.py` | ❌ 403 systématique | Cloudflare |
+| ⭐ **API-Sports** | `backend/scripts/sportsapi.py` | 🟢 **PRIORITÉ #1 foot/basket** | Clé requise — `API_SPORTS_KEY` dans `.env` |
+| ⭐ **SofaScore (v4.5)** | `backend/scripts/sofascore.py` | 🟢 **PRIORITÉ #1 tennis** | Sans clé, cloudscraper bypass Cloudflare |
+| Football-Data | `backend/app/adapters/football_data.py` | 🟢 Backup foot | Free token `FOOTBALL_DATA_TOKEN` |
+| API-Football | `backend/app/adapters/api_football.py` | 🟢 Backup foot | Même clé qu'API-Sports |
+| The Odds API | `backend/app/adapters/odds_api.py` | ❌ Quota épuisé | 498/500 req mai 2026 — désactivé jusqu'à reset |
+| Polymarket Gamma | `backend/app/adapters/polymarket.py` | ⚠️ Accessible, sport-dépendant | Sharp signal via snippet si liquidité |
+| Manifold Markets | `backend/app/adapters/manifold.py` | ⚠️ Marchés rares | Sports premium uniquement |
+| Kalshi | `backend/app/adapters/kalshi.py` | ⚠️ Accessible | Sample limité |
+| Balldontlie (NBA) | `backend/app/adapters/balldontlie.py` | 🟢 Backup basket | Clé `BALLDONTLIE_KEY` |
+| OpenWeather | `backend/app/adapters/openweather.py` | 🟢 Météo foot extérieur | Clé `OPENWEATHER_KEY` |
+| Tennis Abstract | `backend/app/adapters/tennis_abstract.py` | ⚠️ Scraping fragile | 403 intermittent — fallback sur SofaScore |
+| ~~Sofascore adapter app~~ | `backend/app/adapters/sofascore.py` | ❌ **OBSOLÈTE** | Requests simples → 403. Utiliser `scripts/sofascore.py` |
+| ~~NBA Stats~~ | `backend/app/adapters/nba_stats.py` | ⏸ Hors scope v4.6 | Stats historiques OK si réactivé |
+| ~~NHL Stats~~ | `backend/app/adapters/nhl_stats.py` | ⏸ Hors scope v4.6 | NHL suspendu v4.6 |
+| ~~MLB Stats~~ | `backend/app/adapters/mlb_stats.py` | ⏸ Hors scope v4.6 | MLB suspendu v4.6 |
 
-**Action v4** : la chaîne pipeline est en mode dégradé. Pour les
-prochaines semaines, l'agent fonctionne **100% WebSearch + WebFetch
-sur whitelist accessibles**. Le pipeline backend reste branché en
-backup pour quand The Odds API quota se remettra ou si le user injecte
-une nouvelle clé.
+**Mode opérationnel v4.6** :
+- **Source quanti #1** : **API-Sports** (foot/basket) + **SofaScore** (tennis)
+  via wrappers `backend/scripts/sportsapi.py` et `backend/scripts/sofascore.py`
+- **Sources complémentaires** : WebSearch sur whitelist 🟢 + snippets 🟡
+  (Dimers, Stats Insider, Tennis Tonic, Goal.com, etc.)
+- **Backups** : Football-Data, Balldontlie, Polymarket si edge cases
+- **The Odds API** : désactivée jusqu'à reset quota (juin 2026)
 
 ## Whitelist de référence par sport (v4.6 — focus foot/basket/tennis)
 
 ### ⚽ Soccer (Euro Championship, Coupes nationales) — **ACTIF**
-1. Goal.com
-2. SportsGambler
-3. CBS Sports
-4. dailysports.net
-5. Freetips
-6. Covers
+1. ⭐ **API-Sports** (`/predictions`, `/odds`) — quanti #1
+2. Goal.com
+3. SportsGambler
+4. CBS Sports
+5. dailysports.net
+6. Freetips
+7. Covers
+8. Football-Data (backup, ligues principales)
 
 ### 🏀 Basketball (NBA playoffs + Euroleague) — **ACTIF**
-1. Bleacher Nation
+1. ⭐ **API-Sports** (`/predictions`, `/odds`) — quanti #1
 2. Dimers
-3. CBS Sports (SportsLine model, via snippets)
-4. FanDuel Research
-5. Covers
-6. Lineups
+3. Bleacher Nation
+4. CBS Sports (SportsLine model, via snippets)
+5. FanDuel Research
+6. Covers
+7. Lineups
+8. Balldontlie (backup stats NBA)
 
 ### 🎾 Tennis (Grand Slam + ATP/WTA tour) — **ACTIF**
-1. Tennis Tonic
-2. Last Word on Sports
-3. Dimers
-4. Stats Insider
-5. Tennis Up to Date
-6. Profootballnetwork (parfois)
-7. Rotowire (utile en phase GS R1-R3)
+1. ⭐ **SofaScore API** (`/win-probability`, `/h2h`) — quanti #1 (API-Sports ne couvre pas tennis)
+2. Tennis Tonic
+3. Last Word on Sports
+4. Dimers
+5. Stats Insider
+6. Tennis Up to Date
+7. Profootballnetwork (parfois)
+8. Rotowire (utile en phase GS R1-R3)
 
 **Note Grand Slam — Roland Garros 24/05 → 09/06/2026** :
 AB-1 strict actif sur top-10 ATP J-1/J-2 → bloque les analyses tier 1.
@@ -307,4 +375,7 @@ détecter les régressions :
 - Documenter les changements dans ce fichier
 
 Date du dernier health-check : **2026-05-23**.
+Date du dernier cleanup catalogue : **2026-05-25** (promotion API-Sports
+PRIORITÉ #1, résolution incohérence SofaScore, simplification whitelists
+v4.6).
 Prochain health-check programmé : **2026-06-23** (fin cycle paper).
