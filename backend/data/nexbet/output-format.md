@@ -176,7 +176,7 @@ Si user valide (✅), append dans `paper_trading_log.md` :
   "date_validated": "YYYY-MM-DD HH:MM Belgique",
   "verdict": "recommended | acceptable | borderline",
   "pick": "Description courte",
-  "sport": "tennis | nba | nhl | mlb | soccer | combo",
+  "sport": "tennis | basketball | football | combo",
   "match": "Team A vs Team B",
   "kickoff_utc": "YYYY-MM-DDTHH:MM:SS+00:00",
   "odds_bwin": 1.78,

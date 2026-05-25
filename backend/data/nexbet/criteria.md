@@ -1,5 +1,11 @@
-# NΞXBΞT — Critères de filtrage (v4.3 — Recap-only + Narratif + AB-1 recadré)
+# NΞXBΞT — Critères de filtrage (v4.6 — Focus foot/basket/tennis)
 
+> **v4.6 (25/05/2026)** : **focus stratégique foot / basket / tennis
+> UNIQUEMENT**. NHL, MLB, NFL, F1, MMA, rugby suspendus du scan
+> quotidien. AB-5 (MLB) déclassé "non applicable" — règle conservée en
+> archive pour réactivation future. AB-2 (perdant 1-3 série playoffs) ne
+> s'applique plus qu'au basket NBA. Whitelist sources US sports (NHL,
+> MLB, NFL) reste documentée mais marquée "inactive v4.6".
 > **v4.3 (24/05/2026 matin)** : recadrage AB-1 — désormais BLOCANT
 > uniquement sur tournois warm-up ATP 250/500 à J-2/J-1 d'un GS, **PAS**
 > sur les GS eux-mêmes. La règle initiale (n=1 Ruud à Geneva) était trop
@@ -12,6 +18,13 @@
 > L'agent présente, le user décide.
 
 ## Filtres durs (NON négociables)
+
+### F0 — Sport actif (NOUVEAU v4.6)
+- **Sports actifs** : ⚽ football, 🏀 basketball, 🎾 tennis (ATP/WTA + GS)
+- **Sports suspendus** : NHL, MLB, NFL, F1, MMA, rugby, eSport, autres
+- Tout candidat hors scope = **rejet immédiat**, ne pas analyser
+- Réactivation = bump version (v4.7+) + mise à jour de ce fichier +
+  agent nexbet-analyst.md
 
 ### F1 — Cote
 - **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
@@ -207,8 +220,10 @@ Après 30 jours paper :
 ### BLOCANTS (rejet automatique)
 - **AB-1** : Top-10 ATP J-2/J-1 avant Grand Slam
 - **AB-2** : Perdant 1-3 série playoffs (sauf cote ≥ 2.50 + proba ≥ 0.75)
+  — **v4.6** : applicable basket NBA uniquement (NHL/MLB hors scope)
 - **AB-4** : Combiné 3+ jambes
-- **AB-5** : MLB ML cote > 2.50 sans matchup pitcher exceptionnel
+- ~~**AB-5** : MLB ML cote > 2.50 sans matchup pitcher exceptionnel~~ —
+  **NON APPLICABLE v4.6** (MLB hors scope, règle archivée)
 
 ### EXPERIMENTAL (note dans trace, pas blocking)
 - **AB-3** : Cinderella playoff momentum (n=1)

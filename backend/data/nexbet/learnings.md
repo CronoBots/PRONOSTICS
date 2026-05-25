@@ -1,4 +1,4 @@
-# NΞXBΞT — Base de connaissances (v4.3)
+# NΞXBΞT — Base de connaissances (v4.6)
 
 > Mémoire long terme de l'agent. Mis à jour après chaque pick résolu
 > (paper ou réel). L'agent DOIT lire ce fichier au début de chaque
@@ -15,6 +15,7 @@
 | **v4.3** | 24/05/2026 matin | **Recadrage AB-1** : blocant uniquement sur tournois warm-up ATP 250/500 à J-2/J-1 d'un GS, **PAS** sur les GS eux-mêmes (top-10 ATP analysables normalement à RG R1, Wimbledon R1 etc.). **F1 combo** : jambes 1.20-1.50 (+0.05), total 1.60-2.50 (+0.30) pour permettre triples combinés de favoris écrasants. Question user "pourquoi écarter les top-10 ?" légitime — overgeneralisation v4.0 corrigée. |
 | **v4.4** | 24/05/2026 soir | **Intégration API-Sports** (api-sports.io) comme source quantitative officielle pour foot/basket/hockey/baseball. Wrapper Python `backend/scripts/sportsapi.py` avec 10 endpoints clés. Predictions API-Sports = nouvelle source quanti #1 pour foot (= n_eff +1 dans calculs proba_shrunk). Tennis reste sur WebSearch whitelist (API-Sports ne couvre pas tennis). Clé en variable d'env `API_SPORTS_KEY`. |
 | **v4.5** | 25/05/2026 | **Intégration SofaScore API** (api.sofascore.com) — comble le gap tennis de v4.4. API non-officielle (TOS gris, usage perso OK). Cartographie auto via `/sport/tennis/scheduled-events/{date}` + Win Probability propriétaire (`/event/{id}/win-probability`) = nouveau signal quanti unique pour tennis ATP/WTA/Grand Chelems. Wrapper Python `backend/scripts/sofascore.py` avec cloudscraper bypass Cloudflare + rate limit 1 req/sec. Aucune clé requise (juste User-Agent navigateur). |
+| **v4.6** | 25/05/2026 | **Focus stratégique foot / basket / tennis UNIQUEMENT** (décision user). NHL, MLB, NFL, F1, MMA, rugby suspendus du scan quotidien — réactivables via bump v4.7+. Motivation : concentrer expertise/sources sur 3 sports maîtrisés (volume Europe + GS tennis + NBA playoffs) plutôt que diluer sur 6+. **Nouveau filtre F0** "Sport actif" (rejet immédiat hors scope). **AB-5 MLB** déclassé "non applicable" (règle archivée). **AB-2 playoffs** restreint au basket NBA. Étape 1 cartographie = 3 WebSearch parallèles (foot, basket, tennis), plus de fallback NHL/MLB. Historique paper NHL/MLB intact (audit), backend engines + frontend SPORT_OPTIONS conservés (UI multi-sports), réversible. |
 
 ---
 

@@ -1,5 +1,11 @@
-# Catalogue des sources NΞXBΞT (v4.5 — SofaScore API intégrée)
+# Catalogue des sources NΞXBΞT (v4.6 — Focus foot/basket/tennis)
 
+> **v4.6 (25/05/2026)** : **focus stratégique foot / basket / tennis
+> UNIQUEMENT**. Sources US sports (NHL, MLB, NFL) marquées "inactives
+> v4.6" mais conservées dans la doc pour réactivation future. Whitelist
+> par sport simplifiée aux 3 sports actifs en tête, US sports archivés
+> en fin de section.
+>
 > **v4.5 (25/05/2026)** : intégration **SofaScore API** (api.sofascore.com)
 > comme source de cartographie tennis prioritaire + signal Win Probability.
 > Couverture tennis manquante de v4.4 désormais couverte. ⚠️ API non-officielle
@@ -176,9 +182,17 @@ sur whitelist accessibles**. Le pipeline backend reste branché en
 backup pour quand The Odds API quota se remettra ou si le user injecte
 une nouvelle clé.
 
-## Whitelist de référence par sport (v4)
+## Whitelist de référence par sport (v4.6 — focus foot/basket/tennis)
 
-### NBA (ECF/WCF/Finals période)
+### ⚽ Soccer (Euro Championship, Coupes nationales) — **ACTIF**
+1. Goal.com
+2. SportsGambler
+3. CBS Sports
+4. dailysports.net
+5. Freetips
+6. Covers
+
+### 🏀 Basketball (NBA playoffs + Euroleague) — **ACTIF**
 1. Bleacher Nation
 2. Dimers
 3. CBS Sports (SportsLine model, via snippets)
@@ -186,14 +200,7 @@ une nouvelle clé.
 5. Covers
 6. Lineups
 
-### NHL (Stanley Cup playoffs)
-1. Covers
-2. Lineups
-3. Bleacher Nation
-4. Yahoo Sports (snippets)
-5. OddsShark (snippets)
-
-### Tennis (Grand Slam + ATP/WTA tour)
+### 🎾 Tennis (Grand Slam + ATP/WTA tour) — **ACTIF**
 1. Tennis Tonic
 2. Last Word on Sports
 3. Dimers
@@ -207,10 +214,25 @@ AB-1 strict actif sur top-10 ATP J-1/J-2 → bloque les analyses tier 1.
 Outsiders R1/R2 fortement déconseillés (variance élevée, coverage
 faible). Tennis sera sous-représenté dans le funnel paper pendant 15j.
 **Pas de compensation artificielle** : on accepte la déplétion plutôt
-que d'analyser des matchs sous-couverts. Privilégier NBA/NHL/MLB/soccer
-en attendant. Biais documenté, à monitorer dans l'audit fin de cycle.
+que d'analyser des matchs sous-couverts. Privilégier foot et basket
+NBA en attendant. Biais documenté, à monitorer dans l'audit fin de cycle.
 
-### MLB
+---
+
+### 🔒 Sports suspendus v4.6 (whitelist conservée en archive)
+
+> Les listes ci-dessous restent documentées pour réactivation future
+> (bump v4.7+), mais ne doivent pas être utilisées tant que le focus
+> reste foot/basket/tennis. **Aucune cartographie sur ces sports.**
+
+#### 🏒 NHL (Stanley Cup playoffs) — **INACTIF v4.6**
+1. Covers
+2. Lineups
+3. Bleacher Nation
+4. Yahoo Sports (snippets)
+5. OddsShark (snippets)
+
+#### ⚾ MLB — **INACTIF v4.6**
 1. OddsShark (snippets)
 2. Action Network (snippets)
 3. tonyspicks.com
@@ -218,13 +240,12 @@ en attendant. Biais documenté, à monitorer dans l'audit fin de cycle.
 5. Bleacher Nation
 6. Covers
 
-### Soccer (Euro Championship, Coupes nationales)
-1. Goal.com
-2. SportsGambler
-3. CBS Sports
-4. dailysports.net
-5. Freetips
-6. Covers
+#### 🏈 NFL — **INACTIF v4.6** (intersaison de toute façon)
+1. ESPN BPI (snippets)
+2. FanDuel Research
+3. CBS Sports SportsLine
+4. Bleacher Nation
+5. profootballnetwork
 
 ## Procédure de scraping v4
 

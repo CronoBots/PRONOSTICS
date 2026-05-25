@@ -1,5 +1,15 @@
-# NΞXBΞT — Procédure obligatoire (v4.3 — Recap-only + Narratif + AB-1 recadré)
+# NΞXBΞT — Procédure obligatoire (v4.6 — Focus foot/basket/tennis)
 
+> **v4.6 (25/05/2026)** : **focus stratégique foot / basket / tennis
+> UNIQUEMENT**. NHL, MLB, NFL, F1, MMA, rugby suspendus du scan
+> quotidien (réactivables plus tard). Étape 1 cartographie limitée à 3
+> WebSearch parallèles (un par sport actif). AB-5 MLB déclassé "non
+> applicable" (sport hors scope). AB-2 playoffs ne s'applique plus qu'au
+> basket NBA. Historique paper NHL/MLB intact (audit), backend engines et
+> frontend SPORT_OPTIONS inchangés.
+>
+> **v4.5 (25/05/2026)** : intégration SofaScore API (gap tennis comblé).
+> **v4.4 (24/05/2026 soir)** : intégration API-Sports (foot/basket).
 > **v4.3 (24/05/2026 matin)** : AB-1 recadré (blocant uniquement warm-up
 > ATP 250/500 avant GS, PAS le GS lui-même). F1 combo élargi : jambes
 > 1.20-1.50, total 1.60-2.50. **Recherche active de combinés** quand
@@ -46,19 +56,23 @@ Noter : date courante (UTC + Belgique), bankroll virtuel courant (paper),
 bankroll réel courant (info contextuelle, **non utilisé** pour les
 calculs de mise).
 
-## Étape 1 — Cartographie (cast wide net)
+## Étape 1 — Cartographie (cast wide net — focus v4.6)
 
-Sports à scanner systématiquement selon la saison. Au minimum **15 matchs**
-identifiés.
+**Sports actifs v4.6 : foot, basket, tennis UNIQUEMENT.** NHL/MLB/NFL/F1/MMA
+sont suspendus — ne PAS les scanner ni les inclure dans la watchlist.
+
+Au minimum **15 matchs** identifiés sur les 3 sports actifs combinés.
 
 **Méthode parallèle** :
-1. **Un seul message** avec N WebSearch parallèles, une recherche par
-   sport actif.
+1. **Un seul message** avec **3 WebSearch parallèles** — un par sport
+   actif (⚽ football, 🏀 basketball, 🎾 tennis).
 2. Liste sortie : `| Match | Sport | Kickoff UTC | Cote favori |`
 3. Marquer les matchs "premium" (playoffs, finales) — coverage pros
    plus dense.
-4. **Sortie attendue** : tableau ≥ 15 lignes, daté.
-5. **Écrire immédiatement** dans
+4. Si un sport est en intersaison (rare avec foot/basket/tennis), noter
+   "intersaison" et continuer avec les 2 autres — pas de fallback NHL/MLB.
+5. **Sortie attendue** : tableau ≥ 15 lignes, daté.
+6. **Écrire immédiatement** dans
    `decisions/<date>-watchlist.md`.
 
 ## Étape 2 — Pré-filtrage strict
@@ -66,7 +80,9 @@ identifiés.
 Éliminer en bloc :
 - Cote favori < 1.50 OU > 2.00 (single, F1 strict)
 - Combo : cote totale > 2.20 OU < 1.60 (sans boost)
-- Sport hors compétence
+- **Sport hors scope v4.6** (NHL, MLB, NFL, F1, MMA, rugby, etc.) — rejet
+  immédiat même si match présent en watchlist par erreur
+- Sport hors compétence agent (rugby, eSport, etc.)
 - Doublon avec pick récent (`check_duplicate.py`)
 - Pas de coverage pro accessible dispo (F4 impossible)
 
@@ -121,9 +137,11 @@ Pour chaque finaliste, croiser avec `learnings.md`. Règles actives v4 :
 
 **Anti-bias BLOCANTS (rejet automatique)** :
 - AB-1 : Top-10 ATP J-2/J-1 avant Grand Slam
-- AB-2 : Perdant 1-3 série playoffs
+- AB-2 : Perdant 1-3 série playoffs (basket NBA uniquement en v4.6 —
+  NHL/MLB playoffs hors scope)
 - AB-4 : Combiné 3+ jambes
-- AB-5 : MLB ML > 2.50 sans matchup pitcher exceptionnel
+- ~~AB-5 : MLB ML > 2.50~~ — **NON APPLICABLE v4.6** (MLB hors scope,
+  règle gardée en archive)
 
 **Anti-bias EXPERIMENTAUX (note, pas blocking)** :
 - AB-3 : Cinderella playoff momentum (n=1)
