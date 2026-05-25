@@ -100,7 +100,6 @@ const PERIODS: Period[] = ["1j", "1s", "1m", "1a"];
 
 interface ChartOptions {
   mode: ChartMode;
-  showCLV: boolean;
   showValues: boolean;
 }
 
@@ -114,7 +113,6 @@ export default function Home() {
   const [period, setPeriod] = useState<Period>("1m");
   const [opts, setOpts] = useState<ChartOptions>({
     mode: "capital",
-    showCLV: false,
     showValues: false,  // chart clean par défaut, activable via menu ⋯
   });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -202,7 +200,7 @@ export default function Home() {
             PAGE (positionnement absolu, indépendant du burger). Burger en
             blanc theme-aware (text-white → noir bleuté en light mode via
             l'override de globals.css). */}
-        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 min-h-[52px]">
+        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 mb-2 min-h-[52px]">
           <Link
             href="/"
             aria-label="NΞXBΞT"
@@ -290,11 +288,14 @@ export default function Home() {
               )}
             </section>
 
-            {/* Stat tiles 2x3 : BANKROLL et WIN RATE ajoutés depuis l'ancien
-                StatsHero de /stats (rapatriement v6.6 — la page /stats n'a
-                plus de graphique, ses infos clés sont sur la home). */}
+            {/* Stat tiles 2x3 (v6.7) — ordre narratif "général → spécifique" :
+                rangée 1 état actuel (Bankroll, Bénéfice),
+                rangée 2 performance (ROI, Progression),
+                rangée 3 volume/précision (Paris, Win Rate).
+                flex-1 → la grille remplit l'espace restant entre le chart
+                et le bottom nav, auto-rows-fr → rows réparties également. */}
             {stats && (
-              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 shrink-0">
+              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 flex-1 min-h-[180px]">
                 <StatTile
                   label={t("home.statBankroll")}
                   value={stats.current_bankroll}
@@ -302,21 +303,6 @@ export default function Home() {
                   suffix="€"
                   tone={stats.current_bankroll >= stats.starting_bankroll ? "green" : "red"}
                   onInfo={() => setInfoOpen("bankroll")}
-                />
-                <StatTile
-                  label={t("home.statWinRate")}
-                  value={stats.win_rate}
-                  decimals={0}
-                  suffix="%"
-                  tone="green"
-                  onInfo={() => setInfoOpen("winRate")}
-                />
-                <StatTile
-                  label={t("home.statParis")}
-                  value={settledCount}
-                  decimals={0}
-                  tone="green"
-                  onInfo={() => setInfoOpen("paris")}
                 />
                 <StatTile
                   label={t("home.statBenefice")}
@@ -341,6 +327,21 @@ export default function Home() {
                   suffix="%"
                   tone={stats.progression_percent >= 0 ? "green" : "red"}
                   onInfo={() => setInfoOpen("progression")}
+                />
+                <StatTile
+                  label={t("home.statParis")}
+                  value={settledCount}
+                  decimals={0}
+                  tone="green"
+                  onInfo={() => setInfoOpen("paris")}
+                />
+                <StatTile
+                  label={t("home.statWinRate")}
+                  value={stats.win_rate}
+                  decimals={0}
+                  suffix="%"
+                  tone="green"
+                  onInfo={() => setInfoOpen("winRate")}
                 />
               </div>
             )}
@@ -458,16 +459,6 @@ function ChartOptionsMenu({ opts, onChange, onClose }: MenuProps) {
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold border-t border-white/5 mt-1">
         {t("home.chartOptionsSection")}
       </div>
-      <MenuItem
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" />
-          </svg>
-        }
-        label={t("home.chartCLV")}
-        active={opts.showCLV}
-        onClick={() => apply({ ...opts, showCLV: !opts.showCLV })}
-      />
       <MenuItem
         icon={
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">

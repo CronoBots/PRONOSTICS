@@ -5,7 +5,6 @@ import { AnalyzerGeneral } from "@/components/AnalyzerGeneral";
 import { AnalyzerPeriode } from "@/components/AnalyzerPeriode";
 import { AnalyzerSport } from "@/components/AnalyzerSport";
 import { Header } from "@/components/Header";
-import { InfoSheet } from "@/components/InfoSheet";
 import { Skeleton } from "@/components/Skeleton";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
@@ -102,25 +101,11 @@ function buildOverviewTiles(
   ];
 }
 
-function buildClvTiles(t: TFn): StatRow[] {
-  // Phase 1 v4 — placeholders à 0 jusqu'à ce que le pipeline collecte
-  // closing_odds pour chaque pick (puis on calculera réellement le CLV).
-  return [
-    { label: t("statsPage.clv.profit"), value: "0.00€", tone: "green" },
-    { label: t("statsPage.clv.roi"), value: "0.00%", tone: "green" },
-    { label: t("statsPage.clv.profitDiff"), value: "0.00€", tone: "green" },
-    { label: t("statsPage.clv.profitDiffPct"), value: "0.00%", tone: "green" },
-    { label: t("statsPage.clv.closingBelow"), value: "0", tone: "green" },
-    { label: t("statsPage.clv.closingAbove"), value: "0", tone: "red" },
-  ];
-}
-
 export default function StatsPage() {
   const { t } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("overview");
-  const [clvHelpOpen, setClvHelpOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -195,38 +180,8 @@ export default function StatsPage() {
                     <StatTile key={r.label} {...r} />
                   ))}
                 </div>
-
-                {/* Section CLV (placeholders, vrai calcul à venir cf. closing_odds) */}
-                <section className="mb-6">
-                  <div className="flex items-center justify-between mb-3 px-1">
-                    <h3 className="text-sm font-bold text-white">
-                      {t("statsPage.section.clv")}
-                    </h3>
-                    <button
-                      onClick={() => setClvHelpOpen(true)}
-                      className="text-xs text-accent-blue flex items-center gap-1 hover:text-accent-blue/80 transition"
-                      aria-label={t("common.help")}
-                    >
-                      {t("common.help")} <span aria-hidden>ⓘ</span>
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
-                    {buildClvTiles(t).map((r) => (
-                      <StatTile key={r.label} {...r} />
-                    ))}
-                  </div>
-                </section>
-
-                <InfoSheet
-                  open={clvHelpOpen}
-                  onClose={() => setClvHelpOpen(false)}
-                  title={t("statsPage.clv.helpTitle")}
-                >
-                  <p>{t("statsPage.clv.helpText")}</p>
-                  <p className="text-accent-green font-medium">
-                    {t("statsPage.clv.helpNote")}
-                  </p>
-                </InfoSheet>
+                {/* Section CLV retirée v6.7 — sera réintroduite quand le
+                    pipeline collectera closing_odds par pick. */}
               </>
             )}
             {tab === "general" && <AnalyzerGeneral picks={picks} />}
