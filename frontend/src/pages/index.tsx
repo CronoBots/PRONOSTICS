@@ -172,18 +172,14 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v6 — grid 3 cols : logo gauche / titre centre /
-            burger droit. Le 'N' du titre reprend la couleur cyan du logo AX,
-            le reste est en couleur foreground (blanc dark / noir bleute light)
-            via l'override theme-aware sur text-white. */}
+        {/* Header compact v6.1 — wordmark NEXBET complet (mark AX + texte +
+            tagline) centré, burger compte à droite. Le wordmark inclut déjà
+            l'identité brand donc plus besoin du <h1> texte séparé. */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
-          <Link href="/" aria-label="NΞXBΞT" className="justify-self-start">
-            <BrandLogo size={32} rounded={8} />
+          <span className="justify-self-start" />
+          <Link href="/" aria-label="NΞXBΞT" className="justify-self-center">
+            <BrandLogo variant="wordmark" size={96} />
           </Link>
-          <h1 className="text-lg font-bold tracking-tight justify-self-center">
-            <span className="text-accent-blue">N</span>
-            <span className="text-white">ΞXBΞT</span>
-          </h1>
           <Link
             href="/compte"
             className="w-9 h-9 rounded-full flex items-center justify-center text-accent-blue hover:bg-white/5 justify-self-end"
@@ -274,7 +270,7 @@ export default function Home() {
                   label={t("home.statParis")}
                   value={settledCount}
                   decimals={0}
-                  tone="blue"
+                  tone="green"
                   onInfo={() => setInfoOpen("paris")}
                 />
                 <StatTile
