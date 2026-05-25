@@ -194,12 +194,12 @@ a:active {
 
 /* ============================================================
    .card-border : liseré subtil theme-aware
-   - dark  : teal 30% (accent-green/30)
-   - light : gris clair 10%
+   - dark  : blanc 10% (gris neutre, ne concurrence pas la sémantique vert/rouge des valeurs internes)
+   - light : noir 10% (gris clair)
    Utilisé sur les stat tiles + Analyses/Calendrier de la Home.
    ============================================================ */
 .card-border {
-  border-color: rgb(16 217 163 / 0.3);
+  border-color: rgb(255 255 255 / 0.1);
 }
 [data-theme="light"] .card-border {
   border-color: rgb(0 0 0 / 0.1);
