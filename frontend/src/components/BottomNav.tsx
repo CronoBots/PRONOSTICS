@@ -55,17 +55,9 @@ export function BottomNav() {
         </svg>
       ),
     },
-    {
-      href: "/plus",
-      label: t("nav.plus"),
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-          <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-          <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-          <circle cx="19" cy="12" r="1.5" fill="currentColor" />
-        </svg>
-      ),
-    },
+    // "Plus" retiré v6.8 — ses fonctionnalités (outils, partage, infos
+    // légales, lexique, compte, premium) sont accessibles via le burger
+    // menu en haut à droite (/plus) sur la home.
   ];
 
   function renderTab(tab: Tab) {
@@ -91,7 +83,7 @@ export function BottomNav() {
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card/95 backdrop-blur border-t border-white/[0.06]">
       <div
-        className="max-w-md mx-auto grid grid-cols-6 relative items-end"
+        className="max-w-md mx-auto grid grid-cols-5 relative items-end"
         style={{ paddingBottom: "calc(var(--safe-bottom) + 0.75rem)" }}
       >
         {leftTabs.map(renderTab)}

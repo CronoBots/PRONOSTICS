@@ -221,7 +221,7 @@ export function BankrollChart({
     const trendColor =
       lastValue >= startingBankroll ? "var(--accent-green)" : "var(--accent-red)";
     return (
-      <div className="h-full w-full rounded-3xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated relative flex flex-col border border-white/[0.06] shadow-card">
+      <div className="h-full w-full rounded-3xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated relative flex flex-col border card-border shadow-card">
         {topRight && (
           <div className="absolute top-3 right-3 z-10">{topRight}</div>
         )}

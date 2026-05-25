@@ -194,7 +194,7 @@ export default function Home() {
       </Head>
 
       <main
-        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col flex-1 min-h-0 justify-between lg:gap-5 lg:justify-start lg:flex-none"
+        className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col flex-1 min-h-0 gap-2 lg:gap-5 lg:flex-none"
       >
         {/* Header compact v6.5 — bannière NEXBET centrée par rapport à la
             PAGE (positionnement absolu, indépendant du burger). Burger en
@@ -209,7 +209,7 @@ export default function Home() {
             <BrandLogo variant="banner" size={60} />
           </Link>
           <Link
-            href="/compte"
+            href="/plus"
             className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/5"
             aria-label={t("home.menu")}
           >
@@ -228,7 +228,7 @@ export default function Home() {
                 intégrés dans le cadre. Hauteur explicite en dvh (s'adapte à l'URL
                 bar mobile) au lieu de flex-1 qui était mal interprété sur Safari
                 iOS dans un layout flex-col imbriqué (chart écrasé). */}
-            <section className="relative h-[260px] shrink-0 lg:h-[420px] lg:flex-none" ref={menuRef}>
+            <section className="relative h-[260px] shrink-0 mt-auto lg:h-[420px] lg:flex-none lg:mt-0" ref={menuRef}>
               <BankrollChart
                 picks={filteredPicks}
                 startingBankroll={startingBankroll}
