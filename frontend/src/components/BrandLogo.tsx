@@ -7,9 +7,9 @@
  * - "wordmark" : mark AX + texte NEXBET + tagline, transparent
  *                (`logo-wordmark.png`, 513×400). `size` = HAUTEUR ; largeur auto.
  * - "banner"   : bannière NEXBET + tagline horizontale, transparente, recadrée
- *                serrée sur le contenu visible (`logo-banner.png`, 743×200,
- *                ratio ~3.72:1). Version brand officielle uploadée par
- *                l'utilisateur. `size` = HAUTEUR ; largeur auto.
+ *                sur le contenu visible avec glow vertical préservé
+ *                (`logo-banner.png`, 620×200, ratio ~3.10:1). Version brand
+ *                officielle uploadée par l'utilisateur. `size` = HAUTEUR.
  */
 
 interface Props {
@@ -29,7 +29,7 @@ interface Props {
 
 const BASE = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
 const WORDMARK_RATIO = 513 / 400; // ratio largeur/hauteur du PNG wordmark
-const BANNER_RATIO = 743 / 200;   // ratio largeur/hauteur du PNG bannière recadrée serrée (~3.72:1)
+const BANNER_RATIO = 620 / 200;   // ratio largeur/hauteur du PNG bannière recadrée (~3.10:1)
 
 export function BrandLogo({
   size = 64,
