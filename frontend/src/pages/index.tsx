@@ -12,7 +12,7 @@ import { fetchDay, fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
-type StatKey = "paris" | "benefice" | "roi" | "progression";
+type StatKey = "bankroll" | "winRate" | "paris" | "benefice" | "roi" | "progression";
 
 function useStatInfos() {
   const { t } = useI18n();
@@ -20,6 +20,32 @@ function useStatInfos() {
     Record<StatKey, { title: string; body: React.ReactNode; note?: string }>
   >(
     () => ({
+      bankroll: {
+        title: t("statInfo.bankroll.title"),
+        body: (
+          <>
+            {t("statInfo.bankroll.body")}
+            <br />
+            <span className="text-accent-green font-semibold">
+              {t("statInfo.bankroll.formula")}
+            </span>
+          </>
+        ),
+        note: t("statInfo.bankroll.note"),
+      },
+      winRate: {
+        title: t("statInfo.winRate.title"),
+        body: (
+          <>
+            {t("statInfo.winRate.body")}
+            <br />
+            <span className="text-accent-green font-semibold">
+              {t("statInfo.winRate.formula")}
+            </span>
+          </>
+        ),
+        note: t("statInfo.winRate.note"),
+      },
       paris: {
         title: t("statInfo.paris.title"),
         body: <>{t("statInfo.paris.body")}</>,
@@ -275,6 +301,7 @@ export default function Home() {
                   decimals={2}
                   suffix="€"
                   tone={stats.current_bankroll >= stats.starting_bankroll ? "green" : "red"}
+                  onInfo={() => setInfoOpen("bankroll")}
                 />
                 <StatTile
                   label={t("home.statWinRate")}
@@ -282,6 +309,7 @@ export default function Home() {
                   decimals={0}
                   suffix="%"
                   tone="green"
+                  onInfo={() => setInfoOpen("winRate")}
                 />
                 <StatTile
                   label={t("home.statParis")}
