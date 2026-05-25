@@ -4,7 +4,7 @@
 // Sémantique : aligné sur frontend/tailwind.config.js + globals.css.
 // - positive : vert (gains, win, profit) — accent-green
 // - negative : rouge (pertes, loss) — accent-red
-// - brand    : cobalt (couleur de marque v5) — accent-blue
+// - brand    : cyan AX (couleur de marque v6) — accent-blue
 // - bg       : surface de carte chart (theme dark)
 //
 // Si la palette change dans Tailwind/globals.css, mettre à jour CES valeurs.
@@ -12,8 +12,8 @@
 export const CHART_COLORS = {
   positive: "#10d9a3",
   negative: "#ff4d6d",
-  brand: "#2A4BFA",
-  brandDark: "#152082",
+  brand: "#0DC2FA",
+  brandDark: "#0894C0",
   bg: "#14172c",
   gridDark: "rgba(255,255,255,0.06)",
   gridLight: "rgba(255,255,255,0.25)",

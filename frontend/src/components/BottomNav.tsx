@@ -96,8 +96,8 @@ export function BottomNav() {
       >
         {leftTabs.map(renderTab)}
 
-        {/* Bouton central → /today (pari du jour), couleur cobalt brand
-            (v5) — etoile = identite forte "le pick du jour a ne pas rater" */}
+        {/* Bouton central → /today (pari du jour), couleur cyan brand
+            (v6) — etoile = identite forte "le pick du jour a ne pas rater" */}
         <div className="flex justify-center -mt-7 relative">
           <Link
             href="/today"

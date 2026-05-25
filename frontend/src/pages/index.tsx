@@ -172,8 +172,8 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v5.1 — grid 3 cols : logo gauche / titre centre /
-            burger droit. Le 'N' du titre reprend la couleur cobalt du logo,
+        {/* Header compact v6 — grid 3 cols : logo gauche / titre centre /
+            burger droit. Le 'N' du titre reprend la couleur cyan du logo AX,
             le reste est en couleur foreground (blanc dark / noir bleute light)
             via l'override theme-aware sur text-white. */}
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">

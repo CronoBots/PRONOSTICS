@@ -12,15 +12,15 @@ module.exports = {
           elevated: "rgb(var(--bg-elevated-rgb) / <alpha-value>)",
         },
         accent: {
-          // Palette NΞXBΞT v5 — Cobalt Premium (24/05/2026).
-          // accent-blue est désormais la COULEUR DE MARQUE (cobalt du nouveau
-          // logo: N bleu / N blanc imbriques sur fond noir). Brand + CTA primaire.
+          // Palette NΞXBΞT v6 — Cyan AX (25/05/2026).
+          // accent-blue est la COULEUR DE MARQUE — cyan du nouveau logo AX
+          // (monogramme blanc + cyan sur fond noir). Brand + CTA primaire.
           // accent-green reste vert (sémantique gain universelle).
           green: "#10d9a3",      // gains / win / profit positif
           greenDim: "#0fb088",
           red: "#ff4d6d",        // pertes / loss
-          blue: "#2A4BFA",       // COBALT — couleur de marque, CTA primaire, brand
-          blueDim: "#1F36C4",
+          blue: "#0DC2FA",       // CYAN AX — couleur de marque, CTA primaire, brand
+          blueDim: "#0894C0",
           gold: "#fcd34d",       // accent premium
         },
       },
@@ -28,8 +28,8 @@ module.exports = {
         card: "0 1px 0 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.6)",
         // Ombre plus subtile : utilisée sur le chart hero
         "card-soft": "0 4px 12px -6px rgba(0,0,0,0.35)",
-        // Glow signature désormais cobalt (au lieu de green)
-        glow: "0 0 32px 0 rgba(42,75,250,0.30)",
+        // Glow signature = cyan AX (#0DC2FA)
+        glow: "0 0 32px 0 rgba(13,194,250,0.30)",
         // Conservé pour les composants qui veulent un halo vert (gains)
         "glow-green": "0 0 32px 0 rgba(16,217,163,0.25)",
       },
@@ -37,7 +37,7 @@ module.exports = {
         // Pattern hexagonal subtil (utilisé en bg-hex pour les hero sections)
         // SVG inline = pas de file fetch supplémentaire
         "hex-pattern":
-          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92' width='80' height='92'><polygon points='40,2 76,23 76,69 40,90 4,69 4,23' fill='none' stroke='%232A4BFA' stroke-opacity='0.08' stroke-width='1.5'/></svg>\")",
+          "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 92' width='80' height='92'><polygon points='40,2 76,23 76,69 40,90 4,69 4,23' fill='none' stroke='%230DC2FA' stroke-opacity='0.08' stroke-width='1.5'/></svg>\")",
       },
       fontFamily: {
         sans: [

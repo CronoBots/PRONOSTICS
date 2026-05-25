@@ -12,11 +12,11 @@
 
 :root,
 :root[data-theme="dark"] {
-  /* Theme NΞXBΞT v5 — palette Cobalt Premium (24/05/2026).
-     Refonte vers la nouvelle identité visuelle (logo bleu cobalt + blanc
-     sur noir profond). Conserve `accent-green` en vert (sémantique gain
-     universelle) et `accent-red` (perte). Le bleu cobalt devient la
-     couleur de marque (logo, CTA primaire, brand). */
+  /* Theme NΞXBΞT v6 — palette Cyan AX (25/05/2026).
+     Aligne la palette CSS sur le nouveau logo AX (monogramme blanc +
+     cyan #0DC2FA sur fond noir). Conserve `accent-green` en vert
+     (sémantique gain universelle) et `accent-red` (perte). Le cyan
+     devient la couleur de marque (logo, CTA primaire, brand). */
   --bg-base-rgb: 10 11 18;          /* #0A0B12 — noir profond légèrement bleuté */
   --bg-card-rgb: 18 20 30;          /* #12141E */
   --bg-elevated-rgb: 28 31 44;      /* #1C1F2C */
@@ -26,9 +26,9 @@
   /* Accent vert : gains / win / progression positive (sémantique universelle) */
   --accent-green: #10d9a3;
   --accent-greenDim: #0fb088;
-  /* Accent bleu = COULEUR DE MARQUE = cobalt du logo. CTA primaire, brand text. */
-  --accent-blue: #2A4BFA;
-  --accent-blueDim: #1F36C4;
+  /* Accent bleu = COULEUR DE MARQUE = cyan du logo AX. CTA primaire, brand text. */
+  --accent-blue: #0DC2FA;
+  --accent-blueDim: #0894C0;
   --accent-red: #ff4d6d;
   --accent-gold: #fcd34d;
   --foreground: #F0F2FF;            /* blanc cassé avec très léger sous-ton bleu */
@@ -46,8 +46,8 @@
 }
 
 :root[data-theme="light"] {
-  /* Theme NΞXBΞT v5 — light Cobalt Premium. Blanc cassé avec accent
-     cobalt assombri pour contraste sur fond clair. */
+  /* Theme NΞXBΞT v6 — light Cyan AX. Blanc cassé avec accent cyan
+     assombri pour contraste sur fond clair (AA). */
   --bg-base-rgb: 248 250 255;        /* #F8FAFF — blanc cassé léger sous-ton bleu */
   --bg-card-rgb: 255 255 255;        /* #FFFFFF */
   --bg-elevated-rgb: 240 244 255;    /* #F0F4FF */
@@ -57,9 +57,9 @@
   /* Accents : assombris en light pour le contraste sur fond clair */
   --accent-green: #0d9b78;
   --accent-greenDim: #097554;
-  /* Bleu cobalt assombri (lisible sur fond blanc) */
-  --accent-blue: #1E3FE0;
-  --accent-blueDim: #1530B5;
+  /* Cyan AX assombri (lisible sur fond blanc — AA, ratio ~4.8:1) */
+  --accent-blue: #0788B0;
+  --accent-blueDim: #066A8C;
   --accent-red: #e0344f;
   --accent-gold: #d97706;
   --foreground: #0A0E2A;             /* noir bleuté (cohérent avec brand) */
@@ -151,7 +151,7 @@ a:active {
    (qui ciblent "white") vers la couleur foreground sombre, en
    préservant l'opacité originale. Évite de refactorer 60+ fichiers.
    ============================================================ */
-/* Refonte v5 — palette Cobalt : text-base sombre = #0A0E2A (noir bleuté) */
+/* Refonte v6 — palette Cyan AX : text-base sombre = #0A0E2A (noir bleuté) */
 [data-theme="light"] .text-white { color: rgb(10 14 42); }
 [data-theme="light"] .text-white\/90 { color: rgb(10 14 42 / 0.92); }
 [data-theme="light"] .text-white\/80 { color: rgb(10 14 42 / 0.86); }

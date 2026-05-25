@@ -202,8 +202,8 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
-    // Hero NΞXBΞT v5 : fond plein cobalt (#2A4BFA = couleur exacte du nouveau
-    // logo), tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
+    // Hero NΞXBΞT v6 : fond plein cyan (#0DC2FA = couleur exacte du logo AX),
+    // tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
     // les period pills sont rendus via les slots topRight / footer.
     // Génère des ticks Y à intervalles RÉGULIERS (pas calé sur les valeurs
     // brutes des picks pour éviter une échelle type "2, 4, 7, 16").

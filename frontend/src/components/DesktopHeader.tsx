@@ -58,7 +58,7 @@ export function DesktopHeader() {
   return (
     <header className="hidden lg:block sticky top-0 z-40 bg-bg-card/90 backdrop-blur border-b border-white/[0.06]">
       <div className="max-w-7xl mx-auto px-6 xl:px-8 h-16 flex items-center gap-6">
-        {/* Logo + nom marque — couleur cobalt (couleur signature v5) */}
+        {/* Logo + nom marque — couleur cyan (couleur signature v6) */}
         <Link
           href="/"
           className="flex items-center gap-2 font-bold text-lg shrink-0"
