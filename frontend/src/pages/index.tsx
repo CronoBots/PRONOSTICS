@@ -209,7 +209,7 @@ export default function Home() {
             <BrandLogo variant="banner" size={60} />
           </Link>
           <Link
-            href="/plus"
+            href="/compte"
             className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/5"
             aria-label={t("home.menu")}
           >
@@ -228,7 +228,7 @@ export default function Home() {
                 intégrés dans le cadre. Hauteur explicite en dvh (s'adapte à l'URL
                 bar mobile) au lieu de flex-1 qui était mal interprété sur Safari
                 iOS dans un layout flex-col imbriqué (chart écrasé). */}
-            <section className="relative h-[260px] shrink-0 mt-auto lg:h-[420px] lg:flex-none lg:mt-0" ref={menuRef}>
+            <section className="relative h-[260px] shrink-0 lg:h-[420px] lg:flex-none" ref={menuRef}>
               <BankrollChart
                 picks={filteredPicks}
                 startingBankroll={startingBankroll}
@@ -295,7 +295,7 @@ export default function Home() {
                 Hauteur fixe + shrink-0 : la grille ne s'étire pas, l'espace
                 entre chart/stats/nav est réparti par justify-between du main. */}
             {stats && (
-              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 h-[200px] shrink-0 lg:h-auto">
+              <div className="grid grid-cols-2 grid-rows-3 auto-rows-fr gap-2 lg:gap-3 lg:grid-cols-6 lg:grid-rows-1 flex-1 min-h-[180px] lg:h-auto lg:flex-none">
                 <StatTile
                   label={t("home.statBankroll")}
                   value={stats.current_bankroll}
