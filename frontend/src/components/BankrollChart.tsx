@@ -202,9 +202,10 @@ export function BankrollChart({
   const hasProjection = data.some((d) => d.ifWin !== undefined && d.ifWin !== null);
 
   if (variant === "hero") {
-    // Hero NΞXBΞT v6 : fond plein cyan (#0DC2FA = couleur exacte du logo AX),
-    // tout en blanc dessus (ligne, grille, axes, tooltip). Le bouton ⋯ et
-    // les period pills sont rendus via les slots topRight / footer.
+    // Hero NΞXBΞT v6 : fond aligné sur StatsHero (gradient bg-card →
+    // bg-elevated, theme-aware), pour cohérence visuelle entre la home et
+    // la page /stats. Tout en blanc dessus (ligne, grille, axes, tooltip)
+    // — lisible en dark, à revoir si light mode pose souci de contraste.
     // Génère des ticks Y à intervalles RÉGULIERS (pas calé sur les valeurs
     // brutes des picks pour éviter une échelle type "2, 4, 7, 16").
     const allValues = data
@@ -215,7 +216,7 @@ export function BankrollChart({
     const niceTicks = niceTickArray(dataMin, dataMax, 5);
     const yDomain: [number, number] = [niceTicks[0], niceTicks[niceTicks.length - 1]];
     return (
-      <div className="h-full w-full rounded-2xl overflow-hidden bg-accent-blue relative flex flex-col border border-white/[0.06] shadow-card-soft">
+      <div className="h-full w-full rounded-3xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated relative flex flex-col border border-white/[0.06] shadow-card">
         {topRight && (
           <div className="absolute top-3 right-3 z-10">{topRight}</div>
         )}

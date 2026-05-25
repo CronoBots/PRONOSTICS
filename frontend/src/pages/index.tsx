@@ -199,10 +199,11 @@ export default function Home() {
 
         {!loading && history && (
           <>
-            {/* Chart NΞXBΞT — fond vert plein, period pills intégrés dans le cadre.
-                Hauteur explicite en dvh (s'adapte à l'URL bar mobile) au lieu de
-                flex-1 qui était mal interprété sur Safari iOS dans un layout
-                flex-col imbriqué (chart écrasé). */}
+            {/* Chart NΞXBΞT — fond gradient bg-card → bg-elevated (aligné sur
+                StatsHero de la page /stats pour cohérence visuelle). Period pills
+                intégrés dans le cadre. Hauteur explicite en dvh (s'adapte à l'URL
+                bar mobile) au lieu de flex-1 qui était mal interprété sur Safari
+                iOS dans un layout flex-col imbriqué (chart écrasé). */}
             <section className="relative flex-1 min-h-[180px] lg:h-[420px] lg:flex-none" ref={menuRef}>
               <BankrollChart
                 picks={filteredPicks}
