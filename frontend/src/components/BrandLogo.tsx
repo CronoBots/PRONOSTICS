@@ -2,15 +2,16 @@
  * Logo NΞXBΞT — version PNG transparente.
  *
  * Deux variantes :
- * - "mark"     : monogramme AX seul (`logo.png`, 512×512, carré, fond transparent)
- * - "wordmark" : monogramme AX + texte NEXBET + tagline BET·WIN·REPEAT
- *                (`logo-wordmark.png`, 600×600, fond transparent)
+ * - "mark"     : monogramme AX seul, carré (`logo.png`, 512×512). `size` = côté.
+ * - "wordmark" : monogramme AX + texte NEXBET + tagline (`logo-wordmark.png`,
+ *                513×400, ratio ~1.28:1). `size` = HAUTEUR ; largeur calculée
+ *                automatiquement pour préserver le ratio (pas d'écrasement).
  *
  * Polyvalent : se pose sur n'importe quel fond.
  */
 
 interface Props {
-  /** Taille en px du conteneur (carré). Défaut 64. */
+  /** Taille en px. Pour mark = côté du carré ; pour wordmark = hauteur. Défaut 64. */
   size?: number;
   /** Border-radius en px (uniquement si background fourni). Ignoré en wordmark. */
   rounded?: number;
@@ -25,6 +26,7 @@ interface Props {
 }
 
 const BASE = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
+const WORDMARK_RATIO = 513 / 400; // ratio largeur/hauteur du PNG source
 
 export function BrandLogo({
   size = 64,
@@ -34,8 +36,22 @@ export function BrandLogo({
   alt = "NΞXBΞT",
   variant = "mark",
 }: Props) {
-  const radius = variant === "wordmark" ? 0 : (rounded ?? Math.round(size / 6));
-  const src = variant === "wordmark" ? `${BASE}/logo-wordmark.png` : `${BASE}/logo.png`;
+  if (variant === "wordmark") {
+    const width = Math.round(size * WORDMARK_RATIO);
+    return (
+      <img
+        src={`${BASE}/logo-wordmark.png`}
+        alt={alt}
+        width={width}
+        height={size}
+        loading="eager"
+        decoding="async"
+        className={className}
+        style={{ display: "block", height: size, width: "auto" }}
+      />
+    );
+  }
+  const radius = rounded ?? Math.round(size / 6);
   return (
     <span
       className={`inline-flex items-center justify-center overflow-hidden ${className}`}
@@ -47,7 +63,7 @@ export function BrandLogo({
       }}
     >
       <img
-        src={src}
+        src={`${BASE}/logo.png`}
         alt={alt}
         width={size}
         height={size}

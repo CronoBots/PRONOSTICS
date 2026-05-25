@@ -178,7 +178,7 @@ export default function Home() {
         <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
           <span className="justify-self-start" />
           <Link href="/" aria-label="NΞXBΞT" className="justify-self-center">
-            <BrandLogo variant="wordmark" size={96} />
+            <BrandLogo variant="wordmark" size={110} />
           </Link>
           <Link
             href="/compte"
