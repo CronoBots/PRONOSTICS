@@ -203,9 +203,9 @@ export function BankrollChart({
 
   if (variant === "hero") {
     // Hero NΞXBΞT v6 : fond aligné sur StatsHero (gradient bg-card →
-    // bg-elevated, theme-aware), pour cohérence visuelle entre la home et
-    // la page /stats. Tout en blanc dessus (ligne, grille, axes, tooltip)
-    // — lisible en dark, à revoir si light mode pose souci de contraste.
+    // bg-elevated, theme-aware). Ligne data dynamique vert/rouge selon
+    // trend (gain vs perte), échelle Y en vert sémantique. Ligne projection
+    // ifWin reste blanche+pointillée pour distinguer "réel" vs "scénario".
     // Génère des ticks Y à intervalles RÉGULIERS (pas calé sur les valeurs
     // brutes des picks pour éviter une échelle type "2, 4, 7, 16").
     const allValues = data
@@ -215,6 +215,11 @@ export function BankrollChart({
     const dataMax = allValues.length ? Math.max(...allValues) : 10;
     const niceTicks = niceTickArray(dataMin, dataMax, 5);
     const yDomain: [number, number] = [niceTicks[0], niceTicks[niceTicks.length - 1]];
+    // Couleur de la ligne data : vert si bankroll finale ≥ starting (gain),
+    // rouge sinon (perte). Aligné sur le comportement de StatsHero (/stats).
+    const lastValue = data[data.length - 1]?.value ?? startingBankroll;
+    const trendColor =
+      lastValue >= startingBankroll ? "var(--accent-green)" : "var(--accent-red)";
     return (
       <div className="h-full w-full rounded-3xl overflow-hidden bg-gradient-to-br from-bg-card to-bg-elevated relative flex flex-col border border-white/[0.06] shadow-card">
         {topRight && (
@@ -258,9 +263,9 @@ export function BankrollChart({
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="#ffffff"
+                stroke={trendColor}
                 strokeWidth={3}
-                dot={showValues ? { fill: "#fff", r: 4 } : false}
+                dot={showValues ? { fill: trendColor, r: 4 } : false}
                 connectNulls={false}
                 isAnimationActive={true}
                 animationDuration={1000}
