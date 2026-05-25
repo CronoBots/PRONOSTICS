@@ -200,7 +200,7 @@ export default function Home() {
             PAGE (positionnement absolu, indépendant du burger). Burger en
             blanc theme-aware (text-white → noir bleuté en light mode via
             l'override de globals.css). */}
-        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 min-h-[52px]">
+        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 mb-1 min-h-[52px]">
           <Link
             href="/"
             aria-label="NΞXBΞT"
