@@ -1,15 +1,14 @@
 /**
- * Logo NΞXBΞT — version PNG transparente.
+ * Logo NΞXBΞT — variantes PNG.
  *
  * Trois variantes :
- * - "mark"     : monogramme AX seul, carré (`logo.png`, 512×512). `size` = côté.
- * - "wordmark" : mark AX + texte NEXBET + tagline (`logo-wordmark.png`,
- *                513×400). `size` = HAUTEUR ; largeur auto via ratio.
- * - "banner"   : texte NEXBET + tagline horizontal SANS le mark AX
- *                (`logo-banner.png`, 616×200, ratio 3.08:1). À combiner avec
- *                un mark séparé. `size` = HAUTEUR ; largeur auto.
- *
- * Tous fond transparent. Polyvalent : se pose sur n'importe quel fond.
+ * - "mark"     : monogramme AX seul, carré transparent (`logo.png`, 512×512).
+ *                `size` = côté.
+ * - "wordmark" : mark AX + texte NEXBET + tagline, transparent
+ *                (`logo-wordmark.png`, 513×400). `size` = HAUTEUR ; largeur auto.
+ * - "banner"   : bannière NEXBET + tagline horizontale (`logo-banner.png`,
+ *                640×427, ratio 1.5:1, **fond blanc** — version brand
+ *                officielle uploadée par l'utilisateur). `size` = HAUTEUR.
  */
 
 interface Props {
@@ -29,7 +28,7 @@ interface Props {
 
 const BASE = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
 const WORDMARK_RATIO = 513 / 400; // ratio largeur/hauteur du PNG wordmark
-const BANNER_RATIO = 616 / 200;   // ratio largeur/hauteur du PNG banner horizontal
+const BANNER_RATIO = 640 / 427;   // ratio largeur/hauteur du PNG bannière user (~1.5:1)
 
 export function BrandLogo({
   size = 64,
