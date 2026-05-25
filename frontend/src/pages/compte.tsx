@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 
 import { Avatar } from "@/components/Avatar";
-import { PlusMenu } from "@/components/PlusMenu";
 import { Sheet, SheetOption } from "@/components/Sheet";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
@@ -296,11 +295,6 @@ export default function ComptePage() {
         >
           {t("account.delete")}
         </button>
-
-        {/* === Plus de fonctionnalités (intégré depuis /plus en v6.9) === */}
-        <div className="mt-8 mb-2">
-          <PlusMenu />
-        </div>
 
         <div className="text-center text-xs text-white/30 mt-6">
           {t("account.appFooter", { year: new Date().getFullYear() })}

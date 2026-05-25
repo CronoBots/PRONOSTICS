@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
 import { BrandLogo } from "@/components/BrandLogo";
+import { ProfileButton } from "@/components/ProfileButton";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
 import { fetchDay, fetchHistory } from "@/lib/dataSource";
@@ -196,11 +197,12 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col flex-1 min-h-0 gap-2 lg:gap-5 lg:flex-none"
       >
-        {/* Header compact v6.5 — bannière NEXBET centrée par rapport à la
-            PAGE (positionnement absolu, indépendant du burger). Burger en
-            blanc theme-aware (text-white → noir bleuté en light mode via
-            l'override de globals.css). */}
-        <header className="lg:hidden relative flex items-center justify-end shrink-0 py-1 mb-1 min-h-[52px]">
+        {/* Header v7 — pattern standard mobile : profil gauche (avatar
+            avec badge premium si actif → /compte), bannière NEXBET centrée
+            par rapport à la PAGE (positionnement absolu), burger droite
+            (outils + infos → /plus). */}
+        <header className="lg:hidden relative flex items-center justify-between shrink-0 py-1 mb-1 min-h-[52px]">
+          <ProfileButton size={36} />
           <Link
             href="/"
             aria-label="NΞXBΞT"
@@ -209,7 +211,7 @@ export default function Home() {
             <BrandLogo variant="banner" size={60} />
           </Link>
           <Link
-            href="/compte"
+            href="/plus"
             className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/5"
             aria-label={t("home.menu")}
           >
