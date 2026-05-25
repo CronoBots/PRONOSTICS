@@ -96,8 +96,10 @@ export function BottomNav() {
             className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-blue shadow-accent-blue/30 hover:shadow-accent-blue/50"
             aria-label={t("nav.todayPick")}
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
-              <path d="M12 2 14.39 8.59 21 9.32l-5 4.87 1.51 6.81L12 17.5l-6.51 3.5L7 14.19 2 9.32l6.61-.73L12 2z" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" fill="currentColor" />
             </svg>
           </Link>
           {todayActive && (
