@@ -172,16 +172,17 @@ export default function Home() {
       <main
         className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-2 lg:pt-6 pb-2 flex flex-col gap-1.5 lg:gap-5 flex-1 min-h-0 lg:flex-none"
       >
-        {/* Header compact v6.3 — bannière NEXBET seule (recadrée serrée) à
-            gauche, burger compte vert à droite. Pas de mark séparé (la
-            bannière contient déjà toute l'identité brand). */}
-        <header className="lg:hidden flex items-center justify-between gap-2 shrink-0 py-1">
-          <Link href="/" aria-label="NΞXBΞT">
+        {/* Header compact v6.4 — bannière NEXBET centrée (H + V) par
+            rapport au burger, layout grid 3 cols avec placeholder gauche
+            pour centrage parfait. */}
+        <header className="lg:hidden grid grid-cols-[1fr_auto_1fr] items-center gap-2 shrink-0 py-1">
+          <span className="justify-self-start" />
+          <Link href="/" aria-label="NΞXBΞT" className="justify-self-center">
             <BrandLogo variant="banner" size={44} />
           </Link>
           <Link
             href="/compte"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-accent-green hover:bg-white/5 justify-self-end"
             aria-label={t("home.menu")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
@@ -206,20 +207,8 @@ export default function Home() {
                 variant="hero"
                 mode={opts.mode}
                 showValues={opts.showValues}
-                topRight={
-                  <button
-                    onClick={() => setMenuOpen((o) => !o)}
-                    style={{ borderColor: "var(--accent-green)" }}
-                    className="nav-pulse w-7 h-7 rounded-full border flex items-center justify-center gap-[2px]"
-                    aria-label={t("home.chartOptions")}
-                  >
-                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
-                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
-                    <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
-                  </button>
-                }
                 footer={
-                  <div className="grid grid-cols-5 gap-1.5">
+                  <div className="grid grid-cols-[repeat(5,1fr)_auto] gap-1.5 items-center">
                     {PERIODS.map((p) => {
                       const labelKey =
                         p === "1j"
@@ -249,6 +238,16 @@ export default function Home() {
                     >
                       {t("home.filters")}
                     </Link>
+                    <button
+                      onClick={() => setMenuOpen((o) => !o)}
+                      style={{ borderColor: "var(--accent-green)" }}
+                      className="nav-pulse w-7 h-7 rounded-full border flex items-center justify-center gap-[2px] shrink-0"
+                      aria-label={t("home.chartOptions")}
+                    >
+                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
+                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
+                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
+                    </button>
                   </div>
                 }
               />
@@ -376,10 +375,15 @@ interface MenuProps {
   onClose: () => void;
 }
 
-function ChartOptionsMenu({ opts, onChange }: MenuProps) {
+function ChartOptionsMenu({ opts, onChange, onClose }: MenuProps) {
   const { t } = useI18n();
+  // Chaque sélection valide ET ferme le menu (UX : un clic = action)
+  const apply = (next: ChartOptions) => {
+    onChange(next);
+    onClose();
+  };
   return (
-    <div className="absolute top-12 right-3 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
+    <div className="absolute bottom-14 right-3 z-30 w-60 rounded-2xl bg-bg-elevated/95 border border-white/10 shadow-2xl backdrop-blur overflow-hidden">
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold">
         {t("home.chartData")}
       </div>
@@ -392,7 +396,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
         }
         label={t("home.chartBenefit")}
         active={opts.mode === "benefice"}
-        onClick={() => onChange({ ...opts, mode: "benefice" })}
+        onClick={() => apply({ ...opts, mode: "benefice" })}
       />
       <MenuItem
         icon={
@@ -402,7 +406,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
         }
         label={t("home.chartCapital")}
         active={opts.mode === "capital"}
-        onClick={() => onChange({ ...opts, mode: "capital" })}
+        onClick={() => apply({ ...opts, mode: "capital" })}
       />
       <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-white/40 font-semibold border-t border-white/5 mt-1">
         {t("home.chartOptionsSection")}
@@ -415,7 +419,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
         }
         label={t("home.chartCLV")}
         active={opts.showCLV}
-        onClick={() => onChange({ ...opts, showCLV: !opts.showCLV })}
+        onClick={() => apply({ ...opts, showCLV: !opts.showCLV })}
       />
       <MenuItem
         icon={
@@ -425,7 +429,7 @@ function ChartOptionsMenu({ opts, onChange }: MenuProps) {
         }
         label={t("home.chartValues")}
         active={opts.showValues}
-        onClick={() => onChange({ ...opts, showValues: !opts.showValues })}
+        onClick={() => apply({ ...opts, showValues: !opts.showValues })}
       />
     </div>
   );
