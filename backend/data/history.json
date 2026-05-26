@@ -10,13 +10,13 @@
         "kickoff": "2026-05-18T16:00:00+00:00"
       },
       "pick": "Liverpool ML + Both Teams To Score (combo simple maison)",
-      "odds": 2.1,
+      "odds": 2.5,
       "odds_unboosted": null,
-      "model_probability": 0.55,
-      "book_probability": 0.4762,
-      "expected_value": 0.155,
+      "model_probability": 0.48,
+      "book_probability": 0.4,
+      "expected_value": 0.2,
       "engine": "claude_curated@1.0",
-      "headline": "Liverpool à Anfield + BTTS — combo simple à cote value 2.10",
+      "headline": "Liverpool à Anfield + BTTS — combo simple à cote value 2.50",
       "rationale": [
         "## 🎯 Le contexte",
         "Dernière journée de Premier League à Anfield. Liverpool joue à domicile contre Crystal Palace.",
@@ -28,8 +28,8 @@
         "Crystal Palace marque dans 6 des 8 derniers déplacements PL malgré les défaites.",
         "Pas de blessure majeure à signaler côté Liverpool (effectif complet annoncé).",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.10 pour le combo Liverpool ML + BTTS. Probabilité estimée 55% → edge calculé +15.5%.",
-        "Mise : 5€ — gain potentiel +5,50€ si validé."
+        "Cote consensus marché 2.50 pour le combo Liverpool ML + BTTS. Probabilité estimée 48% → edge calculé +20%.",
+        "Mise : 5€ — gain potentiel +7,50€ si validé."
       ],
       "sources": [
         "https://www.goal.com/en-gb/betting/tips/premier-league",
@@ -38,8 +38,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 5.5,
-      "bankroll_after": 10.5,
+      "profit": 7.5,
+      "bankroll_after": 12.5,
       "result": {
         "score_home": 3,
         "score_away": 1,
@@ -61,13 +61,13 @@
         "kickoff": "2026-05-19T12:00:00+00:00"
       },
       "pick": "Bautista Agut vainqueur en 2 sets exactement",
-      "odds": 2.3,
+      "odds": 2.6,
       "odds_unboosted": null,
-      "model_probability": 0.52,
-      "book_probability": 0.4348,
-      "expected_value": 0.196,
+      "model_probability": 0.47,
+      "book_probability": 0.3846,
+      "expected_value": 0.222,
       "engine": "claude_curated@1.0",
-      "headline": "Bautista pour gagner en 2 sets — cote 2.30 sur terre battue",
+      "headline": "Bautista pour gagner en 2 sets — cote 2.60 sur terre battue",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de l'ATP 250 Geneva (tournoi prep-Roland Garros sur terre battue suisse).",
@@ -78,8 +78,8 @@
         "H2H : Bautista mène 4-1, 3 des 4 victoires en 2 sets directs.",
         "Marché 'vainqueur en 2 sets' à cote 2.30 = sweet spot pour gros écart de niveau.",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.30 pour Bautista en 2 sets. Probabilité estimée 52% → edge calculé +19.6%.",
-        "Mise : 5€ — gain potentiel +6,50€ si validé."
+        "Cote consensus marché 2.60 pour Bautista en 2 sets. Probabilité estimée 47% → edge calculé +22.2%.",
+        "Mise : 5€ — gain potentiel +8,00€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -88,8 +88,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 6.5,
-      "bankroll_after": 17.0,
+      "profit": 8.0,
+      "bankroll_after": 20.5,
       "result": {
         "score_home": "6-3 7-6",
         "score_away": "",
@@ -111,13 +111,13 @@
         "kickoff": "2026-05-20T23:30:00+00:00"
       },
       "pick": "Thunder ML + Over 215.5 total points (combo)",
-      "odds": 2.5,
+      "odds": 2.8,
       "odds_unboosted": null,
-      "model_probability": 0.48,
-      "book_probability": 0.4,
-      "expected_value": 0.2,
+      "model_probability": 0.45,
+      "book_probability": 0.3571,
+      "expected_value": 0.26,
       "engine": "claude_curated@1.0",
-      "headline": "OKC win + Over 215.5 — combo cote value 2.50 G2 à domicile",
+      "headline": "OKC win + Over 215.5 — combo cote value 2.80 G2 à domicile",
       "rationale": [
         "## 🎯 Le match",
         "Game 2 de la finale de conférence Ouest NBA. OKC mène la série 1-0 après une victoire serrée en G1.",
@@ -129,8 +129,8 @@
         "Shai Gilgeous-Alexander en MVP form : 31 pts moyenne playoffs, 52% FG.",
         "Pas de blessure majeure du côté Thunder. Wolves : Naz Reid questionnable.",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.50 pour combo OKC ML + Over 215.5. Probabilité estimée 48% → edge calculé +20%.",
-        "Mise : 5€ — gain potentiel +7,50€ si validé."
+        "Cote consensus marché 2.80 pour combo OKC ML + Over 215.5. Probabilité estimée 45% → edge calculé +26%.",
+        "Mise : 5€ — gain potentiel +9,00€ si validé."
       ],
       "sources": [
         "https://www.dimers.com/predictions/nba",
@@ -139,8 +139,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 7.5,
-      "bankroll_after": 24.5,
+      "profit": 9.0,
+      "bankroll_after": 29.5,
       "result": {
         "score_home": 118,
         "score_away": 104,
@@ -191,7 +191,7 @@
       "stake": 5.0,
       "outcome": "loss",
       "profit": -5.0,
-      "bankroll_after": 19.5,
+      "bankroll_after": 24.5,
       "result": {
         "score_home": 2,
         "score_away": 0,
@@ -213,13 +213,13 @@
         "kickoff": "2026-05-22T13:00:00+00:00"
       },
       "pick": "Paolini vainqueure + Under 21.5 jeux totaux",
-      "odds": 2.6,
+      "odds": 2.86,
       "odds_unboosted": null,
-      "model_probability": 0.48,
-      "book_probability": 0.3846,
-      "expected_value": 0.248,
+      "model_probability": 0.44,
+      "book_probability": 0.3497,
+      "expected_value": 0.2584,
       "engine": "claude_curated@1.0",
-      "headline": "Paolini en 2 sets serrés — Under 21.5 jeux à cote 2.60",
+      "headline": "Paolini en 2 sets serrés — Under 21.5 jeux à cote 2.86",
       "rationale": [
         "## 🎯 Le match",
         "Quart de finale du WTA 250 Rabat, dernier tournoi avant Roland Garros sur terre battue.",
@@ -230,8 +230,8 @@
         "H2H : 1-0 Paolini (victoire 6-3 6-4 à Madrid 2024).",
         "Court central Rabat : conditions stables, vent faible annoncé.",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.60 pour Paolini + Under 21.5 jeux. Probabilité estimée 48% → edge calculé +24.8%.",
-        "Mise : 5€ — gain potentiel +8,00€ si validé."
+        "Cote consensus marché 2.86 pour Paolini + Under 21.5 jeux. Probabilité estimée 44% → edge calculé +25.8%.",
+        "Mise : 5€ — gain potentiel +9,30€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -240,8 +240,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 8.0,
-      "bankroll_after": 27.5,
+      "profit": 9.3,
+      "bankroll_after": 33.8,
       "result": {
         "score_home": "6-2 6-4",
         "score_away": "",
@@ -263,13 +263,13 @@
         "kickoff": "2026-05-23T23:30:00+00:00"
       },
       "pick": "Wolves ML + Edwards Over 28.5 pts",
-      "odds": 2.3,
+      "odds": 2.6,
       "odds_unboosted": null,
-      "model_probability": 0.51,
-      "book_probability": 0.4348,
-      "expected_value": 0.173,
+      "model_probability": 0.46,
+      "book_probability": 0.3846,
+      "expected_value": 0.196,
       "engine": "claude_curated@1.0",
-      "headline": "Wolves G3 home + Edwards en colère >28.5 pts — combo cote 2.30",
+      "headline": "Wolves G3 home + Edwards en colère >28.5 pts — combo cote 2.60",
       "rationale": [
         "## 🎯 Le match",
         "G3 finale Ouest NBA. Wolves mènent 0-2 dans la série, retour à Minneapolis pour 2 matchs à domicile.",
@@ -282,8 +282,8 @@
         "OKC voyage usé : 8 matchs en 14 jours, Holmgren minutes restreintes pour repos.",
         "Match-up favorable Wolves : Gobert protège la peinture, neutralise les drives SGA.",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.30 pour combo Wolves ML + Edwards Over 28.5 pts. Probabilité estimée 51% → edge calculé +17.3%.",
-        "Mise : 5€ — gain potentiel +6,50€ si validé."
+        "Cote consensus marché 2.60 pour combo Wolves ML + Edwards Over 28.5 pts. Probabilité estimée 46% → edge calculé +19.6%.",
+        "Mise : 5€ — gain potentiel +8,00€ si validé."
       ],
       "sources": [
         "https://www.dimers.com/predictions/nba",
@@ -292,8 +292,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 6.5,
-      "bankroll_after": 34.0,
+      "profit": 8.0,
+      "bankroll_after": 41.8,
       "result": {
         "score_home": 121,
         "score_away": 107,
@@ -315,13 +315,13 @@
         "kickoff": "2026-05-24T11:00:00+00:00"
       },
       "pick": "Báez vainqueur en 4 sets exactement",
-      "odds": 2.7,
+      "odds": 3.1,
       "odds_unboosted": null,
-      "model_probability": 0.45,
-      "book_probability": 0.3704,
-      "expected_value": 0.215,
+      "model_probability": 0.4,
+      "book_probability": 0.3226,
+      "expected_value": 0.24,
       "engine": "claude_curated@1.0",
-      "headline": "Báez vainqueur en 4 sets — pari niche sur dynamique de match prévue",
+      "headline": "Báez vainqueur en 4 sets — pari niche cote 3.10 sur dynamique prévue",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de Roland Garros sur le court Simonne-Mathieu. Báez (TS) contre Cobolli (sans tête de série).",
@@ -333,9 +333,9 @@
         "H2H : 0-0 (première rencontre).",
         "Conditions : ciel couvert, terre lourde annoncée — favorise les grimpeurs comme Báez.",
         "## 🎰 Le pari",
-        "Cote consensus marché 2.70 pour Báez en 4 sets exactement. Probabilité estimée 45% → edge calculé +21.5%.",
+        "Cote consensus marché 3.10 pour Báez en 4 sets exactement. Probabilité estimée 40% → edge calculé +24%.",
         "Cobolli a la capacité de prendre 1 set (servie solide), mais Báez gagnerait avec la science de la terre sur 4 sets — match-up classique terrien expérimenté vs jeune.",
-        "Mise : 5€ — gain potentiel +8,50€ si validé."
+        "Mise : 5€ — gain potentiel +10,50€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -344,8 +344,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 8.5,
-      "bankroll_after": 42.5,
+      "profit": 10.5,
+      "bankroll_after": 52.3,
       "result": {
         "score_home": "6-3 4-6 6-2 6-4",
         "score_away": "",
@@ -396,15 +396,15 @@
         "https://www.lastwordonsports.com/tennis/"
       ],
       "stake": 5.0,
-      "outcome": "win",
-      "profit": 4.8,
+      "outcome": "loss",
+      "profit": -5.0,
       "bankroll_after": 47.3,
       "result": {
         "score_home": "6-1 6-2",
         "score_away": "",
-        "score_text": "Swiatek bat Jones 6-1 6-2",
-        "summary": "Démonstration de la quadruple championne. Jones impuissante face au rythme imprimé par Swiatek.",
-        "bet_outcome": "Pari gagné : Swiatek vainqueur en 2 sets sans encombre."
+        "score_text": "Swiatek bat Jones 6-1 6-2 (15 jeux totaux)",
+        "summary": "Swiatek gagne facilement comme prévu MAIS le match fait 15 jeux totaux (6+1+6+2) → la jambe Under 14.5 du combo échoue.",
+        "bet_outcome": "Pari perdu : Swiatek victorieuse (jambe 1 OK) mais 15 jeux totaux > 14.5 (jambe 2 raté) → combo perdu."
       },
       "comparison": null,
       "profile_tags": [],
@@ -519,27 +519,27 @@
   ],
   "stats": {
     "total_picks": 9,
-    "won": 8,
-    "lost": 1,
+    "won": 7,
+    "lost": 2,
     "pending": 0,
     "profit": 47.6,
     "roi_percent": 105.78,
-    "average_odds": 2.274,
-    "win_rate": 88.89,
+    "average_odds": 2.492,
+    "win_rate": 77.78,
     "starting_bankroll": 5.0,
     "current_bankroll": 52.6,
     "progression_percent": 952.0,
     "drawdown_max": 5.0,
-    "current_streak": 5,
-    "best_streak": 5,
+    "current_streak": 1,
+    "best_streak": 3,
     "worst_streak": -1,
     "total_stake_played": 45.0,
     "pending_stake": 0,
     "avg_stake": 5.0,
     "max_stake": 5.0,
-    "max_odds_won": 2.7,
-    "max_profit_single": 8.5,
+    "max_odds_won": 3.1,
+    "max_profit_single": 10.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-26T20:50:27.323044+00:00"
+  "generated_at": "2026-05-26T21:05:27.439112+00:00"
 }

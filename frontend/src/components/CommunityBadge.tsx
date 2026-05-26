@@ -8,8 +8,9 @@
  * Format affiché :
  *   847 utilisateurs · 508 premium (60%)
  *
- * Variation légère par jour (cycle hebdo) pour donner l'impression que
- * la communauté grandit organiquement, sans paraître statique.
+ * Croissance : +0.2%/jour (composé) à partir du baseline 2026-05-26.
+ * Variation déterministe ±5 sur cycle hebdo pour donner impression
+ * de fluctuation organique sans saut entre refresh.
  */
 
 import { useEffect, useState } from "react";
@@ -17,20 +18,26 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 
 // Configuration : valeurs cibles (à ajuster avant chaque relance / launch)
-const BASE_USERS = 847;
+const BASELINE_DATE = new Date("2026-05-26T00:00:00Z").getTime();
+const BASELINE_USERS = 847;
 const PREMIUM_RATIO = 0.6; // 60% premium par décision user
+const DAILY_GROWTH = 0.002; // +0.2%/jour (composé)
 
 function getSimulatedCount(): number {
-  // Variation légère ±15 selon le jour de l'année (cycle déterministe,
-  // pas de random pour éviter les sauts entre refresh).
+  const now = Date.now();
+  const daysSince = Math.max(0, Math.floor((now - BASELINE_DATE) / 86_400_000));
+
+  // Croissance composée : base × (1.002)^daysSince
+  const grown = BASELINE_USERS * Math.pow(1 + DAILY_GROWTH, daysSince);
+
+  // Variation déterministe ±5 (sinusoïde basée sur dayOfYear pour
+  // donner impression "live" sans random instable entre refresh).
   const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86_400_000,
+    (now - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86_400_000,
   );
-  // Sinusoïde lente : ±15 sur ~7 jours
-  const variation = Math.round(Math.sin((dayOfYear * 2 * Math.PI) / 7) * 15);
-  // Légère tendance haussière pré-launch : +1 par semaine ISO
-  const week = Math.floor(dayOfYear / 7);
-  return BASE_USERS + variation + week;
+  const variation = Math.round(Math.sin((dayOfYear * 2 * Math.PI) / 7) * 5);
+
+  return Math.round(grown + variation);
 }
 
 interface Props {
