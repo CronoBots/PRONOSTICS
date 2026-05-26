@@ -349,6 +349,8 @@ const fr: Dict = {
   "history.cardTitle": "Cote du match",
   "history.cardTitleCombo": "Cote du combiné",
   "history.result": "Résultat",
+  "history.atTime": "à",
+  "history.totalOddsLabel": "Cote totale",
   "history.close": "Fermer",
   // Stats hero
   "stats.currentBankroll": "Bankroll actuelle",
@@ -1040,6 +1042,8 @@ const en: Dict = {
   "history.cardTitle": "Match odds",
   "history.cardTitleCombo": "Parlay odds",
   "history.result": "Result",
+  "history.atTime": "at",
+  "history.totalOddsLabel": "Total odds",
   // Stats hero
   "stats.currentBankroll": "Current bankroll",
   "stats.bankrollSince": "from €{amount} ·",
