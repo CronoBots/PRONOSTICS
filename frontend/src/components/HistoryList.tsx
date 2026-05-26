@@ -291,14 +291,13 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         </div>
       ) : (
         <div className="p-3 min-w-0">
-          {/* HEADER : emoji + tournoi · round · heure (gauche) + status (droite) */}
+          {/* HEADER : emoji + tournoi (toute la largeur) + status badge */}
           <div className="flex items-start gap-2 mb-1">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
               {emoji}{" "}
               {isCombo
                 ? t("history.combinedLegs", { n: pick.legs!.length })
                 : pick.match.league || pick.match.sport}
-              {timeLabel && <span className="text-white/85"> · {timeLabel}</span>}
             </div>
             <span
               className={`text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded-md border flex items-center gap-1 ${statusBadge.cls}`}
@@ -308,11 +307,15 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             </span>
           </div>
 
-          {/* MATCH : Player A vs Player B (subtle) */}
+          {/* MATCH + heure inline (subtle) */}
           {!isCombo && (
             <div className="text-xs text-white/55 truncate">
               {pick.match.home_team} vs {pick.match.away_team}
+              {timeLabel && <span className="text-white/45"> · {timeLabel}</span>}
             </div>
+          )}
+          {isCombo && timeLabel && (
+            <div className="text-xs text-white/55">{timeLabel}</div>
           )}
 
           {/* DIVIDER */}
