@@ -8,6 +8,22 @@ import { SPORT_EMOJIS } from "@/lib/types";
 
 const SPORT_OPTIONS = ["football", "basketball", "tennis", "nfl", "mlb", "nhl", "combo", "autre"];
 
+// Bookmakers suggérés (datalist non-restrictive — le user peut taper n'importe quoi)
+const BOOKMAKER_SUGGESTIONS = [
+  "Unibet Belgique",
+  "Bet365",
+  "Betclic",
+  "bwin",
+  "Ladbrokes",
+  "Napoleon Sports",
+  "ZEturf",
+  "Winamax",
+  "FDJ",
+  "Pinnacle",
+];
+
+const DEFAULT_BOOKMAKER = "Unibet Belgique";
+
 const INPUT_CLS =
   "w-full bg-bg-elevated border border-white/10 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-accent-green/40 placeholder:text-white/25";
 
@@ -36,6 +52,7 @@ export function PersonalBetForm({ open, onClose, onSaved, editing }: Props) {
   const [stake, setStake] = useState("");
   const [outcome, setOutcome] = useState<PersonalOutcome>("pending");
   const [notes, setNotes] = useState("");
+  const [bookmaker, setBookmaker] = useState(DEFAULT_BOOKMAKER);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,6 +67,7 @@ export function PersonalBetForm({ open, onClose, onSaved, editing }: Props) {
       setStake(String(editing.stake));
       setOutcome(editing.outcome);
       setNotes(editing.notes);
+      setBookmaker(editing.bookmaker || DEFAULT_BOOKMAKER);
     } else {
       setDate(todayISO());
       setSport("football");
@@ -59,6 +77,7 @@ export function PersonalBetForm({ open, onClose, onSaved, editing }: Props) {
       setStake("");
       setOutcome("pending");
       setNotes("");
+      setBookmaker(DEFAULT_BOOKMAKER);
     }
     setError(null);
   }, [open, editing]);
@@ -89,6 +108,7 @@ export function PersonalBetForm({ open, onClose, onSaved, editing }: Props) {
       stake: stakeNum,
       outcome,
       notes: notes.trim(),
+      bookmaker: bookmaker.trim(),
     };
 
     setSaving(true);
@@ -198,6 +218,22 @@ export function PersonalBetForm({ open, onClose, onSaved, editing }: Props) {
             </select>
           </Field>
         </div>
+
+        <Field label={t("perso.bookmaker")} optional>
+          <input
+            type="text"
+            value={bookmaker}
+            onChange={(e) => setBookmaker(e.target.value)}
+            placeholder={DEFAULT_BOOKMAKER}
+            list="bookmaker-suggestions"
+            className={INPUT_CLS}
+          />
+          <datalist id="bookmaker-suggestions">
+            {BOOKMAKER_SUGGESTIONS.map((b) => (
+              <option key={b} value={b} />
+            ))}
+          </datalist>
+        </Field>
 
         {odds && stake && (
           <PreviewRow

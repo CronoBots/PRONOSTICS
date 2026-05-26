@@ -26,6 +26,7 @@ export interface PersonalBet {
   outcome: PersonalOutcome;
   profit: number;          // gain/perte (signed). Calculé au moment du settlement.
   notes: string;
+  bookmaker: string;       // bookmaker utilisé par le user (Unibet Belgique par défaut)
   created_at: string;      // ISO timestamp
 }
 
@@ -38,6 +39,7 @@ export interface PersonalBetInput {
   stake: number;
   outcome: PersonalOutcome;
   notes: string;
+  bookmaker: string;
 }
 
 export interface PersonalStats {
@@ -239,6 +241,7 @@ export async function createBet(input: PersonalBetInput): Promise<PersonalBet | 
         outcome: input.outcome,
         profit,
         notes: input.notes,
+        bookmaker: input.bookmaker || null,
       })
       .select()
       .single();
@@ -260,6 +263,7 @@ function createLocal(input: PersonalBetInput, profit: number): PersonalBet {
     outcome: input.outcome,
     profit,
     notes: input.notes,
+    bookmaker: input.bookmaker,
     created_at: new Date().toISOString(),
   };
   const all = readLocal();
@@ -286,6 +290,7 @@ export async function updateBet(id: string, input: PersonalBetInput): Promise<Pe
           outcome: input.outcome,
           profit,
           notes: input.notes,
+          bookmaker: input.bookmaker || null,
         })
         .eq("id", id)
         .eq("user_id", uid)
@@ -310,6 +315,7 @@ export async function updateBet(id: string, input: PersonalBetInput): Promise<Pe
     outcome: input.outcome,
     profit,
     notes: input.notes,
+    bookmaker: input.bookmaker,
   };
   writeLocal(all);
   return all[idx];
@@ -385,6 +391,7 @@ interface PersonalBetRow {
   outcome: PersonalOutcome | null;
   profit: string | number | null;
   notes: string | null;
+  bookmaker: string | null;
   created_at: string;
 }
 
@@ -400,6 +407,7 @@ function rowToBet(row: PersonalBetRow): PersonalBet {
     outcome: (row.outcome ?? "pending") as PersonalOutcome,
     profit: Number(row.profit ?? 0),
     notes: row.notes ?? "",
+    bookmaker: row.bookmaker ?? "",
     created_at: row.created_at,
   };
 }

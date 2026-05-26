@@ -70,7 +70,7 @@ export default function MesParisPage() {
         <title>{t("perso.titleTab")}</title>
       </Head>
 
-      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-6">
+      <main className="w-full max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-6 pb-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
           <Link
