@@ -146,6 +146,27 @@ async def main() -> int:
             tests.append(await run(f"fetch_pregame_form({fev_id}) [foot]", sofascore.fetch_pregame_form(fev_id)))
             tests.append(await run(f"fetch_h2h_events({fev_id}) [foot]", sofascore.fetch_h2h_events(fev_id)))
 
+    # 7-bis. match_context aggregator (1 appel = tout en parallèle)
+    print("\n--- Test match_context aggregator ---\n")
+    from app.adapters import match_context  # noqa: E402
+    if tennis_today.ok:
+        evs = await sofascore.fetch_scheduled_events("tennis", TODAY)
+        if evs:
+            target = evs[0]
+            ctx = await match_context.build_match_context(
+                target["event_id"], sport="tennis", include_player_bios=True
+            )
+            t = Test(f"build_match_context(tennis {target['event_id']})")
+            t.ok = bool(ctx.get("event"))
+            t.detail = f"→ {len(ctx)} blocs, sport=tennis"
+            tests.append(t)
+
+            summary = match_context.summarize_for_agent(ctx)
+            t2 = Test("summarize_for_agent(tennis)")
+            t2.ok = summary.get("event_id") is not None
+            t2.detail = f"→ {summary.get('home')} vs {summary.get('away')} ({summary.get('tournament')})"
+            tests.append(t2)
+
     # =========================================================================
     # 8. NBA — 3e sport actif NEXBET v4.6
     # =========================================================================

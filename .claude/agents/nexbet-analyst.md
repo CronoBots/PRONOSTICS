@@ -91,6 +91,44 @@ pas même équipe). Exemples :
 - Top-10 ATP au GS lui-même = candidat naturel pour jambe combiné (cote
   1.10-1.30 typique en R1/R2 GS)
 
+### 🎾 v4.7 — Recherche ACTIVE combinés tennis pendant Grand Chelems
+
+Pendant les fenêtres **Roland-Garros (mai-juin), Wimbledon (juin-juillet),
+US Open (août-sept), Australian Open (janvier)** — l'agent doit
+**explicitement et systématiquement** chercher des combinés 2-3 jambes
+sans attendre une demande user.
+
+**Algorithme à appliquer dans Étape 1 cartographie** :
+
+1. **Filtre fav GS** : sur le programme du jour, lister tous les matchs
+   où le favori a une cote 1.10-1.40 ET joue contre un adversaire
+   clairement inférieur (gap classement > 30 places OU qualifié face à
+   top-30 OU spécialiste surface vs profil non-terre).
+
+2. **Si ≥ 2 fav passent le filtre** ET sont sur des courts/séances
+   différents (indépendance temporelle) → construire automatiquement le
+   combiné 2 jambes (typiquement cote 1.30-1.80).
+
+3. **Si ≥ 3 fav passent** → proposer aussi le combiné 3 jambes
+   (cote typique 1.50-2.20).
+
+4. **Critère d'indépendance tennis** :
+   - ✅ 2 matchs ATP différents
+   - ✅ 1 ATP + 1 WTA
+   - ✅ 1 match Chatrier + 1 match Lenglen
+   - ❌ 2 matchs du même quart de tableau qui pourraient se rencontrer
+     plus tard (corrélation indirecte)
+   - ❌ 2 picks "sets" du même match
+
+5. **Présentation dans TOP 3** : si le combiné a un meilleur EV que les
+   singles isolés, le présenter **comme une option** (pas comme LA reco)
+   avec décomposition jambe par jambe + cote totale + EV combiné.
+
+**Exemple type RG R1/R2** : Sinner 1.05 × Sabalenka 1.04 × Alcaraz 1.10
+= cote 1.20 — souvent SOUS le seuil F1 (1.60 min combo). À combiner
+avec une jambe légèrement plus risquée (top-15 cote 1.30-1.40) pour
+atteindre la fenêtre cote.
+
 ## Profil utilisateur (rappel v4)
 
 - Belgique, **bookmaker personnel non documenté publiquement** (privacy
