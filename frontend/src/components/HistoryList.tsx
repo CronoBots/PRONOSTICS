@@ -209,14 +209,22 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
       ? "Combiné"
       : pick.match.sport.charAt(0).toUpperCase() + pick.match.sport.slice(1);
 
-  // Date + heure FR : "26 mai 2026 à 12:58"
+  // Date format compact : "Lundi 25/05/26" + heure séparée "13:00"
   const kickoffDate = pick.match.kickoff ? new Date(pick.match.kickoff) : null;
-  const dateLabel = kickoffDate
-    ? kickoffDate.toLocaleDateString(localeForLang(lang), {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+  const fullDateLabel = kickoffDate
+    ? (() => {
+        // "lundi 25/05/26" → capitalise première lettre
+        const weekday = kickoffDate.toLocaleDateString(localeForLang(lang), {
+          weekday: "long",
+        });
+        const dmy = kickoffDate.toLocaleDateString(localeForLang(lang), {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        });
+        const cap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+        return `${cap} ${dmy}`;
+      })()
     : null;
   const timeLabel = kickoffDate
     ? kickoffDate.toLocaleTimeString(localeForLang(lang), {
@@ -224,6 +232,11 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         minute: "2-digit",
       })
     : null;
+
+  // Gain potentiel / réel selon outcome
+  const stake = pick.stake || 0;
+  const potentialGain = stake * pick.odds - stake; // profit brut (odds-1)*stake
+  const actualGain = pick.profit; // déjà signé (positif win, négatif loss)
 
   // Résultat (score final) si réglé
   const resultText = (() => {
@@ -256,14 +269,15 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           </div>
         ) : (
           <div className="space-y-1 min-w-0">
-            {/* Ligne 1 : emoji + sport · date à heure (TOUT EN BLANC) */}
-            <div className="text-xs text-white font-medium truncate">
-              {emoji} {sportLabel}
-              {dateLabel && timeLabel && (
-                <span className="text-white/80">
-                  {" · "}
-                  {dateLabel} {t("history.atTime")} {timeLabel}
-                </span>
+            {/* Ligne 1 : emoji + Lundi 25/05/26 13:00 (TOUT EN BLANC) */}
+            <div className="text-sm text-white font-semibold truncate">
+              {emoji}{" "}
+              {fullDateLabel && timeLabel ? (
+                <>
+                  {fullDateLabel} {timeLabel}
+                </>
+              ) : (
+                sportLabel
               )}
             </div>
 
@@ -304,14 +318,55 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
               </div>
             )}
 
-            {/* Ligne 4 : tournoi / lieu (league) */}
+            {/* Ligne 4 : Mise (gauche) + Gain potentiel/réel (droite) */}
+            {stake > 0 && (
+              <div className="flex items-center justify-between text-[11px] gap-2 pt-0.5">
+                <span className="text-white/55">
+                  {t("history.stake")}:{" "}
+                  <span className="text-white/90 tabular-nums font-semibold">
+                    {stake.toFixed(2)} €
+                  </span>
+                </span>
+                {isPending ? (
+                  <span className="text-white/55 whitespace-nowrap">
+                    {t("history.potentialGain")}:{" "}
+                    <span className="text-yellow-300 tabular-nums font-semibold">
+                      +{potentialGain.toFixed(2)} €
+                    </span>
+                  </span>
+                ) : isWin ? (
+                  <span className="text-white/55 whitespace-nowrap">
+                    {t("history.gain")}:{" "}
+                    <span className="text-accent-green tabular-nums font-semibold">
+                      +{actualGain.toFixed(2)} €
+                    </span>
+                  </span>
+                ) : isLoss ? (
+                  <span className="text-white/55 whitespace-nowrap">
+                    {t("history.loss")}:{" "}
+                    <span className="text-accent-red tabular-nums font-semibold">
+                      {actualGain.toFixed(2)} €
+                    </span>
+                  </span>
+                ) : isVoid ? (
+                  <span className="text-white/55 whitespace-nowrap">
+                    {t("history.refund")}:{" "}
+                    <span className="text-accent-blue tabular-nums font-semibold">
+                      {stake.toFixed(2)} €
+                    </span>
+                  </span>
+                ) : null}
+              </div>
+            )}
+
+            {/* Ligne 5 : tournoi / lieu (league) */}
             {pick.match.league && !isCombo && (
               <div className="text-[11px] text-white/55 truncate">
                 {pick.match.league}
               </div>
             )}
 
-            {/* Ligne 5 : résultat si réglé */}
+            {/* Ligne 6 : résultat si réglé */}
             {resultText && (
               <div className="text-[11px] pt-0.5">
                 <span className="text-white/45">{t("history.result")}:</span>{" "}

@@ -351,6 +351,11 @@ const fr: Dict = {
   "history.result": "Résultat",
   "history.atTime": "à",
   "history.totalOddsLabel": "Cote totale",
+  "history.stake": "Mise",
+  "history.potentialGain": "Gain potentiel",
+  "history.gain": "Gain",
+  "history.loss": "Perte",
+  "history.refund": "Remboursé",
   "history.close": "Fermer",
   // Stats hero
   "stats.currentBankroll": "Bankroll actuelle",
@@ -1044,6 +1049,11 @@ const en: Dict = {
   "history.result": "Result",
   "history.atTime": "at",
   "history.totalOddsLabel": "Total odds",
+  "history.stake": "Stake",
+  "history.potentialGain": "Potential gain",
+  "history.gain": "Gain",
+  "history.loss": "Loss",
+  "history.refund": "Refunded",
   // Stats hero
   "stats.currentBankroll": "Current bankroll",
   "stats.bankrollSince": "from €{amount} ·",
