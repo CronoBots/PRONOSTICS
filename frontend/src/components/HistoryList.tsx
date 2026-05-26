@@ -145,42 +145,6 @@ function ProfitChip({
   );
 }
 
-function StatusBar({ outcome }: { outcome: HistoryPick["outcome"] }) {
-  const { t } = useI18n();
-  let bg = "bg-white/5";
-  let text = "text-white/40";
-  let label = t("history.outcomeNone");
-  if (outcome === "win") {
-    bg = "bg-accent-green/15";
-    text = "text-accent-green";
-    label = t("history.outcomeWin");
-  } else if (outcome === "loss") {
-    bg = "bg-accent-red/15";
-    text = "text-accent-red";
-    label = t("history.outcomeLoss");
-  } else if (outcome === "pending") {
-    bg = "bg-white/[0.07]";
-    text = "text-white/50";
-    label = t("history.outcomePending");
-  } else if (outcome === "void") {
-    bg = "bg-accent-blue/15";
-    text = "text-accent-blue";
-    label = t("history.outcomeVoid");
-  }
-  return (
-    <div
-      className={`${bg} ${text} flex items-center justify-center px-2 rounded-r-xl self-stretch min-w-[28px]`}
-    >
-      <span
-        className="text-[10px] font-semibold tracking-wider uppercase"
-        style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
 function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const { t, lang } = useI18n();
   const { user } = useAuth();
@@ -191,94 +155,154 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const isLoss = pick.outcome === "loss";
   const isVoid = pick.outcome === "void";
   const isLocked = isPending && !isPremium;
-  const oddsChipClass = isWin
-    ? "bg-accent-green/15 border-accent-green/40 text-accent-green"
-    : isLoss
-      ? "bg-accent-red/15 border-accent-red/40 text-accent-red line-through decoration-accent-red/60"
-      : isVoid
-        ? "bg-accent-blue/10 border-accent-blue/30 text-accent-blue"
-        : "bg-white/[0.08] border-white/20 text-white";
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
-  const time = pick.match.kickoff
-    ? new Date(pick.match.kickoff).toLocaleTimeString(localeForLang(lang), {
+
+  // Bordure latérale colorée selon outcome (style ticket de pari)
+  const borderLeftClass = isWin
+    ? "border-l-accent-green"
+    : isLoss
+      ? "border-l-accent-red"
+      : isVoid
+        ? "border-l-accent-blue"
+        : "border-l-yellow-400/60";
+
+  // Couleur de la cote selon outcome (visible dans le titre)
+  const oddsColorClass = isWin
+    ? "text-accent-green"
+    : isLoss
+      ? "text-accent-red line-through decoration-accent-red/70"
+      : isVoid
+        ? "text-accent-blue"
+        : "text-white";
+
+  // Sport label capitalisé (tennis → Tennis)
+  const sportLabel =
+    pick.match.sport.charAt(0).toUpperCase() + pick.match.sport.slice(1);
+
+  // Date + heure FR : "26 mai 2026 à 12:58"
+  const kickoffDate = pick.match.kickoff ? new Date(pick.match.kickoff) : null;
+  const dateLabel = kickoffDate
+    ? kickoffDate.toLocaleDateString(localeForLang(lang), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+  const timeLabel = kickoffDate
+    ? kickoffDate.toLocaleTimeString(localeForLang(lang), {
         hour: "2-digit",
         minute: "2-digit",
       })
-    : "—";
+    : null;
+
+  // Résultat (score final) si réglé
+  const resultText = (() => {
+    const r = pick.result;
+    if (!r) return null;
+    if (r.score_text) return r.score_text;
+    if (r.score_home != null && r.score_away != null) {
+      return `${r.score_home}-${r.score_away}`;
+    }
+    return null;
+  })();
 
   return (
     <button
       onClick={() => (isLocked ? router.push("/premium") : onClick())}
-      className="w-full flex items-stretch bg-bg-elevated/40 border border-white/[0.06] rounded-xl overflow-hidden text-left hover:border-accent-green/30 transition"
+      className={`w-full block bg-bg-elevated/40 border border-white/[0.06] border-l-4 ${borderLeftClass} rounded-xl overflow-hidden text-left hover:border-white/15 transition`}
     >
-      <div className="flex items-center justify-center px-2 text-white/30 text-lg">⋮</div>
-      <div className="flex-1 py-3 pr-2 min-w-0">
-        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-          <span className="text-[11px] font-mono text-white/70 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
-            {time}
-          </span>
-          <span
-            className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded border ${
-              isCombo
-                ? "text-yellow-400 bg-yellow-400/10 border-yellow-400/30"
-                : "text-accent-blue bg-accent-blue/10 border-accent-blue/20"
-            }`}
-          >
-            {isCombo ? t("history.combinedLegs", { n: pick.legs!.length }) : t("history.simple")}
-          </span>
-          {/* Cote en chip prominent, couleur sémantique selon outcome */}
-          <span
-            className={`ml-auto text-xs font-bold tabular-nums px-2 py-0.5 rounded border ${oddsChipClass}`}
-          >
-            {pick.odds.toFixed(2)}
-          </span>
-          {isCombo && pick.odds_unboosted && (
-            <span className="text-[10px] text-yellow-400/80 font-semibold w-full">
-              {t("history.boostFromTo")} <span className="line-through text-white/30">{pick.odds_unboosted.toFixed(2)}</span> → {pick.odds.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        {/* Gating Premium pour un pick PENDING (les équipes révéleraient le pari) */}
-        {isLocked ? (
-          <div className="mt-1 flex items-center gap-2 bg-bg-base/40 border border-yellow-400/20 rounded-lg px-2.5 py-2">
-            <span className="text-lg">🔒</span>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium leading-tight">
-                {t("status.pendingLockedTitle")}
-              </div>
-              <div className="text-[10px] text-white/40 mt-0.5">
-                {t("status.pendingLockedHint")} · {t("status.cote")} {pick.odds.toFixed(2)}
-              </div>
+      {isLocked ? (
+        <div className="p-3 flex items-center gap-2 bg-bg-base/40 border-l-yellow-400/40">
+          <span className="text-lg">🔒</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium leading-tight">
+              {t("status.pendingLockedTitle")}
+            </div>
+            <div className="text-[10px] text-white/40 mt-0.5">
+              {t("status.pendingLockedHint")} · {t("status.cote")} {pick.odds.toFixed(2)}
             </div>
           </div>
-        ) : isCombo ? (
-          <div className="space-y-1.5 mt-1">
+        </div>
+      ) : isCombo ? (
+        <div className="p-3 space-y-1">
+          {/* Title combo */}
+          <div className="text-sm font-bold leading-snug">
+            {t("history.cardTitleCombo")}:{" "}
+            <span className="text-white/85 font-normal">
+              {t("history.combinedLegs", { n: pick.legs!.length })}
+            </span>{" "}
+            <span className="text-white/50 font-normal">@</span>{" "}
+            <span className={`tabular-nums ${oddsColorClass}`}>
+              {pick.odds.toFixed(2)}
+            </span>
+          </div>
+          {/* Legs */}
+          <div className="space-y-1.5 pt-1">
             {pick.legs!.map((leg, i) => (
               <ComboLegMini key={i} leg={leg} index={i + 1} />
             ))}
-            <div className="text-[10px] text-white/40 mt-1.5 flex items-center gap-2">
-              <span className="text-yellow-400 font-bold tabular-nums">
-                {t("history.totalOdds", { odds: pick.odds.toFixed(2) })}
-              </span>
-              <span>·</span>
-              <span>{t("history.bothMustWin")}</span>
-            </div>
           </div>
-        ) : (
-          <>
-            <div className="text-sm font-medium truncate flex items-center gap-1.5">
-              <span>{emoji}</span>
-              <span className="truncate">{pick.pick}</span>
+          {/* Meta */}
+          <div className="text-[11px] text-white/55 pt-1">
+            {emoji} Combiné{dateLabel && timeLabel ? ` · ${dateLabel} à ${timeLabel}` : ""}
+          </div>
+          {pick.odds_unboosted && (
+            <div className="text-[11px] text-yellow-400/80 font-semibold">
+              {t("history.boostFromTo")}{" "}
+              <span className="line-through text-white/30">
+                {pick.odds_unboosted.toFixed(2)}
+              </span>{" "}
+              → {pick.odds.toFixed(2)}
             </div>
-            <div className="text-[11px] text-white/40 truncate mt-0.5">
-              {pick.match.home_team} vs {pick.match.away_team}
+          )}
+        </div>
+      ) : (
+        <div className="p-3 space-y-0.5">
+          {/* Title : Cote du match: <pick> @ <odds> */}
+          <div className="text-sm font-bold leading-snug">
+            {t("history.cardTitle")}:{" "}
+            <span>{pick.pick}</span>{" "}
+            <span className="text-white/50 font-normal">@</span>{" "}
+            <span className={`tabular-nums ${oddsColorClass}`}>
+              {pick.odds.toFixed(2)}
+            </span>
+          </div>
+          {/* Match */}
+          <div className="text-xs text-white/75 truncate">
+            {pick.match.home_team} - {pick.match.away_team}
+          </div>
+          {/* Sport · date · heure */}
+          {kickoffDate && (
+            <div className="text-[11px] text-white/55">
+              {emoji} {sportLabel} · {dateLabel} à {timeLabel}
             </div>
-          </>
-        )}
-      </div>
-      <StatusBar outcome={pick.outcome} />
+          )}
+          {/* League (compétition) */}
+          {pick.match.league && (
+            <div className="text-[11px] text-white/55 truncate">
+              {pick.match.league}
+            </div>
+          )}
+          {/* Résultat si réglé */}
+          {resultText && (
+            <div className="text-[11px] mt-1">
+              <span className="text-white/45">{t("history.result")}:</span>{" "}
+              <span
+                className={`font-semibold tabular-nums ${
+                  isWin
+                    ? "text-accent-green"
+                    : isLoss
+                      ? "text-accent-red"
+                      : "text-white"
+                }`}
+              >
+                {resultText}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </button>
   );
 }

@@ -346,6 +346,9 @@ const fr: Dict = {
   "history.totalOdds": "Cote totale {odds}",
   "history.bothMustWin": "Les 2 doivent gagner",
   "history.betAnalysis": "Analyse du pari",
+  "history.cardTitle": "Cote du match",
+  "history.cardTitleCombo": "Cote du combiné",
+  "history.result": "Résultat",
   "history.close": "Fermer",
   // Stats hero
   "stats.currentBankroll": "Bankroll actuelle",
@@ -1034,6 +1037,9 @@ const en: Dict = {
   "history.bothMustWin": "Both must win",
   "history.betAnalysis": "Bet analysis",
   "history.close": "Close",
+  "history.cardTitle": "Match odds",
+  "history.cardTitleCombo": "Parlay odds",
+  "history.result": "Result",
   // Stats hero
   "stats.currentBankroll": "Current bankroll",
   "stats.bankrollSince": "from €{amount} ·",
