@@ -217,8 +217,8 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           >
             {isCombo ? t("history.combinedLegs", { n: pick.legs!.length }) : t("history.simple")}
           </span>
-          <span className="text-[11px] font-bold italic bg-bg-base text-white px-2 py-0.5 rounded">
-            b<span className="relative">w<span className="absolute -top-0.5 right-0 w-1 h-1 rounded-full bg-yellow-400" /></span>in
+          <span className="text-[10px] font-semibold tracking-wider uppercase bg-bg-base border border-white/10 text-white/75 px-2 py-0.5 rounded">
+            Unibet BE
           </span>
           {isCombo && pick.odds_unboosted && (
             <span className="text-[10px] text-yellow-400/80 font-semibold">
