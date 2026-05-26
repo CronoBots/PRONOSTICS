@@ -291,7 +291,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         </div>
       ) : (
         <div className="p-3 min-w-0">
-          {/* HEADER : emoji + tournoi (toute la largeur) + status badge */}
+          {/* HEADER : emoji + tournoi (toute la largeur) + status icon */}
           <div className="flex items-start gap-2 mb-1">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
               {emoji}{" "}
@@ -300,10 +300,11 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                 : pick.match.league || pick.match.sport}
             </div>
             <span
-              className={`text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded-md border flex items-center gap-1 ${statusBadge.cls}`}
+              className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-base font-bold leading-none ${statusBadge.cls}`}
+              title={statusBadge.label}
+              aria-label={statusBadge.label}
             >
-              <span>{statusBadge.icon}</span>
-              <span>{statusBadge.label}</span>
+              {statusBadge.icon}
             </span>
           </div>
 
