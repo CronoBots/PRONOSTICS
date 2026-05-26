@@ -1,0 +1,92 @@
+name: Telegram daily publish
+
+# Publie automatiquement chaque jour :
+#   - 08h00 Belgique → résultat du pick d'hier
+#   - 10h00 Belgique → pick du jour
+#   - 09h00 Belgique dimanche → récap hebdo
+#
+# Heures cron en UTC (Belgique = UTC+1 hiver, UTC+2 été).
+# Note : GitHub Actions schedule peut avoir 5-15min de delay.
+
+on:
+  schedule:
+    # 08h00 Belgique été = 06h00 UTC → résultat veille
+    - cron: "0 6 * * *"
+    # 10h00 Belgique été = 08h00 UTC → pick du jour
+    - cron: "0 8 * * *"
+    # Dimanche 09h00 Belgique été = 07h00 UTC → récap hebdo
+    - cron: "0 7 * * 0"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode à exécuter manuellement"
+        type: choice
+        required: true
+        default: "test"
+        options:
+          - test
+          - pick-today
+          - pick-yesterday
+          - result-yesterday
+          - recap-weekly
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Determine mode from schedule or input
+        id: mode
+        run: |
+          # Mode manuel via workflow_dispatch
+          if [ -n "${{ github.event.inputs.mode }}" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # Mode automatique via cron — déduit de l'heure UTC
+          HOUR=$(date -u +%H)
+          DOW=$(date -u +%w)  # 0=dimanche
+          if [ "$DOW" = "0" ] && [ "$HOUR" = "07" ]; then
+            echo "mode=recap-weekly" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "06" ]; then
+            echo "mode=result-yesterday" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "08" ]; then
+            echo "mode=pick-today" >> $GITHUB_OUTPUT
+          else
+            echo "mode=test" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to Telegram
+        working-directory: backend
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        run: |
+          case "${{ steps.mode.outputs.mode }}" in
+            test)
+              python scripts/publish_telegram.py --test
+              ;;
+            pick-today)
+              python scripts/publish_telegram.py --pick today
+              ;;
+            pick-yesterday)
+              python scripts/publish_telegram.py --pick yesterday
+              ;;
+            result-yesterday)
+              YESTERDAY=$(date -u -d "yesterday" +%Y-%m-%d)
+              python scripts/publish_telegram.py --result "$YESTERDAY"
+              ;;
+            recap-weekly)
+              python scripts/publish_telegram.py --recap weekly
+              ;;
+            *)
+              echo "Mode inconnu : ${{ steps.mode.outputs.mode }}"
+              exit 1
+              ;;
+          esac
