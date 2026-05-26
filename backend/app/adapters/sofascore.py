@@ -672,12 +672,26 @@ def _normalize_ranking(row: dict) -> dict:
 
 async def fetch_standings(tournament_id: int, season_id: int) -> list[dict]:
     """Classement complet d'un tournoi/saison (ex: Premier League 2025-26)."""
+    return await _fetch_standings(tournament_id, season_id, "total")
+
+
+async def fetch_standings_home(tournament_id: int, season_id: int) -> list[dict]:
+    """Classement à domicile uniquement (foot)."""
+    return await _fetch_standings(tournament_id, season_id, "home")
+
+
+async def fetch_standings_away(tournament_id: int, season_id: int) -> list[dict]:
+    """Classement à l'extérieur uniquement (foot)."""
+    return await _fetch_standings(tournament_id, season_id, "away")
+
+
+async def _fetch_standings(tournament_id: int, season_id: int, kind: str) -> list[dict]:
     try:
         data = await _fetch_json(
-            f"/unique-tournament/{tournament_id}/season/{season_id}/standings/total"
+            f"/unique-tournament/{tournament_id}/season/{season_id}/standings/{kind}"
         )
     except Exception as exc:  # noqa: BLE001
-        logger.warning("sofascore standings KO for %s/%s: %s", tournament_id, season_id, exc)
+        logger.warning("sofascore standings/%s KO for %s/%s: %s", kind, tournament_id, season_id, exc)
         return []
     if not data:
         return []
@@ -702,3 +716,342 @@ def _normalize_standing(row: dict) -> dict:
         "goals_against": row.get("scoresAgainst"),
         "points": row.get("points"),
     }
+
+
+# =============================================================================
+# v4.7 CHERRY-PICK depuis tommhe14/sofascore-wrapper (MIT) — endpoints à fort ROI
+# =============================================================================
+
+
+async def search_entities(query: str, page: int = 0) -> dict:
+    """Search universel : joueurs, équipes, matchs, ligues, managers.
+
+    Endpoint clé pour résoudre un nom textuel en ID Sofascore.
+    Retourne {results: [...]} avec un champ 'type' par résultat.
+    """
+    safe_q = query.strip().replace(" ", "%20")
+    try:
+        data = await _fetch_json(f"/search/all/?q={safe_q}&page={page}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore search KO for '%s': %s", query, exc)
+        return {"results": []}
+    return data or {"results": []}
+
+
+async def search_player_or_team(query: str, page: int = 0) -> dict:
+    """Search ciblé joueur/équipe (plus précis que search_entities)."""
+    safe_q = query.strip().replace(" ", "%20")
+    try:
+        data = await _fetch_json(f"/search/player-team-persons/?q={safe_q}&page={page}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore search player/team KO for '%s': %s", query, exc)
+        return {"results": []}
+    return data or {"results": []}
+
+
+async def fetch_league_info(league_id: int) -> dict | None:
+    """Bio d'une ligue/tournoi (nom, pays, niveau, sport)."""
+    try:
+        data = await _fetch_json(f"/unique-tournament/{league_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore league KO for %s: %s", league_id, exc)
+        return None
+    if not data:
+        return None
+    ut = data.get("uniqueTournament", {}) if isinstance(data, dict) else {}
+    if not ut:
+        return None
+    return {
+        "league_id": ut.get("id"),
+        "name": ut.get("name", ""),
+        "slug": ut.get("slug", ""),
+        "country": (ut.get("category") or {}).get("name", ""),
+        "sport": ((ut.get("category") or {}).get("sport") or {}).get("name", ""),
+        "user_count": ut.get("userCount"),
+        "has_position_graph": ut.get("hasPositionGraph"),
+        "has_player_statistics": ut.get("hasEventPlayerStatistics"),
+        "current_season_id": (ut.get("currentSeason") or {}).get("id"),
+        "current_season_year": (ut.get("currentSeason") or {}).get("year", ""),
+    }
+
+
+async def fetch_league_seasons(league_id: int) -> list[dict]:
+    """Liste de toutes les saisons disponibles pour une ligue.
+
+    La 1ère entrée est typiquement la saison en cours (utile pour
+    l'auto-discovery du season_id).
+    """
+    try:
+        data = await _fetch_json(f"/unique-tournament/{league_id}/seasons")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore league-seasons KO for %s: %s", league_id, exc)
+        return []
+    if not data:
+        return []
+    seasons = data.get("seasons", []) if isinstance(data, dict) else []
+    return [
+        {"id": s.get("id"), "name": s.get("name", ""), "year": s.get("year", "")}
+        for s in seasons
+    ]
+
+
+async def get_current_season_id(league_id: int) -> int | None:
+    """Helper : retourne l'ID de la saison en cours d'une ligue.
+
+    Stratégie 1 : `/unique-tournament/{id}` → currentSeason.id
+    Fallback : `/unique-tournament/{id}/seasons` → premier élément
+    """
+    info = await fetch_league_info(league_id)
+    if info and info.get("current_season_id"):
+        return info["current_season_id"]
+    seasons = await fetch_league_seasons(league_id)
+    if seasons:
+        return seasons[0].get("id")
+    return None
+
+
+async def fetch_league_rounds(league_id: int, season_id: int) -> dict | None:
+    """Liste des journées d'une saison + journée en cours."""
+    try:
+        data = await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/rounds"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore rounds KO for %s/%s: %s", league_id, season_id, exc)
+        return None
+    if not data:
+        return None
+    return {
+        "current_round": (data.get("currentRound") or {}).get("round"),
+        "current_round_name": (data.get("currentRound") or {}).get("name", ""),
+        "rounds": data.get("rounds", []),
+    }
+
+
+async def fetch_league_fixtures_round(
+    league_id: int, season_id: int, round_number: int
+) -> list[dict]:
+    """Tous les matchs d'une journée précise (ex: J35 PL 2025-26)."""
+    try:
+        data = await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/events/round/{round_number}"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore fixtures-round KO for %s/%s/r%s: %s",
+            league_id, season_id, round_number, exc,
+        )
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_event_short(e) for e in events]
+
+
+async def fetch_top_players_league(
+    league_id: int, season_id: int
+) -> dict | None:
+    """Top scorers / passeurs / etc. d'une saison de ligue.
+
+    Format : {goals: [...], assists: [...], yellowCards: [...], ...}.
+    """
+    try:
+        return await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/top-players/overall"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore top-players KO for %s/%s: %s", league_id, season_id, exc)
+        return None
+
+
+async def fetch_top_teams_league(
+    league_id: int, season_id: int
+) -> dict | None:
+    """Top équipes d'une saison (ratings, goals scored, clean sheets, etc.)."""
+    try:
+        return await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/top-teams/overall"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore top-teams KO for %s/%s: %s", league_id, season_id, exc)
+        return None
+
+
+async def fetch_team_next_events(team_id: int, page: int = 0) -> list[dict]:
+    """Prochains matchs programmés pour l'équipe (~20 par page)."""
+    try:
+        data = await _fetch_json(f"/team/{team_id}/events/next/{page}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-next KO for %s: %s", team_id, exc)
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_event_short(e) for e in events]
+
+
+async def fetch_team_squad(team_id: int) -> list[dict]:
+    """Effectif complet de l'équipe (joueurs avec position, âge, pays)."""
+    try:
+        data = await _fetch_json(f"/team/{team_id}/players")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-squad KO for %s: %s", team_id, exc)
+        return []
+    if not data:
+        return []
+    players = data.get("players", []) if isinstance(data, dict) else []
+    out: list[dict] = []
+    for entry in players:
+        player = entry.get("player") or entry
+        if not player:
+            continue
+        out.append({
+            "player_id": player.get("id"),
+            "name": player.get("name", ""),
+            "short_name": player.get("shortName", ""),
+            "position": player.get("position", ""),
+            "jersey_number": player.get("jerseyNumber"),
+            "country": (player.get("country") or {}).get("name", ""),
+            "date_of_birth_ts": player.get("dateOfBirthTimestamp"),
+            "market_value": player.get("proposedMarketValue"),
+        })
+    return out
+
+
+async def fetch_team_transfers(team_id: int) -> dict | None:
+    """Transferts in/out de l'équipe (mercato courant + précédents)."""
+    try:
+        return await _fetch_json(f"/team/{team_id}/transfers")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-transfers KO for %s: %s", team_id, exc)
+        return None
+
+
+async def fetch_team_league_stats(
+    team_id: int, league_id: int, season_id: int
+) -> dict | None:
+    """Stats d'équipe dans une ligue/saison (xG, possession, shots, etc.)."""
+    try:
+        return await _fetch_json(
+            f"/team/{team_id}/unique-tournament/{league_id}/season/{season_id}/statistics/overall"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore team-league-stats KO for %s/%s/%s: %s",
+            team_id, league_id, season_id, exc,
+        )
+        return None
+
+
+async def fetch_match_votes(event_id: int) -> dict | None:
+    """Votes des utilisateurs Sofascore avant le match (sentiment public).
+
+    Format : {vote1: int, voteX: int, vote2: int} — utile pour détecter
+    un excès de hype d'un côté (signal de pari contrarien).
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/votes")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore votes KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    vote = data.get("vote") or data
+    return {
+        "vote_home": vote.get("vote1"),
+        "vote_draw": vote.get("voteX"),
+        "vote_away": vote.get("vote2"),
+    }
+
+
+async def fetch_shotmap(event_id: int, team_id: int | None = None) -> dict | None:
+    """Shotmap d'un match (post-match foot). Si team_id, filtre par équipe."""
+    suffix = f"/{team_id}" if team_id else ""
+    try:
+        return await _fetch_json(f"/event/{event_id}/shotmap{suffix}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore shotmap KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_event_managers(event_id: int) -> dict | None:
+    """Managers/coachs du match."""
+    try:
+        return await _fetch_json(f"/event/{event_id}/managers")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore managers KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_event_comments(event_id: int) -> dict | None:
+    """Commentaires textuels live du match (mini-rapport)."""
+    try:
+        return await _fetch_json(f"/event/{event_id}/comments")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore comments KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_win_probability_graph(event_id: int) -> dict | None:
+    """Graphe temporel de la win-probability (évolution pendant le match)."""
+    try:
+        return await _fetch_json(f"/event/{event_id}/graph/win-probability")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore win-prob-graph KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_player_transfer_history(player_id: int) -> list[dict]:
+    """Historique des transferts du joueur."""
+    try:
+        data = await _fetch_json(f"/player/{player_id}/transfer-history")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore transfer-history KO for %s: %s", player_id, exc)
+        return []
+    if not data:
+        return []
+    transfers = data.get("transferHistory", []) if isinstance(data, dict) else []
+    return transfers
+
+
+async def fetch_player_attributes(player_id: int) -> dict | None:
+    """Attributs (style de jeu) du joueur : 'attacking', 'creativity', etc."""
+    try:
+        return await _fetch_json(f"/player/{player_id}/attribute-overviews")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore attributes KO for %s: %s", player_id, exc)
+        return None
+
+
+async def fetch_player_national_stats(player_id: int) -> dict | None:
+    """Stats en sélection nationale du joueur."""
+    try:
+        return await _fetch_json(f"/player/{player_id}/national-team-statistics")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore national-stats KO for %s: %s", player_id, exc)
+        return None
+
+
+async def fetch_player_unique_tournaments(player_id: int) -> dict | None:
+    """Liste des compétitions où le joueur a évolué (avec saison_ids associés)."""
+    try:
+        return await _fetch_json(f"/player/{player_id}/unique-tournaments")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore player-unique-tournaments KO for %s: %s", player_id, exc)
+        return None
+
+
+async def fetch_player_league_stats(
+    player_id: int, league_id: int, season_id: int
+) -> dict | None:
+    """Stats joueur dans une ligue/saison précise (goals, assists, xG, rating)."""
+    try:
+        return await _fetch_json(
+            f"/player/{player_id}/unique-tournament/{league_id}/season/{season_id}/statistics/overall"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore player-league-stats KO for %s/%s/%s: %s",
+            player_id, league_id, season_id, exc,
+        )
+        return None
