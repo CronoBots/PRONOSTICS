@@ -187,7 +187,17 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   const router = useRouter();
   const isPremium = !!user?.isPremium;
   const isPending = pick.outcome === "pending";
+  const isWin = pick.outcome === "win";
+  const isLoss = pick.outcome === "loss";
+  const isVoid = pick.outcome === "void";
   const isLocked = isPending && !isPremium;
+  const oddsChipClass = isWin
+    ? "bg-accent-green/15 border-accent-green/40 text-accent-green"
+    : isLoss
+      ? "bg-accent-red/15 border-accent-red/40 text-accent-red line-through decoration-accent-red/60"
+      : isVoid
+        ? "bg-accent-blue/10 border-accent-blue/30 text-accent-blue"
+        : "bg-white/[0.08] border-white/20 text-white";
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
   const time = pick.match.kickoff
@@ -217,11 +227,14 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           >
             {isCombo ? t("history.combinedLegs", { n: pick.legs!.length }) : t("history.simple")}
           </span>
-          <span className="text-[10px] font-semibold tracking-wider uppercase bg-bg-base border border-white/10 text-white/75 px-2 py-0.5 rounded">
-            Unibet BE
+          {/* Cote en chip prominent, couleur sémantique selon outcome */}
+          <span
+            className={`ml-auto text-xs font-bold tabular-nums px-2 py-0.5 rounded border ${oddsChipClass}`}
+          >
+            {pick.odds.toFixed(2)}
           </span>
           {isCombo && pick.odds_unboosted && (
-            <span className="text-[10px] text-yellow-400/80 font-semibold">
+            <span className="text-[10px] text-yellow-400/80 font-semibold w-full">
               {t("history.boostFromTo")} <span className="line-through text-white/30">{pick.odds_unboosted.toFixed(2)}</span> → {pick.odds.toFixed(2)}
             </span>
           )}
@@ -257,8 +270,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           <>
             <div className="text-sm font-medium truncate flex items-center gap-1.5">
               <span>{emoji}</span>
-              <span>{pick.pick}</span>
-              <span className="text-white/40 text-xs ml-1">@ {pick.odds.toFixed(2)}</span>
+              <span className="truncate">{pick.pick}</span>
             </div>
             <div className="text-[11px] text-white/40 truncate mt-0.5">
               {pick.match.home_team} vs {pick.match.away_team}
