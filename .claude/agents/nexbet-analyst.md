@@ -385,6 +385,43 @@ Si une seule source ou pas de quote précise → **outcome reste PENDING**.
 
 Mise à jour `paper_trading_log.md` + bankroll virtuel.
 
+### Étape 9-bis — Auto-learning loop (v4.7)
+
+**Après CHAQUE outcome confirmé** (win/loss enregistré dans
+`picks_data.py`), lancer la boucle d'auto-learning :
+
+```bash
+python backend/scripts/update_learnings.py
+```
+
+Cela calcule le **bias multi-dimensionnel** (global + par sport + par
+tier) et enregistre l'état dans `backend/data/nexbet/auto_learning_state.json`.
+
+**Gating triple avant tout patch** :
+1. n ≥ **5** picks résolus dans la dimension
+2. |bias| > **5pts** détecté
+3. **3 runs consécutifs** avec la même direction de bias
+
+Si gating passé, lancer :
+```bash
+python backend/scripts/update_learnings.py --apply
+```
+
+Cela :
+- Crée un backup `criteria.md.bak.<timestamp>`
+- Ajoute une annotation dans `criteria.md` section "🤖 Auto-learning notes"
+- Logue le patch dans `learnings.md` section "🤖 Auto-learning history"
+
+**L'agent NE MODIFIE PAS les seuils numériques automatiquement** (trop
+risqué) — il **ajoute des annotations** que l'agent lit au prochain run
+et applique contextuellement. Validation humaine possible via diff
+git + `--rollback` pour annuler.
+
+**Commandes utiles** :
+- `--audit` : voir l'historique des runs et patches
+- `--rollback` : restaure le dernier backup criteria.md
+- `--suggest` : dry-run avec message texte v4.6 compat
+
 ## Cas spéciaux
 
 - **Aucun candidat 🟢/🟡** : recommande SKIP, top 3 listé (informationnel)

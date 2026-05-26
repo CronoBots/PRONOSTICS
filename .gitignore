@@ -25,6 +25,10 @@ backend/data/*.sqlite
 backend/data/cache/
 backend/data/candidates/*.debug.txt
 
+# Auto-learning backups (transients, rollback uniquement)
+backend/data/nexbet/criteria.md.bak.*
+backend/data/nexbet/*.md.bak.*
+
 # Node
 node_modules/
 .next/

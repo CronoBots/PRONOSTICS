@@ -253,3 +253,28 @@ Un combiné est autorisé SI :
 - **EV combinée** : ≥ +5% (sans boost) ou ≥ +15% (avec boost ≥ +20%)
 - **Pas de corrélation** : sports/ligues différents, jamais 2 matchs du
   même tournoi
+
+
+## 🤖 Auto-learning notes
+
+> Annotations générées par `update_learnings.py --apply`.
+> L'agent en tient compte mais n'écrase pas les seuils tant
+> qu'aucune validation humaine n'est faite (rollback dispo).
+
+### 2026-05-26T10:40:44+00:00 — patch global
+- **Direction** : underestimate
+- **Bias actuel** : +23.0pts (persistant sur 3 runs)
+- **Action recommandée** : Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)
+- **Rationale** : Bias underestimate persistant sur 3 runs (actuel: +23.0pts)
+
+### 2026-05-26T10:40:44+00:00 — patch sport:tennis
+- **Direction** : underestimate
+- **Bias actuel** : +33.2pts (persistant sur 3 runs)
+- **Action recommandée** : Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)
+- **Rationale** : Bias tennis underestimate persistant (+33.2pts, n=4)
+
+### 2026-05-26T10:40:44+00:00 — patch tier:single
+- **Direction** : underestimate
+- **Bias actuel** : +23.0pts (persistant sur 3 runs)
+- **Action recommandée** : Relâcher F2 pour single (proba_shrunk -0.02)
+- **Rationale** : Bias single underestimate persistant (+23.0pts, n=8)
