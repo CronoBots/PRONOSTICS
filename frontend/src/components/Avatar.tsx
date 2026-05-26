@@ -79,7 +79,7 @@ export function Avatar({
     />
   ) : (
     <span
-      className="font-bold text-white/80"
+      className="font-bold text-white"
       style={{ fontSize }}
       aria-hidden
     >
@@ -87,7 +87,10 @@ export function Avatar({
     </span>
   );
 
-  const baseClass = `rounded-full overflow-hidden ring-1 ring-white/10 bg-gradient-to-br from-accent-blue/30 to-accent-green/20 flex items-center justify-center ${className}`;
+  // Avatar v6.9 : fond cyan brand bien visible (vs ancien gradient sombre
+  // qui rendait le V quasi invisible sur fond noir). Bordure cyan + glow
+  // subtil pour bien le faire ressortir.
+  const baseClass = `rounded-full overflow-hidden ring-2 ring-accent-blue/40 bg-gradient-to-br from-accent-blue/80 to-accent-blue/40 flex items-center justify-center shadow-lg shadow-accent-blue/15 ${className}`;
   const style = { width: size, height: size };
 
   if (!editable) {

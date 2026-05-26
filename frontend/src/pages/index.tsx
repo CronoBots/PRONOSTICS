@@ -405,16 +405,16 @@ function StatTile({
       {onInfo && (
         <button
           onClick={onInfo}
-          className="absolute top-1 right-1 w-4 h-4 lg:w-5 lg:h-5 rounded-full border border-white/15 text-white/40 hover:text-white hover:border-white/30 text-[9px] lg:text-[10px] flex items-center justify-center transition"
+          className="absolute top-1.5 right-1.5 w-4 h-4 lg:w-5 lg:h-5 rounded-full bg-white/[0.06] border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 text-[10px] lg:text-[11px] font-bold flex items-center justify-center transition leading-none"
           aria-label={t("home.helpFor", { label })}
         >
           ?
         </button>
       )}
-      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/55 text-center font-semibold">
+      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/55 text-center font-semibold mb-1 lg:mb-1.5">
         {label}
       </div>
-      <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center mt-0 lg:mt-1.5 ${colorClass}`}>
+      <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center ${colorClass}`}>
         <AnimatedNumber value={value} decimals={decimals} suffix={suffix} />
       </div>
     </div>

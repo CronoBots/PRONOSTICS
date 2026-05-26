@@ -89,11 +89,13 @@ export function BottomNav() {
         {leftTabs.map(renderTab)}
 
         {/* Bouton central → /today (pari du jour), couleur cyan brand
-            (v6) — etoile = identite forte "le pick du jour a ne pas rater" */}
+            (v6) — etoile = identite forte "le pick du jour a ne pas rater".
+            v6.9 : shadow réduite + halo subtil pour ne pas dominer la palette
+            sobre nouvelle génération. Garde le brand cyan plein. */}
         <div className="flex justify-center -mt-7 relative">
           <Link
             href="/today"
-            className="nav-pulse relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-blue shadow-accent-blue/30 hover:shadow-accent-blue/50"
+            className="nav-pulse relative w-14 h-14 rounded-full flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-blue shadow-md shadow-accent-blue/20 hover:shadow-accent-blue/40"
             aria-label={t("nav.todayPick")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
