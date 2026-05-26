@@ -126,16 +126,25 @@ async def main() -> int:
 
     # 6. Drill-down sur un event tennis du jour (si dispo)
     if tennis_today.ok:
-        events = tennis_today.detail
-        # Le test renvoie juste un compteur, on refait l'appel pour récupérer un event
         evs = await sofascore.fetch_scheduled_events("tennis", TODAY)
         if evs:
             ev_id = evs[0]["event_id"]
             tests.append(await run(f"fetch_event_details({ev_id})", sofascore.fetch_event_details(ev_id)))
-            tests.append(await run(f"fetch_win_probability({ev_id})", sofascore.fetch_win_probability(ev_id)))
-            tests.append(await run(f"fetch_pregame_form({ev_id})", sofascore.fetch_pregame_form(ev_id)))
             tests.append(await run(f"fetch_match_votes({ev_id})", sofascore.fetch_match_votes(ev_id)))
             tests.append(await run(f"fetch_h2h_events({ev_id})", sofascore.fetch_h2h_events(ev_id)))
+            tests.append(await run(f"fetch_h2h_stats({ev_id})", sofascore.fetch_h2h_stats(ev_id)))
+            # Ces endpoints sont principalement foot/basket — peuvent retourner EMPTY pour tennis (normal)
+            tests.append(await run(f"fetch_win_probability({ev_id}) [foot/basket only]", sofascore.fetch_win_probability(ev_id)))
+            tests.append(await run(f"fetch_pregame_form({ev_id}) [foot/basket only]", sofascore.fetch_pregame_form(ev_id)))
+
+    # 7. Drill-down sur un event football du jour (où win_prob/pregame_form devraient marcher)
+    if football_today.ok:
+        evs_foot = await sofascore.fetch_scheduled_events("football", TODAY)
+        if evs_foot:
+            fev_id = evs_foot[0]["event_id"]
+            tests.append(await run(f"fetch_win_probability({fev_id}) [foot]", sofascore.fetch_win_probability(fev_id)))
+            tests.append(await run(f"fetch_pregame_form({fev_id}) [foot]", sofascore.fetch_pregame_form(fev_id)))
+            tests.append(await run(f"fetch_h2h_events({fev_id}) [foot]", sofascore.fetch_h2h_events(fev_id)))
 
     # === Rapport ===
     print()

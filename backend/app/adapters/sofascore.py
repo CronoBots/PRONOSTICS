@@ -196,17 +196,53 @@ def _extract_missing(slot: dict) -> dict:
     }
 
 
-async def fetch_h2h_events(custom_event_id: int, limit: int = 10) -> list[dict]:
-    """Liste des derniers matchs H2H entre les 2 équipes de cet event."""
+async def fetch_h2h_events(event_id: int, limit: int = 10) -> list[dict]:
+    """Liste des derniers matchs H2H entre les 2 équipes/joueurs de cet event.
+
+    Stratégie : récupère le customId de l'event puis appelle /h2h/events.
+    L'endpoint /h2h/events nécessite le customId (string hash), pas le
+    numeric event_id.
+    """
+    custom_id = await _fetch_custom_id(event_id)
+    if not custom_id:
+        return []
     try:
-        data = await _fetch_json(f"/event/{custom_event_id}/h2h/events")
+        data = await _fetch_json(f"/event/{custom_id}/h2h/events")
     except Exception as exc:  # noqa: BLE001
-        logger.warning("sofascore h2h KO for %s: %s", custom_event_id, exc)
+        logger.warning("sofascore h2h KO for %s: %s", event_id, exc)
         return []
     if not data:
         return []
     events = data.get("events", []) if isinstance(data, dict) else []
     return [_normalize_h2h(e) for e in events[:limit]]
+
+
+async def _fetch_custom_id(event_id: int) -> str | None:
+    """Récupère le customId (string hash) d'un event à partir de son ID numérique.
+
+    Utile pour les endpoints qui exigent le customId (h2h/events, etc.).
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore custom_id fetch KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    return (data.get("event") or {}).get("customId")
+
+
+async def fetch_h2h_stats(event_id: int) -> dict | None:
+    """Stats agrégées H2H (wins home/draws/wins away). Endpoint direct event_id.
+
+    Différent de fetch_h2h_events qui liste les matchs.
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/h2h")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore h2h-stats KO for %s: %s", event_id, exc)
+        return None
+    return data
 
 
 def _normalize_h2h(event: dict) -> dict:
