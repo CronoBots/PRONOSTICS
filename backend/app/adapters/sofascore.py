@@ -286,3 +286,419 @@ def has_key_player_out(lineups: dict | None, threshold: int = 1) -> tuple[bool, 
         if missing.get("type") in {"missing", "out"} and missing.get("reason") not in {"", None}:
             out_names.append(missing["name"])
     return len(out_names) >= threshold, out_names
+
+
+# =============================================================================
+# v4.7 ENRICHISSEMENT — endpoints supplémentaires pour "max info"
+# =============================================================================
+
+
+async def fetch_event_details(event_id: int) -> dict | None:
+    """Détails complets d'un event : venue, referee, weather, ground type, season.
+
+    Pour le tennis, ground_type donne la surface (Clay/Hard/Grass).
+    Pour le foot, weather peut contenir température + conditions au coup d'envoi.
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore event KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    event = data.get("event", {}) if isinstance(data, dict) else {}
+    if not event:
+        return None
+    home = event.get("homeTeam", {})
+    away = event.get("awayTeam", {})
+    tournament = event.get("tournament", {})
+    venue = event.get("venue") or {}
+    season = event.get("season") or {}
+    round_info = event.get("roundInfo") or {}
+    return {
+        "event_id": event.get("id"),
+        "home_team": home.get("name", ""),
+        "home_team_id": home.get("id"),
+        "away_team": away.get("name", ""),
+        "away_team_id": away.get("id"),
+        "tournament": tournament.get("name", ""),
+        "tournament_id": tournament.get("id"),
+        "unique_tournament_id": (tournament.get("uniqueTournament") or {}).get("id"),
+        "season_name": season.get("name", ""),
+        "season_id": season.get("id"),
+        "round": round_info.get("round"),
+        "round_name": round_info.get("name", ""),
+        "kickoff_ts": event.get("startTimestamp"),
+        "status_code": (event.get("status") or {}).get("code"),
+        "status_description": (event.get("status") or {}).get("description", ""),
+        "venue_name": venue.get("name", ""),
+        "venue_city": (venue.get("city") or {}).get("name", ""),
+        "venue_country": (venue.get("country") or {}).get("name", ""),
+        "venue_capacity": venue.get("capacity"),
+        "referee_name": (event.get("referee") or {}).get("name", ""),
+        "referee_country": ((event.get("referee") or {}).get("country") or {}).get("name", ""),
+        "weather": event.get("weatherForecast"),
+        "ground_type": event.get("groundType", ""),
+        "best_of": event.get("defaultPeriodCount"),
+        "home_score": (event.get("homeScore") or {}).get("display"),
+        "away_score": (event.get("awayScore") or {}).get("display"),
+        "winner_code": event.get("winnerCode"),
+        "has_xg": event.get("hasXg"),
+        "has_global_highlights": event.get("hasGlobalHighlights"),
+    }
+
+
+async def fetch_incidents(event_id: int) -> list[dict]:
+    """Timeline des incidents (buts, cartons, subs, blessures, périodes).
+
+    Utile post-match pour outcome verification (qui a marqué quand).
+    Utile pré-match aussi pour H2H récents : voir comment se sont décidés
+    les derniers matchs (penalty, prolongation, etc.).
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/incidents")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore incidents KO for %s: %s", event_id, exc)
+        return []
+    if not data:
+        return []
+    incidents = data.get("incidents", []) if isinstance(data, dict) else []
+    return [_normalize_incident(i) for i in incidents]
+
+
+def _normalize_incident(inc: dict) -> dict:
+    return {
+        "type": inc.get("incidentType", ""),
+        "class": inc.get("incidentClass", ""),
+        "minute": inc.get("time"),
+        "added_minute": inc.get("addedTime"),
+        "player": (inc.get("player") or {}).get("name", ""),
+        "player_in": (inc.get("playerIn") or {}).get("name", ""),
+        "player_out": (inc.get("playerOut") or {}).get("name", ""),
+        "assist1": (inc.get("assist1") or {}).get("name", ""),
+        "is_home": inc.get("isHome"),
+        "reason": inc.get("reason", ""),
+        "description": inc.get("description", ""),
+        "home_score": inc.get("homeScore"),
+        "away_score": inc.get("awayScore"),
+    }
+
+
+async def fetch_win_probability(event_id: int) -> dict | None:
+    """Win probability propriétaire Sofascore (sharp data, modèle interne).
+
+    Renvoie {home_win, draw, away_win} en proba (0-1).
+    Disponible pré-match et en live pour la plupart des matchs majeurs.
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/win-probability")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore win-prob KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    return {
+        "home_win": data.get("homeWin"),
+        "draw": data.get("draw"),
+        "away_win": data.get("awayWin"),
+    }
+
+
+async def fetch_team_streaks(event_id: int) -> dict | None:
+    """Streaks pré-match : séries en cours pour chaque équipe.
+
+    Ex: "5 victoires d'affilée à domicile", "8 matchs sans encaisser",
+    "0 victoire en 6 confrontations sur cette surface".
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/team-streaks")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-streaks KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    return {
+        "home_streaks": data.get("home", []),
+        "away_streaks": data.get("away", []),
+        "general": data.get("general", []),
+    }
+
+
+async def fetch_pregame_form(event_id: int) -> dict | None:
+    """Forme pré-match : 5 derniers résultats + position au classement.
+
+    Pour le foot, renvoie ex: ["W","W","D","L","W"] et position dans la ligue.
+    Pour le tennis, les "form values" reflètent la confiance Sofascore.
+    """
+    try:
+        data = await _fetch_json(f"/event/{event_id}/pregame-form")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore pregame-form KO for %s: %s", event_id, exc)
+        return None
+    if not data:
+        return None
+    return {
+        "home_form": (data.get("homeTeam") or {}).get("form", []),
+        "home_position": (data.get("homeTeam") or {}).get("position"),
+        "home_value": (data.get("homeTeam") or {}).get("value"),
+        "away_form": (data.get("awayTeam") or {}).get("form", []),
+        "away_position": (data.get("awayTeam") or {}).get("position"),
+        "away_value": (data.get("awayTeam") or {}).get("value"),
+        "label": data.get("label", ""),
+    }
+
+
+async def fetch_event_graph(event_id: int) -> dict | None:
+    """Momentum graph — données de tempo pendant le match (post/live).
+
+    Utilisé pour analyser comment s'est déroulée la dynamique.
+    """
+    try:
+        return await _fetch_json(f"/event/{event_id}/graph")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore graph KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_event_odds(event_id: int) -> dict | None:
+    """Cotes pré-match côté Sofascore (markets multiples, providers internes)."""
+    try:
+        return await _fetch_json(f"/event/{event_id}/odds/1/all")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore odds KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_best_players(event_id: int) -> dict | None:
+    """Best players du match (note + key stats). Post-match uniquement."""
+    try:
+        return await _fetch_json(f"/event/{event_id}/best-players/summary")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore best-players KO for %s: %s", event_id, exc)
+        return None
+
+
+# =============================================================================
+# PLAYER endpoints — bio, stats, derniers matchs
+# =============================================================================
+
+
+async def fetch_player_details(player_id: int) -> dict | None:
+    """Bio joueur : âge, taille, pays, classement (tennis), équipe actuelle."""
+    try:
+        data = await _fetch_json(f"/player/{player_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore player KO for %s: %s", player_id, exc)
+        return None
+    if not data:
+        return None
+    player = data.get("player", {}) if isinstance(data, dict) else {}
+    if not player:
+        return None
+    team = player.get("team") or {}
+    return {
+        "player_id": player.get("id"),
+        "name": player.get("name", ""),
+        "short_name": player.get("shortName", ""),
+        "slug": player.get("slug", ""),
+        "position": player.get("position", ""),
+        "jersey_number": player.get("jerseyNumber", ""),
+        "height": player.get("height"),
+        "preferred_foot": player.get("preferredFoot", ""),
+        "country": (player.get("country") or {}).get("name", ""),
+        "nationality": (player.get("country") or {}).get("alpha2", ""),
+        "date_of_birth_ts": player.get("dateOfBirthTimestamp"),
+        "ranking": player.get("ranking"),
+        "current_team": team.get("name", ""),
+        "current_team_id": team.get("id"),
+        "market_value": player.get("proposedMarketValue"),
+    }
+
+
+async def fetch_player_last_year_summary(player_id: int) -> dict | None:
+    """Résumé performance des 12 derniers mois (heatmap + forme)."""
+    try:
+        return await _fetch_json(f"/player/{player_id}/last-year-summary")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore player-summary KO for %s: %s", player_id, exc)
+        return None
+
+
+async def fetch_player_statistics_seasons(player_id: int) -> dict | None:
+    """Liste des saisons avec stats disponibles (pour drilling sur une saison)."""
+    try:
+        return await _fetch_json(f"/player/{player_id}/statistics/seasons")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore player-seasons KO for %s: %s", player_id, exc)
+        return None
+
+
+async def fetch_player_last_events(player_id: int, page: int = 0) -> list[dict]:
+    """Derniers matchs du joueur, ~20 par page. Tennis-friendly."""
+    try:
+        data = await _fetch_json(f"/player/{player_id}/events/last/{page}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore player-events KO for %s: %s", player_id, exc)
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_event_short(e) for e in events]
+
+
+def _normalize_event_short(event: dict) -> dict:
+    home = event.get("homeTeam", {})
+    away = event.get("awayTeam", {})
+    return {
+        "event_id": event.get("id"),
+        "kickoff_ts": event.get("startTimestamp"),
+        "tournament": (event.get("tournament") or {}).get("name", ""),
+        "home_team": home.get("name", ""),
+        "home_team_id": home.get("id"),
+        "away_team": away.get("name", ""),
+        "away_team_id": away.get("id"),
+        "home_score": (event.get("homeScore") or {}).get("display"),
+        "away_score": (event.get("awayScore") or {}).get("display"),
+        "winner_code": event.get("winnerCode"),
+        "ground_type": event.get("groundType", ""),
+        "round": (event.get("roundInfo") or {}).get("name", ""),
+    }
+
+
+# =============================================================================
+# TEAM endpoints — bio, derniers matchs, perf globale
+# =============================================================================
+
+
+async def fetch_team_details(team_id: int) -> dict | None:
+    """Bio équipe : pays, manager, stade, tournoi principal."""
+    try:
+        data = await _fetch_json(f"/team/{team_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team KO for %s: %s", team_id, exc)
+        return None
+    if not data:
+        return None
+    team = data.get("team", {}) if isinstance(data, dict) else {}
+    if not team:
+        return None
+    venue = team.get("venue") or {}
+    stadium = venue.get("stadium") or {}
+    manager = team.get("manager") or {}
+    primary = team.get("primaryUniqueTournament") or {}
+    return {
+        "team_id": team.get("id"),
+        "name": team.get("name", ""),
+        "short_name": team.get("shortName", ""),
+        "country": (team.get("country") or {}).get("name", ""),
+        "manager": manager.get("name", ""),
+        "manager_id": manager.get("id"),
+        "venue": stadium.get("name", ""),
+        "venue_capacity": stadium.get("capacity"),
+        "venue_city": (venue.get("city") or {}).get("name", ""),
+        "primary_tournament": primary.get("name", ""),
+        "primary_tournament_id": primary.get("id"),
+        "founded": team.get("foundationDateTimestamp"),
+    }
+
+
+async def fetch_team_last_events(team_id: int, page: int = 0) -> list[dict]:
+    """Derniers matchs joués par l'équipe (~20 par page)."""
+    try:
+        data = await _fetch_json(f"/team/{team_id}/events/last/{page}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-events KO for %s: %s", team_id, exc)
+        return []
+    if not data:
+        return []
+    events = data.get("events", []) if isinstance(data, dict) else []
+    return [_normalize_event_short(e) for e in events]
+
+
+async def fetch_team_performance(team_id: int) -> dict | None:
+    """Performance globale équipe (forme actuelle, ratio victoires sur saison)."""
+    try:
+        return await _fetch_json(f"/team/{team_id}/performance")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore team-perf KO for %s: %s", team_id, exc)
+        return None
+
+
+# =============================================================================
+# RANKINGS & STANDINGS — classements ATP/WTA + standings ligues
+# =============================================================================
+
+RANKING_TYPE_IDS: dict[str, int] = {
+    "atp": 5,
+    "wta": 6,
+    "atp_live": 2,
+    "wta_live": 7,
+}
+
+
+async def fetch_rankings(category: str, limit: int = 100) -> list[dict]:
+    """Classement ATP/WTA (live ou officiel).
+
+    category: 'atp', 'wta', 'atp_live', 'wta_live'.
+    """
+    type_id = RANKING_TYPE_IDS.get(category.lower())
+    if type_id is None:
+        logger.warning("sofascore: ranking category inconnue: %s", category)
+        return []
+    try:
+        data = await _fetch_json(f"/rankings/type/{type_id}")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore rankings KO for %s: %s", category, exc)
+        return []
+    if not data:
+        return []
+    rows = data.get("rankings", []) if isinstance(data, dict) else []
+    return [_normalize_ranking(r) for r in rows[:limit]]
+
+
+def _normalize_ranking(row: dict) -> dict:
+    team = row.get("team") or {}
+    return {
+        "rank": row.get("ranking"),
+        "previous_rank": row.get("previousRanking"),
+        "points": row.get("points"),
+        "best_ranking": row.get("bestRanking"),
+        "player_id": team.get("id"),
+        "name": team.get("name", ""),
+        "country": (team.get("country") or {}).get("name", ""),
+        "tournaments_played": row.get("tournamentsPlayed"),
+    }
+
+
+async def fetch_standings(tournament_id: int, season_id: int) -> list[dict]:
+    """Classement complet d'un tournoi/saison (ex: Premier League 2025-26)."""
+    try:
+        data = await _fetch_json(
+            f"/unique-tournament/{tournament_id}/season/{season_id}/standings/total"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore standings KO for %s/%s: %s", tournament_id, season_id, exc)
+        return []
+    if not data:
+        return []
+    standings = data.get("standings", []) if isinstance(data, dict) else []
+    if not standings:
+        return []
+    rows = standings[0].get("rows", []) if standings else []
+    return [_normalize_standing(r) for r in rows]
+
+
+def _normalize_standing(row: dict) -> dict:
+    team = row.get("team", {})
+    return {
+        "position": row.get("position"),
+        "team": team.get("name", ""),
+        "team_id": team.get("id"),
+        "matches": row.get("matches"),
+        "wins": row.get("wins"),
+        "draws": row.get("draws"),
+        "losses": row.get("losses"),
+        "goals_for": row.get("scoresFor"),
+        "goals_against": row.get("scoresAgainst"),
+        "points": row.get("points"),
+    }
