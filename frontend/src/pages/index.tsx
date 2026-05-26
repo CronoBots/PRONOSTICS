@@ -255,10 +255,10 @@ export default function Home() {
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center transition-colors ${
+                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center text-white transition-colors ${
                             isActive
-                              ? "bg-white/15 border-white/40 text-white"
-                              : "bg-transparent border-white/15 text-white/60 hover:border-white/30 hover:text-white/80"
+                              ? "bg-white/15 border-white/40"
+                              : "bg-transparent border-white/15 hover:border-white/30"
                           }`}
                         >
                           {t(labelKey)}
@@ -267,7 +267,7 @@ export default function Home() {
                     })}
                     <Link
                       href="/filtres"
-                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center bg-transparent border-white/15 text-white/60 hover:border-white/30 hover:text-white/80 transition-colors"
+                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center text-white bg-transparent border-white/15 hover:border-white/30 transition-colors"
                     >
                       {t("home.filters")}
                     </Link>
@@ -411,7 +411,7 @@ function StatTile({
           ?
         </button>
       )}
-      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/55 text-center font-semibold mb-1 lg:mb-1.5">
+      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white text-center font-semibold mb-1 lg:mb-1.5">
         {label}
       </div>
       <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center ${colorClass}`}>
