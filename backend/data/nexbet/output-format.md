@@ -80,7 +80,8 @@ technique**. Format strict ci-dessous.
 - **Compétition** : **[Nom complet — Roland Garros / NHL Stanley Cup Playoffs / etc.]** — [tour, série, manche]
 - **Surface/Lieu** : [Terre battue / À domicile à Denver / etc.]
 - **Heure** : [XXh Belgique] ([moment de la journée])
-- **Cote bwin** : **X.XX** (mise X€ → gain potentiel +X,XX€)
+- **Cote marché** : **X.XX** (médiane consensus N books) — mise X€ →
+  gain potentiel +X,XX€
 
 ### Qui joue
 - 🇷🇸 **[Prénom Nom]** ([#ranking ATP/club], [âge] ans) — [contexte rapide : forme récente, spécialité, classement notable]
@@ -142,10 +143,18 @@ technique**. Format strict ci-dessous.
 - ❌ URLs de sources brutes (les sources sont citées en bio "Selon Dimers et Stats Insider" pas en liste d'URLs)
 
 **AUTORISÉ avec mesure** :
-- ⚠️ "Cote 1.78 chez bwin" (cote acceptable car compréhensible)
+- ⚠️ "Cote marché 1.78" / "Cote consensus 1.78" — JAMAIS le nom d'un book
 - ⚠️ "+4.7% d'edge" si vraiment utile (sinon dire "edge correct mais marginal")
 - ⚠️ "H2H 0-1" (acceptable en jargon tennis, mais préciser "historique face-à-face")
 - ⚠️ "Mise 3€" (sans détail Kelly)
+
+**STRICTEMENT INTERDIT (v4.7 — règle d'or bookmaker-agnostic)** :
+- ❌ Citer un bookmaker spécifique : bwin, Unibet, Bet365, Betclic, FDJ,
+  Winamax, Pinnacle, William Hill, etc.
+- ❌ "Disponible sur X", "place sur X", "boost X", "cash-out X"
+- ❌ Recommander une plateforme particulière
+- ✅ Reformulation : "cote marché médiane", "cote consensus N books",
+  "cote disponible sur la majorité des opérateurs"
 
 **Émojis verdict** :
 - 🟢 RECOMMANDÉ (EV ≥ +5%, proba ≥ 0.60)
@@ -179,7 +188,7 @@ Si user valide (✅), append dans `paper_trading_log.md` :
   "sport": "tennis | basketball | football | combo",
   "match": "Team A vs Team B",
   "kickoff_utc": "YYYY-MM-DDTHH:MM:SS+00:00",
-  "odds_bwin": 1.78,
+  "odds_market": 1.78,
   "model_probability": 0.640,
   "book_probability": 0.562,
   "ev": 0.047,

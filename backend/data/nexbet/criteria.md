@@ -29,8 +29,9 @@
 ### F1 — Cote
 - **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
 - **Combiné 2-3 jambes** : cote totale 1.60 – 2.50 (avec OU sans boost
-  bwin — élargie de 2.20 à 2.50 en v4.3 pour permettre les triples
-  combinés de favoris écrasants)
+  bookmaker — élargie de 2.20 à 2.50 en v4.3 pour permettre les triples
+  combinés de favoris écrasants). **Note v4.7 : ne pas citer le nom
+  du book dans l'output user (règle agnosticisme).**
 - **Combiné jambe individuelle** : 1.20 – 1.50 (proba implicite
   0.67 – 0.83 par jambe) — **élargi en v4.3** (était 1.20-1.45)
 - **F1-bis SUPPRIMÉ** (Playoff Mode 2.00-2.50 supprimé — basé sur n=1
@@ -73,7 +74,8 @@
 ### F3 — Expected Value (STRICT v4)
 - **Minimum recommandable** : EV ≥ **+2%**
 - **Cible RECOMMANDÉ** : EV ≥ **+5%**
-- **Combo** : EV ≥ **+5%** (sans boost) OU ≥ **+15%** (avec boost bwin)
+- **Combo** : EV ≥ **+5%** (sans boost) OU ≥ **+15%** (avec boost
+  bookmaker — usage interne, nom du book jamais publié dans le rapport)
 - **PAS de tolérance EV négatif** : un pick à EV < 0% est mathématiquement
   perdant à long terme. Le tier FLOOR de v3 (EV ≥ -2%) est supprimé.
 - **Formule** : `EV = proba_shrunk × cote − 1`
@@ -145,7 +147,9 @@ Exemple J1 (24/05) : Međedović EV +2.0% pile → 🟡 avec caveat.
 - **Idéal** : 6h – 24h
 
 ### F6 — Liquidité du marché
-- **Min** : 2 bookmakers majeurs (bwin + 1 autre)
+- **Min** : 2 bookmakers majeurs présents avec cote cohérente (référence
+  sharp recommandée : bwin ou Pinnacle pour le calcul interne, NOM du
+  book jamais publié dans le rapport user)
 - 1 seul book = risque cote artificielle, rejet
 
 ## Filtres souples (à pondérer en trace)
