@@ -203,34 +203,37 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         ? "text-accent-blue"
         : "text-white";
 
-  // Date format compact : "Lundi 25/05/26 · 13:00"
+  // Heure seule : "13:00" — intégrée à la ligne du tournoi (la date est
+  // déjà visible dans le header du jour "Lundi 25" qui groupe les paris).
   const kickoffDate = pick.match.kickoff ? new Date(pick.match.kickoff) : null;
-  const dateTimeLabel = kickoffDate
-    ? (() => {
-        const weekday = kickoffDate.toLocaleDateString(localeForLang(lang), {
-          weekday: "long",
-        });
-        const dmy = kickoffDate.toLocaleDateString(localeForLang(lang), {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-        });
-        const time = kickoffDate.toLocaleTimeString(localeForLang(lang), {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        const cap = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-        return `${cap} ${dmy} · ${time}`;
-      })()
+  const timeLabel = kickoffDate
+    ? kickoffDate.toLocaleTimeString(localeForLang(lang), {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
     : null;
 
-  // Résultat (score) si réglé
+  // Résultat (score brut) si réglé — privilégie score_home/score_away
+  // plutôt que score_text qui peut contenir "Swiatek bat Jones 6-1 6-2"
+  // (redondant avec le pari + le badge status). On extrait juste le chiffre.
   const resultText = (() => {
     const r = pick.result;
     if (!r) return null;
-    if (r.score_text) return r.score_text;
-    if (r.score_home != null && r.score_away != null) {
-      return `${r.score_home}-${r.score_away}`;
+    const home = r.score_home;
+    const away = r.score_away;
+    const hasHome = home != null && String(home).length > 0;
+    const hasAway = away != null && String(away).length > 0;
+    if (hasHome && hasAway) return `${home}-${away}`;
+    if (hasHome) return String(home); // tennis : score_home="6-3 7-6"
+    if (r.score_text) {
+      // Fallback : extrait la séquence de chiffres/tirets/espaces en fin
+      // de texte. Ex "Swiatek bat Jones 6-1 6-2" → "6-1 6-2"
+      const m = r.score_text.match(/[\d\s\-,()]+$/);
+      if (m) {
+        const trimmed = m[0].trim();
+        if (trimmed.length >= 2) return trimmed;
+      }
+      return r.score_text;
     }
     return null;
   })();
@@ -288,10 +291,14 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         </div>
       ) : (
         <div className="p-3 min-w-0">
-          {/* HEADER : date + heure (gauche) + status badge (droite) */}
+          {/* HEADER : emoji + tournoi · round · heure (gauche) + status (droite) */}
           <div className="flex items-start gap-2 mb-1">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
-              {dateTimeLabel || pick.match.sport}
+              {emoji}{" "}
+              {isCombo
+                ? t("history.combinedLegs", { n: pick.legs!.length })
+                : pick.match.league || pick.match.sport}
+              {timeLabel && <span className="text-white/85"> · {timeLabel}</span>}
             </div>
             <span
               className={`text-[10px] font-bold tracking-wider uppercase whitespace-nowrap px-2 py-1 rounded-md border flex items-center gap-1 ${statusBadge.cls}`}
@@ -301,20 +308,10 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             </span>
           </div>
 
-          {/* CONTEXT : tournoi / match */}
-          {!isCombo && pick.match.league && (
-            <div className="text-xs text-white/65 truncate">
-              {emoji} {pick.match.league}
-            </div>
-          )}
+          {/* MATCH : Player A vs Player B (subtle) */}
           {!isCombo && (
-            <div className="text-[11px] text-white/45 truncate">
+            <div className="text-xs text-white/55 truncate">
               {pick.match.home_team} vs {pick.match.away_team}
-            </div>
-          )}
-          {isCombo && (
-            <div className="text-xs text-white/65">
-              {emoji} {t("history.combinedLegs", { n: pick.legs!.length })}
             </div>
           )}
 
