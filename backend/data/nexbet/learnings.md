@@ -324,3 +324,20 @@ SNIPPET-ONLY. Résumé top par sport :
 - Hit rate sur 🟢 RECOMMANDÉ ≥ 65%
 - ROI virtuel ≥ +5%
 - Si tous OK : promotion mode réel envisagée
+
+
+## 🤖 Auto-learning history
+
+> Historique des patchs auto-learning. Géré par `update_learnings.py`.
+
+### Run 2026-05-26T10:40:34+00:00
+- **Backup criteria.md** : `criteria.md.bak.20260526T104034Z`
+- **global** (underestimate, +23.0pts × 3 runs) → Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)
+- **sport:tennis** (underestimate, +33.2pts × 3 runs) → Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)
+- **tier:single** (underestimate, +23.0pts × 3 runs) → Relâcher F2 pour single (proba_shrunk -0.02)
+
+### Run 2026-05-26T10:40:44+00:00
+- **Backup criteria.md** : `criteria.md.bak.20260526T104044Z`
+- **global** (underestimate, +23.0pts × 3 runs) → Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)
+- **sport:tennis** (underestimate, +33.2pts × 3 runs) → Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)
+- **tier:single** (underestimate, +23.0pts × 3 runs) → Relâcher F2 pour single (proba_shrunk -0.02)

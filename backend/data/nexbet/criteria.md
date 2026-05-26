@@ -29,8 +29,9 @@
 ### F1 — Cote
 - **Single** : 1.50 – 2.00 (sweet spot 1.65 – 1.90)
 - **Combiné 2-3 jambes** : cote totale 1.60 – 2.50 (avec OU sans boost
-  bwin — élargie de 2.20 à 2.50 en v4.3 pour permettre les triples
-  combinés de favoris écrasants)
+  bookmaker — élargie de 2.20 à 2.50 en v4.3 pour permettre les triples
+  combinés de favoris écrasants). **Note v4.7 : ne pas citer le nom
+  du book dans l'output user (règle agnosticisme).**
 - **Combiné jambe individuelle** : 1.20 – 1.50 (proba implicite
   0.67 – 0.83 par jambe) — **élargi en v4.3** (était 1.20-1.45)
 - **F1-bis SUPPRIMÉ** (Playoff Mode 2.00-2.50 supprimé — basé sur n=1
@@ -73,7 +74,8 @@
 ### F3 — Expected Value (STRICT v4)
 - **Minimum recommandable** : EV ≥ **+2%**
 - **Cible RECOMMANDÉ** : EV ≥ **+5%**
-- **Combo** : EV ≥ **+5%** (sans boost) OU ≥ **+15%** (avec boost bwin)
+- **Combo** : EV ≥ **+5%** (sans boost) OU ≥ **+15%** (avec boost
+  bookmaker — usage interne, nom du book jamais publié dans le rapport)
 - **PAS de tolérance EV négatif** : un pick à EV < 0% est mathématiquement
   perdant à long terme. Le tier FLOOR de v3 (EV ≥ -2%) est supprimé.
 - **Formule** : `EV = proba_shrunk × cote − 1`
@@ -145,7 +147,9 @@ Exemple J1 (24/05) : Međedović EV +2.0% pile → 🟡 avec caveat.
 - **Idéal** : 6h – 24h
 
 ### F6 — Liquidité du marché
-- **Min** : 2 bookmakers majeurs (bwin + 1 autre)
+- **Min** : 2 bookmakers majeurs présents avec cote cohérente (référence
+  sharp recommandée : bwin ou Pinnacle pour le calcul interne, NOM du
+  book jamais publié dans le rapport user)
 - 1 seul book = risque cote artificielle, rejet
 
 ## Filtres souples (à pondérer en trace)
@@ -249,3 +253,28 @@ Un combiné est autorisé SI :
 - **EV combinée** : ≥ +5% (sans boost) ou ≥ +15% (avec boost ≥ +20%)
 - **Pas de corrélation** : sports/ligues différents, jamais 2 matchs du
   même tournoi
+
+
+## 🤖 Auto-learning notes
+
+> Annotations générées par `update_learnings.py --apply`.
+> L'agent en tient compte mais n'écrase pas les seuils tant
+> qu'aucune validation humaine n'est faite (rollback dispo).
+
+### 2026-05-26T10:40:44+00:00 — patch global
+- **Direction** : underestimate
+- **Bias actuel** : +23.0pts (persistant sur 3 runs)
+- **Action recommandée** : Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)
+- **Rationale** : Bias underestimate persistant sur 3 runs (actuel: +23.0pts)
+
+### 2026-05-26T10:40:44+00:00 — patch sport:tennis
+- **Direction** : underestimate
+- **Bias actuel** : +33.2pts (persistant sur 3 runs)
+- **Action recommandée** : Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)
+- **Rationale** : Bias tennis underestimate persistant (+33.2pts, n=4)
+
+### 2026-05-26T10:40:44+00:00 — patch tier:single
+- **Direction** : underestimate
+- **Bias actuel** : +23.0pts (persistant sur 3 runs)
+- **Action recommandée** : Relâcher F2 pour single (proba_shrunk -0.02)
+- **Rationale** : Bias single underestimate persistant (+23.0pts, n=8)

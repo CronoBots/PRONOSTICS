@@ -1,0 +1,240 @@
+{
+  "runs": [
+    {
+      "timestamp": "2026-05-26T10:40:17+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-26T10:40:26+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-26T10:40:26+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-26T10:40:26+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-26T10:40:34+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    },
+    {
+      "timestamp": "2026-05-26T10:40:44+00:00",
+      "global": {
+        "n": 8,
+        "bias": 0.23,
+        "brier": 0.1431
+      },
+      "by_sport": {
+        "football": {
+          "n": 2,
+          "bias": -0.135
+        },
+        "tennis": {
+          "n": 4,
+          "bias": 0.3325
+        },
+        "basketball": {
+          "n": 2,
+          "bias": 0.39
+        }
+      },
+      "by_tier": {
+        "single": {
+          "n": 8,
+          "bias": 0.23
+        }
+      }
+    }
+  ],
+  "applied_patches": [
+    {
+      "scope": "global",
+      "key": "F2",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 23.0,
+      "rationale": "Bias underestimate persistant sur 3 runs (actuel: +23.0pts)",
+      "action": "Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)",
+      "timestamp": "2026-05-26T10:40:34+00:00",
+      "backup": "criteria.md.bak.20260526T104034Z"
+    },
+    {
+      "scope": "sport:tennis",
+      "key": "F2_sport_modifier",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 33.2,
+      "rationale": "Bias tennis underestimate persistant (+33.2pts, n=4)",
+      "action": "Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)",
+      "timestamp": "2026-05-26T10:40:34+00:00",
+      "backup": "criteria.md.bak.20260526T104034Z"
+    },
+    {
+      "scope": "tier:single",
+      "key": "F2_tier_modifier",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 23.0,
+      "rationale": "Bias single underestimate persistant (+23.0pts, n=8)",
+      "action": "Relâcher F2 pour single (proba_shrunk -0.02)",
+      "timestamp": "2026-05-26T10:40:34+00:00",
+      "backup": "criteria.md.bak.20260526T104034Z"
+    },
+    {
+      "scope": "global",
+      "key": "F2",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 23.0,
+      "rationale": "Bias underestimate persistant sur 3 runs (actuel: +23.0pts)",
+      "action": "Relâcher F2 de 0.02 OU diminuer poids book (agent trop conservateur)",
+      "timestamp": "2026-05-26T10:40:44+00:00",
+      "backup": "criteria.md.bak.20260526T104044Z"
+    },
+    {
+      "scope": "sport:tennis",
+      "key": "F2_sport_modifier",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 33.2,
+      "rationale": "Bias tennis underestimate persistant (+33.2pts, n=4)",
+      "action": "Ajouter -0.02 au shrinkage book pour tennis (modèle sous-estime — modèle plus confiant)",
+      "timestamp": "2026-05-26T10:40:44+00:00",
+      "backup": "criteria.md.bak.20260526T104044Z"
+    },
+    {
+      "scope": "tier:single",
+      "key": "F2_tier_modifier",
+      "direction": "underestimate",
+      "n_consecutive_runs": 3,
+      "current_bias_pts": 23.0,
+      "rationale": "Bias single underestimate persistant (+23.0pts, n=8)",
+      "action": "Relâcher F2 pour single (proba_shrunk -0.02)",
+      "timestamp": "2026-05-26T10:40:44+00:00",
+      "backup": "criteria.md.bak.20260526T104044Z"
+    }
+  ]
+}
