@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { BankrollChart, ChartMode } from "@/components/BankrollChart";
 import { BrandLogo } from "@/components/BrandLogo";
+import { CommunityBadge } from "@/components/CommunityBadge";
 import { ProfileButton } from "@/components/ProfileButton";
 import { InfoSheet } from "@/components/InfoSheet";
 import { HomeSkeleton } from "@/components/Skeleton";
@@ -349,6 +350,12 @@ export default function Home() {
                 />
               </div>
             )}
+
+            {/* CommunityBadge — signal social pré-launch (compteur simulé
+                avec 60% premium). À remplacer par compteur live post-launch. */}
+            <div className="flex justify-center mt-2 mb-1 shrink-0">
+              <CommunityBadge variant="compact" />
+            </div>
 
           </>
         )}

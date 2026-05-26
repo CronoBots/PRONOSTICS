@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 
 import { Header } from "@/components/Header";
@@ -9,9 +9,12 @@ import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
 
+type BetTypeFilter = "all" | "single" | "combo";
+
 export default function ParisPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
+  const [betType, setBetType] = useState<BetTypeFilter>("all");
   const { user, ready } = useAuth();
   const { t } = useI18n();
   const isPremium = ready && user?.isPremium;
@@ -29,10 +32,27 @@ export default function ParisPage() {
   }, []);
 
   const picks = history?.picks ?? [];
-  // Non-Premium voient seulement les paris réglés (les "en attente" sont gated sur /today)
+
+  // Filtre Simple / Combiné
+  const filteredPicks = useMemo(() => {
+    if (betType === "single") return picks.filter((p) => p.match.sport !== "combo");
+    if (betType === "combo") return picks.filter((p) => p.match.sport === "combo");
+    return picks;
+  }, [picks, betType]);
+
+  // Compteurs par catégorie pour les chips
+  const counts = useMemo(() => {
+    const settled = picks.filter((p) => p.outcome !== "pending");
+    return {
+      all: isPremium ? picks.length : settled.length,
+      single: (isPremium ? picks : settled).filter((p) => p.match.sport !== "combo").length,
+      combo: (isPremium ? picks : settled).filter((p) => p.match.sport === "combo").length,
+    };
+  }, [picks, isPremium]);
+
   const displayedCount = isPremium
-    ? picks.length
-    : picks.filter((p) => p.outcome !== "pending").length;
+    ? filteredPicks.length
+    : filteredPicks.filter((p) => p.outcome !== "pending").length;
 
   return (
     <>
@@ -58,19 +78,63 @@ export default function ParisPage() {
         {!loading && history && (
           <div>
             <div className="flex items-baseline justify-between mb-3 px-1">
-              <h2 className="text-sm md:text-base font-semibold uppercase tracking-wider text-white/70">
+              <h2 className="text-sm md:text-base font-semibold uppercase tracking-wider text-white">
                 {t("paris.historyTitle")}
               </h2>
-              <span className="text-[11px] text-white/40">
+              <span className="text-[11px] text-white/55">
                 {displayedCount > 1
                   ? t("paris.countMany", { n: displayedCount })
                   : t("paris.countOne", { n: displayedCount })}
               </span>
             </div>
-            <HistoryList picks={picks} />
+
+            {/* Filtres Simple / Combiné */}
+            <div className="flex gap-1.5 mb-3">
+              <FilterChip
+                active={betType === "all"}
+                onClick={() => setBetType("all")}
+                label={`${t("paris.filterAll")} (${counts.all})`}
+              />
+              <FilterChip
+                active={betType === "single"}
+                onClick={() => setBetType("single")}
+                label={`${t("paris.filterSingle")} (${counts.single})`}
+              />
+              <FilterChip
+                active={betType === "combo"}
+                onClick={() => setBetType("combo")}
+                label={`${t("paris.filterCombo")} (${counts.combo})`}
+              />
+            </div>
+
+            <HistoryList picks={filteredPicks} />
           </div>
         )}
       </main>
     </>
+  );
+}
+
+function FilterChip({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-3 py-1 rounded-full text-xs font-semibold border transition ${
+        active
+          ? "bg-white/15 border-white/40 text-white"
+          : "bg-transparent border-white/15 text-white hover:border-white/30"
+      }`}
+    >
+      {label}
+    </button>
   );
 }

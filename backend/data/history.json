@@ -407,31 +407,174 @@
       "comparison": null,
       "profile_tags": [],
       "legs": null
+    },
+    {
+      "date": "2026-05-26",
+      "match": {
+        "sport": "combo",
+        "league": "Roland Garros — 1er tour (combiné 5 paris)",
+        "home_team": "Combiné 5 paris",
+        "away_team": "Roland Garros Jour 3",
+        "kickoff": "2026-05-26T11:00:00+00:00"
+      },
+      "pick": "Combiné 5 paris simples Tennis RG R1",
+      "odds": 2.38,
+      "odds_unboosted": null,
+      "model_probability": 0.58,
+      "book_probability": 0.4202,
+      "expected_value": 0.3804,
+      "engine": "claude_curated@1.0",
+      "headline": "Combo premium RG R1 — 5 favoris écrasants tennis (cote totale 2.38)",
+      "rationale": [
+        "## 🎯 Le contexte",
+        "Jour 3 de Roland Garros 2026. Programme exceptionnellement chargé en favoris écrasants au 1er tour : Osaka, Darderi, Cerundolo, Gauff, Sabalenka.",
+        "Stratégie combo : agréger 5 paris simples à cote faible (1.03-1.30) pour atteindre une cote totale value (2.38) avec un edge cumulé positif.",
+        "Chaque jambe a une probabilité estimée individuelle ≥ 0.78 → produit ≈ 0.58 (proba combinée).",
+        "## 📊 L'analyse des 5 jambes",
+        "**Jambe 1 — Naomi Osaka @ 1.28** contre Laura Siegemund. Osaka retour en forme physique, ex-#1, terrain favorable. Siegemund spécialiste double mais limitée en simple haut niveau.",
+        "**Jambe 2 — Luciano Darderi @ 1.30** contre Sebastian Ofner. Darderi terrien italien, monté en puissance (TS50+). Ofner moins à l'aise sur ocre français.",
+        "**Jambe 3 — Juan Manuel Cerundolo @ 1.24** contre Jacob Fearnley. Argentin terrien né et grandi sur ocre, vs Britannique débutant sur surface.",
+        "**Jambe 4 — Coco Gauff @ 1.12** contre Taylor Townsend. Gauff #2 mondiale, finaliste 2022, en grande forme post-Rome. Townsend spécialiste double.",
+        "**Jambe 5 — Aryna Sabalenka @ 1.03** contre Jessica Bouzas Maneiro. Sabalenka #1 mondiale, écart de niveau abyssal vs #51 WTA.",
+        "## 🎰 Le pari",
+        "5 jambes à 1.28 × 1.30 × 1.24 × 1.12 × 1.03 = **cote totale 2.38** chez bwin.",
+        "Probabilité combinée estimée : 0.93 × 0.88 × 0.85 × 0.85 × 0.95 ≈ 0.59 → edge calculé +40% sur la cote 2.38.",
+        "Mise exceptionnelle : 20€ (vs 5€ habituels) — la convergence sur 5 favoris RG R1 justifie le push.",
+        "Gain potentiel si combo passe : +27,61€ net (return total 47,61€).",
+        "Risque : si UNE seule jambe perd, tout le combo perd. Probabilité d'échec ≈ 41%."
+      ],
+      "sources": [
+        "https://www.tennistonic.com/",
+        "https://www.lastwordonsports.com/tennis/",
+        "https://www.tennisuptodate.com/",
+        "https://www.atptour.com/en/scores/",
+        "https://www.wtatennis.com/scores"
+      ],
+      "stake": 20.0,
+      "outcome": "win",
+      "profit": 27.6,
+      "bankroll_after": 52.6,
+      "result": {
+        "score_home": "5/5",
+        "score_away": "",
+        "score_text": "5 jambes gagnées sur 5 — Osaka, Darderi, Cerundolo, Gauff, Sabalenka tous victorieux",
+        "summary": "Combo parfait : les 5 favoris RG R1 ont tous validé. Cote 2.38 honorée.",
+        "bet_outcome": "Pari gagné : combo 5/5 validé, +27,61€ net (return 47,61€)."
+      },
+      "comparison": null,
+      "profile_tags": [],
+      "legs": [
+        {
+          "sport": "tennis",
+          "league": "Roland Garros — 1er tour",
+          "home_team": "Laura Siegemund",
+          "away_team": "Naomi Osaka",
+          "pick": "Naomi Osaka vainqueur du match",
+          "kickoff": "2026-05-26T11:00:00+00:00",
+          "odds": 1.28,
+          "outcome": "win",
+          "result": {
+            "score_home": "0-2",
+            "score_away": "",
+            "score_text": "Osaka bat Siegemund 6-2 6-4",
+            "summary": "Osaka contrôle, victoire en 2 sets.",
+            "bet_outcome": "Pari gagné : Osaka victorieuse."
+          }
+        },
+        {
+          "sport": "tennis",
+          "league": "Roland Garros — 1er tour",
+          "home_team": "Sebastian Ofner",
+          "away_team": "Luciano Darderi",
+          "pick": "Luciano Darderi vainqueur du match",
+          "kickoff": "2026-05-26T13:00:00+00:00",
+          "odds": 1.3,
+          "outcome": "win",
+          "result": {
+            "score_home": "0-3",
+            "score_away": "",
+            "score_text": "Darderi bat Ofner 6-4 6-3 6-2",
+            "summary": "Darderi solide en 3 sets, terrien dominant.",
+            "bet_outcome": "Pari gagné : Darderi victorieux en 3 sets."
+          }
+        },
+        {
+          "sport": "tennis",
+          "league": "Roland Garros — 1er tour",
+          "home_team": "Jacob Fearnley",
+          "away_team": "Juan Manuel Cerundolo",
+          "pick": "Juan Manuel Cerundolo vainqueur du match",
+          "kickoff": "2026-05-26T13:00:00+00:00",
+          "odds": 1.24,
+          "outcome": "win",
+          "result": {
+            "score_home": "0-3",
+            "score_away": "",
+            "score_text": "Cerundolo bat Fearnley 6-3 6-2 6-4",
+            "summary": "Cerundolo terrien argentin survole, Fearnley dépassé sur ocre.",
+            "bet_outcome": "Pari gagné : Cerundolo victorieux."
+          }
+        },
+        {
+          "sport": "tennis",
+          "league": "Roland Garros — 1er tour",
+          "home_team": "Coco Gauff",
+          "away_team": "Taylor Townsend",
+          "pick": "Coco Gauff vainqueure du match",
+          "kickoff": "2026-05-26T12:30:00+00:00",
+          "odds": 1.12,
+          "outcome": "win",
+          "result": {
+            "score_home": "2-0",
+            "score_away": "",
+            "score_text": "Gauff bat Townsend 6-2 6-3",
+            "summary": "Gauff #2 mondiale étouffe Townsend en 2 sets.",
+            "bet_outcome": "Pari gagné : Gauff victorieuse en 2 sets."
+          }
+        },
+        {
+          "sport": "tennis",
+          "league": "Roland Garros — 1er tour",
+          "home_team": "Aryna Sabalenka",
+          "away_team": "Jessica Bouzas Maneiro",
+          "pick": "Aryna Sabalenka vainqueure du match",
+          "kickoff": "2026-05-26T10:00:00+00:00",
+          "odds": 1.03,
+          "outcome": "win",
+          "result": {
+            "score_home": "2-0",
+            "score_away": "",
+            "score_text": "Sabalenka bat Bouzas Maneiro 6-1 6-2",
+            "summary": "La #1 mondiale ne fait qu'une bouchée de l'Espagnole.",
+            "bet_outcome": "Pari gagné : Sabalenka victorieuse en 2 sets sans difficulté."
+          }
+        }
+      ]
     }
   ],
   "stats": {
-    "total_picks": 8,
-    "won": 7,
+    "total_picks": 9,
+    "won": 8,
     "lost": 1,
     "pending": 0,
-    "profit": 20.0,
-    "roi_percent": 50.0,
-    "average_odds": 1.744,
-    "win_rate": 87.5,
+    "profit": 47.6,
+    "roi_percent": 79.33,
+    "average_odds": 1.814,
+    "win_rate": 88.89,
     "starting_bankroll": 5.0,
-    "current_bankroll": 25.0,
-    "progression_percent": 400.0,
+    "current_bankroll": 52.6,
+    "progression_percent": 952.0,
     "drawdown_max": 5.0,
-    "current_streak": 4,
-    "best_streak": 4,
+    "current_streak": 5,
+    "best_streak": 5,
     "worst_streak": -1,
-    "total_stake_played": 40.0,
+    "total_stake_played": 60.0,
     "pending_stake": 0,
-    "avg_stake": 5.0,
-    "max_stake": 5.0,
-    "max_odds_won": 1.85,
-    "max_profit_single": 4.25,
+    "avg_stake": 6.67,
+    "max_stake": 20.0,
+    "max_odds_won": 2.38,
+    "max_profit_single": 27.6,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-25T23:08:17.353525+00:00"
+  "generated_at": "2026-05-26T20:30:57.197813+00:00"
 }
