@@ -1,4 +1,6 @@
-"""Test rapide de l'adapter sofascore.py — à lancer en local.
+"""Test de l'adapter sofascore.py — couvre les 3 sports actifs NEXBET v4.6.
+
+Scope strict : TENNIS / FOOTBALL / NBA. Aligné avec sources_catalogue.md.
 
 Le conteneur Claude Code Web bloque sofascore.com via allowlist, donc ce test
 ne tourne QUE sur ta machine locale (où tu as accès au net).
@@ -7,13 +9,10 @@ Usage :
     cd backend
     python scripts/test_sofascore.py
 
-Couvre les fonctions critiques sur des cas réels :
-  - scheduled_events tennis (Roland-Garros 2026-05-26)
-  - rankings ATP/WTA
-  - search universel ("Sinner")
-  - league info Premier League (id=17)
-  - standings home/away
-  - lineups + win_probability + event_details sur un event RG du jour
+Couvre :
+  - TENNIS : programme RG du jour + rankings ATP/WTA + h2h
+  - FOOTBALL : programme du jour + Premier League standings + win_prob/h2h
+  - NBA : programme du jour + standings ligue + drill-down event
 
 Affiche un rapport ✓/✗ + temps d'exécution.
 """
@@ -34,6 +33,7 @@ from app.adapters import sofascore  # noqa: E402
 # IDs Sofascore connus (stables)
 PREMIER_LEAGUE_ID = 17
 LA_LIGA_ID = 8
+NBA_ID = 132  # unique-tournament NBA
 
 TODAY = date(2026, 5, 26)
 
@@ -145,6 +145,52 @@ async def main() -> int:
             tests.append(await run(f"fetch_win_probability({fev_id}) [foot]", sofascore.fetch_win_probability(fev_id)))
             tests.append(await run(f"fetch_pregame_form({fev_id}) [foot]", sofascore.fetch_pregame_form(fev_id)))
             tests.append(await run(f"fetch_h2h_events({fev_id}) [foot]", sofascore.fetch_h2h_events(fev_id)))
+
+    # =========================================================================
+    # 8. NBA — 3e sport actif NEXBET v4.6
+    # =========================================================================
+    print("\n--- Tests NBA (3e sport actif) ---\n")
+
+    nba_today = await run(
+        "fetch_scheduled_events(basketball, 2026-05-26)",
+        sofascore.fetch_scheduled_events("basketball", TODAY),
+    )
+    tests.append(nba_today)
+
+    tests.append(await run("search_entities('LeBron')", sofascore.search_entities("LeBron")))
+
+    # NBA league info + standings
+    nba_info = await run(f"fetch_league_info(NBA={NBA_ID})", sofascore.fetch_league_info(NBA_ID))
+    tests.append(nba_info)
+
+    nba_season_id = await sofascore.get_current_season_id(NBA_ID)
+    t = Test(f"get_current_season_id(NBA={NBA_ID})")
+    t.ok = nba_season_id is not None
+    t.detail = f"→ {nba_season_id}" if nba_season_id else "EMPTY"
+    tests.append(t)
+
+    if nba_season_id:
+        tests.append(await run(
+            f"fetch_standings(NBA, {nba_season_id})",
+            sofascore.fetch_standings(NBA_ID, nba_season_id),
+        ))
+        tests.append(await run(
+            f"fetch_top_players_league(NBA, {nba_season_id})",
+            sofascore.fetch_top_players_league(NBA_ID, nba_season_id),
+        ))
+
+    # Drill-down NBA si match du jour
+    if nba_today.ok:
+        evs_nba = await sofascore.fetch_scheduled_events("basketball", TODAY)
+        if evs_nba:
+            # Préfère un event NBA (tournament id 132) si dispo, sinon premier match
+            nba_evs = [e for e in evs_nba if e.get("tournament_id") == NBA_ID]
+            target = (nba_evs[0] if nba_evs else evs_nba[0])
+            nev_id = target["event_id"]
+            tag = "[NBA]" if target.get("tournament_id") == NBA_ID else "[basket non-NBA]"
+            tests.append(await run(f"fetch_event_details({nev_id}) {tag}", sofascore.fetch_event_details(nev_id)))
+            tests.append(await run(f"fetch_win_probability({nev_id}) {tag}", sofascore.fetch_win_probability(nev_id)))
+            tests.append(await run(f"fetch_h2h_events({nev_id}) {tag}", sofascore.fetch_h2h_events(nev_id)))
 
     # === Rapport ===
     print()
