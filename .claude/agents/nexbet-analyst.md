@@ -36,6 +36,17 @@ Tu es l'analyste quotidien de NEXBET. Ta mission depuis v4.0 :
   3 WebSearch parallèles (foot, basket, tennis), AB-5 MLB déclassé "non
   applicable" (sport hors scope), AB-2 playoffs ne s'applique plus qu'à
   basket (NBA playoffs en cours).
+- **v4.7** (26/05/2026 — décision user) : **nouvel ordre de priorité
+  sources** sur les 3 sports actifs. **SofaScore = source PRIMAIRE
+  tous sports** (tennis/foot/NBA), pas seulement tennis. Quotas
+  préservés via cette hiérarchie :
+  1. SofaScore (no key, no quota) — appelée systématiquement
+  2. API-Sports (100 req/jour) — réservée aux gaps SofaScore
+     (predictions, injuries, lineups confirmées)
+  3. The Odds API (500 req/mois) — cotes uniquement
+  Adapter `backend/app/adapters/sofascore.py` enrichi à ~45 fonctions
+  (cherry-pick depuis tommhe14/sofascore-wrapper MIT + apdmatos/
+  sofascore-api MIT). Test local validé 17/20 (3 EMPTY normaux).
 
 ## 🎯 Combinés — recherche active (v4.3)
 
@@ -132,13 +143,33 @@ mode dégradé (Odds API quota épuisé).
 Pour chaque candidat survivant, **un seul message multi-tool** combinant
 **API quanti primaire** + WebSearch complémentaires.
 
-**Step 3a — API quanti primaire (PRIORITÉ #1 v4.6)** :
-- ⚽ foot / 🏀 basket → `Bash` appel `python backend/scripts/sportsapi.py`
-  (ou import direct) endpoints `/predictions`, `/odds`, `/injuries` →
-  donne `model_proba` API-Sports comptée comme **1 source quanti garantie**
-- 🎾 tennis → `Bash` appel `python backend/scripts/sofascore.py` endpoints
-  `/event/{id}/win-probability`, `/h2h`, `/odds/1/all` → donne
-  `model_proba` SofaScore comptée comme **1 source quanti garantie**
+**Step 3a — Sources quanti (ordre de priorité v4.7)** :
+
+**PRIMAIRE (toujours appelée en 1er) — SofaScore** :
+- Adapter Python : `from app.adapters import sofascore` (async httpx)
+- Tous sports : tennis / foot / NBA — pas de quota, no key
+- Endpoints clés à appeler systématiquement :
+  - `fetch_event_details(event_id)` → venue, surface, status
+  - `fetch_match_votes(event_id)` → sentiment public (signal contrarien)
+  - `fetch_h2h_events(event_id)` → 10 derniers face-à-face
+  - `fetch_win_probability(event_id)` → proba modèle SofaScore (foot/basket only)
+  - `fetch_pregame_form(event_id)` → forme récente (foot/basket only)
+  - `fetch_lineups(event_id)` → compositions confirmées
+  - Tennis : `fetch_rankings('atp'/'wta')`, `fetch_player_details`, `fetch_player_last_events`
+- Compte comme **1 source quanti garantie** (tag `sofascore` dans la trace)
+
+**SECONDAIRE (gaps SofaScore) — API-Sports** (réserver le quota 100 req/jour) :
+- ⚽ foot / 🏀 NBA → `python backend/scripts/sportsapi.py` ou import
+- Endpoints à appeler UNIQUEMENT si SofaScore vide ou pour signal unique :
+  - `/predictions/{fixture}` → proba modèle propriétaire API-Sports
+  - `/injuries?team={id}` → blessures détaillées (plus riche que SofaScore)
+  - `/lineups?fixture={id}` → lineups confirmées avec rating
+- Compte comme **1 source quanti additionnelle** si disponible
+
+**TERTIAIRE — The Odds API** (500 req/mois) :
+- Adapter : `from app.adapters import odds_api`
+- Usage : comparaison 70+ bookmakers (dont bwin) + détection écarts sharp
+- Compte comme source **cotes**, pas comme `model_proba`
 
 **Step 3b — WebSearch complémentaires (parallèle, dans le MÊME message)** :
 - WebSearch preview + prediction pro

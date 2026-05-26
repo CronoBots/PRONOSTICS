@@ -1,5 +1,21 @@
-# Catalogue des sources NEXBET (v4.6 — Focus foot/basket/tennis)
+# Catalogue des sources NEXBET (v4.7 — Focus tennis/football/NBA)
 
+> **v4.7 (26/05/2026)** : nouvel **ordre de priorité unifié** sur les 3
+> sports actifs :
+> 1. **SofaScore** = source **primaire** (tous sports). Pas de quota.
+>    `backend/app/adapters/sofascore.py` enrichi à ~45 fonctions
+>    (event details, votes, lineups, h2h, rankings ATP/WTA, standings
+>    home/away, top players, transfer history, win probability graph…).
+> 2. **API-Sports** = source **secondaire** — réserver le quota 100 req/jour
+>    aux endpoints uniques (`/predictions`, `/injuries`, `/lineups`
+>    confirmées) qui ne sont PAS dans SofaScore.
+> 3. **The Odds API** = source **cotes uniquement** — 500 req/mois free,
+>    pour la comparaison bookmakers.
+> Cherry-pick depuis github.com/tommhe14/sofascore-wrapper (MIT) +
+> github.com/apdmatos/sofascore-api (MIT). Validation locale 17/20
+> tests OK (3 EMPTY normaux : win_probability/pregame_form non
+> disponibles tennis ; édge cases foot low-tier).
+>
 > **Cleanup ciblé (25/05/2026 soir)** : promotion d'**API-Sports en
 > source quanti PRIORITÉ #1** pour foot/basket. Résolution de
 > l'incohérence triple SofaScore (legacy 🔴 supprimée, adapter app
@@ -19,9 +35,58 @@
 > **v4.4 (24/05)** : intégration API-Sports pour foot/basket/hockey/baseball.
 > **Refonte v4.0 (23/05)** : reclassement par accessibilité réelle.
 
-## 🟢 ACCESSIBLE — Sources officielles API (priorité #1 v4.6)
+## 🟢 ACCESSIBLE — Ordre de priorité v4.7
 
-### ⭐ API-Sports (api-sports.io) — PRIORITÉ #1 foot/basket (v4.4, promu v4.6)
+**Règle d'or v4.7** : SofaScore d'abord (toujours), API-Sports pour les
+gaps (predictions/injuries/lineups confirmées), The Odds API pour les
+cotes uniquement. Préserver le quota API-Sports = ne pas dupliquer ce
+que SofaScore couvre déjà.
+
+### ⭐ SofaScore (api.sofascore.com) — PRIMAIRE tous sports (v4.7)
+
+**Statut** : 🟢 ACCESSIBLE (validé local 17/20 tests OK, 2026-05-26)
+**Type** : API JSON publique non-officielle (frontend reverse-engineered)
+**Authentification** : aucune, juste User-Agent navigateur
+**Quota** : aucun (rate-limit interne ~4 req/sec côté adapter)
+**Couverture v4.7 (sports actifs)** :
+- 🎾 **Tennis** : 1245 matchs/jour, rankings ATP/WTA, h2h, bio joueurs
+- ⚽ **Football** : programme, standings home/away, top players, lineups, win-prob
+- 🏀 **NBA** : programme basketball, standings, top players, h2h, votes
+
+**Wrapper Python** : `backend/app/adapters/sofascore.py` (async httpx, ~45 fonctions)
+
+**Endpoints clés NEXBET (groupés par bloc)** :
+- Programme : `fetch_scheduled_events(sport, date)`
+- Event drill-down : `fetch_event_details`, `fetch_lineups`, `fetch_incidents`,
+  `fetch_win_probability` (foot/basket), `fetch_pregame_form` (foot/basket),
+  `fetch_match_votes` (sentiment public), `fetch_h2h_events`, `fetch_h2h_stats`,
+  `fetch_team_streaks`, `fetch_shotmap`, `fetch_managers`
+- Player : `fetch_player_details`, `fetch_player_transfer_history`,
+  `fetch_player_attributes` (style), `fetch_player_last_events`,
+  `fetch_player_league_stats`
+- Team : `fetch_team_details`, `fetch_team_squad`, `fetch_team_last/next_events`,
+  `fetch_team_performance`, `fetch_team_transfers`, `fetch_team_league_stats`
+- League : `fetch_league_info`, `fetch_league_seasons`, `get_current_season_id`
+  (helper), `fetch_league_rounds`, `fetch_league_fixtures_round`,
+  `fetch_top_players_league`, `fetch_top_teams_league`
+- Classements : `fetch_standings/_home/_away`, `fetch_rankings(atp/wta)`
+- Search : `search_entities` (universel), `search_player_or_team`
+
+**Limites** :
+- `win_probability` et `pregame_form` ne marchent QUE foot/basket (pas tennis)
+- Endpoints "graph" (win-prob graph, comments, highlights) souvent vides
+  hors live ou pour les matchs low-tier
+- Cloudflare 403 occasionnel — User-Agent navigateur + ~4 req/sec dans
+  l'adapter, pas de retry agressif
+
+**Activation** : aucune action — l'adapter marche out-of-the-box dès
+clone du repo.
+
+**Validation** : `cd backend && python scripts/test_sofascore.py`
+
+---
+
+### API-Sports (api-sports.io) — SECONDAIRE (v4.4, repriorité v4.7)
 
 **Statut** : 🟢 ACCESSIBLE — clé requise (free signup 100 req/jour)
 **Type** : API REST officielle, documentée publiquement
@@ -71,7 +136,12 @@ quantitative dans `n_eff`** (avec tag `api-sports` dans la trace).
 
 ---
 
-### ⭐ SofaScore API (api.sofascore.com) — PRIORITÉ #1 tennis (NOUVEAU v4.5)
+### ~~SofaScore API — PRIORITÉ #1 tennis (v4.5)~~ → voir bloc PRIMAIRE ci-dessus
+
+> v4.7 : SofaScore est devenu **PRIMAIRE tous sports**. Bloc fusionné
+> dans la section "PRIMAIRE tous sports" en tête de catalogue.
+
+#### SofaScore API (api.sofascore.com) — ancien bloc v4.5 (référence historique)
 
 **Statut** : 🟢 ACCESSIBLE — réponse JSON confirmée par user 25/05/2026
 **Type** : API JSON non-officielle (frontend SofaScore reverse-engineered)
@@ -221,18 +291,19 @@ Statut des wrappers/adapters Python branchés sur `daily_candidates.py` /
 
 | Source | Chemin | Statut v4.6 | Note |
 |---|---|---|---|
-| ⭐ **API-Sports** | `backend/scripts/sportsapi.py` | 🟢 **PRIORITÉ #1 foot/basket** | Clé requise — `API_SPORTS_KEY` dans `.env` |
-| ⭐ **SofaScore (v4.5)** | `backend/scripts/sofascore.py` | 🟢 **PRIORITÉ #1 tennis** | Sans clé, cloudscraper bypass Cloudflare |
+| ⭐ **SofaScore (v4.7)** | `backend/app/adapters/sofascore.py` | 🟢 **PRIMAIRE tous sports** | Async httpx, ~45 fonctions, validé 17/20 tests 2026-05-26 |
+| API-Sports | `backend/scripts/sportsapi.py` | 🟢 **SECONDAIRE** (gaps SofaScore) | Clé requise — `API_SPORTS_KEY` dans `.env`. Réserver pour `/predictions`, `/injuries`, `/lineups` |
+| The Odds API | `backend/app/adapters/odds_api.py` | 🟢 **TERTIAIRE — cotes** | 500 req/mois — comparaison bookmakers. Reset mensuel |
 | Football-Data | `backend/app/adapters/football_data.py` | 🟢 Backup foot | Free token `FOOTBALL_DATA_TOKEN` |
 | API-Football | `backend/app/adapters/api_football.py` | 🟢 Backup foot | Même clé qu'API-Sports |
-| The Odds API | `backend/app/adapters/odds_api.py` | ❌ Quota épuisé | 498/500 req mai 2026 — désactivé jusqu'à reset |
 | Polymarket Gamma | `backend/app/adapters/polymarket.py` | ⚠️ Accessible, sport-dépendant | Sharp signal via snippet si liquidité |
 | Manifold Markets | `backend/app/adapters/manifold.py` | ⚠️ Marchés rares | Sports premium uniquement |
 | Kalshi | `backend/app/adapters/kalshi.py` | ⚠️ Accessible | Sample limité |
-| Balldontlie (NBA) | `backend/app/adapters/balldontlie.py` | 🟢 Backup basket | Clé `BALLDONTLIE_KEY` |
+| Balldontlie (NBA) | `backend/app/adapters/balldontlie.py` | 🟢 Backup props NBA | Clé `BALLDONTLIE_KEY` — réservé aux player props |
+| NBA Stats officiel | `backend/app/adapters/nba_stats.py` | 🟢 Backup standings/forme | API gratuite sans clé |
 | OpenWeather | `backend/app/adapters/openweather.py` | 🟢 Météo foot extérieur | Clé `OPENWEATHER_KEY` |
 | Tennis Abstract | `backend/app/adapters/tennis_abstract.py` | ⚠️ Scraping fragile | 403 intermittent — fallback sur SofaScore |
-| ~~Sofascore adapter app~~ | `backend/app/adapters/sofascore.py` | ❌ **OBSOLÈTE** | Requests simples → 403. Utiliser `scripts/sofascore.py` |
+| ~~SofaScore legacy~~ | `backend/scripts/sofascore.py` | ⏸ Conservé pour compat | Wrapper sync cloudscraper v4.5 — préférer adapter v4.7 |
 | ~~NBA Stats~~ | `backend/app/adapters/nba_stats.py` | ⏸ Hors scope v4.6 | Stats historiques OK si réactivé |
 | ~~NHL Stats~~ | `backend/app/adapters/nhl_stats.py` | ⏸ Hors scope v4.6 | NHL suspendu v4.6 |
 | ~~MLB Stats~~ | `backend/app/adapters/mlb_stats.py` | ⏸ Hors scope v4.6 | MLB suspendu v4.6 |
