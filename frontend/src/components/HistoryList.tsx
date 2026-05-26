@@ -167,28 +167,28 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         ? "border-l-accent-blue"
         : "border-l-yellow-400/60";
 
-  // Badge status horizontal compact (top-right)
+  // Badge status texte (style Unibet "Gagné" / "Perdu" en couleur)
   const statusBadge = (() => {
     if (isWin)
       return {
-        cls: "bg-accent-green/15 border-accent-green/40 text-accent-green",
+        cls: "text-accent-green",
         icon: "✓",
         label: t("history.outcomeWin"),
       };
     if (isLoss)
       return {
-        cls: "bg-accent-red/15 border-accent-red/40 text-accent-red",
+        cls: "text-accent-red",
         icon: "✕",
         label: t("history.outcomeLoss"),
       };
     if (isVoid)
       return {
-        cls: "bg-accent-blue/15 border-accent-blue/40 text-accent-blue",
+        cls: "text-accent-blue",
         icon: "○",
         label: t("history.outcomeVoid"),
       };
     return {
-      cls: "bg-yellow-400/10 border-yellow-400/40 text-yellow-300",
+      cls: "text-yellow-300",
       icon: "⏳",
       label: t("history.outcomePending"),
     };
@@ -290,9 +290,9 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           </div>
         </div>
       ) : (
-        <div className="p-3 min-w-0">
-          {/* HEADER : emoji + tournoi (toute la largeur) + status icon */}
-          <div className="flex items-start gap-2 mb-1">
+        <div className="p-3.5 min-w-0">
+          {/* HEADER : emoji + tournoi (toute la largeur) + status texte */}
+          <div className="flex items-start gap-2 mb-1.5">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
               {emoji}{" "}
               {isCombo
@@ -300,11 +300,11 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                 : pick.match.league || pick.match.sport}
             </div>
             <span
-              className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-base font-bold leading-none ${statusBadge.cls}`}
-              title={statusBadge.label}
+              className={`shrink-0 text-xs font-bold tracking-wide whitespace-nowrap flex items-center gap-1 ${statusBadge.cls}`}
               aria-label={statusBadge.label}
             >
-              {statusBadge.icon}
+              <span className="text-sm leading-none">{statusBadge.icon}</span>
+              <span>{statusBadge.label}</span>
             </span>
           </div>
 
@@ -324,12 +324,12 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
 
           {/* BET (hero) : pari à gauche, cote à droite */}
           {isCombo ? (
-            <div className="space-y-1.5">
+            <div>
               {pick.legs!.map((leg, i) => (
                 <ComboLegMini key={i} leg={leg} index={i + 1} />
               ))}
-              <div className="flex items-center justify-between gap-2 pt-1.5">
-                <span className="text-sm font-bold text-white/90">
+              <div className="flex items-center justify-between gap-2 pt-2.5 mt-2 border-t border-white/15">
+                <span className="text-sm font-bold text-white">
                   {t("history.totalOddsLabel")}
                 </span>
                 <span className={`text-base font-bold tabular-nums ${oddsColorClass}`}>
@@ -380,25 +380,54 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
   const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
   const isWin = leg.outcome === "win";
   const isLoss = leg.outcome === "loss";
+  const isVoid = leg.outcome === "void";
 
-  let statusDot = "bg-yellow-400";
-  let statusText = "text-white/70";
-  if (isWin) {
-    statusDot = "bg-accent-green";
-    statusText = "text-accent-green";
-  } else if (isLoss) {
-    statusDot = "bg-accent-red";
-    statusText = "text-accent-red";
-  }
+  const oddsColor = isWin
+    ? "text-accent-green"
+    : isLoss
+      ? "text-accent-red"
+      : isVoid
+        ? "text-accent-blue"
+        : "text-white";
+  const statusLabel = isWin
+    ? "✓"
+    : isLoss
+      ? "✕"
+      : isVoid
+        ? "○"
+        : "⏳";
+  const statusColor = isWin
+    ? "text-accent-green"
+    : isLoss
+      ? "text-accent-red"
+      : isVoid
+        ? "text-accent-blue"
+        : "text-yellow-300";
 
   return (
-    <div className="flex items-center gap-2 text-[11px]">
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDot}`} />
-      <span className="text-white/50 tabular-nums">#{index}</span>
-      <span className="text-base shrink-0">{emoji}</span>
-      <span className={`font-medium truncate ${statusText}`}>{leg.pick}</span>
-      <span className="text-white/40 ml-auto tabular-nums shrink-0">
-        @ {leg.odds.toFixed(2)}
+    <div className="flex items-start gap-2.5 py-1.5 border-t border-white/[0.06] first:border-t-0">
+      {/* Numéro de jambe (style Unibet 1, 2, 3...) */}
+      <span className="shrink-0 w-5 h-5 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center text-[10px] font-bold tabular-nums text-white/70">
+        {index}
+      </span>
+      <div className="flex-1 min-w-0">
+        {/* Bet name + cote */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-semibold text-white truncate">
+            {emoji} {leg.pick}
+          </span>
+          <span className={`text-xs font-bold tabular-nums whitespace-nowrap ${oddsColor}`}>
+            {leg.odds.toFixed(2)}
+          </span>
+        </div>
+        {/* Match (subtle) */}
+        <div className="text-[11px] text-white/45 truncate">
+          {leg.home_team} vs {leg.away_team}
+        </div>
+      </div>
+      {/* Icon status à droite (couleur sémantique) */}
+      <span className={`shrink-0 text-sm font-bold leading-none mt-0.5 ${statusColor}`} aria-label={leg.outcome}>
+        {statusLabel}
       </span>
     </div>
   );
