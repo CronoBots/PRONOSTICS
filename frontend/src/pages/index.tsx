@@ -203,13 +203,15 @@ export default function Home() {
             (outils + infos → /plus). */}
         <header className="lg:hidden relative flex items-center justify-between shrink-0 py-1 mb-1 min-h-[52px]">
           <ProfileButton size={36} />
-          <Link
-            href="/"
-            aria-label="NEXBET"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          >
-            <BrandLogo variant="banner" size={60} />
-          </Link>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <Link
+              href="/"
+              aria-label="NEXBET"
+              className="no-tap-shift pointer-events-auto block"
+            >
+              <BrandLogo variant="banner" size={60} />
+            </Link>
+          </div>
           <Link
             href="/plus"
             className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/5"

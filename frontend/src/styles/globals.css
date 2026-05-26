@@ -84,6 +84,25 @@ body {
   -webkit-overflow-scrolling: auto;
   /* Safety net : aucun élément ne doit causer de scroll horizontal */
   overflow-x: hidden;
+  /* App-feel : pas de sélection de texte au curseur (sauf inputs ci-dessous) */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Exceptions : les inputs/textarea/contenteditable doivent rester sélectionnables */
+input,
+textarea,
+select,
+[contenteditable="true"],
+[contenteditable=""],
+.allow-select,
+.allow-select * {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 body.lock-scroll {
@@ -116,6 +135,13 @@ a {
 button:active:not(:disabled),
 a:active {
   transform: scale(0.97);
+}
+
+/* Override : éléments qui ne doivent PAS scaler au tap (ex: logo bannière,
+   cards cliquables sur lesquelles le mini-bond casse la lisibilité) */
+.no-tap-shift,
+.no-tap-shift:active {
+  transform: none !important;
 }
 
 /* ============================================================

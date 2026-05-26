@@ -39,6 +39,34 @@ export default function App({ Component, pageProps }: AppProps) {
     if (bottom && bottom !== "0px") root.style.setProperty("--safe-bottom", bottom);
   }, []);
 
+  // App-feel mobile : empêche le pinch-zoom iOS Safari (qui ignore
+  // user-scalable=no depuis iOS 10) + double-tap zoom. Le viewport meta
+  // tag ne suffit pas, il faut bloquer les events gesturestart côté JS.
+  useEffect(() => {
+    const preventGesture = (e: Event) => e.preventDefault();
+    document.addEventListener("gesturestart", preventGesture);
+    document.addEventListener("gesturechange", preventGesture);
+    document.addEventListener("gestureend", preventGesture);
+
+    // Empêche aussi le double-tap zoom (fallback hors Safari)
+    let lastTouchEnd = 0;
+    const preventDoubleTapZoom = (e: TouchEvent) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    };
+    document.addEventListener("touchend", preventDoubleTapZoom, { passive: false });
+
+    return () => {
+      document.removeEventListener("gesturestart", preventGesture);
+      document.removeEventListener("gesturechange", preventGesture);
+      document.removeEventListener("gestureend", preventGesture);
+      document.removeEventListener("touchend", preventDoubleTapZoom);
+    };
+  }, []);
+
   return (
     <ThemeProvider>
       <PreferencesProvider>
