@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Publication des picks et résultats NEXBET sur Telegram.
+"""NEXBET Telegram publisher — v3 professional English layout.
 
-v2 — avec logo, boutons inline, polls engagement, signature.
+Publishes daily picks, settled results, and weekly recaps to a Telegram
+channel. Inspired by professional bookmaker newsletters (Pinnacle style):
+data-dense, monospace alignment, minimal decoration, clear hierarchy.
 
-Lit les credentials depuis l'environnement :
-  - TELEGRAM_BOT_TOKEN  : token du bot (BotFather)
-  - TELEGRAM_CHANNEL_ID : ID numérique du canal (commence par -100…)
+Reads credentials from environment:
+  - TELEGRAM_BOT_TOKEN  : bot token (BotFather)
+  - TELEGRAM_CHANNEL_ID : numeric channel ID (starts with -100…)
 
-Usage :
+Usage:
     python scripts/publish_telegram.py --test
     python scripts/publish_telegram.py --pick today
     python scripts/publish_telegram.py --result 2026-05-26
@@ -60,44 +62,34 @@ import picks_data  # noqa: E402
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID", "").strip()
 
-# URLs publiques GitHub Pages (utilisées pour les images Telegram)
 PUBLIC_BASE = "https://cronobots.github.io/PRONOSTICS"
 LOGO_BANNER_URL = f"{PUBLIC_BASE}/logo-banner.png"
 LOGO_SQUARE_URL = f"{PUBLIC_BASE}/logo-square.png"
 
-SPORT_EMOJI = {
-    "football": "⚽",
-    "tennis": "🎾",
-    "basketball": "🏀",
-    "combo": "🎰",
+# Sport label mapping (English, no emoji)
+SPORT_LABEL = {
+    "football": "Football",
+    "tennis": "Tennis",
+    "basketball": "Basketball",
+    "combo": "Multi-sport parlay",
 }
 
-# Signature canal (apparaît en footer)
-NEXBET_SIGNATURE = (
-    "🤖 *NEXBET* — _Trust the Algorithm_\n"
-    f"[Voir tous les paris]({PUBLIC_BASE}/paris) · "
-    f"[Statistiques]({PUBLIC_BASE}/stats)"
-)
-
-LEGAL_FOOTER = (
-    "━━━━━━━━━━━━━━━━━\n"
-    f"{NEXBET_SIGNATURE}\n\n"
-    "⚠️ *21+ — Jouer comporte des risques*\n"
-    "Aide : [arretezvousatemps.be](https://www.arretezvousatemps.be)\n"
-    "_Pronostics fournis à titre informatif. Aucune garantie de gains._"
+# Footer — minimal, compliance only
+FOOTER = (
+    "—\n"
+    "*NEXBET* — _Trust the Algorithm_\n"
+    "21+ · [BeGambleAware.org](https://www.begambleaware.org) · "
+    "Entertainment only"
 )
 
 
-# Boutons inline standards
-def _buttons_pick(pick_date: str) -> dict:
+# Inline buttons (concise, action-oriented)
+def _buttons_pick() -> dict:
     return {
         "inline_keyboard": [
             [
-                {"text": "📊 Analyse complète", "url": f"{PUBLIC_BASE}/"},
-                {"text": "📈 Historique", "url": f"{PUBLIC_BASE}/paris"},
-            ],
-            [
-                {"text": "💎 Devenir Premium", "url": f"{PUBLIC_BASE}/premium"},
+                {"text": "Full analysis →", "url": f"{PUBLIC_BASE}/"},
+                {"text": "Track record →", "url": f"{PUBLIC_BASE}/paris"},
             ],
         ]
     }
@@ -107,8 +99,8 @@ def _buttons_result() -> dict:
     return {
         "inline_keyboard": [
             [
-                {"text": "📊 Voir le pick du jour", "url": f"{PUBLIC_BASE}/today"},
-                {"text": "📈 Bankroll", "url": f"{PUBLIC_BASE}/stats"},
+                {"text": "Today's pick →", "url": f"{PUBLIC_BASE}/today"},
+                {"text": "Bankroll →", "url": f"{PUBLIC_BASE}/stats"},
             ],
         ]
     }
@@ -118,11 +110,11 @@ def _buttons_recap() -> dict:
     return {
         "inline_keyboard": [
             [
-                {"text": "📊 Détail picks", "url": f"{PUBLIC_BASE}/paris"},
-                {"text": "📈 Stats complètes", "url": f"{PUBLIC_BASE}/stats"},
+                {"text": "Detailed picks →", "url": f"{PUBLIC_BASE}/paris"},
+                {"text": "Statistics →", "url": f"{PUBLIC_BASE}/stats"},
             ],
             [
-                {"text": "💎 Devenir Premium", "url": f"{PUBLIC_BASE}/premium"},
+                {"text": "Subscribe Premium →", "url": f"{PUBLIC_BASE}/premium"},
             ],
         ]
     }
@@ -136,8 +128,8 @@ def _buttons_recap() -> dict:
 def _api_post(method: str, payload: dict) -> dict | None:
     if not BOT_TOKEN or not CHANNEL_ID:
         print(
-            "❌ TELEGRAM_BOT_TOKEN ou TELEGRAM_CHANNEL_ID manquant.\n"
-            "   Configure ces variables dans .env (local) ou GitHub Secrets (CI)."
+            "ERROR: TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID missing.\n"
+            "Configure these in .env (local) or GitHub Secrets (CI)."
         )
         return None
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/{method}"
@@ -153,18 +145,18 @@ def _api_post(method: str, payload: dict) -> dict | None:
             data = json.loads(resp.read().decode("utf-8"))
             if data.get("ok"):
                 return data
-            print(f"❌ Telegram API error ({method}) : {data}")
+            print(f"ERROR Telegram API ({method}): {data}")
             return None
     except HTTPError as e:
-        print(f"❌ HTTP {e.code} ({method}) : {e.read().decode('utf-8', errors='replace')[:300]}")
+        body_text = e.read().decode("utf-8", errors="replace")[:300]
+        print(f"ERROR HTTP {e.code} ({method}): {body_text}")
         return None
     except URLError as e:
-        print(f"❌ Erreur réseau ({method}) : {e}")
+        print(f"ERROR network ({method}): {e}")
         return None
 
 
 def send_message(text: str, reply_markup: dict | None = None) -> bool:
-    """Envoie un message texte simple (jusqu'à 4096 chars)."""
     payload = {
         "chat_id": CHANNEL_ID,
         "text": text,
@@ -175,7 +167,7 @@ def send_message(text: str, reply_markup: dict | None = None) -> bool:
         payload["reply_markup"] = reply_markup
     data = _api_post("sendMessage", payload)
     if data:
-        print(f"✅ Message envoyé (id={data.get('result', {}).get('message_id')})")
+        print(f"Message sent (id={data.get('result', {}).get('message_id')})")
         return True
     return False
 
@@ -185,9 +177,8 @@ def send_photo(
     caption: str,
     reply_markup: dict | None = None,
 ) -> bool:
-    """Envoie une photo avec caption (max 1024 chars)."""
     if len(caption) > 1024:
-        print(f"⚠️ Caption {len(caption)} chars > 1024 → fallback sendMessage sans photo")
+        print(f"Caption {len(caption)} chars > 1024 → fallback to sendMessage")
         return send_message(caption, reply_markup)
     payload = {
         "chat_id": CHANNEL_ID,
@@ -199,50 +190,58 @@ def send_photo(
         payload["reply_markup"] = reply_markup
     data = _api_post("sendPhoto", payload)
     if data:
-        print(f"✅ Photo envoyée (id={data.get('result', {}).get('message_id')})")
+        print(f"Photo sent (id={data.get('result', {}).get('message_id')})")
         return True
     return False
 
 
-def send_poll(question: str, options: list[str], anonymous: bool = True) -> bool:
-    """Envoie un sondage. Question max 300 chars, options max 100 chars chacune."""
+def send_poll(question: str, options: list[str]) -> bool:
     payload = {
         "chat_id": CHANNEL_ID,
         "question": question[:300],
         "options": [opt[:100] for opt in options],
-        "is_anonymous": anonymous,
+        "is_anonymous": True,
         "type": "regular",
         "allows_multiple_answers": False,
     }
     data = _api_post("sendPoll", payload)
     if data:
-        print(f"✅ Sondage envoyé (id={data.get('result', {}).get('message_id')})")
+        print(f"Poll sent (id={data.get('result', {}).get('message_id')})")
         return True
     return False
 
 
 # =============================================================================
-# Helpers formatage
+# Formatting helpers (English locale)
 # =============================================================================
 
-JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
-MOIS = [
-    "", "janvier", "février", "mars", "avril", "mai", "juin",
-    "juillet", "août", "septembre", "octobre", "novembre", "décembre",
+WEEKDAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+MONTHS_EN = [
+    "", "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
 ]
 
 
 def fmt_date_long(date_str: str) -> str:
+    """2026-05-26 → 'Tuesday, May 26, 2026'."""
     d = datetime.strptime(date_str, "%Y-%m-%d")
-    return f"{JOURS[d.weekday()]} {d.day} {MOIS[d.month]} {d.year}"
+    return f"{WEEKDAYS_EN[d.weekday()]}, {MONTHS_EN[d.month]} {d.day}, {d.year}"
 
 
-def fmt_time(kickoff_iso: str) -> str:
+def fmt_date_short(date_str: str) -> str:
+    """2026-05-26 → 'May 26'."""
+    d = datetime.strptime(date_str, "%Y-%m-%d")
+    return f"{MONTHS_EN[d.month]} {d.day}"
+
+
+def fmt_time_cet(kickoff_iso: str) -> str:
+    """'2026-05-26T11:00:00+00:00' → '11:00 CET' (UTC is shown; CET = UTC+1/2)."""
     if not kickoff_iso:
         return ""
     try:
         dt = datetime.fromisoformat(kickoff_iso.replace("Z", "+00:00"))
-        return dt.strftime("%Hh%M")
+        # Display as UTC for international clarity
+        return f"{dt.strftime('%H:%M')} UTC"
     except Exception:
         return ""
 
@@ -254,108 +253,187 @@ def find_pick(date_iso: str) -> dict | None:
     return None
 
 
+def aligned_data(rows: list[tuple[str, str]]) -> str:
+    """Format a list of (label, value) into aligned monospace lines.
+
+    Output wrapped in triple backticks for Telegram code block (monospace).
+    """
+    if not rows:
+        return ""
+    max_label = max(len(r[0]) for r in rows)
+    lines = [f"{r[0]:<{max_label + 2}}{r[1]}" for r in rows]
+    return "```\n" + "\n".join(lines) + "\n```"
+
+
 # =============================================================================
-# Formats de message
+# Track record helper (used as footer in picks/results)
+# =============================================================================
+
+
+def compute_track_record(days: int = 7) -> str:
+    """Compute last-N-days performance as a one-line summary."""
+    today = date.today()
+    start = today - timedelta(days=days)
+    recent = [
+        p for p in picks_data.PICKS
+        if datetime.strptime(p["date"], "%Y-%m-%d").date() >= start
+        and p.get("outcome") in {"win", "loss"}
+    ]
+    if not recent:
+        return ""
+    wins = sum(1 for p in recent if p.get("outcome") == "win")
+    losses = sum(1 for p in recent if p.get("outcome") == "loss")
+    settled = wins + losses
+    win_rate = (wins / settled * 100) if settled else 0
+    total_staked = sum(p.get("stake", 0) for p in recent)
+    total_profit = sum(
+        (p.get("profit") or (p["stake"] * (p["odds"] - 1) if p.get("outcome") == "win" else -p["stake"]))
+        for p in recent
+    )
+    roi = (total_profit / total_staked * 100) if total_staked else 0
+    sign = "+" if roi >= 0 else ""
+    return (
+        f"*Track record · last {days} days*\n"
+        f"{wins}W — {losses}L — {win_rate:.0f}% — ROI {sign}{roi:.1f}%"
+    )
+
+
+# =============================================================================
+# Message formats
 # =============================================================================
 
 
 def format_test() -> str:
     return (
-        "🧪 *Test NEXBET Bot v2*\n\n"
-        "Connexion établie avec succès ✅\n"
-        f"_Timestamp : {datetime.now().strftime('%d/%m/%Y %H:%M')}_\n\n"
-        "Setup complet :\n"
-        "• Logo bannière ✅\n"
-        "• Boutons inline ✅\n"
-        "• Sondages engagement ✅\n"
-        "• Signature canal ✅\n\n"
-        + LEGAL_FOOTER
+        "*NEXBET BOT — Connection test*\n\n"
+        "Connection established\n"
+        f"_{datetime.now().strftime('%B %d, %Y · %H:%M UTC')}_\n\n"
+        "Setup verified:\n"
+        "• Logo banner\n"
+        "• Inline buttons\n"
+        "• Engagement polls (recap only)\n"
+        "• Channel signature\n\n"
+        + FOOTER
     )
 
 
 def format_pick_simple(pick: dict) -> str:
-    emoji = SPORT_EMOJI.get(pick["sport"], "🎯")
-    profit_potential = pick["stake"] * (pick["odds"] - 1)
+    sport = SPORT_LABEL.get(pick["sport"], pick["sport"].title())
+    potential = pick["stake"] * (pick["odds"] - 1)
+    total_return = pick["stake"] * pick["odds"]
+
+    data_rows = [
+        ("Market price", f"{pick['odds']:.2f}"),
+        ("Stake", f"{pick['stake']:.2f} EUR"),
+        ("Potential return", f"{total_return:.2f} EUR (+{potential:.2f})"),
+    ]
+    if pick.get("model_probability"):
+        edge = pick["model_probability"] * pick["odds"] - 1
+        if edge > 0:
+            data_rows.append(("Edge (model)", f"+{edge * 100:.1f}%"))
+
     msg = (
-        "🎯 *NEXBET — Pick du jour*\n"
-        "━━━━━━━━━━━━━━━━━\n\n"
-        f"📅 {fmt_date_long(pick['date'])}\n\n"
-        f"{emoji} *{pick['league']}*\n"
-        f"{pick['home_team']} vs {pick['away_team']}\n"
-        f"🕒 {fmt_time(pick.get('kickoff', ''))}\n\n"
-        f"⭐ *Pari* : {pick['pick']}\n"
-        f"📊 Cote marché : *{pick['odds']:.2f}*\n"
-        f"💰 Mise : {pick['stake']:.2f} € → +{profit_potential:.2f} €\n"
+        "*BET OF THE DAY*\n"
+        f"{fmt_date_long(pick['date'])}\n\n"
+        f"{pick['league']}\n"
+        f"*{pick['home_team']}* vs *{pick['away_team']}*\n"
+        f"{fmt_time_cet(pick.get('kickoff', ''))} · {sport}\n\n"
+        f"*PICK*\n"
+        f"{pick['pick']}\n\n"
+        f"{aligned_data(data_rows)}\n"
     )
     if pick.get("headline"):
-        msg += f"\n💡 _{pick['headline']}_\n"
-    msg += "\n" + LEGAL_FOOTER
+        msg += f"\n_{pick['headline']}_\n"
+
+    tr = compute_track_record(7)
+    if tr:
+        msg += f"\n{tr}\n"
+
+    msg += "\n" + FOOTER
     return msg
 
 
 def format_pick_combo(pick: dict) -> str:
     legs = pick.get("legs", [])
-    profit_potential = pick["stake"] * (pick["odds"] - 1)
+    potential = pick["stake"] * (pick["odds"] - 1)
+    total_return = pick["stake"] * pick["odds"]
+
     msg = (
-        "🎰 *NEXBET — Combo du jour*\n"
-        "━━━━━━━━━━━━━━━━━\n\n"
-        f"📅 {fmt_date_long(pick['date'])}\n\n"
-        f"*{pick['pick']}*\n\n"
+        f"*BET OF THE DAY · {len(legs)}-leg parlay*\n"
+        f"{fmt_date_long(pick['date'])}\n\n"
+        f"{pick['league']}\n\n"
+        "*LEGS*\n"
     )
+
+    # Aligned legs : "1. Pick name @ 1.28"
+    leg_rows = []
     for i, leg in enumerate(legs, 1):
-        leg_emoji = SPORT_EMOJI.get(leg["sport"], "🎯")
-        msg += (
-            f"*{i}.* {leg_emoji} {leg['pick']}\n"
-            f"   _{leg['home_team']} vs {leg['away_team']}_ · *{leg['odds']:.2f}*\n\n"
-        )
-    msg += (
-        "━━━━━━━━━━━━━━━━━\n"
-        f"🎲 Cote totale : *{pick['odds']:.2f}*\n"
-        f"💰 Mise {pick['stake']:.2f} € → *+{profit_potential:.2f} €*\n\n"
-        + LEGAL_FOOTER
-    )
+        # Truncate pick name if too long for one line
+        leg_pick = leg['pick']
+        if len(leg_pick) > 32:
+            leg_pick = leg_pick[:30] + "…"
+        leg_rows.append((f"{i}. {leg_pick}", f"{leg['odds']:.2f}"))
+    msg += aligned_data(leg_rows) + "\n"
+
+    data_rows = [
+        ("Total odds", f"{pick['odds']:.2f}"),
+        ("Stake", f"{pick['stake']:.2f} EUR"),
+        ("Potential return", f"{total_return:.2f} EUR (+{potential:.2f})"),
+    ]
+    msg += f"\n{aligned_data(data_rows)}\n"
+
+    if pick.get("headline"):
+        msg += f"\n_{pick['headline']}_\n"
+
+    tr = compute_track_record(7)
+    if tr:
+        msg += f"\n{tr}\n"
+
+    msg += "\n" + FOOTER
     return msg
 
 
 def format_result(pick: dict) -> str:
-    emoji = SPORT_EMOJI.get(pick["sport"], "🎯")
     is_win = pick.get("outcome") == "win"
     is_loss = pick.get("outcome") == "loss"
     is_void = pick.get("outcome") == "void"
 
     if is_win:
-        status_emoji = "✅"
-        status_label = "GAGNÉ"
+        status = "WON"
         profit_value = pick.get("profit") or (pick["stake"] * (pick["odds"] - 1))
-        profit_str = f"+{profit_value:.2f} €"
+        profit_str = f"+{profit_value:.2f} EUR"
     elif is_loss:
-        status_emoji = "❌"
-        status_label = "PERDU"
+        status = "LOST"
         profit_value = pick.get("profit") or -pick["stake"]
-        profit_str = f"{profit_value:.2f} €"
+        profit_str = f"{profit_value:.2f} EUR"
     elif is_void:
-        status_emoji = "⚪"
-        status_label = "ANNULÉ"
-        profit_str = "Mise remboursée"
+        status = "VOIDED"
+        profit_str = "Stake refunded"
     else:
-        status_emoji = "⏳"
-        status_label = "EN ATTENTE"
+        status = "PENDING"
         profit_str = "—"
 
     msg = (
-        "📊 *NEXBET — Résultat*\n"
-        "━━━━━━━━━━━━━━━━━\n\n"
-        f"📅 {fmt_date_long(pick['date'])}\n\n"
-        f"{emoji} {pick['pick']}\n"
-        f"Cote : {pick['odds']:.2f} · Mise : {pick['stake']:.2f} €\n\n"
-        f"{status_emoji} *{status_label}* — {profit_str}\n"
+        "*RESULT*\n"
+        f"{fmt_date_long(pick['date'])}\n\n"
+        f"{pick['pick']}\n"
+        f"Odds {pick['odds']:.2f} · Stake {pick['stake']:.2f} EUR\n\n"
+        f"*{status}* — {profit_str}\n"
     )
-    result = pick.get("result")
-    if result and result.get("score_text"):
-        msg += f"\n📋 _{result['score_text']}_\n"
-    if result and result.get("summary"):
-        msg += f"💬 {result['summary']}\n"
-    msg += "\n" + LEGAL_FOOTER
+
+    result = pick.get("result", {}) or {}
+    score_text = result.get("score_text", "").strip()
+    summary = result.get("summary", "").strip()
+    if score_text:
+        msg += f"\n_{score_text}_\n"
+    if summary:
+        msg += f"{summary}\n"
+
+    tr = compute_track_record(7)
+    if tr:
+        msg += f"\n{tr}\n"
+
+    msg += "\n" + FOOTER
     return msg
 
 
@@ -365,47 +443,69 @@ def format_recap_weekly() -> str:
     recent = [
         p for p in picks_data.PICKS
         if datetime.strptime(p["date"], "%Y-%m-%d").date() >= week_ago
+        and p.get("outcome") in {"win", "loss"}
     ]
     if not recent:
         return (
-            "📊 *NEXBET — Récap hebdo*\n"
-            "━━━━━━━━━━━━━━━━━\n\n"
-            "Aucun pick sur les 7 derniers jours.\n\n"
-            + LEGAL_FOOTER
+            "*WEEKLY REPORT*\n\n"
+            "No bets settled this week.\n\n"
+            + FOOTER
         )
 
     wins = sum(1 for p in recent if p.get("outcome") == "win")
     losses = sum(1 for p in recent if p.get("outcome") == "loss")
     settled = wins + losses
-    total_staked = sum(p.get("stake", 0) for p in recent if p.get("outcome") in {"win", "loss"})
+    total_staked = sum(p.get("stake", 0) for p in recent)
     total_profit = sum(
         (p.get("profit") or (p["stake"] * (p["odds"] - 1) if p.get("outcome") == "win" else -p["stake"]))
         for p in recent
-        if p.get("outcome") in {"win", "loss"}
     )
     win_rate = (wins / settled * 100) if settled else 0
     roi = (total_profit / total_staked * 100) if total_staked else 0
     profit_sign = "+" if total_profit >= 0 else ""
 
-    msg = (
-        "📊 *NEXBET — Récap hebdo*\n"
-        "━━━━━━━━━━━━━━━━━\n\n"
-        f"📅 Du {fmt_date_long(week_ago.isoformat())}\n"
-        f"    au {fmt_date_long(today.isoformat())}\n\n"
-        f"🎯 *{settled} paris réglés*\n"
-        f"✅ Wins : {wins}\n"
-        f"❌ Losses : {losses}\n"
-        f"📈 Win rate : *{win_rate:.1f}%*\n\n"
-        f"💰 Profit net : *{profit_sign}{total_profit:.2f} €*\n"
-        f"📊 ROI : {profit_sign}{roi:.1f}%\n"
-        f"🎰 Total misé : {total_staked:.2f} €\n\n"
-        + LEGAL_FOOTER
+    # Find best and worst picks
+    won_picks = [p for p in recent if p.get("outcome") == "win"]
+    best_pick = max(
+        won_picks,
+        key=lambda p: (p.get("profit") or (p["stake"] * (p["odds"] - 1))),
+        default=None,
     )
+    lost_picks = [p for p in recent if p.get("outcome") == "loss"]
+
+    data_rows = [
+        ("Bets settled", str(settled)),
+        ("Wins", str(wins)),
+        ("Losses", str(losses)),
+        ("Win rate", f"{win_rate:.1f}%"),
+        ("Total staked", f"{total_staked:.2f} EUR"),
+        ("Net profit", f"{profit_sign}{total_profit:.2f} EUR"),
+        ("ROI", f"{profit_sign}{roi:.1f}%"),
+    ]
+
+    msg = (
+        "*WEEKLY REPORT*\n"
+        f"{fmt_date_short(week_ago.isoformat())} — {fmt_date_short(today.isoformat())}\n\n"
+        f"{aligned_data(data_rows)}\n"
+    )
+
+    if best_pick:
+        best_profit = best_pick.get("profit") or (best_pick["stake"] * (best_pick["odds"] - 1))
+        msg += (
+            f"\n*Best pick:* {best_pick['pick']} @ {best_pick['odds']:.2f}"
+            f" (+{best_profit:.2f} EUR)\n"
+        )
+
+    if lost_picks:
+        worst = lost_picks[0]
+        msg += f"*Worst day:* {worst['pick']} @ {worst['odds']:.2f}\n"
+
+    msg += "\n" + FOOTER
     return msg
 
 
 # =============================================================================
-# Workflows : combine message + boutons + (optionnel) poll
+# Workflows
 # =============================================================================
 
 
@@ -422,63 +522,43 @@ def publish_test(dry_run: bool = False) -> bool:
 def publish_pick(pick: dict, dry_run: bool = False) -> bool:
     is_combo = pick.get("sport") == "combo"
     msg = format_pick_combo(pick) if is_combo else format_pick_simple(pick)
-    buttons = _buttons_pick(pick["date"])
-
     if dry_run:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print(f"\n[+ logo banner + 3 boutons + sondage engagement après le pick]")
+        print("\n[+ logo banner + 2 inline buttons]")
         return True
-
-    # 1) Photo + caption + boutons
-    ok = send_photo(LOGO_BANNER_URL, msg, buttons)
-    if not ok:
-        return False
-
-    # 2) Sondage engagement
-    poll_question = (
-        "🎰 Tu joues ce combo aujourd'hui ?"
-        if is_combo
-        else f"🎯 Tu joues ce pick ?"
-    )
-    send_poll(
-        poll_question,
-        ["✅ Oui je joue", "🤔 J'hésite", "❌ Je skip aujourd'hui"],
-    )
-    return True
+    return send_photo(LOGO_BANNER_URL, msg, _buttons_pick())
 
 
 def publish_result(pick: dict, dry_run: bool = False) -> bool:
     msg = format_result(pick)
-    buttons = _buttons_result()
     if dry_run:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 2 boutons]")
+        print("\n[+ logo banner + 2 inline buttons]")
         return True
-    return send_photo(LOGO_BANNER_URL, msg, buttons)
+    return send_photo(LOGO_BANNER_URL, msg, _buttons_result())
 
 
 def publish_recap(dry_run: bool = False) -> bool:
     msg = format_recap_weekly()
-    buttons = _buttons_recap()
     if dry_run:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 3 boutons + sondage satisfaction]")
+        print("\n[+ logo banner + 3 inline buttons + 1 engagement poll]")
         return True
 
-    ok = send_photo(LOGO_BANNER_URL, msg, buttons)
+    ok = send_photo(LOGO_BANNER_URL, msg, _buttons_recap())
     if not ok:
         return False
 
-    # Sondage satisfaction utilisateurs
+    # Single engagement poll on recap only (not on every pick — too pushy)
     send_poll(
-        "📊 Satisfait des picks NEXBET cette semaine ?",
-        ["🔥 Excellent", "👍 Bien", "😐 Moyen", "👎 Décevant"],
+        "Was this week's selection useful to you?",
+        ["Yes — keep going", "Mixed feelings", "No"],
     )
     return True
 
@@ -489,7 +569,7 @@ def publish_recap(dry_run: bool = False) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Publication NEXBET sur Telegram")
+    parser = argparse.ArgumentParser(description="NEXBET Telegram publisher")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--test", action="store_true")
     group.add_argument("--pick", choices=["today", "yesterday"])
@@ -505,14 +585,14 @@ def main() -> int:
         target = date.today() if args.pick == "today" else date.today() - timedelta(days=1)
         pick = find_pick(target.isoformat())
         if not pick:
-            print(f"❌ Aucun pick trouvé pour {target.isoformat()}")
+            print(f"No pick found for {target.isoformat()}")
             return 1
         return 0 if publish_pick(pick, args.dry_run) else 1
 
     if args.result:
         pick = find_pick(args.result)
         if not pick:
-            print(f"❌ Aucun pick trouvé pour {args.result}")
+            print(f"No pick found for {args.result}")
             return 1
         return 0 if publish_result(pick, args.dry_run) else 1
 
