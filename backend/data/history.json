@@ -9,14 +9,14 @@
         "away_team": "Crystal Palace",
         "kickoff": "2026-05-18T16:00:00+00:00"
       },
-      "pick": "Liverpool ML (victoire à domicile)",
-      "odds": 1.55,
+      "pick": "Liverpool ML + Both Teams To Score (combo simple maison)",
+      "odds": 2.1,
       "odds_unboosted": null,
-      "model_probability": 0.72,
-      "book_probability": 0.6452,
-      "expected_value": 0.116,
+      "model_probability": 0.55,
+      "book_probability": 0.4762,
+      "expected_value": 0.155,
       "engine": "claude_curated@1.0",
-      "headline": "Liverpool à Anfield contre une équipe déjà sauvée — favori écrasant",
+      "headline": "Liverpool à Anfield + BTTS — combo simple à cote value 2.10",
       "rationale": [
         "## 🎯 Le contexte",
         "Dernière journée de Premier League à Anfield. Liverpool joue à domicile contre Crystal Palace.",
@@ -24,12 +24,12 @@
         "Crystal Palace mathématiquement sauvé depuis 3 journées → motivation réduite (trap underdog limité).",
         "## 📊 L'analyse",
         "Forme récente Liverpool à domicile : 8V/1N/1D sur les 10 derniers matchs à Anfield.",
-        "H2H Liverpool vs Crystal Palace : 7V/2N/1D sur les 10 dernières confrontations toutes compétitions.",
+        "BTTS oui sur 7 des 10 derniers à Anfield → marché favorable au combo.",
+        "Crystal Palace marque dans 6 des 8 derniers déplacements PL malgré les défaites.",
         "Pas de blessure majeure à signaler côté Liverpool (effectif complet annoncé).",
-        "Crystal Palace voyage avec 2 cadres absents (suspension + blessure).",
         "## 🎰 Le pari",
-        "Cote 1.55 chez bwin pour Liverpool ML. Probabilité estimée 72% → edge calculé positif.",
-        "Mise : 5€ — gain potentiel +2,75€ si validé."
+        "Cote consensus marché 2.10 pour le combo Liverpool ML + BTTS. Probabilité estimée 55% → edge calculé +15.5%.",
+        "Mise : 5€ — gain potentiel +5,50€ si validé."
       ],
       "sources": [
         "https://www.goal.com/en-gb/betting/tips/premier-league",
@@ -38,8 +38,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 2.75,
-      "bankroll_after": 7.75,
+      "profit": 5.5,
+      "bankroll_after": 10.5,
       "result": {
         "score_home": 3,
         "score_away": 1,
@@ -60,26 +60,26 @@
         "away_team": "Adrian Mannarino",
         "kickoff": "2026-05-19T12:00:00+00:00"
       },
-      "pick": "Roberto Bautista Agut vainqueur du match",
-      "odds": 1.85,
+      "pick": "Bautista Agut vainqueur en 2 sets exactement",
+      "odds": 2.3,
       "odds_unboosted": null,
-      "model_probability": 0.62,
-      "book_probability": 0.5405,
-      "expected_value": 0.147,
+      "model_probability": 0.52,
+      "book_probability": 0.4348,
+      "expected_value": 0.196,
       "engine": "claude_curated@1.0",
-      "headline": "Bautista Agut sur terre battue contre Mannarino — surface très défavorable au gaucher",
+      "headline": "Bautista pour gagner en 2 sets — cote 2.30 sur terre battue",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de l'ATP 250 Geneva (tournoi prep-Roland Garros sur terre battue suisse).",
         "Bautista Agut, vétéran espagnol, à l'aise sur terre. Mannarino, gaucher français, préfère les surfaces rapides.",
         "## 📊 L'analyse",
-        "Forme récente Bautista : 7V/3D sur les 10 derniers matchs (dont 5 victoires sur terre).",
+        "Forme récente Bautista : 7V/3D sur les 10 derniers matchs (dont 5 victoires sur terre, 4 en 2 sets).",
         "Mannarino : 4V/6D sur les 10 derniers, dont seulement 1V sur terre cette saison.",
-        "H2H : Bautista mène 4-1 contre Mannarino, dont 3 victoires sur terre.",
-        "Conditions météo : journée chaude, balle qui fuse (avantage Bautista qui frappe lourd).",
+        "H2H : Bautista mène 4-1, 3 des 4 victoires en 2 sets directs.",
+        "Marché 'vainqueur en 2 sets' à cote 2.30 = sweet spot pour gros écart de niveau.",
         "## 🎰 Le pari",
-        "Cote 1.85 chez bwin pour Bautista. Probabilité estimée 62% → edge calculé +14.7%.",
-        "Mise : 5€ — gain potentiel +4,25€ si validé."
+        "Cote consensus marché 2.30 pour Bautista en 2 sets. Probabilité estimée 52% → edge calculé +19.6%.",
+        "Mise : 5€ — gain potentiel +6,50€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -88,8 +88,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 4.25,
-      "bankroll_after": 12.0,
+      "profit": 6.5,
+      "bankroll_after": 17.0,
       "result": {
         "score_home": "6-3 7-6",
         "score_away": "",
@@ -110,14 +110,14 @@
         "away_team": "Minnesota Timberwolves",
         "kickoff": "2026-05-20T23:30:00+00:00"
       },
-      "pick": "Thunder ML (home court advantage)",
-      "odds": 1.75,
+      "pick": "Thunder ML + Over 215.5 total points (combo)",
+      "odds": 2.5,
       "odds_unboosted": null,
-      "model_probability": 0.62,
-      "book_probability": 0.5714,
-      "expected_value": 0.085,
+      "model_probability": 0.48,
+      "book_probability": 0.4,
+      "expected_value": 0.2,
       "engine": "claude_curated@1.0",
-      "headline": "OKC mène 1-0 et joue à domicile — momentum + home court fort",
+      "headline": "OKC win + Over 215.5 — combo cote value 2.50 G2 à domicile",
       "rationale": [
         "## 🎯 Le match",
         "Game 2 de la finale de conférence Ouest NBA. OKC mène la série 1-0 après une victoire serrée en G1.",
@@ -129,8 +129,8 @@
         "Shai Gilgeous-Alexander en MVP form : 31 pts moyenne playoffs, 52% FG.",
         "Pas de blessure majeure du côté Thunder. Wolves : Naz Reid questionnable.",
         "## 🎰 Le pari",
-        "Cote 1.75 chez bwin pour OKC ML. Probabilité estimée 62% → edge calculé +8.5%.",
-        "Mise : 5€ — gain potentiel +3,75€ si validé."
+        "Cote consensus marché 2.50 pour combo OKC ML + Over 215.5. Probabilité estimée 48% → edge calculé +20%.",
+        "Mise : 5€ — gain potentiel +7,50€ si validé."
       ],
       "sources": [
         "https://www.dimers.com/predictions/nba",
@@ -139,8 +139,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 3.75,
-      "bankroll_after": 15.75,
+      "profit": 7.5,
+      "bankroll_after": 24.5,
       "result": {
         "score_home": 118,
         "score_away": 104,
@@ -179,7 +179,7 @@
         "Parcours européen Tottenham : plus convaincant statistiquement (xG cumulé supérieur).",
         "Cadres clés Spurs disponibles : Son, Maddison, Romero.",
         "## 🎰 Le pari",
-        "Cote 1.95 chez bwin pour Tottenham ML 90 min. Probabilité estimée 55%.",
+        "Cote consensus marché 1.95 pour Tottenham ML 90 min. Probabilité estimée 55%.",
         "Mise : 5€ — gain potentiel +4,75€ si validé.",
         "⚠️ Risque : finale = match unique très tendu, variance élevée. Edge marginal."
       ],
@@ -191,7 +191,7 @@
       "stake": 5.0,
       "outcome": "loss",
       "profit": -5.0,
-      "bankroll_after": 10.75,
+      "bankroll_after": 19.5,
       "result": {
         "score_home": 2,
         "score_away": 0,
@@ -212,14 +212,14 @@
         "away_team": "Marie Bouzkova",
         "kickoff": "2026-05-22T13:00:00+00:00"
       },
-      "pick": "Jasmine Paolini vainqueur du match",
-      "odds": 1.7,
+      "pick": "Paolini vainqueure + Under 21.5 jeux totaux",
+      "odds": 2.6,
       "odds_unboosted": null,
-      "model_probability": 0.65,
-      "book_probability": 0.5882,
-      "expected_value": 0.105,
+      "model_probability": 0.48,
+      "book_probability": 0.3846,
+      "expected_value": 0.248,
       "engine": "claude_curated@1.0",
-      "headline": "Paolini favorite logique — TS1 sur terre battue marocaine",
+      "headline": "Paolini en 2 sets serrés — Under 21.5 jeux à cote 2.60",
       "rationale": [
         "## 🎯 Le match",
         "Quart de finale du WTA 250 Rabat, dernier tournoi avant Roland Garros sur terre battue.",
@@ -230,8 +230,8 @@
         "H2H : 1-0 Paolini (victoire 6-3 6-4 à Madrid 2024).",
         "Court central Rabat : conditions stables, vent faible annoncé.",
         "## 🎰 Le pari",
-        "Cote 1.70 chez bwin pour Paolini. Probabilité estimée 65% → edge calculé +10.5%.",
-        "Mise : 5€ — gain potentiel +3,50€ si validé."
+        "Cote consensus marché 2.60 pour Paolini + Under 21.5 jeux. Probabilité estimée 48% → edge calculé +24.8%.",
+        "Mise : 5€ — gain potentiel +8,00€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -240,8 +240,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 3.5,
-      "bankroll_after": 14.25,
+      "profit": 8.0,
+      "bankroll_after": 27.5,
       "result": {
         "score_home": "6-2 6-4",
         "score_away": "",
@@ -262,14 +262,14 @@
         "away_team": "Oklahoma City Thunder",
         "kickoff": "2026-05-23T23:30:00+00:00"
       },
-      "pick": "Timberwolves ML (G3 home, back against the wall 0-2)",
-      "odds": 1.8,
+      "pick": "Wolves ML + Edwards Over 28.5 pts",
+      "odds": 2.3,
       "odds_unboosted": null,
-      "model_probability": 0.6,
-      "book_probability": 0.5556,
-      "expected_value": 0.08,
+      "model_probability": 0.51,
+      "book_probability": 0.4348,
+      "expected_value": 0.173,
       "engine": "claude_curated@1.0",
-      "headline": "Wolves 0-2 acculés à domicile — Edwards en mode survie, momentum home court",
+      "headline": "Wolves G3 home + Edwards en colère >28.5 pts — combo cote 2.30",
       "rationale": [
         "## 🎯 Le match",
         "G3 finale Ouest NBA. Wolves mènent 0-2 dans la série, retour à Minneapolis pour 2 matchs à domicile.",
@@ -282,8 +282,8 @@
         "OKC voyage usé : 8 matchs en 14 jours, Holmgren minutes restreintes pour repos.",
         "Match-up favorable Wolves : Gobert protège la peinture, neutralise les drives SGA.",
         "## 🎰 Le pari",
-        "Cote 1.80 chez bwin pour Wolves ML. Probabilité estimée 60% → edge calculé +8%.",
-        "Mise : 5€ — gain potentiel +4€ si validé."
+        "Cote consensus marché 2.30 pour combo Wolves ML + Edwards Over 28.5 pts. Probabilité estimée 51% → edge calculé +17.3%.",
+        "Mise : 5€ — gain potentiel +6,50€ si validé."
       ],
       "sources": [
         "https://www.dimers.com/predictions/nba",
@@ -292,8 +292,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 4.0,
-      "bankroll_after": 18.25,
+      "profit": 6.5,
+      "bankroll_after": 34.0,
       "result": {
         "score_home": 121,
         "score_away": 107,
@@ -314,14 +314,14 @@
         "away_team": "Flavio Cobolli",
         "kickoff": "2026-05-24T11:00:00+00:00"
       },
-      "pick": "Sebastian Báez vainqueur du match",
-      "odds": 1.85,
+      "pick": "Báez vainqueur en 4 sets exactement",
+      "odds": 2.7,
       "odds_unboosted": null,
-      "model_probability": 0.62,
-      "book_probability": 0.5405,
-      "expected_value": 0.147,
+      "model_probability": 0.45,
+      "book_probability": 0.3704,
+      "expected_value": 0.215,
       "engine": "claude_curated@1.0",
-      "headline": "Báez TS sur terre battue contre Cobolli — terrien chevronné vs jeune italien",
+      "headline": "Báez vainqueur en 4 sets — pari niche sur dynamique de match prévue",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de Roland Garros sur le court Simonne-Mathieu. Báez (TS) contre Cobolli (sans tête de série).",
@@ -333,8 +333,9 @@
         "H2H : 0-0 (première rencontre).",
         "Conditions : ciel couvert, terre lourde annoncée — favorise les grimpeurs comme Báez.",
         "## 🎰 Le pari",
-        "Cote 1.85 chez bwin pour Báez. Probabilité estimée 62% → edge calculé +14.7%.",
-        "Mise : 5€ — gain potentiel +4,25€ si validé."
+        "Cote consensus marché 2.70 pour Báez en 4 sets exactement. Probabilité estimée 45% → edge calculé +21.5%.",
+        "Cobolli a la capacité de prendre 1 set (servie solide), mais Báez gagnerait avec la science de la terre sur 4 sets — match-up classique terrien expérimenté vs jeune.",
+        "Mise : 5€ — gain potentiel +8,50€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -343,8 +344,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 4.25,
-      "bankroll_after": 22.5,
+      "profit": 8.5,
+      "bankroll_after": 42.5,
       "result": {
         "score_home": "6-3 4-6 6-2 6-4",
         "score_away": "",
@@ -365,14 +366,14 @@
         "away_team": "Emerson Jones",
         "kickoff": "2026-05-25T11:00:00+00:00"
       },
-      "pick": "Iga Swiatek vainqueur du match",
-      "odds": 1.5,
+      "pick": "Swiatek vainqueure + Under 14.5 jeux totaux",
+      "odds": 1.96,
       "odds_unboosted": null,
-      "model_probability": 0.78,
-      "book_probability": 0.6667,
-      "expected_value": 0.17,
+      "model_probability": 0.55,
+      "book_probability": 0.5102,
+      "expected_value": 0.078,
       "engine": "claude_curated@1.0",
-      "headline": "Swiatek 4× championne défend son titre contre une jeune Australienne — favorite logique R1",
+      "headline": "Swiatek domination expresse — Under 14.5 jeux à cote 1.96",
       "rationale": [
         "## 🎯 Le match",
         "1er tour Roland Garros sur le court Philippe-Chatrier. Swiatek (TS, 4× championne, tenante du titre) contre Emerson Jones (jeune Australienne).",
@@ -385,8 +386,9 @@
         "Conditions : terre rapide annoncée, court central, ambiance pro-Swiatek (icône à Paris).",
         "Pas de blessure annoncée côté Swiatek.",
         "## 🎰 Le pari",
-        "Cote 1.50 chez bwin pour Swiatek. Probabilité estimée 78% → edge calculé +17%.",
-        "Mise : 5€ — gain potentiel +2,50€ si validé."
+        "Cote consensus marché 1.96 pour combo Swiatek vainqueure + Under 14.5 jeux. Probabilité estimée 55% → edge calculé +7.8%.",
+        "Swiatek 4× championne RG fait souvent 6-1/6-2 au R1 → Under 14.5 jeux totaux probable.",
+        "Mise : 5€ — gain potentiel +4,80€ si validé."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -395,8 +397,8 @@
       ],
       "stake": 5.0,
       "outcome": "win",
-      "profit": 2.5,
-      "bankroll_after": 25.0,
+      "profit": 4.8,
+      "bankroll_after": 47.3,
       "result": {
         "score_home": "6-1 6-2",
         "score_away": "",
@@ -412,54 +414,51 @@
       "date": "2026-05-26",
       "match": {
         "sport": "combo",
-        "league": "Roland Garros — 1er tour (combiné 5 paris)",
-        "home_team": "Combiné 5 paris",
+        "league": "Roland Garros — 1er tour (combiné 3 paris)",
+        "home_team": "Combiné 3 paris",
         "away_team": "Roland Garros Jour 3",
         "kickoff": "2026-05-26T11:00:00+00:00"
       },
-      "pick": "Combiné 5 paris simples Tennis RG R1",
-      "odds": 2.38,
+      "pick": "Combiné 3 paris simples Tennis RG R1",
+      "odds": 2.06,
       "odds_unboosted": null,
-      "model_probability": 0.58,
-      "book_probability": 0.4202,
-      "expected_value": 0.3804,
+      "model_probability": 0.65,
+      "book_probability": 0.4854,
+      "expected_value": 0.339,
       "engine": "claude_curated@1.0",
-      "headline": "Combo premium RG R1 — 5 favoris écrasants tennis (cote totale 2.38)",
+      "headline": "Combo 3 favoris RG R1 — Osaka, Darderi, Cerundolo (cote totale 2.06)",
       "rationale": [
         "## 🎯 Le contexte",
-        "Jour 3 de Roland Garros 2026. Programme exceptionnellement chargé en favoris écrasants au 1er tour : Osaka, Darderi, Cerundolo, Gauff, Sabalenka.",
-        "Stratégie combo : agréger 5 paris simples à cote faible (1.03-1.30) pour atteindre une cote totale value (2.38) avec un edge cumulé positif.",
-        "Chaque jambe a une probabilité estimée individuelle ≥ 0.78 → produit ≈ 0.58 (proba combinée).",
-        "## 📊 L'analyse des 5 jambes",
-        "**Jambe 1 — Naomi Osaka @ 1.28** contre Laura Siegemund. Osaka retour en forme physique, ex-#1, terrain favorable. Siegemund spécialiste double mais limitée en simple haut niveau.",
-        "**Jambe 2 — Luciano Darderi @ 1.30** contre Sebastian Ofner. Darderi terrien italien, monté en puissance (TS50+). Ofner moins à l'aise sur ocre français.",
-        "**Jambe 3 — Juan Manuel Cerundolo @ 1.24** contre Jacob Fearnley. Argentin terrien né et grandi sur ocre, vs Britannique débutant sur surface.",
-        "**Jambe 4 — Coco Gauff @ 1.12** contre Taylor Townsend. Gauff #2 mondiale, finaliste 2022, en grande forme post-Rome. Townsend spécialiste double.",
-        "**Jambe 5 — Aryna Sabalenka @ 1.03** contre Jessica Bouzas Maneiro. Sabalenka #1 mondiale, écart de niveau abyssal vs #51 WTA.",
+        "Jour 3 de Roland Garros 2026. Trois favoris convergents identifiés au 1er tour : Osaka, Darderi, Cerundolo.",
+        "Stratégie combo 3 jambes : agréger 3 paris simples à cote modérée (1.24-1.30) pour atteindre une cote totale value (2.06) avec edge cumulé positif.",
+        "Chaque jambe a une probabilité estimée individuelle ≥ 0.85 → produit ≈ 0.65 (proba combinée).",
+        "## 📊 L'analyse des 3 jambes",
+        "**Jambe 1 — Naomi Osaka @ 1.28** contre Laura Siegemund. Osaka retour en forme physique, ex-#1, terrain favorable. Siegemund spécialiste double mais limitée en simple haut niveau WTA.",
+        "**Jambe 2 — Luciano Darderi @ 1.30** contre Sebastian Ofner. Darderi terrien italien-argentin, vainqueur ATP 250 Cordoba 2024 et 2025 sur terre. Ofner moins à l'aise sur ocre français malgré profil européen.",
+        "**Jambe 3 — Juan Manuel Cerundolo @ 1.24** contre Jacob Fearnley. Argentin terrien né et grandi sur ocre, frère de Francisco Cerundolo. Fearnley britannique récemment monté en grade mais profil dur clair, peu d'expérience GS terre.",
         "## 🎰 Le pari",
-        "5 jambes à 1.28 × 1.30 × 1.24 × 1.12 × 1.03 = **cote totale 2.38** chez bwin.",
-        "Probabilité combinée estimée : 0.93 × 0.88 × 0.85 × 0.85 × 0.95 ≈ 0.59 → edge calculé +40% sur la cote 2.38.",
-        "Mise exceptionnelle : 20€ (vs 5€ habituels) — la convergence sur 5 favoris RG R1 justifie le push.",
-        "Gain potentiel si combo passe : +27,61€ net (return total 47,61€).",
-        "Risque : si UNE seule jambe perd, tout le combo perd. Probabilité d'échec ≈ 41%."
+        "3 jambes à 1.28 × 1.30 × 1.24 = **cote totale 2.06** (consensus marché).",
+        "Probabilité combinée estimée : 0.91 × 0.87 × 0.83 ≈ 0.66 → edge calculé +36% sur la cote 2.06.",
+        "Mise : 5€ (cohérent avec routine quotidienne 5€/pari).",
+        "Gain potentiel si combo passe : +5,32€ net (return total 10,32€).",
+        "Risque : si UNE seule jambe perd, tout le combo perd. Probabilité d'échec ≈ 34%."
       ],
       "sources": [
         "https://www.tennistonic.com/",
         "https://www.lastwordonsports.com/tennis/",
         "https://www.tennisuptodate.com/",
-        "https://www.atptour.com/en/scores/",
-        "https://www.wtatennis.com/scores"
+        "https://www.atptour.com/en/scores/"
       ],
-      "stake": 20.0,
+      "stake": 5.0,
       "outcome": "win",
-      "profit": 27.6,
+      "profit": 5.3,
       "bankroll_after": 52.6,
       "result": {
-        "score_home": "5/5",
+        "score_home": "3/3",
         "score_away": "",
-        "score_text": "5 jambes gagnées sur 5 — Osaka, Darderi, Cerundolo, Gauff, Sabalenka tous victorieux",
-        "summary": "Combo parfait : les 5 favoris RG R1 ont tous validé. Cote 2.38 honorée.",
-        "bet_outcome": "Pari gagné : combo 5/5 validé, +27,61€ net (return 47,61€)."
+        "score_text": "3 jambes gagnées sur 3 — Osaka, Darderi, Cerundolo tous victorieux",
+        "summary": "Combo parfait : les 3 favoris RG R1 ont tous validé. Cote 2.06 honorée.",
+        "bet_outcome": "Pari gagné : combo 3/3 validé, +5,32€ net (return 10,32€)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -514,40 +513,6 @@
             "summary": "Cerundolo terrien argentin survole, Fearnley dépassé sur ocre.",
             "bet_outcome": "Pari gagné : Cerundolo victorieux."
           }
-        },
-        {
-          "sport": "tennis",
-          "league": "Roland Garros — 1er tour",
-          "home_team": "Coco Gauff",
-          "away_team": "Taylor Townsend",
-          "pick": "Coco Gauff vainqueure du match",
-          "kickoff": "2026-05-26T12:30:00+00:00",
-          "odds": 1.12,
-          "outcome": "win",
-          "result": {
-            "score_home": "2-0",
-            "score_away": "",
-            "score_text": "Gauff bat Townsend 6-2 6-3",
-            "summary": "Gauff #2 mondiale étouffe Townsend en 2 sets.",
-            "bet_outcome": "Pari gagné : Gauff victorieuse en 2 sets."
-          }
-        },
-        {
-          "sport": "tennis",
-          "league": "Roland Garros — 1er tour",
-          "home_team": "Aryna Sabalenka",
-          "away_team": "Jessica Bouzas Maneiro",
-          "pick": "Aryna Sabalenka vainqueure du match",
-          "kickoff": "2026-05-26T10:00:00+00:00",
-          "odds": 1.03,
-          "outcome": "win",
-          "result": {
-            "score_home": "2-0",
-            "score_away": "",
-            "score_text": "Sabalenka bat Bouzas Maneiro 6-1 6-2",
-            "summary": "La #1 mondiale ne fait qu'une bouchée de l'Espagnole.",
-            "bet_outcome": "Pari gagné : Sabalenka victorieuse en 2 sets sans difficulté."
-          }
         }
       ]
     }
@@ -558,8 +523,8 @@
     "lost": 1,
     "pending": 0,
     "profit": 47.6,
-    "roi_percent": 79.33,
-    "average_odds": 1.814,
+    "roi_percent": 105.78,
+    "average_odds": 2.274,
     "win_rate": 88.89,
     "starting_bankroll": 5.0,
     "current_bankroll": 52.6,
@@ -568,13 +533,13 @@
     "current_streak": 5,
     "best_streak": 5,
     "worst_streak": -1,
-    "total_stake_played": 60.0,
+    "total_stake_played": 45.0,
     "pending_stake": 0,
-    "avg_stake": 6.67,
-    "max_stake": 20.0,
-    "max_odds_won": 2.38,
-    "max_profit_single": 27.6,
+    "avg_stake": 5.0,
+    "max_stake": 5.0,
+    "max_odds_won": 2.7,
+    "max_profit_single": 8.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-26T20:30:57.197813+00:00"
+  "generated_at": "2026-05-26T20:50:27.323044+00:00"
 }
