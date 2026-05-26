@@ -232,18 +232,18 @@ export function BankrollChart({
         <div className="flex-1 min-h-[160px] relative">
           <div className="absolute inset-0">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 6 }}>
+            <LineChart data={data} margin={{ top: 18, right: 14, left: 0, bottom: 18 }}>
               <CartesianGrid stroke="rgba(255,255,255,0.15)" strokeWidth={1} vertical={false} />
               <XAxis dataKey="label" hide />
               <YAxis
                 stroke="rgba(255,255,255,0.55)"
-                tick={{ fontSize: 11, fill: "rgba(255,255,255,0.7)" }}
+                tick={{ fontSize: 11, fill: "#ffffff", dx: -2 }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${Math.round(v)}€`}
                 domain={yDomain}
                 ticks={niceTicks}
-                width={42}
+                width={32}
               />
               <Tooltip
                 contentStyle={{
