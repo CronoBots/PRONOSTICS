@@ -66,7 +66,7 @@ export default function CalendrierPage() {
         <title>{t("calendrier.titleTab")}</title>
       </Head>
 
-      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
+      <main className="w-full max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <div className="flex items-center gap-3 mb-6">
           <Link
             href="/"
@@ -114,9 +114,10 @@ export default function CalendrierPage() {
 
         {!loading && grid && (
           <>
-            {/* Grille */}
-            <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-3 shadow-card">
-              <div className="grid grid-cols-7 gap-1 mb-2">
+            {/* Grille calendrier — padding réduit + cells optimisées pour
+                exploiter toute la largeur disponible */}
+            <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-2 sm:p-3 shadow-card">
+              <div className="grid grid-cols-7 gap-1 mb-1.5">
                 {WEEKDAY_LABELS.map((d, i) => (
                   <div
                     key={i}
@@ -126,21 +127,21 @@ export default function CalendrierPage() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-7 gap-1">
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
                 {grid.cells.map((c, i) => (
                   <DayCellTile key={`${c.date}-${i}`} cell={c} />
                 ))}
               </div>
             </div>
 
-            {/* Totaux du mois */}
-            <div className="grid grid-cols-2 gap-3 mt-5">
-              <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
-                <div className="text-[11px] uppercase tracking-wider text-white/40">
+            {/* Totaux du mois — padding ajusté */}
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-3 sm:p-4">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-white">
                   {t("calendrier.monthProfit")}
                 </div>
                 <div
-                  className={`text-2xl font-bold mt-1 tabular-nums ${
+                  className={`text-xl sm:text-2xl font-bold mt-1 tabular-nums ${
                     grid.monthProfit > 0
                       ? "text-accent-green"
                       : grid.monthProfit < 0
@@ -152,11 +153,11 @@ export default function CalendrierPage() {
                   {grid.monthProfit.toFixed(2)} €
                 </div>
               </div>
-              <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
-                <div className="text-[11px] uppercase tracking-wider text-white/40">
+              <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-3 sm:p-4">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-white">
                   {t("calendrier.monthBets")}
                 </div>
-                <div className="text-2xl font-bold mt-1 tabular-nums text-accent-blue">
+                <div className="text-xl sm:text-2xl font-bold mt-1 tabular-nums text-accent-blue">
                   {grid.monthPicks}
                 </div>
               </div>
@@ -184,14 +185,16 @@ function DayCellTile({ cell }: { cell: DayCell }) {
 
   return (
     <div
-      className={`aspect-square rounded-lg border ${border} ${bg} ${ring} ${opacity} flex flex-col items-center justify-center text-sm`}
+      className={`aspect-square rounded-lg border ${border} ${bg} ${ring} ${opacity} flex flex-col items-center justify-center gap-0.5 text-sm`}
     >
-      <span className={cell.inMonth ? "text-white/80" : "text-white/30"}>
+      <span
+        className={`text-sm sm:text-base font-medium leading-none ${cell.inMonth ? "text-white/85" : "text-white/30"}`}
+      >
         {cell.day}
       </span>
       {hasProfit && (
         <span
-          className={`text-[10px] font-semibold tabular-nums ${
+          className={`text-[10px] sm:text-[11px] font-bold tabular-nums leading-none ${
             positive ? "text-accent-green" : "text-accent-red"
           }`}
         >
