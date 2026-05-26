@@ -1091,3 +1091,78 @@ async def fetch_player_league_stats(
             player_id, league_id, season_id, exc,
         )
         return None
+
+
+# =============================================================================
+# v4.7 — Cherry-pick depuis ScraperFC (oseymour/ScraperFC, MIT)
+# Endpoints utilitaires foot/basket peu connus mais utiles pour l'analyse tactique
+# =============================================================================
+
+
+async def fetch_average_positions(event_id: int) -> dict | None:
+    """Positions moyennes des joueurs sur le terrain pendant le match (foot).
+
+    Renvoie pour chaque joueur les coordonnées x/y moyennes. Utile pour
+    visualiser la formation réellement jouée (vs annoncée) et détecter
+    si un joueur a tenu son poste ou a beaucoup décroché.
+    """
+    try:
+        return await _fetch_json(f"/event/{event_id}/average-positions")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("sofascore avg-positions KO for %s: %s", event_id, exc)
+        return None
+
+
+async def fetch_player_heatmap(event_id: int, player_id: int) -> dict | None:
+    """Heatmap individuelle d'un joueur sur un match donné (foot/basket).
+
+    Renvoie une liste de points x/y avec densité de présence. Utile pour
+    voir où un joueur clé a réellement joué (zones d'influence).
+    """
+    try:
+        return await _fetch_json(f"/event/{event_id}/player/{player_id}/heatmap")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore player-heatmap KO for %s/%s: %s", event_id, player_id, exc
+        )
+        return None
+
+
+async def fetch_league_players(league_id: int, season_id: int) -> list[dict]:
+    """Liste de TOUS les joueurs d'une saison de ligue (avec leurs équipes).
+
+    Utile pour identifier le pool de joueurs à monitorer (top scorers,
+    sleepers, retours de blessure imminents).
+    """
+    try:
+        data = await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/players"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore league-players KO for %s/%s: %s", league_id, season_id, exc
+        )
+        return []
+    if not data:
+        return []
+    return data.get("players", []) if isinstance(data, dict) else []
+
+
+async def fetch_league_teams(league_id: int, season_id: int) -> list[dict]:
+    """Liste de toutes les équipes d'une saison de ligue (avec IDs Sofascore).
+
+    Permet de mapper rapidement nom → team_id pour une ligue donnée
+    (alternative à search_player_or_team).
+    """
+    try:
+        data = await _fetch_json(
+            f"/unique-tournament/{league_id}/season/{season_id}/teams"
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(
+            "sofascore league-teams KO for %s/%s: %s", league_id, season_id, exc
+        )
+        return []
+    if not data:
+        return []
+    return data.get("teams", []) if isinstance(data, dict) else []
