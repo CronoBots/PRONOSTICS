@@ -409,7 +409,7 @@ function StatTile({
           ?
         </button>
       )}
-      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/50 text-center">
+      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-accent-blue/85 text-center font-semibold">
         {label}
       </div>
       <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center mt-0 lg:mt-1.5 ${colorClass}`}>

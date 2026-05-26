@@ -233,11 +233,11 @@ export function BankrollChart({
           <div className="absolute inset-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 18, right: 14, left: 8, bottom: 6 }}>
-              <CartesianGrid stroke="rgba(255,255,255,0.25)" strokeWidth={1} vertical={false} />
+              <CartesianGrid stroke="rgba(255,255,255,0.15)" strokeWidth={1} vertical={false} />
               <XAxis dataKey="label" hide />
               <YAxis
-                stroke="var(--accent-green)"
-                tick={{ fontSize: 11, fill: "var(--accent-green)" }}
+                stroke="rgba(255,255,255,0.55)"
+                tick={{ fontSize: 11, fill: "rgba(255,255,255,0.7)" }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${Math.round(v)}€`}
