@@ -250,13 +250,15 @@ export default function Home() {
                             : p === "1m"
                               ? "period.month"
                               : "period.year";
+                      const isActive = period === p;
                       return (
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          style={{ color: "var(--accent-green)", borderColor: "var(--accent-green)" }}
-                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center ${
-                            period === p ? "bg-accent-green/25" : "bg-transparent"
+                          className={`nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center transition-colors ${
+                            isActive
+                              ? "bg-white/15 border-white/40 text-white"
+                              : "bg-transparent border-white/15 text-white/60 hover:border-white/30 hover:text-white/80"
                           }`}
                         >
                           {t(labelKey)}
@@ -265,20 +267,18 @@ export default function Home() {
                     })}
                     <Link
                       href="/filtres"
-                      style={{ color: "var(--accent-green)", borderColor: "var(--accent-green)" }}
-                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center bg-transparent"
+                      className="nav-pulse py-1 rounded-full text-[11px] font-semibold border text-center bg-transparent border-white/15 text-white/60 hover:border-white/30 hover:text-white/80 transition-colors"
                     >
                       {t("home.filters")}
                     </Link>
                     <button
                       onClick={() => setMenuOpen((o) => !o)}
-                      style={{ borderColor: "var(--accent-green)" }}
-                      className="nav-pulse w-7 h-7 rounded-full border flex items-center justify-center gap-[2px] shrink-0"
+                      className="nav-pulse w-7 h-7 rounded-full border border-white/15 hover:border-white/30 flex items-center justify-center gap-[2px] shrink-0 transition-colors"
                       aria-label={t("home.chartOptions")}
                     >
-                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
-                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
-                      <span className="block w-[3px] h-[3px] rounded-full bg-accent-green" />
+                      <span className="block w-[3px] h-[3px] rounded-full bg-white/60" />
+                      <span className="block w-[3px] h-[3px] rounded-full bg-white/60" />
+                      <span className="block w-[3px] h-[3px] rounded-full bg-white/60" />
                     </button>
                   </div>
                 }
@@ -411,7 +411,7 @@ function StatTile({
           ?
         </button>
       )}
-      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-accent-blue/85 text-center font-semibold">
+      <div className="text-[10px] lg:text-[11px] uppercase tracking-wider text-white/55 text-center font-semibold">
         {label}
       </div>
       <div className={`text-lg lg:text-3xl font-bold tabular-nums text-center mt-0 lg:mt-1.5 ${colorClass}`}>
