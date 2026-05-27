@@ -577,7 +577,7 @@ function FinancialStatsGrid({
       : "text-white";
 
   return (
-    <div className="-mx-3.5 mt-3 px-3.5 py-3 bg-bg-elevated/40 border-t border-white/15">
+    <div className="-mx-3.5 -mb-3.5 mt-3 px-3.5 pt-3 pb-3.5 bg-bg-elevated/40 border-t border-white/15">
       {showTotalOdds && (
         <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-white/15">
           <span className="text-base font-bold text-white">
