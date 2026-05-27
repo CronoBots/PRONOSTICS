@@ -557,11 +557,28 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
 
+  // Bloc statut coloré (style Unibet) : vert/rouge/bleu/jaune selon outcome
+  // de la jambe individuelle, indépendant du combo global.
+  const statusBg = isWin
+    ? "bg-accent-green"
+    : isLoss
+      ? "bg-accent-red"
+      : isVoid
+        ? "bg-accent-blue"
+        : "bg-yellow-500";
+  const statusFg = isLoss || isVoid ? "text-white" : "text-bg-base";
+
   return (
-    <div className="flex items-start gap-2.5 py-2.5 border-t border-white/[0.06] first:border-t-0">
-      <span className="shrink-0 w-5 h-5 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center text-[10px] font-bold tabular-nums text-white/70 mt-0.5">
-        {index}
-      </span>
+    <div className="flex items-stretch gap-2.5 py-2 border-t border-white/[0.06] first:border-t-0">
+      {/* Bloc coloré status + numéro de jambe */}
+      <div
+        className={`shrink-0 w-7 rounded flex items-center justify-center ${statusBg}`}
+        aria-label={`Jambe ${index} — ${leg.outcome}`}
+      >
+        <span className={`text-sm font-extrabold tabular-nums ${statusFg}`}>
+          {index}
+        </span>
+      </div>
       <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
