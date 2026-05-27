@@ -343,14 +343,28 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-bold text-white truncate min-w-0">
-                {pick.pick}
-              </span>
-              <span className={`text-base font-bold tabular-nums whitespace-nowrap ${oddsColorClass}`}>
-                {pick.odds.toFixed(2)}
-              </span>
-            </div>
+            (() => {
+              const parsed = parsePickLabel(pick.pick);
+              return (
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-bold text-white truncate min-w-0">
+                      {parsed.entity}
+                    </span>
+                    <span
+                      className={`text-base font-bold tabular-nums whitespace-nowrap ${oddsColorClass}`}
+                    >
+                      {pick.odds.toFixed(2)}
+                    </span>
+                  </div>
+                  {parsed.typeKey && (
+                    <div className="text-[11px] text-white/55 mt-0.5">
+                      {t(parsed.typeKey, parsed.typeParams)}
+                    </div>
+                  )}
+                </div>
+              );
+            })()
           )}
 
           {/* FINANCIAL — 3 mini-stats pour les combos, ligne inline pour single */}
@@ -391,29 +405,52 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   );
 }
 
-/** Strip filler suffixes like "vainqueur du match" / "to win match" /
- *  "to win" from a pick label so the line stays compact. The picked
- *  player or team is what remains. Returns the original string if no
- *  recognised suffix is found. */
-function stripWinSuffix(pick: string): string {
-  return pick
-    .replace(/\s+(vainqueur du match|vainqueur|gagne|gagnant)\s*$/i, "")
-    .replace(/\s+(to win match|to win|wins match|wins)\s*$/i, "")
-    .trim();
-}
+/** Parse a pick label into (picked entity, bet type) using regex
+ *  heuristics. The type is returned as an i18n key + optional params,
+ *  so the caller localises it via t(). Returns type=null when nothing
+ *  recognisable matches — the caller skips the subtitle line. */
+function parsePickLabel(
+  pick: string,
+): { entity: string; typeKey: string | null; typeParams?: Record<string, string | number> } {
+  const trimmed = pick.trim();
 
-/** Identify the opponent (not picked) of a leg, based on substring
- *  match of the picked side in home/away. Falls back to the away team
- *  if no clear match. */
-function getOpponent(pick: string, home: string, away: string): string {
-  const p = pick.toLowerCase();
-  if (home && p.includes(home.toLowerCase().split(" ").pop() || home.toLowerCase())) {
-    return away;
+  const mlMatch = trimmed.match(
+    /^(.+?)\s+(vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
+  );
+  if (mlMatch) {
+    return { entity: mlMatch[1].trim(), typeKey: "betType.matchWinner" };
   }
-  if (away && p.includes(away.toLowerCase().split(" ").pop() || away.toLowerCase())) {
-    return home;
+
+  const setsMatch = trimmed.match(
+    /^(.+?)\s+(?:in|en)\s+(\d)\s+sets?(?:\s+(?:exactement|exactly))?$/i,
+  );
+  if (setsMatch) {
+    return {
+      entity: setsMatch[1].trim(),
+      typeKey: "betType.winInSets",
+      typeParams: { n: setsMatch[2] },
+    };
   }
-  return away || home || "";
+
+  const totMatch = trimmed.match(/(over|under|plus de|moins de)\s+([\d.]+)/i);
+  if (totMatch) {
+    const dir = /over|plus/i.test(totMatch[1]) ? "Over" : "Under";
+    return { entity: `${dir} ${totMatch[2]}`, typeKey: "betType.totalGames" };
+  }
+
+  const hcpMatch = trimmed.match(/^(.+?)\s+([+-]\d+\.?\d*)\s*(jeux|games)?$/i);
+  if (hcpMatch) {
+    return {
+      entity: `${hcpMatch[1].trim()} ${hcpMatch[2]}`,
+      typeKey: "betType.handicap",
+    };
+  }
+
+  if (/(\+|et|and)\s*(btts|les deux|both teams)/i.test(trimmed)) {
+    return { entity: trimmed, typeKey: "betType.specialCombo" };
+  }
+
+  return { entity: trimmed, typeKey: null };
 }
 
 function FinancialStatsGrid({
@@ -516,30 +553,38 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
         ? "text-accent-blue"
         : "text-yellow-300";
 
-  const compactPick = stripWinSuffix(leg.pick);
-  const opponent = getOpponent(leg.pick, leg.home_team, leg.away_team);
+  const { t } = useI18n();
+  const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
+  const matchup = `${leg.home_team} — ${leg.away_team}`;
 
   return (
-    <div className="flex items-center gap-2.5 py-2 border-t border-white/[0.06] first:border-t-0">
-      <span className="shrink-0 w-5 h-5 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center text-[10px] font-bold tabular-nums text-white/70">
+    <div className="flex items-start gap-2.5 py-2.5 border-t border-white/[0.06] first:border-t-0">
+      <span className="shrink-0 w-5 h-5 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center text-[10px] font-bold tabular-nums text-white/70 mt-0.5">
         {index}
       </span>
-      <span className="shrink-0 text-sm">{emoji}</span>
-      <div className="flex-1 min-w-0 text-xs truncate">
-        <span className="font-semibold text-white">{compactPick}</span>
-        {opponent && (
-          <span className="text-white/40"> vs {opponent}</span>
+      <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-sm font-semibold text-white truncate">{entity}</span>
+          <div className="shrink-0 flex items-center gap-1.5">
+            <span className={`text-sm font-bold tabular-nums ${oddsColor}`}>
+              {leg.odds.toFixed(2)}
+            </span>
+            <span
+              className={`text-sm font-bold leading-none ${statusColor}`}
+              aria-label={leg.outcome}
+            >
+              {statusLabel}
+            </span>
+          </div>
+        </div>
+        {typeKey && (
+          <div className="text-[11px] text-white/55 mt-0.5">
+            {t(typeKey, typeParams)}
+          </div>
         )}
+        <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
       </div>
-      <span className={`shrink-0 text-xs font-bold tabular-nums ${oddsColor}`}>
-        {leg.odds.toFixed(2)}
-      </span>
-      <span
-        className={`shrink-0 text-sm font-bold leading-none ${statusColor}`}
-        aria-label={leg.outcome}
-      >
-        {statusLabel}
-      </span>
     </div>
   );
 }
