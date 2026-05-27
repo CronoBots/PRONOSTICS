@@ -168,6 +168,28 @@ match-to-match très élevée. "Value bets" à cote 2.50+ souvent trappes.
 Cinderella avec 5+ wins inattendus, mais pas de rejet automatique ni
 de minoration mathématique. Promotion à blocking si n ≥ 3 cas validés.
 
+### AB-8 : H2H factuel doit être vérifié sur 2+ sources avant tout pick handicap/spread
+**Statut** : ⚠️ EXPERIMENTAL n=1 — créé 27/05/2026
+**Origine** : comparaison Agent NEXBET vs Claude direct sur RG Day 4
+(Zverev vs Machac 27/05/2026). Claude direct a proposé Machac +6.5 jeux
+à 1.94 avec confiance 62% en s'appuyant sur l'affirmation "Machac a
+déjà battu Zverev en 2024". **Faux** : vérification Ladbrokes →
+Zverev a battu Machac 2-0 aux JO Paris 30/07/2024 sur terre battue
+(même surface, même ville que ce soir). Le H2H réel est 1-0 Zverev,
+jamais l'inverse. Sans cette erreur, la confiance tombe à ~52% et
+l'edge devient marginal (~0%) → no-bet aurait été la conclusion.
+
+**Action v4.9+** : avant tout pick **handicap jeux / handicap sets /
+total games** où la confiance s'appuie sur un précédent H2H spécifique,
+**vérifier le H2H sur 2 sources indépendantes** (ex : ATP Tour officiel
++ Tennis Abstract OU Ladbrokes/Bet365 "Face à face" + SofaScore stats).
+Si les 2 sources ne convergent pas sur le même résultat exact (score,
+date, surface), **flag dans la trace** et déclasser le pick d'un cran
+de confiance.
+
+**Promotion** : à blocking si n ≥ 3 erreurs H2H détectées dans les
+analyses claude/agent.
+
 ---
 
 ## 🗑 Anti-bias SUPPRIMÉS en v4
