@@ -360,30 +360,16 @@ function BetRow({
             <div className="text-xs text-white/55">{timeLabel}</div>
           )}
 
-          {/* SPACER avant la liste des paris */}
-          <div className="h-2" />
-
-          {/* CORPS : 1 LegRow pour un single, N LegRow pour un combo,
-              + ligne Cote totale uniquement pour les combos. Layout
-              unifié grâce à la component LegRow réutilisable. */}
-          <div className="-mx-3.5 border-t border-white/[0.08]">
-            {isCombo ? (
-              pick.legs!.map((leg, i) => (
+          {/* CORPS :
+                - Combo  → liste de LegRow (bandes pleine hauteur + numéro)
+                  + ligne Cote totale
+                - Single → contenu inline sans grosse bande, juste le fin
+                  border-l-2 coloré du BetRow extérieur signale le statut. */}
+          {isCombo ? (
+            <div className="-mx-3.5 border-t border-white/[0.08]">
+              {pick.legs!.map((leg, i) => (
                 <LegRow key={i} leg={leg as LegRowData} index={i + 1} />
-              ))
-            ) : (
-              <LegRow
-                leg={{
-                  pick: pick.pick,
-                  odds: pick.odds,
-                  sport: pick.match.sport,
-                  home_team: pick.match.home_team,
-                  away_team: pick.match.away_team,
-                  outcome: pick.outcome,
-                }}
-              />
-            )}
-            {isCombo && (
+              ))}
               <div className="border-t border-white/15">
                 <div className="flex items-center justify-between gap-2 mx-3.5 py-3">
                   <span className="text-base font-bold text-white">
@@ -394,8 +380,40 @@ function BetRow({
                   </span>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            (() => {
+              const parsed = parsePickLabel(pick.pick);
+              const matchup = `${pick.match.home_team} — ${pick.match.away_team}`;
+              return (
+                <div className="border-t border-white/[0.08] pt-3 -mx-3.5 px-3.5">
+                  <div className="flex items-start gap-2">
+                    <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-semibold text-white truncate">
+                          {parsed.entity}
+                        </span>
+                        <span
+                          className={`shrink-0 text-base font-bold tabular-nums ${oddsColorClass}`}
+                        >
+                          {pick.odds.toFixed(2)}
+                        </span>
+                      </div>
+                      {parsed.typeKey && (
+                        <div className="text-[11px] text-white/55 mt-0.5">
+                          {t(parsed.typeKey, parsed.typeParams)}
+                        </div>
+                      )}
+                      <div className="text-[11px] text-white/35 truncate mt-0.5">
+                        {matchup}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()
+          )}
 
           {/* FINANCIAL : 3 mini-stats pour les combos ET les singles
               (unification visuelle). Les singles n'ont pas de resultText
