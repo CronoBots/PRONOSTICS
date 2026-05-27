@@ -67,13 +67,24 @@ PUBLIC_BASE = "https://cronobots.github.io/PRONOSTICS"
 LOGO_BANNER_URL = f"{PUBLIC_BASE}/logo-banner.png"
 LOGO_SQUARE_URL = f"{PUBLIC_BASE}/logo-square.png"
 
-# Sport label mapping (English, no emoji)
+# Sport icons (1 emoji per sport — used as visual anchor in headers)
+SPORT_ICON = {
+    "football": "⚽",
+    "tennis": "🎾",
+    "basketball": "🏀",
+    "combo": "🎯",
+}
+
+# Sport label fallback (used when no icon needed)
 SPORT_LABEL = {
     "football": "Football",
     "tennis": "Tennis",
     "basketball": "Basketball",
     "combo": "Multi-sport parlay",
 }
+
+# Channel invite link for "Subscribe" button (user's NEXBET channel)
+CHANNEL_INVITE_URL = "https://t.me/+gOuk4FABejgwNTk0"
 
 # Footer — minimal, compliance only
 FOOTER = (
@@ -85,12 +96,17 @@ FOOTER = (
 
 
 # Inline buttons (concise, action-oriented)
+# All button sets include "🔔 Subscribe" at the bottom — pushes channel
+# discovery when messages are forwarded to non-subscribers.
 def _buttons_pick() -> dict:
     return {
         "inline_keyboard": [
             [
                 {"text": "Full analysis →", "url": f"{PUBLIC_BASE}/"},
                 {"text": "Track record →", "url": f"{PUBLIC_BASE}/paris"},
+            ],
+            [
+                {"text": "🔔 Subscribe to NEXBET", "url": CHANNEL_INVITE_URL},
             ],
         ]
     }
@@ -102,6 +118,9 @@ def _buttons_result() -> dict:
             [
                 {"text": "Today's pick →", "url": f"{PUBLIC_BASE}/today"},
                 {"text": "Bankroll →", "url": f"{PUBLIC_BASE}/stats"},
+            ],
+            [
+                {"text": "🔔 Subscribe to NEXBET", "url": CHANNEL_INVITE_URL},
             ],
         ]
     }
@@ -115,7 +134,8 @@ def _buttons_recap() -> dict:
                 {"text": "Statistics →", "url": f"{PUBLIC_BASE}/stats"},
             ],
             [
-                {"text": "Subscribe Premium →", "url": f"{PUBLIC_BASE}/premium"},
+                {"text": "Premium →", "url": f"{PUBLIC_BASE}/premium"},
+                {"text": "🔔 Subscribe", "url": CHANNEL_INVITE_URL},
             ],
         ]
     }
@@ -177,10 +197,12 @@ def send_photo(
     photo_url: str,
     caption: str,
     reply_markup: dict | None = None,
-) -> bool:
+) -> int | None:
+    """Send a photo with caption. Returns message_id on success, None on failure."""
     if len(caption) > 1024:
         print(f"Caption {len(caption)} chars > 1024 → fallback to sendMessage")
-        return send_message(caption, reply_markup)
+        ok = send_message(caption, reply_markup)
+        return None if not ok else -1  # message_id unknown for fallback
     payload = {
         "chat_id": CHANNEL_ID,
         "photo": photo_url,
@@ -191,8 +213,37 @@ def send_photo(
         payload["reply_markup"] = reply_markup
     data = _api_post("sendPhoto", payload)
     if data:
-        print(f"Photo sent (id={data.get('result', {}).get('message_id')})")
+        message_id = data.get("result", {}).get("message_id")
+        print(f"Photo sent (id={message_id})")
+        return message_id
+    return None
+
+
+def unpin_all_messages() -> bool:
+    """Unpin all messages in the channel (used before pinning new pick)."""
+    data = _api_post("unpinAllChatMessages", {"chat_id": CHANNEL_ID})
+    if data:
+        print("Previous pins cleared")
         return True
+    return False
+
+
+def pin_message(message_id: int, disable_notification: bool = True) -> bool:
+    """Pin a message in the channel. Requires bot admin 'Pin Messages' perm."""
+    if message_id < 0:  # fallback case (sendMessage instead of sendPhoto)
+        return False
+    payload = {
+        "chat_id": CHANNEL_ID,
+        "message_id": message_id,
+        "disable_notification": disable_notification,
+    }
+    data = _api_post("pinChatMessage", payload)
+    if data:
+        print(f"Message pinned (id={message_id})")
+        return True
+    # Pin failure is non-blocking : the message was sent successfully,
+    # only the pin permission is missing. User can grant it later.
+    print("Pin failed (likely missing 'Pin Messages' admin permission)")
     return False
 
 
@@ -253,6 +304,13 @@ def find_pick(date_iso: str) -> dict | None:
         if p.get("date") == date_iso:
             return translate_pick(p)
     return None
+
+
+def _team_with_country(team: str, country_code: str) -> str:
+    """'Bautista Agut' + 'ESP' → 'Bautista Agut (ESP)'."""
+    if not country_code:
+        return team
+    return f"{team} ({country_code})"
 
 
 def aligned_data(rows: list[tuple[str, str]]) -> str:
@@ -320,9 +378,12 @@ def format_test() -> str:
 
 
 def format_pick_simple(pick: dict) -> str:
-    sport = SPORT_LABEL.get(pick["sport"], pick["sport"].title())
+    icon = SPORT_ICON.get(pick["sport"], "")
     potential = pick["stake"] * (pick["odds"] - 1)
     total_return = pick["stake"] * pick["odds"]
+
+    home_display = _team_with_country(pick["home_team"], pick.get("home_country", ""))
+    away_display = _team_with_country(pick["away_team"], pick.get("away_country", ""))
 
     # Pricing data — Pinnacle-style with fair value + edge
     data_rows = [
@@ -344,8 +405,8 @@ def format_pick_simple(pick: dict) -> str:
     msg = (
         "*BET OF THE DAY*\n"
         f"{fmt_date_long(pick['date'])} · {fmt_time_cet(pick.get('kickoff', ''))}\n\n"
-        f"{sport} · {pick['league']}\n"
-        f"*{pick['home_team']}* vs *{pick['away_team']}*\n\n"
+        f"{icon} {pick['league']}\n"
+        f"*{home_display}* vs *{away_display}*\n\n"
         f"*SELECTION*\n"
         f"{pick['pick']}\n\n"
         f"*PRICING*\n"
@@ -367,19 +428,30 @@ def format_pick_combo(pick: dict) -> str:
     potential = pick["stake"] * (pick["odds"] - 1)
     total_return = pick["stake"] * pick["odds"]
 
+    # All legs same sport? show one icon. Mixed sports = combo icon.
+    leg_sports = {leg.get("sport") for leg in legs}
+    if len(leg_sports) == 1:
+        icon = SPORT_ICON.get(next(iter(leg_sports)), SPORT_ICON["combo"])
+    else:
+        icon = SPORT_ICON["combo"]
+
     msg = (
         f"*BET OF THE DAY · {len(legs)}-leg parlay*\n"
         f"{fmt_date_long(pick['date'])}\n\n"
-        f"{pick['league']}\n\n"
+        f"{icon} {pick['league']}\n\n"
         "*SELECTIONS*\n"
     )
 
-    # Aligned legs : "1. Pick name  @ 1.28"
+    # Aligned legs : "1. Pick name (NAT)        1.28"
     leg_rows = []
     for i, leg in enumerate(legs, 1):
         leg_pick = leg["pick"]
-        if len(leg_pick) > 32:
-            leg_pick = leg_pick[:30] + "…"
+        # Add country code suffix if available (e.g., "Naomi Osaka to win (JPN)")
+        away_country = leg.get("away_country", "")
+        if away_country:
+            leg_pick = f"{leg_pick} ({away_country})"
+        if len(leg_pick) > 36:
+            leg_pick = leg_pick[:34] + "…"
         leg_rows.append((f"{i}. {leg_pick}", f"{leg['odds']:.2f}"))
     msg += aligned_data(leg_rows) + "\n"
 
@@ -536,7 +608,7 @@ def publish_test(dry_run: bool = False) -> bool:
         print(msg)
         print("=" * 60)
         return True
-    return send_photo(LOGO_SQUARE_URL, msg)
+    return send_photo(LOGO_SQUARE_URL, msg) is not None
 
 
 def publish_pick(pick: dict, dry_run: bool = False) -> bool:
@@ -546,9 +618,20 @@ def publish_pick(pick: dict, dry_run: bool = False) -> bool:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 2 inline buttons]")
+        print("\n[+ logo banner + 3 inline buttons + auto-pin]")
         return True
-    return send_photo(LOGO_BANNER_URL, msg, _buttons_pick())
+
+    # Clear previous pinned messages so only the latest pick stays pinned
+    unpin_all_messages()
+
+    message_id = send_photo(LOGO_BANNER_URL, msg, _buttons_pick())
+    if message_id is None:
+        return False
+
+    # Pin the new pick at the top of the channel (silent — no notification spam)
+    if message_id > 0:
+        pin_message(message_id, disable_notification=True)
+    return True
 
 
 def publish_result(pick: dict, dry_run: bool = False) -> bool:
@@ -557,9 +640,9 @@ def publish_result(pick: dict, dry_run: bool = False) -> bool:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 2 inline buttons]")
+        print("\n[+ logo banner + 3 inline buttons]")
         return True
-    return send_photo(LOGO_BANNER_URL, msg, _buttons_result())
+    return send_photo(LOGO_BANNER_URL, msg, _buttons_result()) is not None
 
 
 def publish_recap(dry_run: bool = False) -> bool:
@@ -568,11 +651,11 @@ def publish_recap(dry_run: bool = False) -> bool:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 3 inline buttons + 1 engagement poll]")
+        print("\n[+ logo banner + 4 inline buttons + 1 engagement poll]")
         return True
 
-    ok = send_photo(LOGO_BANNER_URL, msg, _buttons_recap())
-    if not ok:
+    message_id = send_photo(LOGO_BANNER_URL, msg, _buttons_recap())
+    if message_id is None:
         return False
 
     # Single engagement poll on recap only (not on every pick — too pushy)

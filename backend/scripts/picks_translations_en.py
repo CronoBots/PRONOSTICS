@@ -33,6 +33,8 @@ TRANSLATIONS: dict[str, dict] = {
     # J2 — May 19, 2026 — ATP Geneva R1
     "2026-05-19": {
         "league": "ATP 250 Geneva — First round",
+        "home_country": "ESP",
+        "away_country": "FRA",
         "pick": "Bautista Agut to win in exactly 2 sets",
         "headline": (
             "Bautista 7-3 over the last 10, 5 wins on clay, 4 of them in "
@@ -72,6 +74,8 @@ TRANSLATIONS: dict[str, dict] = {
     # J5 — May 22, 2026 — WTA Rabat QF
     "2026-05-22": {
         "league": "WTA 250 Rabat — Quarter-final",
+        "home_country": "ITA",
+        "away_country": "CZE",
         "pick": "Paolini to win + Under 21.5 total games",
         "headline": (
             "Paolini 8-2 over the last 10 (Rome WTA 1000 finalist). "
@@ -99,6 +103,8 @@ TRANSLATIONS: dict[str, dict] = {
     # J7 — May 24, 2026 — Roland Garros R1
     "2026-05-24": {
         "league": "Roland Garros — First round",
+        "home_country": "ARG",
+        "away_country": "ITA",
         "pick": "Báez to win in exactly 4 sets",
         "headline": (
             "Báez is a clay specialist (4 career titles, all on clay, "
@@ -113,6 +119,8 @@ TRANSLATIONS: dict[str, dict] = {
     # J8 — May 25, 2026 — Roland Garros R1 (LOSS)
     "2026-05-25": {
         "league": "Roland Garros — First round",
+        "home_country": "POL",
+        "away_country": "AUS",
         "pick": "Swiatek to win + Under 14.5 total games",
         "headline": (
             "4-time RG champion vs 18-year-old Jones playing her first "
@@ -140,18 +148,24 @@ TRANSLATIONS: dict[str, dict] = {
         "legs": [
             {
                 "pick": "Naomi Osaka to win",
+                "home_country": "GER",
+                "away_country": "JPN",
                 "score_text": "Osaka def. Siegemund 6-2 6-4",
                 "summary": "Osaka controls, win in 2 sets.",
                 "bet_outcome": "Leg won: Osaka victorious.",
             },
             {
                 "pick": "Luciano Darderi to win",
+                "home_country": "AUT",
+                "away_country": "ITA",
                 "score_text": "Darderi def. Ofner 6-4 6-3 6-2",
                 "summary": "Darderi solid in 3 sets, dominant clay-courter.",
                 "bet_outcome": "Leg won: Darderi victorious in 3 sets.",
             },
             {
                 "pick": "Juan Manuel Cerundolo to win",
+                "home_country": "GBR",
+                "away_country": "ARG",
                 "score_text": "Cerundolo def. Fearnley 6-3 6-2 6-4",
                 "summary": "Cerundolo, Argentinian clay specialist, dominates. Fearnley outclassed on clay.",
                 "bet_outcome": "Leg won: Cerundolo victorious.",
@@ -177,7 +191,7 @@ def translate_pick(pick: dict) -> dict:
         return pick  # No translation available, return as-is
 
     out = dict(pick)  # shallow copy
-    for field in ("pick", "headline", "league"):
+    for field in ("pick", "headline", "league", "home_country", "away_country"):
         if field in tr:
             out[field] = tr[field]
 
@@ -193,8 +207,9 @@ def translate_pick(pick: dict) -> dict:
         out["legs"] = []
         for orig_leg, tr_leg in zip(pick["legs"], tr["legs"]):
             new_leg = dict(orig_leg)
-            if "pick" in tr_leg:
-                new_leg["pick"] = tr_leg["pick"]
+            for field in ("pick", "home_country", "away_country"):
+                if field in tr_leg:
+                    new_leg[field] = tr_leg[field]
             if orig_leg.get("result"):
                 new_leg["result"] = dict(orig_leg["result"])
                 for field in ("score_text", "summary", "bet_outcome"):
