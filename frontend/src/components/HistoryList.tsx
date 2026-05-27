@@ -147,7 +147,18 @@ function ProfitChip({
   );
 }
 
-function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
+function BetRow({
+  pick,
+  onClick,
+  asDiv = false,
+}: {
+  pick: HistoryPick;
+  onClick: () => void;
+  /** If true, render content as a div without any button/click behaviour.
+   *  The parent (typically DayCard) is then responsible for handling
+   *  the click on the whole card area. */
+  asDiv?: boolean;
+}) {
   const { t, lang } = useI18n();
   const { user } = useAuth();
   const router = useRouter();
@@ -274,13 +285,13 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
     return null;
   })();
 
-  return (
-    <button
-      onClick={() => (isLocked ? router.push("/premium") : onClick())}
-      className={`w-full block text-left transition-transform duration-100 ease-out active:scale-[0.99] hover:bg-white/[0.02] ${
-        isCombo ? "" : `border-l-2 ${borderLeftClass} rounded-r-md`
-      }`}
-    >
+  const wrapperClass = `w-full block text-left ${
+    isCombo ? "" : `border-l-2 ${borderLeftClass} rounded-r-md`
+  } ${asDiv ? "" : "transition-transform duration-100 ease-out active:scale-[0.99] hover:bg-white/[0.02]"}`;
+  const handleClick = () => (isLocked ? router.push("/premium") : onClick());
+
+  const body = (
+    <>
       {isLocked ? (
         <div className="relative">
           {/* HEADER : icone cadenas + sport + nb jambes + Premium pill */}
@@ -345,26 +356,34 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           </div>
 
           {/* MATCH + heure inline (subtle) */}
-          {!isCombo && (
-            <div className="text-xs text-white/55 truncate">
-              {pick.match.home_team} vs {pick.match.away_team}
-              {timeLabel && <span className="text-white/45"> · {timeLabel}</span>}
-            </div>
-          )}
-          {isCombo && timeLabel && (
+          {timeLabel && (
             <div className="text-xs text-white/55">{timeLabel}</div>
           )}
 
-          {/* DIVIDER (omis pour combos — les bandes des legs ont leur propre top border full-bleed) */}
-          {!isCombo && <div className="border-t border-white/[0.08] my-2" />}
-          {isCombo && <div className="h-2" />}
+          {/* SPACER avant la liste des paris */}
+          <div className="h-2" />
 
-          {/* BET (hero) : pari à gauche, cote à droite */}
-          {isCombo ? (
-            <div className="-mx-3.5 border-t border-white/[0.08]">
-              {pick.legs!.map((leg, i) => (
-                <ComboLegMini key={i} leg={leg} index={i + 1} />
-              ))}
+          {/* CORPS : 1 LegRow pour un single, N LegRow pour un combo,
+              + ligne Cote totale uniquement pour les combos. Layout
+              unifié grâce à la component LegRow réutilisable. */}
+          <div className="-mx-3.5 border-t border-white/[0.08]">
+            {isCombo ? (
+              pick.legs!.map((leg, i) => (
+                <LegRow key={i} leg={leg as LegRowData} index={i + 1} />
+              ))
+            ) : (
+              <LegRow
+                leg={{
+                  pick: pick.pick,
+                  odds: pick.odds,
+                  sport: pick.match.sport,
+                  home_team: pick.match.home_team,
+                  away_team: pick.match.away_team,
+                  outcome: pick.outcome,
+                }}
+              />
+            )}
+            {isCombo && (
               <div className="border-t border-white/15">
                 <div className="flex items-center justify-between gap-2 mx-3.5 py-3">
                   <span className="text-base font-bold text-white">
@@ -375,40 +394,19 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                   </span>
                 </div>
               </div>
-            </div>
-          ) : (
-            (() => {
-              const parsed = parsePickLabel(pick.pick);
-              return (
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-bold text-white truncate min-w-0">
-                      {parsed.entity}
-                    </span>
-                    <span
-                      className={`text-base font-bold tabular-nums whitespace-nowrap ${oddsColorClass}`}
-                    >
-                      {pick.odds.toFixed(2)}
-                    </span>
-                  </div>
-                  {parsed.typeKey && (
-                    <div className="text-[11px] text-white/55 mt-0.5">
-                      {t(parsed.typeKey, parsed.typeParams)}
-                    </div>
-                  )}
-                </div>
-              );
-            })()
-          )}
+            )}
+          </div>
 
-          {/* FINANCIAL — 3 mini-stats pour les combos, ligne inline pour single */}
-          {isCombo && stake > 0 ? (
+          {/* FINANCIAL : 3 mini-stats pour les combos ET les singles
+              (unification visuelle). Les singles n'ont pas de resultText
+              "X/Y jambes" donc la pill du bas est omise pour eux. */}
+          {stake > 0 ? (
             <FinancialStatsGrid
               stake={stake}
               odds={pick.odds}
               actualGain={actualGain}
               outcome={pick.outcome}
-              resultText={resultText}
+              resultText={isCombo ? resultText : null}
             />
           ) : (
             financialLine && (
@@ -435,6 +433,14 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
           )}
         </div>
       )}
+    </>
+  );
+
+  return asDiv ? (
+    <div className={wrapperClass}>{body}</div>
+  ) : (
+    <button onClick={handleClick} className={wrapperClass}>
+      {body}
     </button>
   );
 }
@@ -570,7 +576,19 @@ function FinancialStat({
   );
 }
 
-function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; index: number }) {
+interface LegRowData {
+  pick: string;
+  odds: number;
+  sport: string;
+  home_team: string;
+  away_team: string;
+  outcome: "win" | "loss" | "void" | "pending";
+}
+
+/** Render a single bet row with the Unibet-style colored bar on the
+ *  left. Used both for combo legs (with a number) and for single bets
+ *  (no number, solid bar). */
+function LegRow({ leg, index }: { leg: LegRowData; index?: number }) {
   const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
   const isWin = leg.outcome === "win";
   const isLoss = leg.outcome === "loss";
@@ -588,8 +606,6 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
 
-  // Bloc statut coloré (style Unibet) : vert/rouge/bleu/jaune selon outcome
-  // de la jambe individuelle, indépendant du combo global.
   const statusBg = isWin
     ? "bg-accent-green"
     : isLoss
@@ -601,14 +617,15 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
 
   return (
     <div className="flex items-stretch border-t border-white/15 first:border-t-0">
-      {/* Bande verticale pleine hauteur, flush bord gauche, couleur = statut leg */}
       <div
         className={`shrink-0 w-9 flex items-center justify-center ${statusBg}`}
-        aria-label={`Jambe ${index} — ${leg.outcome}`}
+        aria-label={index ? `Jambe ${index} — ${leg.outcome}` : leg.outcome}
       >
-        <span className={`text-base font-extrabold tabular-nums ${statusFg}`}>
-          {index}
-        </span>
+        {index !== undefined && (
+          <span className={`text-base font-extrabold tabular-nums ${statusFg}`}>
+            {index}
+          </span>
+        )}
       </div>
       <div className="flex-1 min-w-0 flex items-start gap-2 py-2.5 pl-3 pr-3.5">
         <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
@@ -632,18 +649,49 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
 }
 
 function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: HistoryPick) => void }) {
-  return (
-    <div className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
-        <div className="font-semibold">
-          <span className="capitalize">{day.dayName}</span> {day.dayNum}{" "}
-          <span className="text-white/40 font-normal">{day.monthName}</span>
-        </div>
-        <ProfitChip profit={day.profit} pending={day.allPending} />
+  const router = useRouter();
+  const { user } = useAuth();
+  const isPremium = !!user?.isPremium;
+  const handlePickClick = (pick: HistoryPick) => {
+    const isLocked = pick.outcome === "pending" && !isPremium;
+    if (isLocked) router.push("/premium");
+    else onPickClick(pick);
+  };
+  const cardClass =
+    "bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden text-left w-full";
+  const header = (
+    <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
+      <div className="font-semibold">
+        <span className="capitalize">{day.dayName}</span> {day.dayNum}{" "}
+        <span className="text-white/40 font-normal">{day.monthName}</span>
       </div>
+      <ProfitChip profit={day.profit} pending={day.allPending} />
+    </div>
+  );
+
+  // Cas 1 pari par jour : tout le cadre (header + body) est un seul
+  // bouton cliquable. Le BetRow interne est rendu en div pour ne pas
+  // imbriquer 2 boutons.
+  if (day.picks.length === 1) {
+    const pick = day.picks[0];
+    return (
+      <button
+        type="button"
+        onClick={() => handlePickClick(pick)}
+        className={`${cardClass} transition-transform duration-100 ease-out active:scale-[0.99] hover:border-white/15`}
+      >
+        {header}
+        <BetRow pick={pick} onClick={() => handlePickClick(pick)} asDiv />
+      </button>
+    );
+  }
+
+  return (
+    <div className={cardClass}>
+      {header}
       <div className="divide-y divide-white/[0.05]">
         {day.picks.map((p, i) => (
-          <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => onPickClick(p)} />
+          <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => handlePickClick(p)} />
         ))}
       </div>
     </div>
