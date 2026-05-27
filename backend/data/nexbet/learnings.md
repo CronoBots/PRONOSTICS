@@ -190,6 +190,34 @@ de confiance.
 **Promotion** : à blocking si n ≥ 3 erreurs H2H détectées dans les
 analyses claude/agent.
 
+### AB-9 : Pas de réutilisation d'un joueur/équipe déjà engagé sur un pari ouvert le même jour
+**Statut** : ✅ ACTIF blocking — créé 27/05/2026
+**Origine** : situation Rublev RG R2 27/05/2026. Combo J10 placé
+(Bencic + Rublev @ 1.66, 5€). En cours de match, cote Rublev LIVE
+remonte de ~1.27 à 1.73 (signal défaite probable). User tenté de
+placer un 2e combo (Bouzkova + Rublev LIVE @ 2.20, 7.61€). Une seule
+défaite de Rublev = double perte simultanée de 12.61€ (24% bankroll
+54€). Corrélation parfaite, c'est du chase loss classique.
+
+**Description** : pari B reposant sur un joueur/équipe déjà présent
+dans un pari A ouvert le même jour = **exposition corrélée** non
+diversifiée. La variance combinée n'est pas la somme arithmétique
+mais multiplie le risque sur un seul outcome.
+
+**Action** : rejet automatique de tout 2e pari du jour qui inclut un
+joueur, équipe, ou outcome déjà engagé dans un pari pending. Aucune
+exception même si le 2e pari semble propre individuellement.
+
+**Pourquoi blocking dès n=1** : math fondamentale (corrélation = 100%
+sur une jambe partagée), pas besoin de validation empirique. C'est
+une règle de **risk management**, pas d'edge.
+
+**Cas couverts** :
+- 2 paris incluant le même joueur tennis (même tournoi ou non)
+- 2 paris incluant la même équipe (championnat + coupe)
+- Combo principal + single sur un leg du combo
+- Pari LIVE en chase d'un pari pré-match qui vacille
+
 ---
 
 ## 🗑 Anti-bias SUPPRIMÉS en v4

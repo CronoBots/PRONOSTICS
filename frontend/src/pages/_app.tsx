@@ -97,7 +97,12 @@ export default function App({ Component, pageProps }: AppProps) {
                   showNav ? "pb-[calc(var(--safe-bottom)+4rem)] lg:pb-0" : ""
                 }`}
               >
-                <Component {...pageProps} />
+                {/* key={router.asPath} force le re-mount sur changement
+                    de route → l'animation page-transition rejoue à chaque
+                    navigation. Sinon l'animation ne joue qu'au 1er load. */}
+                <div key={router.asPath} className="page-transition flex-1 flex flex-col">
+                  <Component {...pageProps} />
+                </div>
               </div>
             </div>
             {showNav && <BottomNav />}

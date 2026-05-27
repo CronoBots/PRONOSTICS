@@ -145,28 +145,25 @@ a:active {
 }
 
 /* ============================================================
-   nav-pulse : animation alternative au scale-0.97 pour les boutons
-   où on ne veut pas la sensation de "disparaître" mais plutôt un
-   ripple coloré qui flash. Override l'active:scale ci-dessus.
+   nav-pulse : feedback tactile propre pour les boutons de
+   navigation (BottomNav). Squish discret + halo coloré bref,
+   pas de flash blanc qui mange l'icône.
    ============================================================ */
 .nav-pulse {
   position: relative;
-  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.22s ease-out;
+  border-radius: 12px;
 }
 .nav-pulse:active:not(:disabled),
 .nav-pulse:active {
-  transform: none;
-  animation: nav-flash 0.35s ease-out;
+  transform: scale(0.92);
+  background-color: rgba(255, 255, 255, 0.06);
 }
-@keyframes nav-flash {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4) inset;
-  }
-  60% {
-    box-shadow: 0 0 0 100px rgba(255, 255, 255, 0.0) inset;
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.0) inset;
+@media (hover: hover) {
+  .nav-pulse:hover {
+    background-color: rgba(255, 255, 255, 0.03);
   }
 }
 
@@ -287,6 +284,28 @@ a:active {
 }
 .page-fade {
   animation: pageFadeIn 0.18s ease-out;
+}
+
+/* page-transition : rejoue à chaque changement de route grâce à
+   key={router.asPath} dans _app.tsx. Fade + léger slide pour donner
+   une sensation de continuité entre les vues sans être tape-à-l'oeil. */
+@keyframes pageTransition {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-transition {
+  animation: pageTransition 0.22s cubic-bezier(0.2, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
 }
 
 @keyframes fadeIn {
