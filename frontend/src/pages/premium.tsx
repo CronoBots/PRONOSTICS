@@ -72,7 +72,7 @@ export default function PremiumPage() {
       <Head>
         <title>{`${t("pricing.title")} — NEXBET`}</title>
       </Head>
-      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 pb-32 lg:pb-10">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 pb-24 lg:pb-10">
         <div className="flex items-center gap-3 mb-4">
           <Link
             href="/"
@@ -98,7 +98,7 @@ export default function PremiumPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-xl shadow-yellow-500/20 mb-4 text-4xl">
             👑
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold mb-3 leading-tight tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-3 leading-[1.15] tracking-tight">
             {t("premium.heroPrefix")}{" "}
             <span className="bg-gradient-to-r from-accent-green to-accent-blue bg-clip-text text-transparent">
               {t("premium.heroAccent")}
@@ -135,42 +135,42 @@ export default function PremiumPage() {
 
         {/* Track record card (last 7 days) */}
         {stats && stats.total_picks >= 3 && (
-          <div className="bg-gradient-to-br from-bg-card to-bg-elevated border border-accent-green/25 rounded-3xl p-5 mb-6 shadow-xl shadow-accent-green/[0.04]">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-accent-green font-bold">
+          <div className="bg-gradient-to-br from-bg-card to-bg-elevated border border-accent-green/25 rounded-3xl p-4 sm:p-5 mb-6 shadow-xl shadow-accent-green/[0.04]">
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] uppercase tracking-wider text-accent-green font-bold leading-tight">
                   {t("premium.last7DaysTitle")}
                 </div>
                 <div className="text-[10px] text-white/40 mt-0.5">
                   {t("premium.last7DaysSubtitle")}
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent-green/10 border border-accent-green/30">
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent-green/10 border border-accent-green/30 shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse" />
-                <span className="text-[9px] uppercase tracking-wider text-accent-green font-bold">
+                <span className="text-[9px] uppercase tracking-wider text-accent-green font-bold whitespace-nowrap">
                   {t("premium.liveNow")}
                 </span>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div>
-                <div className="text-3xl font-extrabold text-accent-green tabular-nums leading-none">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 text-center">
+              <div className="min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-accent-green tabular-nums leading-none">
                   {stats.win_rate.toFixed(0)}%
                 </div>
                 <div className="text-[10px] text-white/50 mt-1.5">
                   {t("premium.successRate")}
                 </div>
               </div>
-              <div>
-                <div className="text-3xl font-extrabold text-accent-green tabular-nums leading-none">
+              <div className="min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-accent-green tabular-nums leading-none">
                   +{stats.roi_percent.toFixed(0)}%
                 </div>
                 <div className="text-[10px] text-white/50 mt-1.5">
                   {t("premium.roi")}
                 </div>
               </div>
-              <div>
-                <div className="text-3xl font-extrabold text-accent-green tabular-nums leading-none">
+              <div className="min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-accent-green tabular-nums leading-none">
                   +{stats.progression_percent.toFixed(0)}%
                 </div>
                 <div className="text-[10px] text-white/50 mt-1.5">
@@ -388,18 +388,6 @@ export default function PremiumPage() {
           <FAQ q={t("premium.faqQ4")} a={t("premium.faqA4")} />
         </div>
       </main>
-
-      {/* Sticky mobile CTA */}
-      <div className="fixed bottom-0 left-0 right-0 lg:hidden z-30 bg-gradient-to-t from-bg-base via-bg-base/95 to-transparent pt-6 pb-4 px-4">
-        <button
-          onClick={handleSubscribe}
-          disabled={checkoutLoading}
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-sm shadow-xl shadow-yellow-500/30 disabled:opacity-60"
-        >
-          {t("premium.scrollCta")} ·{" "}
-          {(selected === "yearly" ? PRICE_YEARLY : PRICE_MONTHLY).toFixed(2)}€
-        </button>
-      </div>
     </>
   );
 }
