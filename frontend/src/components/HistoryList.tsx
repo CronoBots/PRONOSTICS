@@ -337,11 +337,11 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
                 <ComboLegMini key={i} leg={leg} index={i + 1} />
               ))}
               <div className="border-t border-white/15">
-                <div className="flex items-center justify-between gap-2 mx-3.5 py-2.5">
-                  <span className="text-sm font-bold text-white">
+                <div className="flex items-center justify-between gap-2 mx-3.5 py-3">
+                  <span className="text-base font-bold text-white">
                     {t("history.totalOddsLabel")}
                   </span>
-                  <span className={`text-base font-bold tabular-nums ${oddsColorClass}`}>
+                  <span className={`text-xl font-extrabold tabular-nums ${oddsColorClass}`}>
                     {pick.odds.toFixed(2)}
                   </span>
                 </div>
@@ -501,8 +501,19 @@ function FinancialStatsGrid({
         <FinancialStat label={t("history.gain")} value={gainText} valueCls={gainCls} />
       </div>
       {resultText && (
-        <div className="text-[10px] text-white/45 text-center mt-2">
-          {resultText}
+        <div className="flex justify-center mt-3">
+          <span
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+              isWin
+                ? "bg-accent-green/15 border-accent-green/35 text-accent-green"
+                : isLoss
+                  ? "bg-accent-red/15 border-accent-red/35 text-accent-red"
+                  : "bg-white/[0.05] border-white/15 text-white/60"
+            }`}
+          >
+            <span aria-hidden>{isWin ? "✓" : isLoss ? "✕" : "•"}</span>
+            <span>{resultText}{!resultText.includes("jamb") ? " jambes" : ""}</span>
+          </span>
         </div>
       )}
     </div>
