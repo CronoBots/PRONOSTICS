@@ -299,14 +299,8 @@ function BetRow({
         </div>
       ) : (
         <div className="p-3.5 min-w-0">
-          {/* HEADER : grand titre uniforme "Pari simple" / "Pari combiné".
-              Pas de badge statut, pas de chevron. Le statut se lit via
-              la bande gauche du DayCard + les cotes/gain colorés. */}
-          <div className="text-base font-bold text-white mb-1.5">
-            {emoji} {isCombo ? t("history.combinedBet") : t("history.singleBet")}
-          </div>
-
-          {/* Sous-titre : pour single = tournoi · heure ; pour combo = heure */}
+          {/* Ligne contextuelle : tournoi + heure pour single,
+              juste l'heure pour combo (les legs ont leurs propres tournois) */}
           {!isCombo && (
             <div className="text-xs text-white/55 truncate">
               {pick.match.league || pick.match.sport}
