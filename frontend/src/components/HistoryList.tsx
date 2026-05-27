@@ -326,22 +326,25 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             <div className="text-xs text-white/55">{timeLabel}</div>
           )}
 
-          {/* DIVIDER */}
-          <div className="border-t border-white/[0.08] my-2" />
+          {/* DIVIDER (omis pour combos — les bandes des legs ont leur propre top border full-bleed) */}
+          {!isCombo && <div className="border-t border-white/[0.08] my-2" />}
+          {isCombo && <div className="h-2" />}
 
           {/* BET (hero) : pari à gauche, cote à droite */}
           {isCombo ? (
-            <div className="-mx-3.5">
+            <div className="-mx-3.5 border-t border-white/[0.08]">
               {pick.legs!.map((leg, i) => (
                 <ComboLegMini key={i} leg={leg} index={i + 1} />
               ))}
-              <div className="flex items-center justify-between gap-2 pt-2.5 mt-2 mx-3.5 border-t border-white/15">
-                <span className="text-sm font-bold text-white">
-                  {t("history.totalOddsLabel")}
-                </span>
-                <span className={`text-base font-bold tabular-nums ${oddsColorClass}`}>
-                  {pick.odds.toFixed(2)}
-                </span>
+              <div className="border-t border-white/15">
+                <div className="flex items-center justify-between gap-2 mx-3.5 py-2.5">
+                  <span className="text-sm font-bold text-white">
+                    {t("history.totalOddsLabel")}
+                  </span>
+                  <span className={`text-base font-bold tabular-nums ${oddsColorClass}`}>
+                    {pick.odds.toFixed(2)}
+                  </span>
+                </div>
               </div>
             </div>
           ) : (
@@ -574,7 +577,7 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
     <div className="flex items-stretch border-t border-white/15 first:border-t-0">
       {/* Bande verticale pleine hauteur, flush bord gauche, couleur = statut leg */}
       <div
-        className={`shrink-0 w-10 flex items-center justify-center ${statusBg}`}
+        className={`shrink-0 w-9 flex items-center justify-center ${statusBg}`}
         aria-label={`Jambe ${index} — ${leg.outcome}`}
       >
         <span className={`text-base font-extrabold tabular-nums ${statusFg}`}>
