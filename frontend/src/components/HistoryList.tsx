@@ -171,33 +171,6 @@ function BetRow({
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
 
-  // Badge status texte (style Unibet "Gagné" / "Perdu" en couleur)
-  const statusBadge = (() => {
-    if (isWin)
-      return {
-        cls: "text-accent-green",
-        icon: "✓",
-        label: t("history.outcomeWin"),
-      };
-    if (isLoss)
-      return {
-        cls: "text-accent-red",
-        icon: "✕",
-        label: t("history.outcomeLoss"),
-      };
-    if (isVoid)
-      return {
-        cls: "text-accent-blue",
-        icon: "○",
-        label: t("history.outcomeVoid"),
-      };
-    return {
-      cls: "text-yellow-300",
-      icon: "⏳",
-      label: t("history.outcomePending"),
-    };
-  })();
-
   // Couleur de la cote inline
   const oddsColorClass = isWin
     ? "text-accent-green"
@@ -326,26 +299,11 @@ function BetRow({
         </div>
       ) : (
         <div className="p-3.5 min-w-0">
-          {/* HEADER : label uniformisé ("Pari simple" / "Combiné X jambes")
-              + status + chevron. La ligne sous-titre porte le contexte
-              spécifique (tournoi + heure pour single, juste heure pour combo). */}
-          <div className="flex items-start gap-2 mb-1.5">
-            <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
-              {emoji}{" "}
-              {isCombo
-                ? t("history.combinedLegs", { n: pick.legs!.length })
-                : t("history.singleBet")}
-            </div>
-            <span
-              className={`shrink-0 text-xs font-bold tracking-wide whitespace-nowrap flex items-center gap-1 ${statusBadge.cls}`}
-              aria-label={statusBadge.label}
-            >
-              <span className="text-sm leading-none">{statusBadge.icon}</span>
-              <span>{statusBadge.label}</span>
-            </span>
-            <span className="shrink-0 text-white/30 text-base leading-none mt-0.5" aria-hidden>
-              ›
-            </span>
+          {/* HEADER : grand titre uniforme "Pari simple" / "Pari combiné".
+              Pas de badge statut, pas de chevron. Le statut se lit via
+              la bande gauche du DayCard + les cotes/gain colorés. */}
+          <div className="text-base font-bold text-white mb-1.5">
+            {emoji} {isCombo ? t("history.combinedBet") : t("history.singleBet")}
           </div>
 
           {/* Sous-titre : pour single = tournoi · heure ; pour combo = heure */}
