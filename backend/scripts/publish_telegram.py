@@ -27,6 +27,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib import request as urlrequest
 from urllib.error import HTTPError, URLError
+from urllib.parse import quote_plus
 
 
 # =============================================================================
@@ -325,6 +326,90 @@ def aligned_data(rows: list[tuple[str, str]]) -> str:
     return "```\n" + "\n".join(lines) + "\n```"
 
 
+def bankroll_chart_url(days: int = 30) -> str:
+    """Generate a QuickChart.io URL with the bankroll evolution.
+
+    Returns a permanent image URL that Telegram can fetch and embed.
+    Uses NEXBET green color, dark theme background.
+    """
+    starting = 5.0
+    sorted_picks = sorted(
+        (p for p in picks_data.PICKS if p.get("outcome") in {"win", "loss"}),
+        key=lambda p: p["date"],
+    )
+    labels = ["Start"]
+    values = [starting]
+    running = starting
+    for p in sorted_picks:
+        if p["outcome"] == "win":
+            running += p["stake"] * (p["odds"] - 1)
+        elif p["outcome"] == "loss":
+            running -= p["stake"]
+        labels.append(datetime.strptime(p["date"], "%Y-%m-%d").strftime("%b %d"))
+        values.append(round(running, 2))
+
+    # Tail the last N points if too many (chart readability)
+    if len(labels) > days + 1:
+        labels = labels[-(days + 1):]
+        values = values[-(days + 1):]
+
+    final = values[-1] if values else starting
+    positive = final >= starting
+    color = "#10d9a3" if positive else "#ff4d6d"
+    bg_color = "rgba(16,217,163,0.15)" if positive else "rgba(255,77,109,0.15)"
+
+    config = {
+        "type": "line",
+        "data": {
+            "labels": labels,
+            "datasets": [{
+                "label": "Bankroll",
+                "data": values,
+                "borderColor": color,
+                "backgroundColor": bg_color,
+                "fill": True,
+                "tension": 0.35,
+                "pointRadius": 3,
+                "pointBackgroundColor": color,
+            }],
+        },
+        "options": {
+            "plugins": {
+                "legend": {"display": False},
+                "title": {
+                    "display": True,
+                    "text": f"NEXBET — Bankroll evolution ({starting:.0f} → {final:.2f} EUR)",
+                    "color": "#ffffff",
+                    "font": {"size": 16, "weight": "bold"},
+                },
+            },
+            "scales": {
+                "x": {
+                    "ticks": {"color": "#ffffff"},
+                    "grid": {"color": "rgba(255,255,255,0.1)"},
+                },
+                "y": {
+                    "ticks": {"color": "#ffffff", "callback": "function(v){return v+' EUR'}"},
+                    "grid": {"color": "rgba(255,255,255,0.1)"},
+                },
+            },
+        },
+    }
+
+    encoded = quote_plus(json.dumps(config, separators=(",", ":")))
+    # bkg = dark background, w/h = dimensions
+    return f"https://quickchart.io/chart?bkg=%23121420&w=800&h=400&c={encoded}"
+
+
+# Colored status dots — used in result messages for instant visual signal
+STATUS_DOT = {
+    "win": "🟢",
+    "loss": "🔴",
+    "void": "🔵",
+    "pending": "🟡",
+}
+
+
 # =============================================================================
 # Track record helper (used as footer in picks/results)
 # =============================================================================
@@ -485,19 +570,19 @@ def format_pick_combo(pick: dict) -> str:
 
 
 def format_result(pick: dict) -> str:
-    is_win = pick.get("outcome") == "win"
-    is_loss = pick.get("outcome") == "loss"
-    is_void = pick.get("outcome") == "void"
+    outcome = pick.get("outcome") or "pending"
+    dot = STATUS_DOT.get(outcome, "🟡")
+    icon = SPORT_ICON.get(pick["sport"], "")
 
-    if is_win:
+    if outcome == "win":
         status = "WON"
         profit_value = pick.get("profit") or (pick["stake"] * (pick["odds"] - 1))
         profit_str = f"+{profit_value:.2f} EUR"
-    elif is_loss:
+    elif outcome == "loss":
         status = "LOST"
         profit_value = pick.get("profit") or -pick["stake"]
         profit_str = f"{profit_value:.2f} EUR"
-    elif is_void:
+    elif outcome == "void":
         status = "VOIDED"
         profit_str = "Stake refunded"
     else:
@@ -505,24 +590,26 @@ def format_result(pick: dict) -> str:
         profit_str = "—"
 
     msg = (
-        "*RESULT*\n"
-        f"{fmt_date_long(pick['date'])}\n\n"
-        f"{pick['pick']}\n"
-        f"Odds {pick['odds']:.2f} · Stake {pick['stake']:.2f} EUR\n\n"
-        f"*{status}* — {profit_str}\n"
+        f"{dot} *RESULT — {status}*\n"
+        f"{fmt_date_long(pick['date'])}\n"
+        "\n"
+        f"{icon} {pick['pick']}\n"
+        f"Odds {pick['odds']:.2f} · Stake {pick['stake']:.2f} EUR\n"
+        "\n"
+        f"*Net P/L*  {dot} *{profit_str}*\n"
     )
 
     result = pick.get("result", {}) or {}
     score_text = result.get("score_text", "").strip()
     summary = result.get("summary", "").strip()
     if score_text:
-        msg += f"\n_{score_text}_\n"
+        msg += f"\n*Final score*\n_{score_text}_\n"
     if summary:
-        msg += f"{summary}\n"
+        msg += f"\n_{summary}_\n"
 
     tr = compute_track_record(7)
     if tr:
-        msg += f"\n{tr}\n"
+        msg += "\n" + tr + "\n"
 
     msg += "\n" + FOOTER
     return msg
@@ -554,6 +641,7 @@ def format_recap_weekly() -> str:
     win_rate = (wins / settled * 100) if settled else 0
     roi = (total_profit / total_staked * 100) if total_staked else 0
     profit_sign = "+" if total_profit >= 0 else ""
+    profit_dot = "🟢" if total_profit >= 0 else "🔴"
 
     # Find best and worst picks
     won_picks = [p for p in recent if p.get("outcome") == "win"]
@@ -566,8 +654,8 @@ def format_recap_weekly() -> str:
 
     data_rows = [
         ("Bets settled", str(settled)),
-        ("Wins", str(wins)),
-        ("Losses", str(losses)),
+        ("Wins", f"{wins}  🟢"),
+        ("Losses", f"{losses}  🔴"),
         ("Win rate", f"{win_rate:.1f}%"),
         ("Total staked", f"{total_staked:.2f} EUR"),
         ("Net profit", f"{profit_sign}{total_profit:.2f} EUR"),
@@ -575,8 +663,9 @@ def format_recap_weekly() -> str:
     ]
 
     msg = (
-        "*WEEKLY REPORT*\n"
-        f"{fmt_date_short(week_ago.isoformat())} — {fmt_date_short(today.isoformat())}\n\n"
+        f"{profit_dot} *WEEKLY REPORT*\n"
+        f"{fmt_date_short(week_ago.isoformat())} — {fmt_date_short(today.isoformat())}\n"
+        "\n"
         f"{aligned_data(data_rows)}\n"
     )
 
@@ -584,13 +673,16 @@ def format_recap_weekly() -> str:
         best_tr = translate_pick(best_pick)
         best_profit = best_pick.get("profit") or (best_pick["stake"] * (best_pick["odds"] - 1))
         msg += (
-            f"\n*Best pick:* {best_tr['pick']} @ {best_pick['odds']:.2f}"
-            f" (+{best_profit:.2f} EUR)\n"
+            f"\n🟢 *Best pick*\n"
+            f"_{best_tr['pick']}_ @ {best_pick['odds']:.2f}  →  +{best_profit:.2f} EUR\n"
         )
 
     if lost_picks:
         worst_tr = translate_pick(lost_picks[0])
-        msg += f"*Worst day:* {worst_tr['pick']} @ {lost_picks[0]['odds']:.2f}\n"
+        msg += (
+            f"\n🔴 *Worst day*\n"
+            f"_{worst_tr['pick']}_ @ {lost_picks[0]['odds']:.2f}  →  −{lost_picks[0]['stake']:.2f} EUR\n"
+        )
 
     msg += "\n" + FOOTER
     return msg
@@ -647,14 +739,17 @@ def publish_result(pick: dict, dry_run: bool = False) -> bool:
 
 def publish_recap(dry_run: bool = False) -> bool:
     msg = format_recap_weekly()
+    chart_url = bankroll_chart_url(days=30)
     if dry_run:
         print("=" * 60)
         print(msg)
         print("=" * 60)
-        print("\n[+ logo banner + 4 inline buttons + 1 engagement poll]")
+        print(f"\n[+ bankroll chart : {chart_url[:80]}…]")
+        print("[+ 4 inline buttons + 1 engagement poll]")
         return True
 
-    message_id = send_photo(LOGO_BANNER_URL, msg, _buttons_recap())
+    # Chart bankroll en image — plus engageant que le logo pour un recap
+    message_id = send_photo(chart_url, msg, _buttons_recap())
     if message_id is None:
         return False
 
