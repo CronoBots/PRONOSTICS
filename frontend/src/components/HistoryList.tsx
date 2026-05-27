@@ -23,6 +23,7 @@ interface DayBucket {
   date: string;
   dayName: string;
   dayNum: number;
+  monthName: string;
   profit: number;
   allPending: boolean;
   picks: HistoryPick[];
@@ -59,6 +60,7 @@ function groupHierarchical(
     const weekNum = getISOWeek(d);
     const dayName = dayNames[d.getUTCDay()];
     const dayNum = d.getUTCDate();
+    const monthName = monthNames[d.getUTCMonth()];
 
     const settled = p.outcome === "win" || p.outcome === "loss";
     const profit = settled ? p.profit : 0;
@@ -79,7 +81,7 @@ function groupHierarchical(
 
     let day = w.days.find((x) => x.date === p.date);
     if (!day) {
-      day = { date: p.date, dayName, dayNum, profit: 0, allPending: true, picks: [] };
+      day = { date: p.date, dayName, dayNum, monthName, profit: 0, allPending: true, picks: [] };
       w.days.push(day);
     }
     day.profit += profit;
@@ -291,7 +293,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         </div>
       ) : (
         <div className="p-3.5 min-w-0">
-          {/* HEADER : emoji + tournoi (toute la largeur) + status texte */}
+          {/* HEADER : emoji + tournoi (toute la largeur) + status texte + chevron */}
           <div className="flex items-start gap-2 mb-1.5">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
               {emoji}{" "}
@@ -305,6 +307,9 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             >
               <span className="text-sm leading-none">{statusBadge.icon}</span>
               <span>{statusBadge.label}</span>
+            </span>
+            <span className="shrink-0 text-white/30 text-base leading-none mt-0.5" aria-hidden>
+              ›
             </span>
           </div>
 
@@ -348,17 +353,27 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
             </div>
           )}
 
-          {/* FINANCIAL + RESULT inline */}
-          {financialLine && (
-            <div className={`text-xs font-semibold tabular-nums mt-1.5 ${financialLine.cls}`}>
-              {financialLine.text}
-              {resultText && (
-                <span className="text-white/45 font-normal">
-                  {" · "}
-                  {resultText}
-                </span>
-              )}
-            </div>
+          {/* FINANCIAL — 3 mini-stats pour les combos, ligne inline pour single */}
+          {isCombo && stake > 0 ? (
+            <FinancialStatsGrid
+              stake={stake}
+              odds={pick.odds}
+              actualGain={actualGain}
+              outcome={pick.outcome}
+              resultText={resultText}
+            />
+          ) : (
+            financialLine && (
+              <div className={`text-xs font-semibold tabular-nums mt-1.5 ${financialLine.cls}`}>
+                {financialLine.text}
+                {resultText && (
+                  <span className="text-white/45 font-normal">
+                    {" · "}
+                    {resultText}
+                  </span>
+                )}
+              </div>
+            )
           )}
 
           {isCombo && pick.odds_unboosted && (
@@ -373,6 +388,103 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
         </div>
       )}
     </button>
+  );
+}
+
+/** Strip filler suffixes like "vainqueur du match" / "to win match" /
+ *  "to win" from a pick label so the line stays compact. The picked
+ *  player or team is what remains. Returns the original string if no
+ *  recognised suffix is found. */
+function stripWinSuffix(pick: string): string {
+  return pick
+    .replace(/\s+(vainqueur du match|vainqueur|gagne|gagnant)\s*$/i, "")
+    .replace(/\s+(to win match|to win|wins match|wins)\s*$/i, "")
+    .trim();
+}
+
+/** Identify the opponent (not picked) of a leg, based on substring
+ *  match of the picked side in home/away. Falls back to the away team
+ *  if no clear match. */
+function getOpponent(pick: string, home: string, away: string): string {
+  const p = pick.toLowerCase();
+  if (home && p.includes(home.toLowerCase().split(" ").pop() || home.toLowerCase())) {
+    return away;
+  }
+  if (away && p.includes(away.toLowerCase().split(" ").pop() || away.toLowerCase())) {
+    return home;
+  }
+  return away || home || "";
+}
+
+function FinancialStatsGrid({
+  stake,
+  odds,
+  actualGain,
+  outcome,
+  resultText,
+}: {
+  stake: number;
+  odds: number;
+  actualGain: number;
+  outcome: HistoryPick["outcome"];
+  resultText: string | null;
+}) {
+  const { t } = useI18n();
+  const totalReturn = stake * odds;
+  const isPending = outcome === "pending";
+  const isWin = outcome === "win";
+  const isLoss = outcome === "loss";
+
+  const gainText = isPending
+    ? `+${(totalReturn - stake).toFixed(2)} €`
+    : isWin
+      ? `+${actualGain.toFixed(2)} €`
+      : isLoss
+        ? `${actualGain.toFixed(2)} €`
+        : `±${(0).toFixed(2)} €`;
+  const gainCls = isPending
+    ? "text-yellow-300"
+    : isWin
+      ? "text-accent-green"
+      : isLoss
+        ? "text-accent-red"
+        : "text-white/60";
+  const returnText = isLoss ? `0.00 €` : `${totalReturn.toFixed(2)} €`;
+
+  return (
+    <div className="mt-3 pt-3 border-t border-white/[0.06]">
+      <div className="grid grid-cols-3 gap-2">
+        <FinancialStat label={t("history.stake")} value={`${stake.toFixed(2)} €`} />
+        <FinancialStat label={t("history.return")} value={returnText} />
+        <FinancialStat label={t("history.gain")} value={gainText} valueCls={gainCls} />
+      </div>
+      {resultText && (
+        <div className="text-[10px] text-white/45 text-center mt-2">
+          {resultText}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FinancialStat({
+  label,
+  value,
+  valueCls,
+}: {
+  label: string;
+  value: string;
+  valueCls?: string;
+}) {
+  return (
+    <div className="text-center">
+      <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold">
+        {label}
+      </div>
+      <div className={`text-sm font-bold tabular-nums mt-0.5 ${valueCls ?? "text-white"}`}>
+        {value}
+      </div>
+    </div>
   );
 }
 
@@ -404,29 +516,28 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
         ? "text-accent-blue"
         : "text-yellow-300";
 
+  const compactPick = stripWinSuffix(leg.pick);
+  const opponent = getOpponent(leg.pick, leg.home_team, leg.away_team);
+
   return (
-    <div className="flex items-start gap-2.5 py-1.5 border-t border-white/[0.06] first:border-t-0">
-      {/* Numéro de jambe (style Unibet 1, 2, 3...) */}
+    <div className="flex items-center gap-2.5 py-2 border-t border-white/[0.06] first:border-t-0">
       <span className="shrink-0 w-5 h-5 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center text-[10px] font-bold tabular-nums text-white/70">
         {index}
       </span>
-      <div className="flex-1 min-w-0">
-        {/* Bet name + cote */}
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-semibold text-white truncate">
-            {emoji} {leg.pick}
-          </span>
-          <span className={`text-xs font-bold tabular-nums whitespace-nowrap ${oddsColor}`}>
-            {leg.odds.toFixed(2)}
-          </span>
-        </div>
-        {/* Match (subtle) */}
-        <div className="text-[11px] text-white/45 truncate">
-          {leg.home_team} vs {leg.away_team}
-        </div>
+      <span className="shrink-0 text-sm">{emoji}</span>
+      <div className="flex-1 min-w-0 text-xs truncate">
+        <span className="font-semibold text-white">{compactPick}</span>
+        {opponent && (
+          <span className="text-white/40"> vs {opponent}</span>
+        )}
       </div>
-      {/* Icon status à droite (couleur sémantique) */}
-      <span className={`shrink-0 text-sm font-bold leading-none mt-0.5 ${statusColor}`} aria-label={leg.outcome}>
+      <span className={`shrink-0 text-xs font-bold tabular-nums ${oddsColor}`}>
+        {leg.odds.toFixed(2)}
+      </span>
+      <span
+        className={`shrink-0 text-sm font-bold leading-none ${statusColor}`}
+        aria-label={leg.outcome}
+      >
         {statusLabel}
       </span>
     </div>
@@ -438,7 +549,8 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
     <div className="bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
         <div className="font-semibold">
-          <span className="capitalize">{day.dayName}</span> {day.dayNum}
+          <span className="capitalize">{day.dayName}</span> {day.dayNum}{" "}
+          <span className="text-white/40 font-normal">{day.monthName}</span>
         </div>
         <ProfitChip profit={day.profit} pending={day.allPending} />
       </div>
