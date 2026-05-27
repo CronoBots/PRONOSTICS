@@ -309,7 +309,7 @@ function BetRow({
                   du BetRow extérieur (présent pour les 2 cas) signale le
                   statut global. */}
           {isCombo ? (
-            <div className="-mx-3.5 border-t border-white/[0.08]">
+            <div className="-mx-3.5 -mt-3.5">
               {pick.legs!.map((leg, i) => (
                 <LegRow key={i} leg={leg as LegRowData} index={i + 1} />
               ))}
@@ -329,7 +329,7 @@ function BetRow({
               const parsed = parsePickLabel(pick.pick);
               const matchup = `${pick.match.home_team} — ${pick.match.away_team}`;
               return (
-                <div className="border-t border-white/[0.08] pt-3 -mx-3.5 px-3.5">
+                <div className="-mx-3.5 -mt-3.5 px-3.5 pt-2.5">
                   <div className="flex items-start gap-2">
                     <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
                     <div className="flex-1 min-w-0">
