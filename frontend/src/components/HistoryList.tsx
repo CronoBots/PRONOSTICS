@@ -495,7 +495,7 @@ function FinancialStatsGrid({
   return (
     <div className="-mx-3.5 mt-3 px-3.5 py-3 bg-bg-elevated/40 border-t border-white/15">
       {showTotalOdds && (
-        <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-white/15">
           <span className="text-base font-bold text-white">
             {t("history.totalOddsLabel")}
           </span>
@@ -510,9 +510,9 @@ function FinancialStatsGrid({
         <FinancialStat label={t("history.gain")} value={gainText} valueCls={gainCls} />
       </div>
       {resultText && (
-        <div className="flex justify-center mt-2.5">
+        <div className="flex justify-center mt-3">
           <span
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border ${
               isWin
                 ? "bg-accent-green/15 border-accent-green/35 text-accent-green"
                 : isLoss
@@ -520,7 +520,7 @@ function FinancialStatsGrid({
                   : "bg-white/[0.05] border-white/15 text-white/60"
             }`}
           >
-            <span aria-hidden>{isWin ? "✓" : isLoss ? "✕" : "•"}</span>
+            <span className="text-base leading-none" aria-hidden>{isWin ? "✓" : isLoss ? "✕" : "•"}</span>
             <span>{resultText}{!resultText.includes("jamb") ? " jambes" : ""}</span>
           </span>
         </div>
