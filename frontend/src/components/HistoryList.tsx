@@ -560,9 +560,22 @@ function parsePickLabel(
     };
   }
 
-  // Combiné spécial : "X + BTTS" / "X gagne + Les deux équipes…"
-  if (/(\+|et|and)\s*(btts|les deux|both teams)/i.test(trimmed)) {
-    return { entity: humanizePickFragment(trimmed, lang), typeKey: "betType.specialCombo" };
+  // Combiné spécial : tout pick qui contient " + " est un combo "X + Y".
+  // Chaque partie est nettoyée séparément :
+  //   - humanize (ML → gagne, BTTS → Les deux équipes, Over/Under → Plus/Moins)
+  //   - stripWinSuffix sur la 1ère partie (sinon "Liverpool gagne + BTTS"
+  //     reste affiché avec "gagne" qu'on veut retirer pour ne garder que
+  //     "Liverpool + BTTS").
+  if (/\s\+\s/.test(trimmed)) {
+    const humanised = humanizePickFragment(trimmed, lang);
+    const parts = humanised.split(/\s+\+\s+/).map((p) => p.trim());
+    if (parts.length >= 2) {
+      // Strip win suffix on the first part only — the others are
+      // typically conditions (BTTS, Plus de X, Edwards Over Y) that
+      // don't end with a "win" suffix.
+      const cleaned = [stripWinSuffix(parts[0]), ...parts.slice(1)];
+      return { entity: cleaned.join(" + "), typeKey: "betType.specialCombo" };
+    }
   }
 
   // Fallback : on humanise au moins le texte brut
