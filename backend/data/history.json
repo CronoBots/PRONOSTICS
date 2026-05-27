@@ -403,8 +403,8 @@
         "score_home": "6-1 6-2",
         "score_away": "",
         "score_text": "Swiatek bat Jones 6-1 6-2 (15 jeux totaux)",
-        "summary": "Swiatek gagne facilement comme prévu MAIS le match fait 15 jeux totaux (6+1+6+2) → la jambe Under 14.5 du combo échoue.",
-        "bet_outcome": "Pari perdu : Swiatek victorieuse (jambe 1 OK) mais 15 jeux totaux > 14.5 (jambe 2 raté) → combo perdu."
+        "summary": "Swiatek gagne facilement comme prévu MAIS le match fait 15 jeux totaux (6+1+6+2) → la sélection Under 14.5 du combo échoue.",
+        "bet_outcome": "Pari perdu : Swiatek victorieuse (sélection 1 OK) mais 15 jeux totaux > 14.5 (sélection 2 ratée) → combo perdu."
       },
       "comparison": null,
       "profile_tags": [],
@@ -430,18 +430,18 @@
       "rationale": [
         "## 🎯 Le contexte",
         "Jour 3 de Roland Garros 2026. Trois favoris convergents identifiés au 1er tour : Osaka, Darderi, Cerundolo.",
-        "Stratégie combo 3 jambes : agréger 3 paris simples à cote modérée (1.24-1.30) pour atteindre une cote totale value (2.06) avec edge cumulé positif.",
-        "Chaque jambe a une probabilité estimée individuelle ≥ 0.85 → produit ≈ 0.65 (proba combinée).",
-        "## 📊 L'analyse des 3 jambes",
+        "Stratégie combo 3 sélections : agréger 3 paris simples à cote modérée (1.24-1.30) pour atteindre une cote totale value (2.06) avec edge cumulé positif.",
+        "Chaque sélection a une probabilité estimée individuelle ≥ 0.85 → produit ≈ 0.65 (proba combinée).",
+        "## 📊 L'analyse des 3 sélections",
         "**Jambe 1 — Naomi Osaka @ 1.28** contre Laura Siegemund. Osaka retour en forme physique, ex-#1, terrain favorable. Siegemund spécialiste double mais limitée en simple haut niveau WTA.",
         "**Jambe 2 — Luciano Darderi @ 1.30** contre Sebastian Ofner. Darderi terrien italien-argentin, vainqueur ATP 250 Cordoba 2024 et 2025 sur terre. Ofner moins à l'aise sur ocre français malgré profil européen.",
         "**Jambe 3 — Juan Manuel Cerundolo @ 1.24** contre Jacob Fearnley. Argentin terrien né et grandi sur ocre, frère de Francisco Cerundolo. Fearnley britannique récemment monté en grade mais profil dur clair, peu d'expérience GS terre.",
         "## 🎰 Le pari",
-        "3 jambes à 1.28 × 1.30 × 1.24 = **cote totale 2.06** (consensus marché).",
+        "3 sélections à 1.28 × 1.30 × 1.24 = **cote totale 2.06** (consensus marché).",
         "Probabilité combinée estimée : 0.91 × 0.87 × 0.83 ≈ 0.66 → edge calculé +36% sur la cote 2.06.",
         "Mise : 5€ (cohérent avec routine quotidienne 5€/pari).",
         "Gain potentiel si combo passe : +5,32€ net (return total 10,32€).",
-        "Risque : si UNE seule jambe perd, tout le combo perd. Probabilité d'échec ≈ 34%."
+        "Risque : si UNE seule sélection perd, tout le combo perd. Probabilité d'échec ≈ 34%."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -456,7 +456,7 @@
       "result": {
         "score_home": "3/3",
         "score_away": "",
-        "score_text": "3 jambes gagnées sur 3 — Osaka, Darderi, Cerundolo tous victorieux",
+        "score_text": "3 sélections gagnées sur 3 — Osaka, Darderi, Cerundolo tous victorieux",
         "summary": "Combo parfait : les 3 favoris RG R1 ont tous validé. Cote 2.06 honorée.",
         "bet_outcome": "Pari gagné : combo 3/3 validé, +5,32€ net (return 10,32€)."
       },
@@ -536,15 +536,15 @@
       "rationale": [
         "## 🎯 Le contexte",
         "Jour 4 de Roland Garros 2026, 2e tour. Deux favoris ATP+WTA avec gap classement énorme face à des adversaires limités sur terre.",
-        "Combo 2 jambes (AB-4 v4.7 : pas de 3+ jambes) pour atteindre cote value 1.66 avec edge cumulé positif.",
-        "## 📊 L'analyse des 2 jambes",
+        "Combo 2 sélections (AB-4 v4.7 : pas de 3+ sélections) pour atteindre cote value 1.66 avec edge cumulé positif.",
+        "## 📊 L'analyse des 2 sélections",
         "**Jambe 1 — Belinda Bencic (#11 WTA, 28 ans, Suisse) @ 1.29** contre Caty McNally (#63 WTA, US). Bencic championne olympique Tokyo, 1 seule défaite vs joueuse hors top-32 depuis US Open 2025. McNally première participation au tableau principal de Roland Garros, 9-11 en Grand Chelem, peu d'expérience terre.",
         "**Jambe 2 — Andrey Rublev (#15 ATP, 27 ans, Russie) @ 1.29** contre Camilo Ugo Carabelli (#59 ATP, Argentine). Rublev mène 1-0 H2H avec victoire en straight sets sur terre. Carabelli sub-.500 en 2026 (2-7 carrière Grand Chelem).",
         "## 🎰 Le pari",
-        "2 jambes à 1.29 × 1.29 = **cote totale 1.66** (consensus marché).",
+        "2 sélections à 1.29 × 1.29 = **cote totale 1.66** (consensus marché).",
         "Probabilité combinée estimée : 0.85 × 0.78 ≈ 0.66 → edge calculé +9.6% sur la cote 1.66.",
         "Mise : 5€ — gain potentiel +3,30€ si validé (return 8,30€).",
-        "Risque : si UNE seule jambe perd, tout le combo perd. Indépendance OK (courts différents : Simonne-Mathieu pour Bencic, Lenglen pour Rublev)."
+        "Risque : si UNE seule sélection perd, tout le combo perd. Indépendance OK (courts différents : Simonne-Mathieu pour Bencic, Lenglen pour Rublev)."
       ],
       "sources": [
         "https://www.tennistonic.com/",
@@ -559,7 +559,7 @@
       "bankroll_after": 55.9,
       "result": {
         "score_home": "2/2",
-        "score_text": "2 jambes gagnées sur 2 — Bencic et Rublev tous deux victorieux",
+        "score_text": "2 sélections gagnées sur 2 — Bencic et Rublev tous deux victorieux",
         "summary": "Combo parfait : Bencic 2-0 et Rublev 3-0. Cote totale 1.66 honorée.",
         "bet_outcome": "Pari gagné : combo 2/2 validé, +3,30€ net (return 8,30€)."
       },
@@ -623,5 +623,5 @@
     "max_profit_single": 10.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-27T19:25:41.031468+00:00"
+  "generated_at": "2026-05-27T20:05:39.877793+00:00"
 }

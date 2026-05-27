@@ -372,7 +372,7 @@ function BetRow({
 
           {/* FINANCIAL : 3 mini-stats pour les combos ET les singles
               (unification visuelle). Les singles n'ont pas de resultText
-              "X/Y jambes" donc la pill du bas est omise pour eux. */}
+              "X/Y sélections" donc la pill du bas est omise pour eux. */}
           {stake > 0 ? (
             <FinancialStatsGrid
               stake={stake}

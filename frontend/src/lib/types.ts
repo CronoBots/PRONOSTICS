@@ -115,7 +115,7 @@ export interface HistoryPick {
   result?: PickResult | null;
   comparison?: PickComparison | null;
   profile_tags?: string[];
-  // Pour les paris combinés : détail des jambes individuelles
+  // Pour les paris combinés : détail des sélections individuelles
   legs?: ComboLeg[];
   // Cote sans boost (pour afficher l'avantage promotionnel)
   odds_unboosted?: number;

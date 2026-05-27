@@ -498,7 +498,7 @@ def format_pick_simple(pick: dict) -> str:
 
     Stratégie : ne révéler QUE les stats agrégées (cote totale + edge +
     track record). Pas de nom de tournoi exact, pas de sélections, pas
-    de cote par jambe — sinon le pari devient devinable via les cotes
+    de cote par sélection — sinon le pari devient devinable via les cotes
     bookmakers.
     """
     sport_label = SPORT_LABEL.get(pick["sport"], pick["sport"].title())
@@ -548,8 +548,8 @@ def format_pick_simple(pick: dict) -> str:
 def format_pick_combo(pick: dict) -> str:
     """Format a pending combo — Premium gated minimal teaser.
 
-    Idem simple : seulement les stats agrégées + nombre de jambes.
-    Pas de tournoi spécifique, pas de cote par leg, pas de rationale.
+    Idem simple : seulement les stats agrégées + nombre de sélections.
+    Pas de tournoi spécifique, pas de cote par sélection, pas de rationale.
     """
     legs = pick.get("legs", [])
     potential = pick["stake"] * (pick["odds"] - 1)

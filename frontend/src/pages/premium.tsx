@@ -222,7 +222,7 @@ export default function PremiumPage() {
         <button
           onClick={handleSubscribe}
           disabled={checkoutLoading}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-base shadow-xl shadow-yellow-500/25 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.01] transition-transform"
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-base shadow-xl shadow-yellow-500/25 disabled:opacity-60 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99] transition-transform duration-100 ease-out"
         >
           {checkoutLoading
             ? t("premium.checkoutLoading")

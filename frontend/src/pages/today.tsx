@@ -121,7 +121,7 @@ function PremiumGate({
   });
 
   // Pour les combinés on masque league + matchup (qui dévoileraient les noms d'équipes
-  // donc le pari complet). On affiche juste un compteur générique de jambes + sports.
+  // donc le pari complet). On affiche juste un compteur générique de sélections + sports.
   // Pour un pick simple, "Équipe A vs Équipe B" ne révèle pas qui on mise → OK d'afficher.
 
   return (
@@ -289,7 +289,7 @@ function PremiumGate({
         </div>
         <Link
           href="/premium"
-          className="block py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-center"
+          className="block py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-center transition-transform duration-100 ease-out active:scale-[0.99]"
         >
           {t("today.ctaPremium")}
         </Link>

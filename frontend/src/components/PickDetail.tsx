@@ -182,7 +182,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
         </div>
       </div>
 
-      {/* Détail des jambes du combiné (si applicable) */}
+      {/* Détail des sélections du combiné (si applicable) */}
       {pick.legs && pick.legs.length > 0 && (
         <ComboLegs legs={pick.legs} unboostedOdds={pick.odds_unboosted} boostedOdds={pick.odds} />
       )}
