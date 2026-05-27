@@ -78,7 +78,7 @@ SPORT_LABEL = {
 # Footer — minimal, compliance only
 FOOTER = (
     "—\n"
-    "*NEXBET* — _Trust the Algorithm_\n"
+    "*NEXBET* — _Bet • Win • Repeat_\n"
     "21+ · [BeGambleAware.org](https://www.begambleaware.org) · "
     "Entertainment only"
 )
@@ -324,28 +324,35 @@ def format_pick_simple(pick: dict) -> str:
     potential = pick["stake"] * (pick["odds"] - 1)
     total_return = pick["stake"] * pick["odds"]
 
+    # Pricing data — Pinnacle-style with fair value + edge
     data_rows = [
         ("Market price", f"{pick['odds']:.2f}"),
-        ("Stake", f"{pick['stake']:.2f} EUR"),
-        ("Potential return", f"{total_return:.2f} EUR (+{potential:.2f})"),
     ]
     if pick.get("model_probability"):
+        fair_value = 1 / pick["model_probability"]
         edge = pick["model_probability"] * pick["odds"] - 1
-        if edge > 0:
-            data_rows.append(("Edge (model)", f"+{edge * 100:.1f}%"))
+        data_rows.append(("Fair value", f"{fair_value:.2f}"))
+        if abs(edge) >= 0.005:
+            sign = "+" if edge >= 0 else ""
+            data_rows.append(("Edge", f"{sign}{edge * 100:.1f}%"))
+    data_rows.extend([
+        ("Stake", f"{pick['stake']:.2f} EUR"),
+        ("Potential return", f"{total_return:.2f} EUR"),
+        ("Net P/L if won", f"+{potential:.2f} EUR"),
+    ])
 
     msg = (
         "*BET OF THE DAY*\n"
-        f"{fmt_date_long(pick['date'])}\n\n"
-        f"{pick['league']}\n"
-        f"*{pick['home_team']}* vs *{pick['away_team']}*\n"
-        f"{fmt_time_cet(pick.get('kickoff', ''))} · {sport}\n\n"
-        f"*PICK*\n"
+        f"{fmt_date_long(pick['date'])} · {fmt_time_cet(pick.get('kickoff', ''))}\n\n"
+        f"{sport} · {pick['league']}\n"
+        f"*{pick['home_team']}* vs *{pick['away_team']}*\n\n"
+        f"*SELECTION*\n"
         f"{pick['pick']}\n\n"
+        f"*PRICING*\n"
         f"{aligned_data(data_rows)}\n"
     )
     if pick.get("headline"):
-        msg += f"\n_{pick['headline']}_\n"
+        msg += f"\n*RATIONALE*\n_{pick['headline']}_\n"
 
     tr = compute_track_record(7)
     if tr:
@@ -364,28 +371,38 @@ def format_pick_combo(pick: dict) -> str:
         f"*BET OF THE DAY · {len(legs)}-leg parlay*\n"
         f"{fmt_date_long(pick['date'])}\n\n"
         f"{pick['league']}\n\n"
-        "*LEGS*\n"
+        "*SELECTIONS*\n"
     )
 
-    # Aligned legs : "1. Pick name @ 1.28"
+    # Aligned legs : "1. Pick name  @ 1.28"
     leg_rows = []
     for i, leg in enumerate(legs, 1):
-        # Truncate pick name if too long for one line
-        leg_pick = leg['pick']
+        leg_pick = leg["pick"]
         if len(leg_pick) > 32:
             leg_pick = leg_pick[:30] + "…"
         leg_rows.append((f"{i}. {leg_pick}", f"{leg['odds']:.2f}"))
     msg += aligned_data(leg_rows) + "\n"
 
-    data_rows = [
-        ("Total odds", f"{pick['odds']:.2f}"),
+    # Pricing data — fair value + edge if model_probability available
+    data_rows = [("Combined price", f"{pick['odds']:.2f}")]
+    if pick.get("model_probability"):
+        fair_value = 1 / pick["model_probability"]
+        edge = pick["model_probability"] * pick["odds"] - 1
+        data_rows.append(("Fair value", f"{fair_value:.2f}"))
+        data_rows.append(("Model probability", f"{pick['model_probability'] * 100:.0f}%"))
+        if abs(edge) >= 0.005:
+            sign = "+" if edge >= 0 else ""
+            data_rows.append(("Edge", f"{sign}{edge * 100:.1f}%"))
+    data_rows.extend([
         ("Stake", f"{pick['stake']:.2f} EUR"),
-        ("Potential return", f"{total_return:.2f} EUR (+{potential:.2f})"),
-    ]
-    msg += f"\n{aligned_data(data_rows)}\n"
+        ("Potential return", f"{total_return:.2f} EUR"),
+        ("Net P/L if won", f"+{potential:.2f} EUR"),
+    ])
+
+    msg += f"\n*PRICING*\n{aligned_data(data_rows)}\n"
 
     if pick.get("headline"):
-        msg += f"\n_{pick['headline']}_\n"
+        msg += f"\n*RATIONALE*\n_{pick['headline']}_\n"
 
     tr = compute_track_record(7)
     if tr:

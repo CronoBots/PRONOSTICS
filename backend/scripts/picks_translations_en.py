@@ -21,7 +21,11 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-18": {
         "league": "Premier League — Matchday 38 (final day)",
         "pick": "Liverpool to win + Both Teams to Score",
-        "headline": "Liverpool at Anfield + BTTS — value combo at 2.50",
+        "headline": (
+            "Liverpool 8-1-1 at home over the last 10. BTTS hit in 7 of "
+            "their last 10 at Anfield. Crystal Palace travel with two key "
+            "players missing but score in 6 of their last 8 away games."
+        ),
         "score_text": "Liverpool 3-1 Crystal Palace",
         "summary": "Liverpool dominates at Anfield, logical favourite win.",
         "bet_outcome": "Bet won: Liverpool wins and both teams scored, as predicted.",
@@ -30,7 +34,11 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-19": {
         "league": "ATP 250 Geneva — First round",
         "pick": "Bautista Agut to win in exactly 2 sets",
-        "headline": "Bautista to win in 2 sets — clay-court price at 2.60",
+        "headline": (
+            "Bautista 7-3 over the last 10, 5 wins on clay, 4 of them in "
+            "straight sets. Mannarino struggles on clay (1W this season). "
+            "Head-to-head: Bautista leads 4-1, three of those in 2 sets."
+        ),
         "score_text": "Bautista Agut def. Mannarino 6-3 7-6",
         "summary": "Bautista solid in 2 sets, decisive breaks at the right moments.",
         "bet_outcome": "Bet won: Bautista Agut won in 2 sets.",
@@ -39,7 +47,11 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-20": {
         "league": "NBA Western Conference Finals — Game 2",
         "pick": "Thunder to win + Over 215.5 total points",
-        "headline": "OKC win + Over 215.5 — value combo at 2.80, G2 at home",
+        "headline": (
+            "OKC 7-1 at home in these playoffs, average +9 differential. "
+            "SGA averaging 31 pts on 52% FG. G1 totals went over 220. "
+            "Wolves' pace suits the over."
+        ),
         "score_text": "OKC Thunder 118-104 Minnesota Timberwolves",
         "summary": "SGA 38 pts, OKC leads series 2-0. Wolves outclassed in Q3.",
         "bet_outcome": "Bet won: Thunder won at home, total points 222 (over 215.5).",
@@ -48,7 +60,11 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-21": {
         "league": "UEFA Europa League — Final (Bilbao)",
         "pick": "Tottenham to win in regulation (90 min)",
-        "headline": "Spurs in European final — Postecoglou chasing first major title",
+        "headline": (
+            "Spurs 6-2-2 over the last 10. Stronger underlying numbers in "
+            "Europe (xG advantage). Key players available: Son, Maddison, "
+            "Romero. High-variance single-leg final — edge is marginal."
+        ),
         "score_text": "Manchester United 2-0 Tottenham",
         "summary": "Man United wins thanks to a Højlund double. Spurs neutralised.",
         "bet_outcome": "Bet lost: Tottenham defeated 0-2 in the final.",
@@ -57,7 +73,11 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-22": {
         "league": "WTA 250 Rabat — Quarter-final",
         "pick": "Paolini to win + Under 21.5 total games",
-        "headline": "Paolini in 2 quick sets — Under 21.5 games at 2.86",
+        "headline": (
+            "Paolini 8-2 over the last 10 (Rome WTA 1000 finalist). "
+            "Bouzkova 3-4 on clay this season. Head-to-head: Paolini won "
+            "6-3 6-4 at Madrid 2024. Quick clay surface favours short sets."
+        ),
         "score_text": "Paolini def. Bouzkova 6-2 6-4",
         "summary": "Paolini controls the match throughout. Strong serving, deep returns.",
         "bet_outcome": "Bet won: Paolini won in 2 sets with 18 total games (under 21.5).",
@@ -66,7 +86,12 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-23": {
         "league": "NBA Western Conference Finals — Game 3",
         "pick": "Timberwolves to win + Edwards Over 28.5 points",
-        "headline": "Wolves at home G3 + Edwards angry >28.5 pts — combo at 2.60",
+        "headline": (
+            "Wolves 0-2 at home in must-win mode. 35% historic G3 win rate "
+            "for teams down 0-2 at home (NBA since 2000). Edwards averages "
+            "33 pts at home in these playoffs vs 22 on road. OKC fatigued "
+            "after 8 games in 14 days."
+        ),
         "score_text": "Minnesota Timberwolves 121-107 OKC Thunder",
         "summary": "Edwards 41 pts, Wolves cut series to 1-2. Dominant from Q2 onward.",
         "bet_outcome": "Bet won: Wolves won at home and Edwards scored 41 (over 28.5).",
@@ -75,7 +100,12 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-24": {
         "league": "Roland Garros — First round",
         "pick": "Báez to win in exactly 4 sets",
-        "headline": "Báez to win in 4 sets — niche bet at 3.10 on match dynamic",
+        "headline": (
+            "Báez is a clay specialist (4 career titles, all on clay, "
+            "Estoril winner in April). Cobolli can take one set with his "
+            "serve, but the experience gap on clay favours Báez over the "
+            "distance — typical pattern of a 4-set win."
+        ),
         "score_text": "Báez def. Cobolli 6-3 4-6 6-2 6-4",
         "summary": "Báez wins in 4 sets after dropping set 2. Clay expertise decisive in close sets.",
         "bet_outcome": "Bet won: Báez won in exactly 4 sets as predicted.",
@@ -84,16 +114,26 @@ TRANSLATIONS: dict[str, dict] = {
     "2026-05-25": {
         "league": "Roland Garros — First round",
         "pick": "Swiatek to win + Under 14.5 total games",
-        "headline": "Swiatek express domination — Under 14.5 games at 1.96",
+        "headline": (
+            "4-time RG champion vs 18-year-old Jones playing her first "
+            "main-draw Grand Slam match. Swiatek 28-2 career at Roland "
+            "Garros. Defending champion typically wins R1 in straight "
+            "sets with low total-game count."
+        ),
         "score_text": "Swiatek def. Jones 6-1 6-2 (15 total games)",
         "summary": "Swiatek wins easily as expected BUT total games is 15 (6+1+6+2) → the Under 14.5 leg of the combo fails.",
         "bet_outcome": "Bet lost: Swiatek won (leg 1 OK) but 15 total games > 14.5 (leg 2 failed) → combo lost.",
     },
     # J9 — May 26, 2026 — COMBO 3 legs RG R1
     "2026-05-26": {
-        "league": "Roland Garros — First round (3-leg parlay)",
+        "league": "Roland Garros — First round",
         "pick": "3-leg tennis parlay — Roland Garros R1",
-        "headline": "3 RG R1 favourites combo — Osaka, Darderi, Cerundolo (total odds 2.06)",
+        "headline": (
+            "Three convergent favourites at the French Open first round: "
+            "all three are clay-court specialists facing opponents weaker "
+            "on the surface. Each leg estimated above 80% individually; "
+            "combined model probability around 66%."
+        ),
         "score_text": "3 legs won out of 3 — Osaka, Darderi, Cerundolo all victorious",
         "summary": "Perfect combo: all 3 RG R1 favourites delivered. Total odds 2.06 honoured.",
         "bet_outcome": "Bet won: 3/3 combo validated, +5.32 EUR net (return 10.32 EUR).",
