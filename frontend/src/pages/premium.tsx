@@ -321,6 +321,8 @@ export default function PremiumPage() {
               quote={t("premium.testimonial1Quote")}
               name={t("premium.testimonial1Name")}
               role={t("premium.testimonial1Role")}
+              date={t("premium.testimonial1Date")}
+              verifiedLabel={t("premium.testimonialVerified")}
               color="bg-accent-green/20 text-accent-green"
             />
             <Testimonial
@@ -328,6 +330,8 @@ export default function PremiumPage() {
               quote={t("premium.testimonial2Quote")}
               name={t("premium.testimonial2Name")}
               role={t("premium.testimonial2Role")}
+              date={t("premium.testimonial2Date")}
+              verifiedLabel={t("premium.testimonialVerified")}
               color="bg-accent-blue/20 text-accent-blue"
             />
             <Testimonial
@@ -335,6 +339,8 @@ export default function PremiumPage() {
               quote={t("premium.testimonial3Quote")}
               name={t("premium.testimonial3Name")}
               role={t("premium.testimonial3Role")}
+              date={t("premium.testimonial3Date")}
+              verifiedLabel={t("premium.testimonialVerified")}
               color="bg-yellow-400/20 text-yellow-400"
             />
           </div>
@@ -528,28 +534,39 @@ function Testimonial({
   quote,
   name,
   role,
+  date,
+  verifiedLabel,
   color,
 }: {
   initials: string;
   quote: string;
   name: string;
   role: string;
+  date: string;
+  verifiedLabel: string;
   color: string;
 }) {
   return (
     <div className="bg-bg-card border border-white/[0.08] rounded-2xl p-4 flex flex-col gap-3">
-      <div className="text-yellow-400 text-sm tracking-tight">★★★★★</div>
+      <div className="flex items-center justify-between">
+        <div className="text-yellow-400 text-sm tracking-tight">★★★★★</div>
+        <div className="flex items-center gap-1 text-[10px] text-accent-green/80">
+          <span>✓</span>
+          <span>{verifiedLabel}</span>
+        </div>
+      </div>
       <p className="text-sm text-white/80 leading-relaxed flex-1">"{quote}"</p>
       <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
         <div
-          className={`w-9 h-9 rounded-full ${color} flex items-center justify-center text-xs font-bold`}
+          className={`w-9 h-9 rounded-full ${color} flex items-center justify-center text-xs font-bold shrink-0`}
         >
           {initials}
         </div>
-        <div>
-          <div className="text-xs font-semibold text-white">{name}</div>
-          <div className="text-[10px] text-white/45">{role}</div>
+        <div className="flex-1 min-w-0">
+          <div className="text-xs font-semibold text-white truncate">{name}</div>
+          <div className="text-[10px] text-white/45 truncate">{role}</div>
         </div>
+        <div className="text-[10px] text-white/35 shrink-0">{date}</div>
       </div>
     </div>
   );

@@ -47,7 +47,7 @@ export default function TodayPage() {
         <title>{t("today.titleTab")}</title>
       </Head>
 
-      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
+      <main className="max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 overflow-x-hidden">
         <div className="flex items-center gap-3 mb-6">
           <Link
             href="/"
@@ -193,13 +193,13 @@ function PremiumGate({
 
           {/* Section masquée — le pick + analyse */}
           <div className="relative">
-            <div className="bg-bg-elevated/30 rounded-xl p-4 select-none filter blur-sm">
+            <div className="bg-bg-elevated/30 rounded-xl p-4 select-none filter blur-sm overflow-hidden">
               <div className="text-[10px] uppercase tracking-wider text-accent-green/80 font-bold mb-1">
                 {t("today.thePick")}
               </div>
-              <div className="text-lg font-extrabold mb-2">▓▓▓▓▓▓ ▓▓▓▓▓▓▓</div>
-              <div className="text-xs text-white/60 leading-relaxed">
-                {"▓".repeat(60)} {"▓".repeat(45)} {"▓".repeat(80)}
+              <div className="text-lg font-extrabold mb-2 break-all">▓▓▓▓▓▓ ▓▓▓▓▓▓▓</div>
+              <div className="text-xs text-white/60 leading-relaxed break-all">
+                {("▓".repeat(20) + " ").repeat(8).trim()}
               </div>
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
