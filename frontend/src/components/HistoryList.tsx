@@ -445,14 +445,23 @@ function stripWinSuffix(name: string): string {
     .trim();
 }
 
-/** Extract just the trailing score from a result text like
- *  "Bencic bat McNally 6-4 6-0" → "6-4 6-0". The matchup is
- *  already shown above the score line, so repeating the player
- *  names is noisy. Falls back to the full text if no numeric
- *  score is detected at the end. */
+/** Extract just the numeric score from a result text. The matchup is
+ *  already shown above so repeating the team/player names is noisy.
+ *  Handles all sport formats:
+ *    "Bencic bat McNally 6-4 6-0"                    → "6-4 6-0"
+ *    "Manchester United 2 - 0 Tottenham"             → "2 - 0"
+ *    "OKC Thunder 118 - 104 Minnesota Timberwolves"  → "118 - 104"
+ *  Strategy: capture the longest sequence of digits + dashes/spaces
+ *  + commas anywhere in the string. Falls back to the full text. */
 function extractScore(text: string): string {
-  const m = text.match(/(\d[\d\s\-,]*\d|\d)\s*$/);
-  return m ? m[1].trim() : text;
+  // Match any run of digits-spaces-dashes that contains at least one dash
+  // (i.e. is a real score, not just an isolated number).
+  const matches = text.match(/\d[\d\s\-–,]*[-–][\d\s\-–,]*\d/g);
+  if (!matches || matches.length === 0) return text;
+  // Pick the longest match — handles cases where a leading "3 sets" or
+  // similar might be a shorter false positive.
+  const best = matches.reduce((a, b) => (b.length > a.length ? b : a));
+  return best.replace(/\s+/g, " ").trim();
 }
 
 /** Rewrite cryptic English bookmaker fragments to user-friendly FR.

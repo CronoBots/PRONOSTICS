@@ -45,29 +45,18 @@ function StatTile({ label, value, tone = "neutral" }: StatRow) {
   );
 }
 
-// TWR (Time-Weighted Return) ignore les flux de capital. En l'absence de
-// depot/retrait, c'est exactement progression_percent. TRI = TWR annualise
-// (cap a 1000% pour eviter les valeurs absurdes sur petit historique).
-function computeExtras(picks: HistoryPick[], stats: HistoryStats) {
-  const twr = stats.progression_percent;
-  const resolved = picks.filter(
-    (p) => p.outcome === "win" || p.outcome === "loss" || p.outcome === "void",
-  );
-  let tri = 0;
-  if (resolved.length > 0 && twr !== 0) {
-    const firstDate = new Date(resolved[0].date).getTime();
-    const now = Date.now();
-    const days = Math.max(1, (now - firstDate) / (1000 * 60 * 60 * 24));
-    const annualized = (Math.pow(1 + twr / 100, 365 / days) - 1) * 100;
-    tri = Math.min(annualized, 1000);
-  }
+// TWR (Time-Weighted Return) et TRI (annualisé) ont été supprimés de
+// l'overview : TWR = progression_percent exactement (donc doublon), et
+// TRI sur un petit historique (< 30j) est cappé à 1000% et n'a aucune
+// valeur statistique. On garde uniquement progression_percent.
+function computeExtras(picks: HistoryPick[]) {
   const refunded = picks.filter((p) => p.outcome === "void").length;
-  return { twr, tri, refunded };
+  return { refunded };
 }
 
 function buildOverviewTiles(
   stats: HistoryStats,
-  extras: { twr: number; tri: number; refunded: number },
+  extras: { refunded: number },
   t: TFn,
 ): StatRow[] {
   return [
@@ -75,8 +64,6 @@ function buildOverviewTiles(
     { label: t("statsPage.profit"), value: `${stats.profit.toFixed(2)}€`, tone: signTone(stats.profit) },
     { label: t("statsPage.roi"), value: `${stats.roi_percent.toFixed(2)}%`, tone: signTone(stats.roi_percent) },
     { label: t("statsPage.progression"), value: `${stats.progression_percent.toFixed(2)}%`, tone: signTone(stats.progression_percent) },
-    { label: t("statsPage.twr"), value: `${extras.twr.toFixed(2)}%`, tone: signTone(extras.twr) },
-    { label: t("statsPage.tri"), value: `${extras.tri.toFixed(2)}%`, tone: signTone(extras.tri) },
     { label: t("statsPage.successRate"), value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
     { label: t("statsPage.drawdownMax"), value: `${stats.drawdown_max.toFixed(2)}€`, tone: stats.drawdown_max > 0 ? "red" : "neutral" },
     { label: t("statsPage.capitalStart"), value: `${stats.starting_bankroll.toFixed(2)}€` },
@@ -176,7 +163,7 @@ export default function StatsPage() {
 
                 {/* Grille flat — tous les KPI cumules */}
                 <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6">
-                  {buildOverviewTiles(stats, computeExtras(picks, stats), t).map((r) => (
+                  {buildOverviewTiles(stats, computeExtras(picks), t).map((r) => (
                     <StatTile key={r.label} {...r} />
                   ))}
                 </div>
