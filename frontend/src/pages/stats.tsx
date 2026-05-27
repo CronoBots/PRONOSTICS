@@ -16,13 +16,14 @@ type Tab = "overview" | "general" | "periode" | "sport";
 interface StatRow {
   label: string;
   value: string;
-  tone?: "green" | "red" | "blue" | "neutral";
+  tone?: "green" | "red" | "blue" | "yellow" | "neutral";
 }
 
 const toneClass: Record<NonNullable<StatRow["tone"]>, string> = {
   green: "text-accent-green",
   red: "text-accent-red",
   blue: "text-accent-blue",
+  yellow: "text-yellow-300",
   neutral: "text-white",
 };
 
@@ -47,34 +48,54 @@ function StatTile({ label, value, tone = "neutral" }: StatRow) {
   );
 }
 
-// Removed from overview: TWR/TRI (redundant with progression_percent),
-// PARIS REMBOURSÉS / DÉPÔT / RETRAIT / COMMISSION (always 0 in the
-// paper-trading context — no real-money flows, no void picks yet).
-// Add them back if/when those metrics gain real values.
+// Organised by logical groups (top to bottom on the 2-col grid):
+//   1. Volume     : nombre de paris + win rate + W/L counts
+//   2. Performance: profit, ROI, progression, drawdown
+//   3. Capital   : depart vs actuel
+//   4. Mises     : total joué + moyenne + max (+ pending si > 0)
+//   5. Cotes     : moyenne + max gagnée
+//   6. Records   : best/worst streak + biggest single profit/loss
+// PARIS EN COURS supprimé : doublon avec MISES EN COURS et toujours 0
+// vu la discipline 1-pick-par-jour (le pick du jour est settled dans
+// la nuit, donc 0 en cours dès demain matin).
 function buildOverviewTiles(stats: HistoryStats, t: TFn): StatRow[] {
-  return [
+  const tiles: StatRow[] = [
+    // — Volume
     { label: t("statsPage.bets"), value: `${stats.total_picks}`, tone: "blue" },
+    { label: t("statsPage.successRate"), value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
+    { label: t("statsPage.betsWon"), value: `${stats.won}`, tone: "green" },
+    { label: t("statsPage.betsLost"), value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
+    // — Performance
     { label: t("statsPage.profit"), value: `${stats.profit.toFixed(2)}€`, tone: signTone(stats.profit) },
     { label: t("statsPage.roi"), value: `${stats.roi_percent.toFixed(2)}%`, tone: signTone(stats.roi_percent) },
     { label: t("statsPage.progression"), value: `${stats.progression_percent.toFixed(2)}%`, tone: signTone(stats.progression_percent) },
-    { label: t("statsPage.successRate"), value: `${stats.win_rate.toFixed(2)}%`, tone: "green" },
     { label: t("statsPage.drawdownMax"), value: `${stats.drawdown_max.toFixed(2)}€`, tone: stats.drawdown_max > 0 ? "red" : "neutral" },
+    // — Capital
     { label: t("statsPage.capitalStart"), value: `${stats.starting_bankroll.toFixed(2)}€` },
     { label: t("statsPage.capitalCurrent"), value: `${stats.current_bankroll.toFixed(2)}€`, tone: signTone(stats.current_bankroll - stats.starting_bankroll) },
-    { label: t("statsPage.betsWon"), value: `${stats.won}`, tone: "green" },
-    { label: t("statsPage.betsLost"), value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
-    { label: t("statsPage.betsPending"), value: `${stats.pending}` },
+    // — Mises
     { label: t("statsPage.stakePlayed"), value: `${stats.total_stake_played.toFixed(2)}€` },
-    { label: t("statsPage.stakePending"), value: `${stats.pending_stake.toFixed(2)}€` },
-    { label: t("statsPage.bestStreak"), value: `${stats.best_streak}`, tone: "green" },
-    { label: t("statsPage.worstStreak"), value: `${stats.worst_streak}`, tone: stats.worst_streak < 0 ? "red" : "neutral" },
     { label: t("statsPage.stakeAvg"), value: `${stats.avg_stake.toFixed(2)}€` },
     { label: t("statsPage.stakeMax"), value: `${stats.max_stake.toFixed(2)}€` },
+  ];
+  // MISES EN COURS uniquement si > 0 (sinon redondant avec le SKIP du jour)
+  if (stats.pending_stake > 0) {
+    tiles.push({
+      label: t("statsPage.stakePending"),
+      value: `${stats.pending_stake.toFixed(2)}€`,
+      tone: "yellow",
+    });
+  }
+  return tiles.concat([
+    // — Cotes
     { label: t("statsPage.oddsAvg"), value: stats.average_odds.toFixed(3) },
     { label: t("statsPage.oddsMaxWon"), value: stats.max_odds_won > 0 ? stats.max_odds_won.toFixed(2) : "—" },
+    // — Records
+    { label: t("statsPage.bestStreak"), value: `${stats.best_streak}`, tone: "green" },
+    { label: t("statsPage.worstStreak"), value: `${stats.worst_streak}`, tone: stats.worst_streak < 0 ? "red" : "neutral" },
     { label: t("statsPage.profitMaxSingle"), value: `${stats.max_profit_single.toFixed(2)}€`, tone: "green" },
     { label: t("statsPage.lossMaxSingle"), value: `${stats.max_loss_single.toFixed(2)}€`, tone: stats.max_loss_single < 0 ? "red" : "neutral" },
-  ];
+  ]);
 }
 
 export default function StatsPage() {
