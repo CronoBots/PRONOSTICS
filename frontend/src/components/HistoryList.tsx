@@ -299,17 +299,8 @@ function BetRow({
         </div>
       ) : (
         <div className="p-3.5 min-w-0">
-          {/* Ligne contextuelle : tournoi + heure pour single,
-              juste l'heure pour combo (les legs ont leurs propres tournois) */}
-          {!isCombo && (
-            <div className="text-xs text-white/55 truncate">
-              {pick.match.league || pick.match.sport}
-              {timeLabel && <span className="text-white/40"> · {timeLabel}</span>}
-            </div>
-          )}
-          {isCombo && timeLabel && (
-            <div className="text-xs text-white/55">{timeLabel}</div>
-          )}
+          {/* Pas de ligne de sous-titre globale — l'heure est affichée
+              directement à côté de chaque pari (LegRow ou single body). */}
 
           {/* CORPS :
                 - Combo  → liste de LegRow (pastilles colorées par leg)
@@ -359,6 +350,9 @@ function BetRow({
                       )}
                       <div className="text-[11px] text-white/35 truncate mt-0.5">
                         {matchup}
+                        {timeLabel && (
+                          <span className="text-white/30"> · {timeLabel}</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -553,6 +547,7 @@ interface LegRowData {
   home_team: string;
   away_team: string;
   outcome: "win" | "loss" | "void" | "pending";
+  kickoff?: string;
 }
 
 /** Render a single bet row in a combo (no colored bar — the DayCard's
@@ -572,9 +567,15 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
         ? "text-accent-blue"
         : "text-white";
 
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
+  const timeLabel = leg.kickoff
+    ? new Date(leg.kickoff).toLocaleTimeString(localeForLang(lang), {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
 
   return (
     <div className="flex items-start gap-2 py-2.5 px-3.5 border-t border-white/[0.08] first:border-t-0">
@@ -591,7 +592,10 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
             {t(typeKey, typeParams)}
           </div>
         )}
-        <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
+        <div className="text-[11px] text-white/35 truncate mt-0.5">
+          {matchup}
+          {timeLabel && <span className="text-white/30"> · {timeLabel}</span>}
+        </div>
       </div>
     </div>
   );
