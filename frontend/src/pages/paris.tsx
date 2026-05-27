@@ -4,7 +4,6 @@ import Head from "next/head";
 import { Header } from "@/components/Header";
 import { HistoryList } from "@/components/HistoryList";
 import { Skeleton } from "@/components/Skeleton";
-import { useAuth } from "@/lib/auth";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History } from "@/lib/types";
@@ -15,9 +14,7 @@ export default function ParisPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [betType, setBetType] = useState<BetTypeFilter>("all");
-  const { user, ready } = useAuth();
   const { t } = useI18n();
-  const isPremium = ready && user?.isPremium;
 
   useEffect(() => {
     let cancelled = false;
@@ -40,19 +37,18 @@ export default function ParisPage() {
     return picks;
   }, [picks, betType]);
 
-  // Compteurs par catégorie pour les chips
+  // Compteurs par catégorie : incluent les pending pour tout le monde
+  // (les non-Premium voient un teaser floutté, donc le pari "existe" dans
+  // leur liste même s'ils n'en voient pas le détail).
   const counts = useMemo(() => {
-    const settled = picks.filter((p) => p.outcome !== "pending");
     return {
-      all: isPremium ? picks.length : settled.length,
-      single: (isPremium ? picks : settled).filter((p) => p.match.sport !== "combo").length,
-      combo: (isPremium ? picks : settled).filter((p) => p.match.sport === "combo").length,
+      all: picks.length,
+      single: picks.filter((p) => p.match.sport !== "combo").length,
+      combo: picks.filter((p) => p.match.sport === "combo").length,
     };
-  }, [picks, isPremium]);
+  }, [picks]);
 
-  const displayedCount = isPremium
-    ? filteredPicks.length
-    : filteredPicks.filter((p) => p.outcome !== "pending").length;
+  const displayedCount = filteredPicks.length;
 
   return (
     <>
