@@ -132,6 +132,31 @@ TRANSLATIONS: dict[str, dict] = {
         "summary": "Swiatek wins easily as expected BUT total games is 15 (6+1+6+2) → the Under 14.5 leg of the combo fails.",
         "bet_outcome": "Bet lost: Swiatek won (leg 1 OK) but 15 total games > 14.5 (leg 2 failed) → combo lost.",
     },
+    # J10 — May 27, 2026 — COMBO 2 legs RG R2 (Bencic + Rublev)
+    "2026-05-27": {
+        "league": "Roland Garros — Second round",
+        "pick": "2-leg tennis parlay — Roland Garros R2",
+        "headline": (
+            "Two dominant favourites at Roland Garros second round. "
+            "Bencic (#11 WTA) faces McNally (#63), who is playing her "
+            "first RG main draw with a 9-11 Grand Slam record. Rublev "
+            "(#15 ATP) faces Carabelli (#59), leading H2H 1-0 with a "
+            "straight-sets win on clay. Combined model probability "
+            "around 66%."
+        ),
+        "legs": [
+            {
+                "pick": "Belinda Bencic to win",
+                "home_country": "SUI",
+                "away_country": "USA",
+            },
+            {
+                "pick": "Andrey Rublev to win",
+                "home_country": "RUS",
+                "away_country": "ARG",
+            },
+        ],
+    },
     # J9 — May 26, 2026 — COMBO 3 legs RG R1
     "2026-05-26": {
         "league": "Roland Garros — First round",
