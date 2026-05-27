@@ -547,14 +547,14 @@ function FinancialStatsGrid({
   const returnText = isLoss ? `0.00 €` : `${totalReturn.toFixed(2)} €`;
 
   return (
-    <div className="mt-3 pt-3 border-t border-white/[0.06]">
+    <div className="-mx-3.5 mt-3 px-3.5 py-3 bg-bg-elevated/40 border-t border-white/[0.08]">
       <div className="grid grid-cols-3 gap-2">
         <FinancialStat label={t("history.stake")} value={`${stake.toFixed(2)} €`} />
         <FinancialStat label={t("history.return")} value={returnText} />
         <FinancialStat label={t("history.gain")} value={gainText} valueCls={gainCls} />
       </div>
       {resultText && (
-        <div className="flex justify-center mt-3">
+        <div className="flex justify-center mt-2.5">
           <span
             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
               isWin
@@ -603,10 +603,10 @@ interface LegRowData {
   outcome: "win" | "loss" | "void" | "pending";
 }
 
-/** Render a single bet row with the Unibet-style colored bar on the
- *  left. Used both for combo legs (with a number) and for single bets
- *  (no number, solid bar). */
-function LegRow({ leg, index }: { leg: LegRowData; index?: number }) {
+/** Render a single bet row in a combo (no colored bar — the DayCard's
+ *  outer bar handles the overall status, and the leg's odds color
+ *  carries the per-leg outcome). */
+function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
   const emoji = SPORT_EMOJIS[leg.sport] || "🎯";
   const isWin = leg.outcome === "win";
   const isLoss = leg.outcome === "loss";
@@ -624,40 +624,22 @@ function LegRow({ leg, index }: { leg: LegRowData; index?: number }) {
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
 
-  const statusBg = isWin
-    ? "bg-accent-green"
-    : isLoss
-      ? "bg-accent-red"
-      : isVoid
-        ? "bg-accent-blue"
-        : "bg-yellow-500";
-  const statusFg = isLoss || isVoid ? "text-white" : "text-bg-base";
-
   return (
-    <div className="flex items-stretch gap-3 border-t border-white/15 first:border-t-0">
-      {/* Ligne verticale pleine hauteur par leg — délimite chaque pari
-          et indique son statut via la couleur. Pas de numéro : la ligne
-          est juste un séparateur coloré. */}
-      <div
-        className={`shrink-0 w-1.5 ${statusBg}`}
-        aria-label={index ? `Jambe ${index} — ${leg.outcome}` : leg.outcome}
-      />
-      <div className="flex-1 min-w-0 flex items-start gap-2 py-2.5 pr-3.5">
-        <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold text-white truncate">{entity}</span>
-            <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
-              {leg.odds.toFixed(2)}
-            </span>
-          </div>
-          {typeKey && (
-            <div className="text-[11px] text-white/55 mt-0.5">
-              {t(typeKey, typeParams)}
-            </div>
-          )}
-          <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
+    <div className="flex items-start gap-2 py-2.5 px-3.5 border-t border-white/[0.08] first:border-t-0">
+      <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-sm font-semibold text-white truncate">{entity}</span>
+          <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
+            {leg.odds.toFixed(2)}
+          </span>
         </div>
+        {typeKey && (
+          <div className="text-[11px] text-white/55 mt-0.5">
+            {t(typeKey, typeParams)}
+          </div>
+        )}
+        <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
       </div>
     </div>
   );
@@ -686,7 +668,7 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
         : "bg-white/15";
 
   const header = (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.12]">
       <div className="font-semibold">
         <span className="capitalize">{day.dayName}</span> {day.dayNum}{" "}
         <span className="text-white/40 font-normal">{day.monthName}</span>
