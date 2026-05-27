@@ -347,7 +347,7 @@ function BetRow({
                       </div>
                       {pick.result?.score_text && (
                         <div
-                          className={`text-[11px] mt-0.5 leading-snug font-medium ${
+                          className={`text-[11px] mt-0.5 leading-snug font-semibold tabular-nums ${
                             isWin
                               ? "text-accent-green/85"
                               : isLoss
@@ -355,7 +355,7 @@ function BetRow({
                                 : "text-white/50"
                           }`}
                         >
-                          {pick.result.score_text}
+                          {extractScore(pick.result.score_text)}
                         </div>
                       )}
                     </div>
@@ -429,12 +429,25 @@ function renderEntity(entity: string): React.ReactNode {
 
 /** Remove redundant "win/vainqueur" suffix so e.g. "Báez vainqueur"
  *  becomes "Báez" when the bet type already conveys the winning aspect
- *  (Vainqueur en 4 sets, Handicap, etc.). */
+ *  (Vainqueur en 4 sets, Handicap, etc.).
+ *
+ *  Handles French masc/fem/plural variants: vainqueur, vainqueure,
+ *  vainqueurs, vainqueures + gagne, gagnant(e)(s). */
 function stripWinSuffix(name: string): string {
   return name
-    .replace(/\s+(vainqueur du match|vainqueur|gagne|gagnant)\s*$/i, "")
+    .replace(/\s+(vainqueure?s?\s+du\s+match|vainqueure?s?|gagne|gagnante?s?)\s*$/i, "")
     .replace(/\s+(to win match|to win|wins match|wins)\s*$/i, "")
     .trim();
+}
+
+/** Extract just the trailing score from a result text like
+ *  "Bencic bat McNally 6-4 6-0" → "6-4 6-0". The matchup is
+ *  already shown above the score line, so repeating the player
+ *  names is noisy. Falls back to the full text if no numeric
+ *  score is detected at the end. */
+function extractScore(text: string): string {
+  const m = text.match(/(\d[\d\s\-,]*\d|\d)\s*$/);
+  return m ? m[1].trim() : text;
 }
 
 /** Rewrite cryptic English bookmaker fragments to user-friendly FR.
@@ -483,9 +496,9 @@ function parsePickLabel(
     return { entity: mlRegMatch[1].trim(), typeKey: "betType.matchWinnerRegulation" };
   }
 
-  // Match winner standard (FR/EN)
+  // Match winner standard (FR fem/masc/plurals + EN)
   const mlMatch = trimmed.match(
-    /^(.+?)\s+(vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
+    /^(.+?)\s+(vainqueure?s?\s+du\s+match|vainqueure?s?|gagne|gagnante?s?|to win match|to win|wins match|wins)\s*$/i,
   );
   if (mlMatch) {
     return { entity: mlMatch[1].trim(), typeKey: "betType.matchWinner" };
@@ -681,7 +694,7 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
         </div>
         {leg.result?.score_text && (
           <div
-            className={`text-[11px] mt-0.5 leading-snug font-medium ${
+            className={`text-[11px] mt-0.5 leading-snug font-semibold tabular-nums ${
               isWin
                 ? "text-accent-green/85"
                 : isLoss
@@ -689,7 +702,7 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
                   : "text-white/50"
             }`}
           >
-            {leg.result.score_text}
+            {extractScore(leg.result.score_text)}
           </div>
         )}
       </div>
