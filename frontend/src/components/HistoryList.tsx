@@ -171,15 +171,6 @@ function BetRow({
   const emoji = SPORT_EMOJIS[pick.match.sport] || "🎯";
   const isCombo = pick.match.sport === "combo" && pick.legs && pick.legs.length > 0;
 
-  // Bordure latérale colorée selon outcome
-  const borderLeftClass = isWin
-    ? "border-l-accent-green"
-    : isLoss
-      ? "border-l-accent-red"
-      : isVoid
-        ? "border-l-accent-blue"
-        : "border-l-yellow-400/60";
-
   // Badge status texte (style Unibet "Gagné" / "Perdu" en couleur)
   const statusBadge = (() => {
     if (isWin)
@@ -285,7 +276,7 @@ function BetRow({
     return null;
   })();
 
-  const wrapperClass = `w-full block text-left border-l-2 ${borderLeftClass} rounded-r-md ${
+  const wrapperClass = `w-full block text-left ${
     asDiv ? "" : "transition-transform duration-100 ease-out active:scale-[0.99] hover:bg-white/[0.02]"
   }`;
   const handleClick = () => (isLocked ? router.push("/premium") : onClick());
@@ -335,13 +326,15 @@ function BetRow({
         </div>
       ) : (
         <div className="p-3.5 min-w-0">
-          {/* HEADER : emoji + tournoi (toute la largeur) + status texte + chevron */}
+          {/* HEADER : label uniformisé ("Pari simple" / "Combiné X jambes")
+              + status + chevron. La ligne sous-titre porte le contexte
+              spécifique (tournoi + heure pour single, juste heure pour combo). */}
           <div className="flex items-start gap-2 mb-1.5">
             <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
               {emoji}{" "}
               {isCombo
                 ? t("history.combinedLegs", { n: pick.legs!.length })
-                : pick.match.league || pick.match.sport}
+                : t("history.singleBet")}
             </div>
             <span
               className={`shrink-0 text-xs font-bold tracking-wide whitespace-nowrap flex items-center gap-1 ${statusBadge.cls}`}
@@ -355,8 +348,14 @@ function BetRow({
             </span>
           </div>
 
-          {/* MATCH + heure inline (subtle) */}
-          {timeLabel && (
+          {/* Sous-titre : pour single = tournoi · heure ; pour combo = heure */}
+          {!isCombo && (
+            <div className="text-xs text-white/55 truncate">
+              {pick.match.league || pick.match.sport}
+              {timeLabel && <span className="text-white/40"> · {timeLabel}</span>}
+            </div>
+          )}
+          {isCombo && timeLabel && (
             <div className="text-xs text-white/55">{timeLabel}</div>
           )}
 
@@ -674,7 +673,18 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
     else onPickClick(pick);
   };
   const cardClass =
-    "bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden text-left w-full";
+    "bg-bg-card border border-white/[0.06] rounded-2xl overflow-hidden text-left w-full flex items-stretch";
+
+  // Bande verticale colorée pleine hauteur (header + body).
+  // Couleur selon résultat global du jour.
+  const dayBarBg = day.allPending
+    ? "bg-yellow-500"
+    : day.profit > 0
+      ? "bg-accent-green"
+      : day.profit < 0
+        ? "bg-accent-red"
+        : "bg-white/15";
+
   const header = (
     <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]">
       <div className="font-semibold">
@@ -685,9 +695,9 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
     </div>
   );
 
-  // Cas 1 pari par jour : tout le cadre (header + body) est un seul
-  // bouton cliquable. Le BetRow interne est rendu en div pour ne pas
-  // imbriquer 2 boutons.
+  const bar = <div className={`shrink-0 w-1.5 ${dayBarBg}`} aria-hidden />;
+
+  // Cas 1 pari par jour : tout le cadre est un seul bouton cliquable.
   if (day.picks.length === 1) {
     const pick = day.picks[0];
     return (
@@ -696,19 +706,25 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
         onClick={() => handlePickClick(pick)}
         className={`${cardClass} transition-transform duration-100 ease-out active:scale-[0.99] hover:border-white/15`}
       >
-        {header}
-        <BetRow pick={pick} onClick={() => handlePickClick(pick)} asDiv />
+        {bar}
+        <div className="flex-1 min-w-0">
+          {header}
+          <BetRow pick={pick} onClick={() => handlePickClick(pick)} asDiv />
+        </div>
       </button>
     );
   }
 
   return (
     <div className={cardClass}>
-      {header}
-      <div className="divide-y divide-white/[0.05]">
-        {day.picks.map((p, i) => (
-          <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => handlePickClick(p)} />
-        ))}
+      {bar}
+      <div className="flex-1 min-w-0">
+        {header}
+        <div className="divide-y divide-white/[0.05]">
+          {day.picks.map((p, i) => (
+            <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => handlePickClick(p)} />
+          ))}
+        </div>
       </div>
     </div>
   );
