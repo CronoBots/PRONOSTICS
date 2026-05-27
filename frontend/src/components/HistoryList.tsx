@@ -313,16 +313,6 @@ function BetRow({
               {pick.legs!.map((leg, i) => (
                 <LegRow key={i} leg={leg as LegRowData} index={i + 1} />
               ))}
-              <div className="border-t border-white/15 mx-3.5">
-                <div className="flex items-center justify-between gap-2 py-3">
-                  <span className="text-base font-bold text-white">
-                    {t("history.totalOddsLabel")}
-                  </span>
-                  <span className={`text-xl font-extrabold tabular-nums ${oddsColorClass}`}>
-                    {pick.odds.toFixed(2)}
-                  </span>
-                </div>
-              </div>
             </div>
           ) : (
             (() => {
@@ -331,7 +321,7 @@ function BetRow({
               return (
                 <div className="-mx-3.5 -mt-3.5 px-3.5 pt-2.5">
                   <div className="flex items-start gap-2">
-                    <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+                    <span className="shrink-0 text-xs mt-1">{emoji}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-sm font-semibold text-white truncate">
@@ -348,7 +338,7 @@ function BetRow({
                           {t(parsed.typeKey, parsed.typeParams)}
                         </div>
                       )}
-                      <div className="text-[11px] text-white/35 truncate mt-0.5">
+                      <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
                         {matchup}
                         {timeLabel && (
                           <span className="text-white/30"> · {timeLabel}</span>
@@ -371,6 +361,7 @@ function BetRow({
               actualGain={actualGain}
               outcome={pick.outcome}
               resultText={isCombo ? resultText : null}
+              showTotalOdds={isCombo}
             />
           ) : (
             financialLine && (
@@ -463,12 +454,16 @@ function FinancialStatsGrid({
   actualGain,
   outcome,
   resultText,
+  showTotalOdds,
 }: {
   stake: number;
   odds: number;
   actualGain: number;
   outcome: HistoryPick["outcome"];
   resultText: string | null;
+  /** Si true (combos) → affiche "Cote totale" en haut du bloc footer
+   *  unifié. Pour les singles la cote est déjà rendue à côté du pick. */
+  showTotalOdds?: boolean;
 }) {
   const { t } = useI18n();
   const totalReturn = stake * odds;
@@ -491,9 +486,24 @@ function FinancialStatsGrid({
         ? "text-accent-red"
         : "text-white/60";
   const returnText = isLoss ? `0.00 €` : `${totalReturn.toFixed(2)} €`;
+  const oddsCls = isWin
+    ? "text-accent-green"
+    : isLoss
+      ? "text-accent-red"
+      : "text-white";
 
   return (
-    <div className="-mx-3.5 mt-3 px-3.5 py-3 bg-bg-elevated/40 border-t border-white/[0.08]">
+    <div className="-mx-3.5 mt-3 px-3.5 py-3 bg-bg-elevated/40 border-t border-white/15">
+      {showTotalOdds && (
+        <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-white/[0.06]">
+          <span className="text-base font-bold text-white">
+            {t("history.totalOddsLabel")}
+          </span>
+          <span className={`text-xl font-extrabold tabular-nums ${oddsCls}`}>
+            {odds.toFixed(2)}
+          </span>
+        </div>
+      )}
       <div className="grid grid-cols-3 gap-2">
         <FinancialStat label={t("history.stake")} value={`${stake.toFixed(2)} €`} />
         <FinancialStat label={t("history.return")} value={returnText} />
@@ -578,8 +588,8 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
     : null;
 
   return (
-    <div className="flex items-start gap-2 py-2.5 px-3.5 border-t border-white/[0.08] first:border-t-0">
-      <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+    <div className="flex items-start gap-2 py-2 px-3.5 border-t border-white/[0.12] first:border-t-0">
+      <span className="shrink-0 text-xs mt-1">{emoji}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-semibold text-white truncate">{entity}</span>
@@ -592,7 +602,7 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
             {t(typeKey, typeParams)}
           </div>
         )}
-        <div className="text-[11px] text-white/35 truncate mt-0.5">
+        <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
           {matchup}
           {timeLabel && <span className="text-white/30"> · {timeLabel}</span>}
         </div>
