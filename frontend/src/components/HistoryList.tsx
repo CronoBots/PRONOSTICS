@@ -345,6 +345,19 @@ function BetRow({
                           <span className="text-white/30"> · {timeLabel}</span>
                         )}
                       </div>
+                      {pick.result?.score_text && (
+                        <div
+                          className={`text-[11px] mt-0.5 leading-snug font-medium ${
+                            isWin
+                              ? "text-accent-green/85"
+                              : isLoss
+                                ? "text-accent-red/85"
+                                : "text-white/50"
+                          }`}
+                        >
+                          {pick.result.score_text}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -615,6 +628,7 @@ interface LegRowData {
   away_team: string;
   outcome: "win" | "loss" | "void" | "pending";
   kickoff?: string;
+  result?: { score_text?: string; score_home?: number | string; score_away?: number | string } | null;
 }
 
 /** Render a single bet row in a combo (no colored bar — the DayCard's
@@ -665,6 +679,19 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
           {matchup}
           {timeLabel && <span className="text-white/30"> · {timeLabel}</span>}
         </div>
+        {leg.result?.score_text && (
+          <div
+            className={`text-[11px] mt-0.5 leading-snug font-medium ${
+              isWin
+                ? "text-accent-green/85"
+                : isLoss
+                  ? "text-accent-red/85"
+                  : "text-white/50"
+            }`}
+          >
+            {leg.result.score_text}
+          </div>
+        )}
       </div>
     </div>
   );

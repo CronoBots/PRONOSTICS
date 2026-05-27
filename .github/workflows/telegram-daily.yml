@@ -28,7 +28,14 @@ on:
           - pick-today
           - pick-yesterday
           - result-yesterday
+          - result-today
+          - result-date
           - recap-weekly
+      result_date:
+        description: "Date du résultat (YYYY-MM-DD) — utilisé uniquement si mode=result-date"
+        type: string
+        required: false
+        default: ""
 
 jobs:
   publish:
@@ -81,6 +88,18 @@ jobs:
             result-yesterday)
               YESTERDAY=$(date -u -d "yesterday" +%Y-%m-%d)
               python scripts/publish_telegram.py --result "$YESTERDAY"
+              ;;
+            result-today)
+              TODAY=$(date -u +%Y-%m-%d)
+              python scripts/publish_telegram.py --result "$TODAY"
+              ;;
+            result-date)
+              CUSTOM_DATE="${{ github.event.inputs.result_date }}"
+              if [ -z "$CUSTOM_DATE" ]; then
+                echo "ERROR: result-date mode requires the result_date input (YYYY-MM-DD)"
+                exit 1
+              fi
+              python scripts/publish_telegram.py --result "$CUSTOM_DATE"
               ;;
             recap-weekly)
               python scripts/publish_telegram.py --recap weekly
