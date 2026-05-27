@@ -34,8 +34,10 @@ function signTone(n: number): StatRow["tone"] {
 
 function StatTile({ label, value, tone = "neutral" }: StatRow) {
   return (
-    <div className="bg-bg-card border border-white/[0.06] rounded-xl p-3.5 flex items-center justify-between gap-3">
-      <span className="text-[11px] md:text-xs text-white font-semibold uppercase tracking-wider">{label}</span>
+    <div className="bg-bg-card border border-white/[0.06] rounded-xl px-3 py-2.5 flex items-center justify-between gap-3">
+      <span className="text-xs md:text-sm text-white/65 font-normal">
+        {label}
+      </span>
       <span
         className={`text-sm md:text-base font-bold tabular-nums whitespace-nowrap ${toneClass[tone]}`}
       >
