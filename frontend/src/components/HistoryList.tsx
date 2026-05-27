@@ -358,7 +358,6 @@ function BetRow({
             <FinancialStatsGrid
               stake={stake}
               odds={pick.odds}
-              actualGain={actualGain}
               outcome={pick.outcome}
               resultText={isCombo ? resultText : null}
               showTotalOdds={isCombo}
@@ -451,14 +450,12 @@ function parsePickLabel(
 function FinancialStatsGrid({
   stake,
   odds,
-  actualGain,
   outcome,
   resultText,
   showTotalOdds,
 }: {
   stake: number;
   odds: number;
-  actualGain: number;
   outcome: HistoryPick["outcome"];
   resultText: string | null;
   /** Si true (combos) → affiche "Cote totale" en haut du bloc footer
@@ -471,20 +468,6 @@ function FinancialStatsGrid({
   const isWin = outcome === "win";
   const isLoss = outcome === "loss";
 
-  const gainText = isPending
-    ? `+${(totalReturn - stake).toFixed(2)} €`
-    : isWin
-      ? `+${actualGain.toFixed(2)} €`
-      : isLoss
-        ? `${actualGain.toFixed(2)} €`
-        : `±${(0).toFixed(2)} €`;
-  const gainCls = isPending
-    ? "text-yellow-300"
-    : isWin
-      ? "text-accent-green"
-      : isLoss
-        ? "text-accent-red"
-        : "text-white/60";
   const returnText = isLoss ? `0.00 €` : `${totalReturn.toFixed(2)} €`;
   const oddsCls = isWin
     ? "text-accent-green"
@@ -504,10 +487,9 @@ function FinancialStatsGrid({
           </span>
         </div>
       )}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-3">
         <FinancialStat label={t("history.stake")} value={`${stake.toFixed(2)} €`} />
         <FinancialStat label={t("history.return")} value={returnText} />
-        <FinancialStat label={t("history.gain")} value={gainText} valueCls={gainCls} />
       </div>
       {resultText && (
         <div className="flex justify-center mt-3">
@@ -635,9 +617,8 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
 
   const header = (
     <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.12]">
-      <div className="font-semibold">
-        <span className="capitalize">{day.dayName}</span> {day.dayNum}{" "}
-        <span className="text-white/40 font-normal">{day.monthName}</span>
+      <div className="font-semibold capitalize">
+        {day.dayName} {day.dayNum} {day.monthName}
       </div>
       <ProfitChip profit={day.profit} pending={day.allPending} />
     </div>
