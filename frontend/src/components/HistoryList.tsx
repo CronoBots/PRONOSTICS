@@ -418,10 +418,19 @@ function parsePickLabel(
 ): { entity: string; typeKey: string | null; typeParams?: Record<string, string | number> } {
   const trimmed = pick.trim();
 
-  // Match winner — variantes FR/EN + "ML 90 min", "(temps réglementaire)"
-  // qui sont typiques des picks foot (Tottenham ML 90 min (temps régle...))
+  // Match winner foot — variante explicite "ML 90 min" ou
+  // "(temps réglementaire)" : on utilise un label distinct pour préciser
+  // que le pari ne couvre pas prolongations / tirs au but.
+  const mlRegMatch = trimmed.match(
+    /^(.+?)\s+(?:ML(?:\s+90\s*min)?\s*(?:\(temps\s+r[eé]glementaire\))?|vainqueur(?:\s+du\s+match)?\s+\(?\s*(?:90\s*min|temps\s+r[eé]glementaire)\s*\)?|to win in (?:regulation|regular time))\s*$/i,
+  );
+  if (mlRegMatch) {
+    return { entity: mlRegMatch[1].trim(), typeKey: "betType.matchWinnerRegulation" };
+  }
+
+  // Match winner standard (FR/EN)
   const mlMatch = trimmed.match(
-    /^(.+?)\s+(?:ML(?:\s+90\s*min)?(?:\s*\(temps\s+r[eé]glementaire\))?|vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
+    /^(.+?)\s+(vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
   );
   if (mlMatch) {
     return { entity: mlMatch[1].trim(), typeKey: "betType.matchWinner" };
