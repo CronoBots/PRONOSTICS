@@ -65,7 +65,9 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID", "").strip()
 
 PUBLIC_BASE = "https://cronobots.github.io/PRONOSTICS"
-LOGO_BANNER_URL = f"{PUBLIC_BASE}/logo-banner.png"
+# telegram-banner.png = bannière custom uploadée par user pour le canal
+# (overrides logo-banner.png qui était le default du site)
+LOGO_BANNER_URL = f"{PUBLIC_BASE}/telegram-banner.png"
 LOGO_SQUARE_URL = f"{PUBLIC_BASE}/logo-square.png"
 
 # Sport icons (1 emoji per sport — used as visual anchor in headers)
