@@ -411,6 +411,7 @@ const fr: Dict = {
   "betType.under": "Moins de",
   "betType.btts": "Les deux équipes marquent",
   "history.selectionsSuffix": "sélections",
+  "history.scoreLabel": "Score",
   "history.loss": "Perte",
   "history.refund": "Remboursé",
   "history.close": "Fermer",
@@ -1166,6 +1167,7 @@ const en: Dict = {
   "betType.under": "Under",
   "betType.btts": "Both teams to score",
   "history.selectionsSuffix": "selections",
+  "history.scoreLabel": "Final score",
   "history.loss": "Loss",
   "history.refund": "Refunded",
   // Stats hero

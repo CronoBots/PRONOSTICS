@@ -322,10 +322,10 @@ function BetRow({
               return (
                 <div className="-mx-3.5 -mt-3.5 px-3.5 pt-2.5">
                   <div className="flex items-start gap-2">
-                    <span className="shrink-0 text-xs mt-1">{emoji}</span>
+                    <span className="shrink-0 text-sm mt-1">{emoji}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-sm font-semibold text-white leading-snug">
+                        <span className="text-base font-semibold text-white leading-snug">
                           {renderEntity(parsed.entity)}
                         </span>
                         <span
@@ -347,7 +347,7 @@ function BetRow({
                       </div>
                       {pick.result?.score_text && (
                         <div
-                          className={`text-[11px] mt-0.5 leading-snug font-semibold tabular-nums ${
+                          className={`text-[11px] mt-1 leading-snug ${
                             isWin
                               ? "text-accent-green/85"
                               : isLoss
@@ -355,7 +355,12 @@ function BetRow({
                                 : "text-white/50"
                           }`}
                         >
-                          {extractScore(pick.result.score_text)}
+                          <span className="text-white/40 font-normal">
+                            {t("history.scoreLabel")}
+                          </span>{" "}
+                          <span className="font-semibold tabular-nums">
+                            {extractScore(pick.result.score_text)}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -672,14 +677,14 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
     : null;
 
   return (
-    <div className="flex items-start gap-2 py-2 px-3.5 border-t border-white/[0.12] first:border-t-0">
-      <span className="shrink-0 text-xs mt-1">{emoji}</span>
+    <div className="flex items-start gap-2 py-2.5 px-3.5 border-t border-white/[0.12] first:border-t-0">
+      <span className="shrink-0 text-sm mt-1">{emoji}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-semibold text-white leading-snug">
+          <span className="text-base font-semibold text-white leading-snug">
             {renderEntity(entity)}
           </span>
-          <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
+          <span className={`shrink-0 text-base font-bold tabular-nums ${oddsColor}`}>
             {leg.odds.toFixed(2)}
           </span>
         </div>
@@ -694,7 +699,7 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
         </div>
         {leg.result?.score_text && (
           <div
-            className={`text-[11px] mt-0.5 leading-snug font-semibold tabular-nums ${
+            className={`text-[11px] mt-1 leading-snug ${
               isWin
                 ? "text-accent-green/85"
                 : isLoss
@@ -702,7 +707,12 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
                   : "text-white/50"
             }`}
           >
-            {extractScore(leg.result.score_text)}
+            <span className="text-white/40 font-normal">
+              {t("history.scoreLabel")}
+            </span>{" "}
+            <span className="font-semibold tabular-nums">
+              {extractScore(leg.result.score_text)}
+            </span>
           </div>
         )}
       </div>
