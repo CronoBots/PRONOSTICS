@@ -481,8 +481,9 @@ function extractScore(text: string): string {
  *  bet-type regex matches. */
 function humanizePickFragment(s: string, lang: "fr" | "en"): string {
   let out = s;
-  // Strip annotation parenthétique interne (ex: "(combo simple maison)")
-  out = out.replace(/\s*\([^)]*\bmaison\b[^)]*\)\s*/gi, " ").trim();
+  // Strip annotations parenthétiques internes (notes de curation auteur :
+  // "(combo)", "(combo simple maison)", etc.) — pas user-facing.
+  out = out.replace(/\s*\([^)]*\b(?:combo|maison)\b[^)]*\)\s*/gi, " ").trim();
   if (lang === "fr") {
     out = out.replace(/\bBoth Teams To Score\b/gi, "Les deux équipes marquent");
     out = out.replace(/\bBTTS\b/gi, "Les deux équipes marquent");
@@ -512,7 +513,8 @@ function parsePickLabel(
   typeParams?: Record<string, string | number>;
 } {
   // Strip annotations parenthétiques internes avant tout pattern match
-  const trimmed = pick.replace(/\s*\([^)]*\bmaison\b[^)]*\)\s*/gi, " ").trim();
+  // (ex: "(combo)", "(combo simple maison)" — notes de curation auteur)
+  const trimmed = pick.replace(/\s*\([^)]*\b(?:combo|maison)\b[^)]*\)\s*/gi, " ").trim();
 
   // Match winner foot — variante explicite "ML 90 min" ou "(temps régle...)"
   const mlRegMatch = trimmed.match(
