@@ -331,8 +331,9 @@ def aligned_data(rows: list[tuple[str, str]]) -> str:
 def bankroll_chart_url(days: int = 30) -> str:
     """Generate a QuickChart.io URL with the bankroll evolution.
 
-    Returns a permanent image URL that Telegram can fetch and embed.
-    Uses NEXBET green color, dark theme background.
+    Style aligned with home page chart : dark theme, green line (or red
+    if down), subtle horizontal grid only, no points, no title, no
+    X-axis labels. Returns a permanent image URL.
     """
     starting = 5.0
     sorted_picks = sorted(
@@ -350,57 +351,63 @@ def bankroll_chart_url(days: int = 30) -> str:
         labels.append(datetime.strptime(p["date"], "%Y-%m-%d").strftime("%b %d"))
         values.append(round(running, 2))
 
-    # Tail the last N points if too many (chart readability)
     if len(labels) > days + 1:
         labels = labels[-(days + 1):]
         values = values[-(days + 1):]
 
     final = values[-1] if values else starting
     positive = final >= starting
+    # NEXBET green / red exact (from frontend/tailwind.config.js)
     color = "#10d9a3" if positive else "#ff4d6d"
-    bg_color = "rgba(16,217,163,0.15)" if positive else "rgba(255,77,109,0.15)"
+    fill_color = "rgba(16,217,163,0.08)" if positive else "rgba(255,77,109,0.08)"
 
     config = {
         "type": "line",
         "data": {
             "labels": labels,
             "datasets": [{
-                "label": "Bankroll",
                 "data": values,
                 "borderColor": color,
-                "backgroundColor": bg_color,
+                "backgroundColor": fill_color,
                 "fill": True,
-                "tension": 0.35,
-                "pointRadius": 3,
-                "pointBackgroundColor": color,
+                "tension": 0.4,
+                "pointRadius": 0,
+                "borderWidth": 4,
             }],
         },
         "options": {
+            "responsive": False,
             "plugins": {
                 "legend": {"display": False},
-                "title": {
-                    "display": True,
-                    "text": f"NEXBET — Bankroll evolution ({starting:.0f} → {final:.2f} EUR)",
-                    "color": "#ffffff",
-                    "font": {"size": 16, "weight": "bold"},
-                },
+                "tooltip": {"enabled": False},
             },
             "scales": {
                 "x": {
-                    "ticks": {"color": "#ffffff"},
-                    "grid": {"color": "rgba(255,255,255,0.1)"},
+                    "display": False,
+                    "grid": {"display": False},
                 },
                 "y": {
-                    "ticks": {"color": "#ffffff", "callback": "function(v){return v+' EUR'}"},
-                    "grid": {"color": "rgba(255,255,255,0.1)"},
+                    "ticks": {
+                        "color": "#ffffff",
+                        "font": {"size": 14, "weight": "bold"},
+                        "callback": "function(v){return v+'€'}",
+                    },
+                    "grid": {
+                        "color": "rgba(255,255,255,0.06)",
+                        "drawBorder": False,
+                    },
+                    "border": {"display": False},
                 },
+            },
+            "layout": {
+                "padding": {"top": 20, "right": 30, "bottom": 20, "left": 10},
             },
         },
     }
 
     encoded = quote_plus(json.dumps(config, separators=(",", ":")))
-    # bkg = dark background, w/h = dimensions
-    return f"https://quickchart.io/chart?bkg=%23121420&w=800&h=400&c={encoded}"
+    # bkg dark aligné bg-card NEXBET (#12141E from tailwind config)
+    return f"https://quickchart.io/chart?bkg=%2312141E&w=800&h=400&c={encoded}"
 
 
 # Colored status dots — used in result messages for instant visual signal
