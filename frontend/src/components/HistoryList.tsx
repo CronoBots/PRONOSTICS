@@ -316,7 +316,7 @@ function BetRow({
             </div>
           ) : (
             (() => {
-              const parsed = parsePickLabel(pick.pick);
+              const parsed = parsePickLabel(pick.pick, lang);
               const matchup = `${pick.match.home_team} — ${pick.match.away_team}`;
               return (
                 <div className="-mx-3.5 -mt-3.5 px-3.5 pt-2.5">
@@ -409,18 +409,45 @@ function stripWinSuffix(name: string): string {
     .trim();
 }
 
+/** Rewrite cryptic English bookmaker fragments to user-friendly FR.
+ *  Used both inside the entity and as fallback when no specific
+ *  bet-type regex matches. */
+function humanizePickFragment(s: string, lang: "fr" | "en"): string {
+  let out = s;
+  // Strip annotation parenthétique interne (ex: "(combo simple maison)")
+  out = out.replace(/\s*\([^)]*\bmaison\b[^)]*\)\s*/gi, " ").trim();
+  if (lang === "fr") {
+    out = out.replace(/\bBoth Teams To Score\b/gi, "Les deux équipes marquent");
+    out = out.replace(/\bBTTS\b/gi, "Les deux équipes marquent");
+    out = out.replace(/\bML\b(?!\s*\d)/gi, "gagne");
+    out = out.replace(/\bover\s+([\d.]+)/gi, "Plus de $1");
+    out = out.replace(/\bunder\s+([\d.]+)/gi, "Moins de $1");
+  } else {
+    out = out.replace(/\bLes deux équipes marquent\b/gi, "Both teams to score");
+    out = out.replace(/\bplus de\s+([\d.]+)/gi, "Over $1");
+    out = out.replace(/\bmoins de\s+([\d.]+)/gi, "Under $1");
+    out = out.replace(/\bML\b(?!\s*\d)/gi, "to win");
+  }
+  // Compact extra whitespace introduced by the replacements
+  return out.replace(/\s+/g, " ").trim();
+}
+
 /** Parse a pick label into (picked entity, bet type) using regex
  *  heuristics. The type is returned as an i18n key + optional params,
  *  so the caller localises it via t(). Returns type=null when nothing
- *  recognisable matches — the caller skips the subtitle line. */
+ *  recognisable matches — the caller falls back to a humanised string. */
 function parsePickLabel(
   pick: string,
-): { entity: string; typeKey: string | null; typeParams?: Record<string, string | number> } {
-  const trimmed = pick.trim();
+  lang: "fr" | "en" = "fr",
+): {
+  entity: string;
+  typeKey: string | null;
+  typeParams?: Record<string, string | number>;
+} {
+  // Strip annotations parenthétiques internes avant tout pattern match
+  const trimmed = pick.replace(/\s*\([^)]*\bmaison\b[^)]*\)\s*/gi, " ").trim();
 
-  // Match winner foot — variante explicite "ML 90 min" ou
-  // "(temps réglementaire)" : on utilise un label distinct pour préciser
-  // que le pari ne couvre pas prolongations / tirs au but.
+  // Match winner foot — variante explicite "ML 90 min" ou "(temps régle...)"
   const mlRegMatch = trimmed.match(
     /^(.+?)\s+(?:ML(?:\s+90\s*min)?\s*(?:\(temps\s+r[eé]glementaire\))?|vainqueur(?:\s+du\s+match)?\s+\(?\s*(?:90\s*min|temps\s+r[eé]glementaire)\s*\)?|to win in (?:regulation|regular time))\s*$/i,
   );
@@ -447,10 +474,15 @@ function parsePickLabel(
     };
   }
 
-  const totMatch = trimmed.match(/(over|under|plus de|moins de)\s+([\d.]+)/i);
+  // Total Over/Under — locale-aware ("Plus de X" / "Over X")
+  const totMatch = trimmed.match(/^(over|under|plus de|moins de)\s+([\d.]+)$/i);
   if (totMatch) {
-    const dir = /over|plus/i.test(totMatch[1]) ? "Over" : "Under";
-    return { entity: `${dir} ${totMatch[2]}`, typeKey: "betType.totalGames" };
+    const isOver = /over|plus/i.test(totMatch[1]);
+    const label =
+      lang === "fr"
+        ? `${isOver ? "Plus de" : "Moins de"} ${totMatch[2]}`
+        : `${isOver ? "Over" : "Under"} ${totMatch[2]}`;
+    return { entity: label, typeKey: "betType.totalGames" };
   }
 
   const hcpMatch = trimmed.match(/^(.+?)\s+([+-]\d+\.?\d*)\s*(jeux|games)?$/i);
@@ -461,11 +493,13 @@ function parsePickLabel(
     };
   }
 
+  // Combiné spécial : "X + BTTS" / "X gagne + Les deux équipes…"
   if (/(\+|et|and)\s*(btts|les deux|both teams)/i.test(trimmed)) {
-    return { entity: trimmed, typeKey: "betType.specialCombo" };
+    return { entity: humanizePickFragment(trimmed, lang), typeKey: "betType.specialCombo" };
   }
 
-  return { entity: trimmed, typeKey: null };
+  // Fallback : on humanise au moins le texte brut
+  return { entity: humanizePickFragment(trimmed, lang), typeKey: null };
 }
 
 function FinancialStatsGrid({
@@ -581,7 +615,7 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
         : "text-white";
 
   const { t, lang } = useI18n();
-  const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
+  const { entity, typeKey, typeParams } = parsePickLabel(leg.pick, lang);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
   const timeLabel = leg.kickoff
     ? new Date(leg.kickoff).toLocaleTimeString(localeForLang(lang), {
