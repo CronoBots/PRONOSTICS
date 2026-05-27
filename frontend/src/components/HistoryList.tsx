@@ -277,7 +277,9 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   return (
     <button
       onClick={() => (isLocked ? router.push("/premium") : onClick())}
-      className={`w-full block border-l-2 ${borderLeftClass} text-left hover:bg-white/[0.02] active:bg-white/[0.04] transition rounded-r-md`}
+      className={`w-full block text-left hover:bg-white/[0.02] active:bg-white/[0.04] transition ${
+        isCombo ? "" : `border-l-2 ${borderLeftClass} rounded-r-md`
+      }`}
     >
       {isLocked ? (
         <div className="p-3 flex items-center gap-2">
@@ -329,11 +331,11 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
 
           {/* BET (hero) : pari à gauche, cote à droite */}
           {isCombo ? (
-            <div>
+            <div className="-mx-3.5">
               {pick.legs!.map((leg, i) => (
                 <ComboLegMini key={i} leg={leg} index={i + 1} />
               ))}
-              <div className="flex items-center justify-between gap-2 pt-2.5 mt-2 border-t border-white/15">
+              <div className="flex items-center justify-between gap-2 pt-2.5 mt-2 mx-3.5 border-t border-white/15">
                 <span className="text-sm font-bold text-white">
                   {t("history.totalOddsLabel")}
                 </span>
@@ -569,38 +571,40 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
   const statusFg = isLoss || isVoid ? "text-white" : "text-bg-base";
 
   return (
-    <div className="flex items-stretch gap-2.5 py-2 border-t border-white/[0.06] first:border-t-0">
-      {/* Bloc coloré status + numéro de jambe */}
+    <div className="flex items-stretch border-t border-white/15 first:border-t-0">
+      {/* Bande verticale pleine hauteur, flush bord gauche, couleur = statut leg */}
       <div
-        className={`shrink-0 w-7 rounded flex items-center justify-center ${statusBg}`}
+        className={`shrink-0 w-10 flex items-center justify-center ${statusBg}`}
         aria-label={`Jambe ${index} — ${leg.outcome}`}
       >
-        <span className={`text-sm font-extrabold tabular-nums ${statusFg}`}>
+        <span className={`text-base font-extrabold tabular-nums ${statusFg}`}>
           {index}
         </span>
       </div>
-      <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-semibold text-white truncate">{entity}</span>
-          <div className="shrink-0 flex items-center gap-1.5">
-            <span className={`text-sm font-bold tabular-nums ${oddsColor}`}>
-              {leg.odds.toFixed(2)}
-            </span>
-            <span
-              className={`text-sm font-bold leading-none ${statusColor}`}
-              aria-label={leg.outcome}
-            >
-              {statusLabel}
-            </span>
+      <div className="flex-1 min-w-0 flex items-start gap-2 py-2.5 pl-3 pr-3.5">
+        <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-semibold text-white truncate">{entity}</span>
+            <div className="shrink-0 flex items-center gap-1.5">
+              <span className={`text-sm font-bold tabular-nums ${oddsColor}`}>
+                {leg.odds.toFixed(2)}
+              </span>
+              <span
+                className={`text-sm font-bold leading-none ${statusColor}`}
+                aria-label={leg.outcome}
+              >
+                {statusLabel}
+              </span>
+            </div>
           </div>
+          {typeKey && (
+            <div className="text-[11px] text-white/55 mt-0.5">
+              {t(typeKey, typeParams)}
+            </div>
+          )}
+          <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
         </div>
-        {typeKey && (
-          <div className="text-[11px] text-white/55 mt-0.5">
-            {t(typeKey, typeParams)}
-          </div>
-        )}
-        <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
       </div>
     </div>
   );
