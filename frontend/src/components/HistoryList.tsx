@@ -277,7 +277,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   return (
     <button
       onClick={() => (isLocked ? router.push("/premium") : onClick())}
-      className={`w-full block text-left hover:bg-white/[0.02] active:bg-white/[0.04] transition ${
+      className={`w-full block text-left transition-transform duration-100 ease-out active:scale-[0.99] hover:bg-white/[0.02] ${
         isCombo ? "" : `border-l-2 ${borderLeftClass} rounded-r-md`
       }`}
     >
@@ -543,20 +543,6 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
       : isVoid
         ? "text-accent-blue"
         : "text-white";
-  const statusLabel = isWin
-    ? "✓"
-    : isLoss
-      ? "✕"
-      : isVoid
-        ? "○"
-        : "⏳";
-  const statusColor = isWin
-    ? "text-accent-green"
-    : isLoss
-      ? "text-accent-red"
-      : isVoid
-        ? "text-accent-blue"
-        : "text-yellow-300";
 
   const { t } = useI18n();
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick);
@@ -589,17 +575,9 @@ function ComboLegMini({ leg, index }: { leg: import("@/lib/types").ComboLeg; ind
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-semibold text-white truncate">{entity}</span>
-            <div className="shrink-0 flex items-center gap-1.5">
-              <span className={`text-sm font-bold tabular-nums ${oddsColor}`}>
-                {leg.odds.toFixed(2)}
-              </span>
-              <span
-                className={`text-sm font-bold leading-none ${statusColor}`}
-                aria-label={leg.outcome}
-              >
-                {statusLabel}
-              </span>
-            </div>
+            <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
+              {leg.odds.toFixed(2)}
+            </span>
           </div>
           {typeKey && (
             <div className="text-[11px] text-white/55 mt-0.5">
