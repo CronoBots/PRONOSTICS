@@ -635,30 +635,30 @@ function LegRow({ leg, index }: { leg: LegRowData; index?: number }) {
   const statusFg = isLoss || isVoid ? "text-white" : "text-bg-base";
 
   return (
-    <div className="flex items-start gap-2.5 py-2.5 px-3.5 border-t border-white/15 first:border-t-0">
-      {/* Pastille colorée avec le numéro de jambe — statut par leg */}
+    <div className="flex items-stretch gap-3 border-t border-white/15 first:border-t-0">
+      {/* Ligne verticale pleine hauteur par leg — délimite chaque pari
+          et indique son statut via la couleur. Pas de numéro : la ligne
+          est juste un séparateur coloré. */}
       <div
-        className={`shrink-0 w-7 h-7 rounded-md flex items-center justify-center ${statusBg}`}
+        className={`shrink-0 w-1.5 ${statusBg}`}
         aria-label={index ? `Jambe ${index} — ${leg.outcome}` : leg.outcome}
-      >
-        <span className={`text-sm font-extrabold tabular-nums ${statusFg}`}>
-          {index ?? "·"}
-        </span>
-      </div>
-      <span className="shrink-0 text-sm mt-1">{emoji}</span>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-semibold text-white truncate">{entity}</span>
-          <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
-            {leg.odds.toFixed(2)}
-          </span>
-        </div>
-        {typeKey && (
-          <div className="text-[11px] text-white/55 mt-0.5">
-            {t(typeKey, typeParams)}
+      />
+      <div className="flex-1 min-w-0 flex items-start gap-2 py-2.5 pr-3.5">
+        <span className="shrink-0 text-sm mt-0.5">{emoji}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-semibold text-white truncate">{entity}</span>
+            <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
+              {leg.odds.toFixed(2)}
+            </span>
           </div>
-        )}
-        <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
+          {typeKey && (
+            <div className="text-[11px] text-white/55 mt-0.5">
+              {t(typeKey, typeParams)}
+            </div>
+          )}
+          <div className="text-[11px] text-white/35 truncate mt-0.5">{matchup}</div>
+        </div>
       </div>
     </div>
   );
