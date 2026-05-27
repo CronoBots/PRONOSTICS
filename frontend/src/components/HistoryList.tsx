@@ -323,8 +323,8 @@ function BetRow({
                   <div className="flex items-start gap-2">
                     <span className="shrink-0 text-xs mt-1">{emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-semibold text-white truncate">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-sm font-semibold text-white leading-snug">
                           {parsed.entity}
                         </span>
                         <span
@@ -399,6 +399,16 @@ function BetRow({
   );
 }
 
+/** Remove redundant "win/vainqueur" suffix so e.g. "Báez vainqueur"
+ *  becomes "Báez" when the bet type already conveys the winning aspect
+ *  (Vainqueur en 4 sets, Handicap, etc.). */
+function stripWinSuffix(name: string): string {
+  return name
+    .replace(/\s+(vainqueur du match|vainqueur|gagne|gagnant)\s*$/i, "")
+    .replace(/\s+(to win match|to win|wins match|wins)\s*$/i, "")
+    .trim();
+}
+
 /** Parse a pick label into (picked entity, bet type) using regex
  *  heuristics. The type is returned as an i18n key + optional params,
  *  so the caller localises it via t(). Returns type=null when nothing
@@ -408,8 +418,10 @@ function parsePickLabel(
 ): { entity: string; typeKey: string | null; typeParams?: Record<string, string | number> } {
   const trimmed = pick.trim();
 
+  // Match winner — variantes FR/EN + "ML 90 min", "(temps réglementaire)"
+  // qui sont typiques des picks foot (Tottenham ML 90 min (temps régle...))
   const mlMatch = trimmed.match(
-    /^(.+?)\s+(vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
+    /^(.+?)\s+(?:ML(?:\s+90\s*min)?(?:\s*\(temps\s+r[eé]glementaire\))?|vainqueur du match|vainqueur|gagne|gagnant|to win match|to win|wins match|wins)\s*$/i,
   );
   if (mlMatch) {
     return { entity: mlMatch[1].trim(), typeKey: "betType.matchWinner" };
@@ -420,7 +432,7 @@ function parsePickLabel(
   );
   if (setsMatch) {
     return {
-      entity: setsMatch[1].trim(),
+      entity: stripWinSuffix(setsMatch[1].trim()),
       typeKey: "betType.winInSets",
       typeParams: { n: setsMatch[2] },
     };
@@ -435,7 +447,7 @@ function parsePickLabel(
   const hcpMatch = trimmed.match(/^(.+?)\s+([+-]\d+\.?\d*)\s*(jeux|games)?$/i);
   if (hcpMatch) {
     return {
-      entity: `${hcpMatch[1].trim()} ${hcpMatch[2]}`,
+      entity: `${stripWinSuffix(hcpMatch[1].trim())} ${hcpMatch[2]}`,
       typeKey: "betType.handicap",
     };
   }
@@ -573,8 +585,8 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
     <div className="flex items-start gap-2 py-2 px-3.5 border-t border-white/[0.12] first:border-t-0">
       <span className="shrink-0 text-xs mt-1">{emoji}</span>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-semibold text-white truncate">{entity}</span>
+        <div className="flex items-start justify-between gap-2">
+          <span className="text-sm font-semibold text-white leading-snug">{entity}</span>
           <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
             {leg.odds.toFixed(2)}
           </span>
