@@ -494,21 +494,18 @@ def format_test() -> str:
 
 
 def format_pick_simple(pick: dict) -> str:
-    """Format a single pending pick — Premium gated with MASKED content.
+    """Format a single pending pick — Premium gated minimal teaser.
 
-    Structure entièrement visible (selections, match, rationale) mais
-    contenu masqué par blocs █. L'utilisateur voit qu'il y a une analyse
-    riche derrière le paywall sans pouvoir la lire.
+    Stratégie : ne révéler QUE les stats agrégées (cote totale + edge +
+    track record). Pas de nom de tournoi exact, pas de sélections, pas
+    de cote par jambe — sinon le pari devient devinable via les cotes
+    bookmakers.
     """
-    icon = SPORT_ICON.get(pick["sport"], "")
+    sport_label = SPORT_LABEL.get(pick["sport"], pick["sport"].title())
     potential = pick["stake"] * (pick["odds"] - 1)
     total_return = pick["stake"] * pick["odds"]
 
-    home_masked = mask_words(pick["home_team"])
-    away_masked = mask_words(pick["away_team"])
-    pick_masked = mask_words(pick["pick"])
-
-    # Pricing data — publicly visible (builds trust via quanti transparency)
+    # Pricing data — agrégée seulement, pas de leg-level
     data_rows = [("Market price", f"{pick['odds']:.2f}")]
     if pick.get("model_probability"):
         fair_value = 1 / pick["model_probability"]
@@ -526,22 +523,19 @@ def format_pick_simple(pick: dict) -> str:
 
     msg = (
         "🔒 *BET OF THE DAY · Premium pick*\n"
-        f"{fmt_date_long(pick['date'])} · {fmt_time_cet(pick.get('kickoff', ''))}\n"
+        f"{fmt_date_long(pick['date'])}\n"
         "\n"
-        f"{icon} {pick['league']}\n"
-        f"*{home_masked}* vs *{away_masked}*\n"
+        f"Sport: *{sport_label}* · single bet\n"
         "\n"
-        f"*SELECTION*\n"
-        f"{pick_masked}\n"
-        "\n"
-        f"*PRICING*\n"
+        f"*PRICING* _(free preview)_\n"
         f"{aligned_data(data_rows)}\n"
+        "\n"
+        "💎 *Premium subscribers unlock:*\n"
+        "• Today's selection\n"
+        "• Match details & kick-off\n"
+        "• Full analytical rationale\n"
+        "• Live updates during the match\n"
     )
-
-    if pick.get("headline"):
-        msg += f"\n*RATIONALE*\n_{mask_words(pick['headline'])}_\n"
-
-    msg += "\n💎 *Unlock the actual selection, players and rationale*\n*with Premium.*\n"
 
     tr = compute_track_record(7)
     if tr:
@@ -552,44 +546,23 @@ def format_pick_simple(pick: dict) -> str:
 
 
 def format_pick_combo(pick: dict) -> str:
-    """Format a pending combo — Premium gated with MASKED selections.
+    """Format a pending combo — Premium gated minimal teaser.
 
-    Le nombre de jambes est visible, les cotes individuelles aussi
-    (data publique), mais les noms des sélections sont masqués par blocs.
+    Idem simple : seulement les stats agrégées + nombre de jambes.
+    Pas de tournoi spécifique, pas de cote par leg, pas de rationale.
     """
     legs = pick.get("legs", [])
     potential = pick["stake"] * (pick["odds"] - 1)
     total_return = pick["stake"] * pick["odds"]
 
+    # Sport-level only — pas de tournoi
     leg_sports = {leg.get("sport") for leg in legs}
     if len(leg_sports) == 1:
-        icon = SPORT_ICON.get(next(iter(leg_sports)), SPORT_ICON["combo"])
+        sport_label = SPORT_LABEL.get(next(iter(leg_sports)), "Multi-sport")
     else:
-        icon = SPORT_ICON["combo"]
+        sport_label = "Multi-sport"
 
-    msg = (
-        f"🔒 *BET OF THE DAY · {len(legs)}-leg parlay · Premium pick*\n"
-        f"{fmt_date_long(pick['date'])}\n"
-        "\n"
-        f"{icon} {pick['league']}\n"
-        "\n"
-        "*SELECTIONS*\n"
-    )
-
-    # Aligned legs MASKED : "1. ████████████ ████████ (███)  1.28"
-    leg_rows = []
-    for i, leg in enumerate(legs, 1):
-        leg_pick = leg["pick"]
-        away_country = leg.get("away_country", "")
-        if away_country:
-            leg_pick = f"{leg_pick} ({away_country})"
-        if len(leg_pick) > 36:
-            leg_pick = leg_pick[:34] + "…"
-        masked = mask_words(leg_pick)
-        leg_rows.append((f"{i}. {masked}", f"{leg['odds']:.2f}"))
-    msg += aligned_data(leg_rows) + "\n"
-
-    # Pricing data — publicly visible
+    # Pricing data — agrégée seulement
     data_rows = [("Combined price", f"{pick['odds']:.2f}")]
     if pick.get("model_probability"):
         fair_value = 1 / pick["model_probability"]
@@ -605,12 +578,21 @@ def format_pick_combo(pick: dict) -> str:
         ("Net P/L if won", f"+{potential:.2f} EUR"),
     ])
 
-    msg += f"\n*PRICING*\n{aligned_data(data_rows)}\n"
-
-    if pick.get("headline"):
-        msg += f"\n*RATIONALE*\n_{mask_words(pick['headline'])}_\n"
-
-    msg += "\n💎 *Unlock player names and full rationale*\n*with Premium.*\n"
+    msg = (
+        f"🔒 *BET OF THE DAY · Premium pick*\n"
+        f"{fmt_date_long(pick['date'])}\n"
+        "\n"
+        f"Sport: *{sport_label}* · {len(legs)}-leg parlay\n"
+        "\n"
+        f"*PRICING* _(free preview)_\n"
+        f"{aligned_data(data_rows)}\n"
+        "\n"
+        "💎 *Premium subscribers unlock:*\n"
+        f"• All {len(legs)} selections\n"
+        "• Match details & kick-off times\n"
+        "• Full analytical rationale\n"
+        "• Live updates during matches\n"
+    )
 
     tr = compute_track_record(7)
     if tr:
