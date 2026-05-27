@@ -326,7 +326,7 @@ function BetRow({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-sm font-semibold text-white leading-snug">
-                          {parsed.entity}
+                          {renderEntity(parsed.entity)}
                         </span>
                         <span
                           className={`shrink-0 text-base font-bold tabular-nums ${oddsColorClass}`}
@@ -398,6 +398,20 @@ function BetRow({
       {body}
     </button>
   );
+}
+
+/** Render a pick entity as JSX. For combo picks like "X + Y" we
+ *  split on " + " and place each subsequent part on its own line so
+ *  the structure remains readable when the label is long. Plain
+ *  entities render unchanged. */
+function renderEntity(entity: string): React.ReactNode {
+  if (!entity.includes(" + ")) return entity;
+  const parts = entity.split(" + ");
+  return parts.map((part, i) => (
+    <span key={i} className="block">
+      {i === 0 ? part : `+ ${part}`}
+    </span>
+  ));
 }
 
 /** Remove redundant "win/vainqueur" suffix so e.g. "Báez vainqueur"
@@ -635,7 +649,9 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
       <span className="shrink-0 text-xs mt-1">{emoji}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-sm font-semibold text-white leading-snug">{entity}</span>
+          <span className="text-sm font-semibold text-white leading-snug">
+            {renderEntity(entity)}
+          </span>
           <span className={`shrink-0 text-sm font-bold tabular-nums ${oddsColor}`}>
             {leg.odds.toFixed(2)}
           </span>

@@ -554,10 +554,15 @@
         "https://www.online-bookmakers.com/sports-betting/"
       ],
       "stake": 5.0,
-      "outcome": "pending",
-      "profit": 0.0,
-      "bankroll_after": 52.6,
-      "result": null,
+      "outcome": "win",
+      "profit": 3.3,
+      "bankroll_after": 55.9,
+      "result": {
+        "score_home": "2/2",
+        "score_text": "2 jambes gagnées sur 2 — Bencic et Rublev tous deux victorieux",
+        "summary": "Combo parfait : Bencic 2-0 et Rublev 3-0. Cote totale 1.66 honorée.",
+        "bet_outcome": "Pari gagné : combo 2/2 validé, +3,30€ net (return 8,30€)."
+      },
       "comparison": null,
       "profile_tags": [],
       "legs": [
@@ -569,7 +574,12 @@
           "pick": "Belinda Bencic vainqueure du match",
           "kickoff": "2026-05-27T11:00:00+00:00",
           "odds": 1.29,
-          "outcome": "pending"
+          "outcome": "win",
+          "result": {
+            "score_text": "Bencic bat McNally 6-4 6-0",
+            "summary": "Bencic dominante, victoire en 2 sets nets.",
+            "bet_outcome": "Jambe gagnée : Bencic victorieuse en 2 sets."
+          }
         },
         {
           "sport": "tennis",
@@ -579,34 +589,39 @@
           "pick": "Andrey Rublev vainqueur du match",
           "kickoff": "2026-05-27T13:00:00+00:00",
           "odds": 1.29,
-          "outcome": "pending"
+          "outcome": "win",
+          "result": {
+            "score_text": "Rublev bat Carabelli 6-1 6-3 6-4",
+            "summary": "Rublev solide en 3 sets, gap de classement confirmé.",
+            "bet_outcome": "Jambe gagnée : Rublev victorieux en 3 sets."
+          }
         }
       ]
     }
   ],
   "stats": {
     "total_picks": 10,
-    "won": 7,
+    "won": 8,
     "lost": 2,
-    "pending": 1,
-    "profit": 47.6,
-    "roi_percent": 105.78,
-    "average_odds": 2.492,
-    "win_rate": 77.78,
+    "pending": 0,
+    "profit": 50.9,
+    "roi_percent": 101.8,
+    "average_odds": 2.409,
+    "win_rate": 80.0,
     "starting_bankroll": 5.0,
-    "current_bankroll": 52.6,
-    "progression_percent": 952.0,
+    "current_bankroll": 55.9,
+    "progression_percent": 1018.0,
     "drawdown_max": 5.0,
-    "current_streak": 1,
+    "current_streak": 2,
     "best_streak": 3,
     "worst_streak": -1,
     "total_stake_played": 50.0,
-    "pending_stake": 5.0,
+    "pending_stake": 0,
     "avg_stake": 5.0,
     "max_stake": 5.0,
     "max_odds_won": 3.1,
     "max_profit_single": 10.5,
     "max_loss_single": -5.0
   },
-  "generated_at": "2026-05-27T10:06:51.598360+00:00"
+  "generated_at": "2026-05-27T19:25:41.031468+00:00"
 }
