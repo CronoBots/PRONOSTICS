@@ -45,20 +45,11 @@ function StatTile({ label, value, tone = "neutral" }: StatRow) {
   );
 }
 
-// TWR (Time-Weighted Return) et TRI (annualisé) ont été supprimés de
-// l'overview : TWR = progression_percent exactement (donc doublon), et
-// TRI sur un petit historique (< 30j) est cappé à 1000% et n'a aucune
-// valeur statistique. On garde uniquement progression_percent.
-function computeExtras(picks: HistoryPick[]) {
-  const refunded = picks.filter((p) => p.outcome === "void").length;
-  return { refunded };
-}
-
-function buildOverviewTiles(
-  stats: HistoryStats,
-  extras: { refunded: number },
-  t: TFn,
-): StatRow[] {
+// Removed from overview: TWR/TRI (redundant with progression_percent),
+// PARIS REMBOURSÉS / DÉPÔT / RETRAIT / COMMISSION (always 0 in the
+// paper-trading context — no real-money flows, no void picks yet).
+// Add them back if/when those metrics gain real values.
+function buildOverviewTiles(stats: HistoryStats, t: TFn): StatRow[] {
   return [
     { label: t("statsPage.bets"), value: `${stats.total_picks}`, tone: "blue" },
     { label: t("statsPage.profit"), value: `${stats.profit.toFixed(2)}€`, tone: signTone(stats.profit) },
@@ -70,12 +61,9 @@ function buildOverviewTiles(
     { label: t("statsPage.capitalCurrent"), value: `${stats.current_bankroll.toFixed(2)}€`, tone: signTone(stats.current_bankroll - stats.starting_bankroll) },
     { label: t("statsPage.betsWon"), value: `${stats.won}`, tone: "green" },
     { label: t("statsPage.betsLost"), value: `${stats.lost}`, tone: stats.lost > 0 ? "red" : "neutral" },
-    { label: t("statsPage.refunded"), value: `${extras.refunded}`, tone: "blue" },
     { label: t("statsPage.betsPending"), value: `${stats.pending}` },
     { label: t("statsPage.stakePlayed"), value: `${stats.total_stake_played.toFixed(2)}€` },
     { label: t("statsPage.stakePending"), value: `${stats.pending_stake.toFixed(2)}€` },
-    { label: t("statsPage.deposit"), value: "0.00€" },
-    { label: t("statsPage.withdrawal"), value: "0.00€" },
     { label: t("statsPage.bestStreak"), value: `${stats.best_streak}`, tone: "green" },
     { label: t("statsPage.worstStreak"), value: `${stats.worst_streak}`, tone: stats.worst_streak < 0 ? "red" : "neutral" },
     { label: t("statsPage.stakeAvg"), value: `${stats.avg_stake.toFixed(2)}€` },
@@ -84,7 +72,6 @@ function buildOverviewTiles(
     { label: t("statsPage.oddsMaxWon"), value: stats.max_odds_won > 0 ? stats.max_odds_won.toFixed(2) : "—" },
     { label: t("statsPage.profitMaxSingle"), value: `${stats.max_profit_single.toFixed(2)}€`, tone: "green" },
     { label: t("statsPage.lossMaxSingle"), value: `${stats.max_loss_single.toFixed(2)}€`, tone: stats.max_loss_single < 0 ? "red" : "neutral" },
-    { label: t("statsPage.commissions"), value: "0.00€" },
   ];
 }
 
@@ -163,7 +150,7 @@ export default function StatsPage() {
 
                 {/* Grille flat — tous les KPI cumules */}
                 <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6">
-                  {buildOverviewTiles(stats, computeExtras(picks), t).map((r) => (
+                  {buildOverviewTiles(stats, t).map((r) => (
                     <StatTile key={r.label} {...r} />
                   ))}
                 </div>
