@@ -60,7 +60,7 @@ export default function ParisPage() {
         <title>{t("paris.titleTab")}</title>
       </Head>
 
-      <main className="w-full max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
+      <main className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10">
         <Header title={t("paris.title")} stats={history?.stats} />
 
         {loading && (

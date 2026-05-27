@@ -275,7 +275,7 @@ function BetRow({ pick, onClick }: { pick: HistoryPick; onClick: () => void }) {
   return (
     <button
       onClick={() => (isLocked ? router.push("/premium") : onClick())}
-      className={`w-full block bg-bg-elevated/40 border border-white/[0.06] border-l-4 ${borderLeftClass} rounded-xl overflow-hidden text-left hover:border-white/15 transition`}
+      className={`w-full block border-l-2 ${borderLeftClass} text-left hover:bg-white/[0.02] active:bg-white/[0.04] transition rounded-r-md`}
     >
       {isLocked ? (
         <div className="p-3 flex items-center gap-2">
@@ -442,7 +442,7 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
         </div>
         <ProfitChip profit={day.profit} pending={day.allPending} />
       </div>
-      <div className="p-3 space-y-2">
+      <div className="divide-y divide-white/[0.05]">
         {day.picks.map((p, i) => (
           <BetRow key={`${p.date}-${i}`} pick={p} onClick={() => onPickClick(p)} />
         ))}
