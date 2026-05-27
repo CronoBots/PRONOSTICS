@@ -53,6 +53,7 @@ _load_env_file(ROOT / ".env")
 
 sys.path.insert(0, str(Path(__file__).parent))
 import picks_data  # noqa: E402
+from picks_translations_en import translate_pick  # noqa: E402
 
 
 # =============================================================================
@@ -247,9 +248,10 @@ def fmt_time_cet(kickoff_iso: str) -> str:
 
 
 def find_pick(date_iso: str) -> dict | None:
+    """Locate a pick by date and apply English translation overlay."""
     for p in picks_data.PICKS:
         if p.get("date") == date_iso:
-            return p
+            return translate_pick(p)
     return None
 
 
@@ -490,15 +492,16 @@ def format_recap_weekly() -> str:
     )
 
     if best_pick:
+        best_tr = translate_pick(best_pick)
         best_profit = best_pick.get("profit") or (best_pick["stake"] * (best_pick["odds"] - 1))
         msg += (
-            f"\n*Best pick:* {best_pick['pick']} @ {best_pick['odds']:.2f}"
+            f"\n*Best pick:* {best_tr['pick']} @ {best_pick['odds']:.2f}"
             f" (+{best_profit:.2f} EUR)\n"
         )
 
     if lost_picks:
-        worst = lost_picks[0]
-        msg += f"*Worst day:* {worst['pick']} @ {worst['odds']:.2f}\n"
+        worst_tr = translate_pick(lost_picks[0])
+        msg += f"*Worst day:* {worst_tr['pick']} @ {lost_picks[0]['odds']:.2f}\n"
 
     msg += "\n" + FOOTER
     return msg
