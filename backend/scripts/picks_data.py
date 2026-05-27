@@ -572,7 +572,14 @@ PICKS: list[Pick] = [
             "https://www.online-bookmakers.com/sports-betting/",
         ],
         "stake": 5.0,
-        "outcome": "pending",
+        "outcome": "win",
+        "profit": 3.30,
+        "result": {
+            "score_home": "2/2",
+            "score_text": "2 jambes gagnées sur 2 — Bencic et Rublev tous deux victorieux",
+            "summary": "Combo parfait : Bencic 2-0 et Rublev 3-0. Cote totale 1.66 honorée.",
+            "bet_outcome": "Pari gagné : combo 2/2 validé, +3,30€ net (return 8,30€).",
+        },
         "legs": [
             {
                 "sport": "tennis",
@@ -582,7 +589,12 @@ PICKS: list[Pick] = [
                 "pick": "Belinda Bencic vainqueure du match",
                 "kickoff": "2026-05-27T11:00:00+00:00",
                 "odds": 1.29,
-                "outcome": "pending",
+                "outcome": "win",
+                "result": {
+                    "score_text": "Bencic bat McNally 6-4 6-0",
+                    "summary": "Bencic dominante, victoire en 2 sets nets.",
+                    "bet_outcome": "Jambe gagnée : Bencic victorieuse en 2 sets.",
+                },
             },
             {
                 "sport": "tennis",
@@ -592,7 +604,12 @@ PICKS: list[Pick] = [
                 "pick": "Andrey Rublev vainqueur du match",
                 "kickoff": "2026-05-27T13:00:00+00:00",
                 "odds": 1.29,
-                "outcome": "pending",
+                "outcome": "win",
+                "result": {
+                    "score_text": "Rublev bat Carabelli 6-1 6-3 6-4",
+                    "summary": "Rublev solide en 3 sets, gap de classement confirmé.",
+                    "bet_outcome": "Jambe gagnée : Rublev victorieux en 3 sets.",
+                },
             },
         ],
     },

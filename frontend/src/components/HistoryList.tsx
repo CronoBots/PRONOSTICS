@@ -258,14 +258,15 @@ function BetRow({
     <>
       {isLocked ? (
         <div className="relative">
-          {/* HEADER : icone cadenas + sport + nb jambes + Premium pill */}
+          {/* HEADER : cadenas + libellé générique (jamais le sport) + Premium pill.
+              On évite tout indice révélateur (emoji sport, nom league, etc.). */}
           <div className="p-3.5">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-base">🔒</span>
               <div className="flex-1 min-w-0 text-sm text-white font-semibold truncate">
                 {isCombo
                   ? t("history.combinedLegs", { n: pick.legs!.length })
-                  : pick.match.sport.charAt(0).toUpperCase() + pick.match.sport.slice(1)}
+                  : t("history.singleBet")}
               </div>
               <span className="shrink-0 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/40 text-yellow-300">
                 Premium
@@ -276,11 +277,11 @@ function BetRow({
               {timeLabel && <span className="text-white/40"> · {timeLabel}</span>}
             </div>
 
-            {/* Faux corps flouté avec lignes placeholder */}
+            {/* Placeholders floutés — sans emoji sport pour ne pas révéler la
+                discipline. */}
             <div className="space-y-1.5 select-none filter blur-[6px] opacity-60 pointer-events-none">
               {(isCombo ? pick.legs! : [pick]).map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="text-sm">🎾</span>
                   <div className="flex-1 h-3 rounded bg-white/15" />
                   <div className="w-10 h-3 rounded bg-white/15" />
                 </div>
@@ -558,7 +559,12 @@ function FinancialStatsGrid({
             }`}
           >
             <span className="text-base leading-none" aria-hidden>{isWin ? "✓" : isLoss ? "✕" : "•"}</span>
-            <span>{resultText}{!resultText.includes("jamb") ? " jambes" : ""}</span>
+            <span>
+              {resultText}
+              {!/sélection|selection|jamb/i.test(resultText)
+                ? ` ${t("history.selectionsSuffix")}`
+                : ""}
+            </span>
           </span>
         </div>
       )}

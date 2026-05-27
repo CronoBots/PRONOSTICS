@@ -132,7 +132,7 @@ TRANSLATIONS: dict[str, dict] = {
         "summary": "Swiatek wins easily as expected BUT total games is 15 (6+1+6+2) → the Under 14.5 leg of the combo fails.",
         "bet_outcome": "Bet lost: Swiatek won (leg 1 OK) but 15 total games > 14.5 (leg 2 failed) → combo lost.",
     },
-    # J10 — May 27, 2026 — COMBO 2 legs RG R2 (Bencic + Rublev)
+    # J10 — May 27, 2026 — COMBO 2 legs RG R2 (Bencic + Rublev) — WON
     "2026-05-27": {
         "league": "Roland Garros — Second round",
         "pick": "2-leg tennis parlay — Roland Garros R2",
@@ -144,16 +144,25 @@ TRANSLATIONS: dict[str, dict] = {
             "straight-sets win on clay. Combined model probability "
             "around 66%."
         ),
+        "score_text": "2 legs won out of 2 — Bencic and Rublev both victorious",
+        "summary": "Perfect combo: Bencic 2-0 and Rublev 3-0. Combined odds 1.66 honoured.",
+        "bet_outcome": "Bet won: 2/2 combo validated, +3.30 EUR net (return 8.30 EUR).",
         "legs": [
             {
                 "pick": "Belinda Bencic to win",
                 "home_country": "SUI",
                 "away_country": "USA",
+                "score_text": "Bencic def. McNally 6-4 6-0",
+                "summary": "Bencic dominant, win in 2 sets.",
+                "bet_outcome": "Leg won: Bencic victorious in 2 sets.",
             },
             {
                 "pick": "Andrey Rublev to win",
                 "home_country": "RUS",
                 "away_country": "ARG",
+                "score_text": "Rublev def. Carabelli 6-1 6-3 6-4",
+                "summary": "Rublev solid in 3 sets, ranking gap confirmed.",
+                "bet_outcome": "Leg won: Rublev victorious in 3 sets.",
             },
         ],
     },
