@@ -518,16 +518,20 @@ def _format_score_text(
     sport: str, score: MatchScore, lang: str = "fr"
 ) -> str:
     if sport == "tennis" and score.set_scores:
-        sets_str = " ".join(f"{h}-{a}" for h, a in score.set_scores)
-        if (
+        sep = "bat" if lang == "fr" else "def."
+        home_won = (
             score.home_score is not None
             and score.away_score is not None
             and score.home_score > score.away_score
-        ):
-            sep = "bat" if lang == "fr" else "def."
+        )
+        # Always render set scores from the WINNER's perspective so the
+        # phrase "X bat Y 7-6 6-4" reads correctly (7-6 = X took the set).
+        if home_won:
+            sets_str = " ".join(f"{h}-{a}" for h, a in score.set_scores)
             return f"{score.home_team} {sep} {score.away_team} {sets_str}"
-        sep = "bat" if lang == "fr" else "def."
-        return f"{score.away_team} {sep} {score.home_team} {sets_str}"
+        else:
+            sets_str = " ".join(f"{a}-{h}" for h, a in score.set_scores)
+            return f"{score.away_team} {sep} {score.home_team} {sets_str}"
     if score.home_score is not None and score.away_score is not None:
         return f"{score.home_team} {score.home_score} - {score.away_score} {score.away_team}"
     return f"{score.home_team} vs {score.away_team}"
