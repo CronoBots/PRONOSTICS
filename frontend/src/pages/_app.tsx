@@ -20,6 +20,10 @@ const HIDE_NAV = new Set(["/login", "/register", "/forgot-password", "/verify-em
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const showNav = !HIDE_NAV.has(router.pathname);
+  // L'install prompt et la sticky CTA Premium occupent la même bande sur
+  // /today → on suppress l'install prompt sur /today pour éviter le
+  // chevauchement. La CTA Premium est prioritaire (conversion immédiate).
+  const showInstall = showNav && router.pathname !== "/today";
 
   // Pin les valeurs safe-area iOS au premier load pour éviter les
   // recalculs intempestifs (clavier qui s'affiche, transitions, etc.)
@@ -120,7 +124,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </div>
             {showNav && <BottomNav />}
             {showNav && <Onboarding />}
-            {showNav && <InstallPrompt />}
+            {showInstall && <InstallPrompt />}
             <ToastContainer />
           </AuthProvider>
         </I18nProvider>

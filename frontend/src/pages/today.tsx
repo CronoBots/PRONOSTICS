@@ -77,6 +77,24 @@ export default function TodayPage() {
           <PickDetail pick={pickFromSafe(day.safe_pick)} variant="today" />
         )}
       </main>
+
+      {/* Sticky CTA Premium — n'apparaît que pour les non-Premium quand un
+          pick est verrouillé. Reste visible pendant tout le scroll de la
+          page sans dominer le contenu. La CTA in-card reste là pour les
+          utilisateurs qui scrollent jusqu'au bout. */}
+      {!loading && day?.safe_pick && isLocked && (
+        <div
+          className="fixed inset-x-0 z-30 px-4 lg:hidden pointer-events-none"
+          style={{ bottom: "calc(var(--safe-bottom) + 4.25rem)" }}
+        >
+          <Link
+            href="/premium"
+            className="pointer-events-auto block max-w-md mx-auto py-3 rounded-2xl bg-gradient-to-r from-yellow-500 to-yellow-400 text-bg-base font-extrabold text-center text-sm shadow-xl shadow-yellow-500/30 backdrop-blur active:scale-[0.99] transition-transform duration-100"
+          >
+            👑 {t("today.ctaPremium")}
+          </Link>
+        </div>
+      )}
     </>
   );
 }
@@ -125,7 +143,7 @@ function PremiumGate({
   // Pour un pick simple, "Équipe A vs Équipe B" ne révèle pas qui on mise → OK d'afficher.
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-16 lg:pb-0">
       {/* Card teaser — révèle les infos non-confidentielles, masque le pick */}
       <div className="relative bg-bg-card border-2 border-yellow-400/30 rounded-3xl overflow-hidden">
         {/* Header avec sport + kickoff */}
