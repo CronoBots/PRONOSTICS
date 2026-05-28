@@ -1,0 +1,24 @@
+name: Probe sports data providers
+
+# One-shot diagnostic — runs the probe script from a GitHub Actions
+# runner so we know which provider's API actually returns data from
+# the runner's cloud IP (vs being Cloudflare/IP-blocked).
+#
+# Trigger manually via workflow_dispatch. Look at the "Run probe"
+# step output to see one line per provider with HTTP status + a sample
+# of the response body.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run probe
+        working-directory: backend
+        run: python scripts/probe_providers.py
