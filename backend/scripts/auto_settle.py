@@ -257,30 +257,42 @@ def _fetch_match_score(
     if not leagues:
         return None
 
-    all_events: list[dict] = []
+    target_date_iso = kickoff_iso.split("T")[0]  # YYYY-MM-DD
+
+    candidates: list[dict] = []
     for league_slug in leagues:
         data = _espn_get(f"{league_slug}/scoreboard?dates={date_part}")
         if not data:
             continue
-        all_events.extend(data.get("events", []))
+        for ev in data.get("events", []):
+            # Tennis: ESPN groups the entire tournament under a single
+            # event (e.g. "Roland Garros"), with individual matches
+            # nested in groupings[].competitions[]. Team sports: matches
+            # are directly under event.competitions[].
+            comps: list[dict] = []
+            if sport == "tennis":
+                for g in ev.get("groupings") or []:
+                    for comp in g.get("competitions") or []:
+                        comps.append(comp)
+            comps.extend(ev.get("competitions") or [])
 
-    candidates = []
-    for ev in all_events:
-        competitors = (
-            ev.get("competitions", [{}])[0].get("competitors", [])
-            if ev.get("competitions") else []
-        )
-        names = [_competitor_name(c) for c in competitors]
-        if len(names) < 2:
-            continue
-        # ESPN's "homeAway" can be unreliable for tennis — match either
-        # orientation as a same-pair fixture.
-        pair_match = (
-            (_name_match(home, names[0]) and _name_match(away, names[1]))
-            or (_name_match(home, names[1]) and _name_match(away, names[0]))
-        )
-        if pair_match:
-            candidates.append(ev)
+            for comp in comps:
+                # For tennis: tournament event spans many days — filter
+                # to competitions matching our target date.
+                if sport == "tennis":
+                    cd = (comp.get("date") or comp.get("startDate") or "")[:10]
+                    if cd and cd != target_date_iso:
+                        continue
+                competitors = comp.get("competitors") or []
+                names = [_competitor_name(c) for c in competitors]
+                if len(names) < 2:
+                    continue
+                pair_match = (
+                    (_name_match(home, names[0]) and _name_match(away, names[1]))
+                    or (_name_match(home, names[1]) and _name_match(away, names[0]))
+                )
+                if pair_match:
+                    candidates.append(comp)
 
     if not candidates:
         return None
@@ -295,7 +307,11 @@ def _fetch_match_score(
 
 
 def _event_to_score(ev: dict, sport: str, want_home: str = "", want_away: str = "") -> Optional[MatchScore]:
-    """Map an ESPN event dict to our MatchScore dataclass.
+    """Map an ESPN competition (or wrapping event) dict to our MatchScore.
+
+    For tennis, `ev` is already a competition (extracted from
+    event.groupings[].competitions[] in _fetch_match_score). For team
+    sports, `ev` is the event itself and we walk into competitions[0].
 
     want_home/want_away: the pick's perspective (we re-orient the score so
     `home_score` matches the player/team the pick called "home_team", to
@@ -314,7 +330,13 @@ def _event_to_score(ev: dict, sport: str, want_home: str = "", want_away: str = 
     else:
         mapped = "in_progress"
 
-    competition = (ev.get("competitions") or [{}])[0]
+    # Tennis: `ev` is already a competition (has `competitors` directly).
+    # Team sports: walk into event.competitions[0] for backwards compat
+    # with tests that pass full event dicts.
+    if "competitors" in ev:
+        competition = ev
+    else:
+        competition = (ev.get("competitions") or [{}])[0]
     competitors = competition.get("competitors", [])
     if len(competitors) < 2:
         return None
