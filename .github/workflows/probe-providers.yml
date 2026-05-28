@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install deps (probe imports auto_settle which needs libcst)
+        run: pip install -r backend/requirements.txt
       - name: Run probe
         working-directory: backend
         run: python scripts/probe_providers.py
