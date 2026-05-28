@@ -98,7 +98,23 @@ jobs:
               fi
               ;;
             dry-run) python scripts/auto_settle.py --dry-run ;;
-            shadow)  python scripts/auto_settle.py ;;
+            shadow)
+              python scripts/auto_settle.py
+              # Persist the shadow proposal JSON + .notified.json so we
+              # have an audit trail of the day's proposals AND the dedupe
+              # works across runs (else every cron re-pings the same
+              # proposal for hours).
+              cd "$GITHUB_WORKSPACE"
+              if ! git diff --quiet -- backend/data/auto_settle/ 2>/dev/null; then
+                git add backend/data/auto_settle/
+                git commit -m "[auto] shadow proposals $(date -u +%Y-%m-%dT%H:%M)"
+                for i in 1 2 3; do
+                  git pull --rebase origin "$BRANCH" || true
+                  if git push origin "HEAD:$BRANCH"; then break; fi
+                  sleep $((5 * i))
+                done
+              fi
+              ;;
             live)
               python scripts/auto_settle.py --live || exit 1
               # F8: retry push with rebase to recover from concurrent
