@@ -830,14 +830,31 @@ def main() -> int:
     print(f"Shadow report → {out_path}")
 
     if not args.live:
-        # Shadow mode: just notify admin (once per pick)
+        # Shadow mode: notify admin on any actionable bucket (proposals,
+        # un-parseable labels, no-data picks). Dedupe per (date, kind) so a
+        # match that stays no-data across many cron ticks pings only once.
         notified = _load_notified()
-        new_proposals = [p for p in report["proposed"] if notified.get(p["date"]) != p["outcome"]]
-        if new_proposals:
+        new_proposals = [
+            p for p in report["proposed"]
+            if notified.get(p["date"]) != p["outcome"]
+        ]
+        new_unknown = [
+            p for p in report["skipped_unknown"]
+            if notified.get(f"{p['date']}::unknown") != p.get("label", "")
+        ]
+        new_no_data = [
+            p for p in report["skipped_no_data"]
+            if notified.get(f"{p['date']}::no_data") != p.get("label", "")
+        ]
+        if new_proposals or new_unknown or new_no_data:
             diff = _build_telegram_diff(report)
             _try_send_admin(diff)
             for p in report["proposed"]:
                 notified[p["date"]] = p["outcome"]
+            for p in report["skipped_unknown"]:
+                notified[f"{p['date']}::unknown"] = p.get("label", "")
+            for p in report["skipped_no_data"]:
+                notified[f"{p['date']}::no_data"] = p.get("label", "")
             _save_notified(notified)
         return 0
 
