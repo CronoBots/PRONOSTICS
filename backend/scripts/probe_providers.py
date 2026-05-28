@@ -95,23 +95,31 @@ def main() -> int:
             events = payload.get("events", [])
             print(f"\n  {tour.upper()} {date}: {len(events)} events")
             for ev in events:
-                print(f"    EVENT top-level keys: {list(ev.keys())}")
-                print(f"    EVENT name: {ev.get('name','?')!r}")
-                print(f"    EVENT date: {ev.get('date','?')!r}")
-                print(f"    EVENT status: {ev.get('status',{})}")
-                comps = ev.get("competitions") or []
-                print(f"    EVENT competitions count: {len(comps)}")
-                for ci, comp in enumerate(comps[:3]):
-                    print(f"      [comp{ci}] keys: {list(comp.keys())}")
-                    print(f"      [comp{ci}] competitors count: {len(comp.get('competitors') or [])}")
-                    for c in (comp.get("competitors") or [])[:4]:
-                        ckeys = list(c.keys())
-                        ath = c.get("athlete") or {}
-                        tm = c.get("team") or {}
-                        print(f"        competitor keys={ckeys} athlete={ath.get('displayName')!r} team={tm.get('displayName')!r} score={c.get('score')!r} ls={[p.get('value') for p in (c.get('linescores') or [])]}")
-                # Dump raw first 1500 chars for inspection
-                raw = json.dumps(ev, indent=2)[:1500]
-                print(f"    EVENT raw (first 1500 chars):\n{raw}")
+                print(f"    EVENT name={ev.get('name','?')!r} date={ev.get('date','?')!r}")
+                groupings = ev.get("groupings") or []
+                print(f"    GROUPINGS count: {len(groupings)}")
+                for gi, g in enumerate(groupings):
+                    gname = (g.get("grouping") or {}).get("displayName", "?")
+                    comps = g.get("competitions") or []
+                    print(f"      [g{gi}] {gname!r} — {len(comps)} competitions")
+                    # Show date range across competitions
+                    dates_seen = sorted(set((c.get("date") or "")[:10] for c in comps if c.get("date")))
+                    print(f"        date range: {dates_seen[:3]} ... {dates_seen[-3:] if len(dates_seen) > 3 else ''}")
+                    # Find competitions for 2026-05-28 specifically
+                    target = [c for c in comps if (c.get("date") or "")[:10] == "2026-05-28"]
+                    print(f"        competitions on 2026-05-28: {len(target)}")
+                    for c in target[:5]:
+                        names = []
+                        for co in c.get("competitors") or []:
+                            ath = co.get("athlete") or {}
+                            tm = co.get("team") or {}
+                            n = ath.get("displayName") or tm.get("displayName") or "?"
+                            sc = co.get("score", "?")
+                            ls = [p.get("value", "?") for p in (co.get("linescores") or [])]
+                            names.append(f"{n}={sc}({'-'.join(str(x) for x in ls)})")
+                        notes = [n.get("text") for n in (c.get("notes") or [])]
+                        st = (c.get("status") or {}).get("type", {})
+                        print(f"          [{st.get('name','?')}] {' vs '.join(names)} | notes={notes}")
 
     # ========================================================================
     # CORE API v2 — different shape, often more granular (match-by-match)
