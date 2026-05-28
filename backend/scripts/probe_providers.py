@@ -75,6 +75,37 @@ def main() -> int:
         elif isinstance(payload, str):
             note = payload[:120].replace("\n", " ")
         print(f"{name:<32} {code:<8} {note}")
+
+    # ========================================================================
+    # DEEP DIVE — for any tennis endpoint that returns events, dump the
+    # actual event list so we can see WHAT ESPN considers a match on this
+    # date, and whether player names match what we have in picks_data.py.
+    # ========================================================================
+    print("\n" + "=" * 80)
+    print("DEEP DIVE — tennis on 2026-05-28 (target: Osaka, Vekic, Rinderknech, Berrettini)")
+    print("=" * 80)
+    for tour in ("atp", "wta"):
+        for date in ("20260528", "20260527", "20260529"):
+            url = f"https://site.api.espn.com/apis/site/v2/sports/tennis/{tour}/scoreboard?dates={date}"
+            code, status, payload = _get(url)
+            if not isinstance(payload, dict):
+                print(f"  {tour} {date}: status={code} payload-type={type(payload).__name__}")
+                continue
+            events = payload.get("events", [])
+            print(f"\n  {tour.upper()} {date}: {len(events)} events")
+            for ev in events[:25]:
+                name = ev.get("name", "?")
+                st = (ev.get("status", {}) or {}).get("type", {})
+                comps = (ev.get("competitions", [{}])[0] or {}).get("competitors", [])
+                names = []
+                scores = []
+                for c in comps:
+                    n = (c.get("athlete") or c.get("team") or {}).get("displayName", "?")
+                    names.append(n)
+                    sc = c.get("score", "?")
+                    ls = [str(p.get("value", "?")) for p in (c.get("linescores") or [])]
+                    scores.append(f"{n}={sc}({'-'.join(ls) if ls else 'no-sets'})")
+                print(f"    [{st.get('name','?')}] {' / '.join(scores)}")
     return 0
 
 
