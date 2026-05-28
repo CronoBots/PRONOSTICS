@@ -1,0 +1,12 @@
+{
+  "proposed": [],
+  "skipped_unknown": [],
+  "skipped_no_data": [
+    {
+      "_unsettleable": true,
+      "reason": "no_data",
+      "label": "Naomi Osaka vainqueure du match",
+      "date": "2026-05-28"
+    }
+  ]
+}
