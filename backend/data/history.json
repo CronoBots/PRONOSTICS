@@ -636,10 +636,15 @@
         "https://www.rotowire.com/tennis/"
       ],
       "stake": 7.61,
-      "outcome": "pending",
-      "profit": 0.0,
-      "bankroll_after": 55.9,
-      "result": null,
+      "outcome": "loss",
+      "profit": -7.61,
+      "bankroll_after": 48.29,
+      "result": {
+        "score_home": "1/2",
+        "score_text": "1 sélection gagnée sur 2 — Osaka OK, Rinderknech KO",
+        "summary": "Combo perdu : Osaka bat Vekic 7-6 6-4 (leg 1 OK), Berrettini bat Rinderknech 6-4 6-4 6-4 (leg 2 raté).",
+        "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée). Net -7,61€."
+      },
       "comparison": null,
       "profile_tags": [],
       "legs": [
@@ -651,7 +656,12 @@
           "pick": "Naomi Osaka vainqueure du match",
           "kickoff": "2026-05-28T09:00:00+00:00",
           "odds": 1.3,
-          "outcome": "pending"
+          "outcome": "win",
+          "result": {
+            "score_text": "Osaka bat Vekic 7-6 6-4",
+            "summary": "Osaka solide en 2 sets sur Chatrier.",
+            "bet_outcome": "Sélection gagnée : Osaka victorieuse."
+          }
         },
         {
           "sport": "tennis",
@@ -661,7 +671,12 @@
           "pick": "Arthur Rinderknech vainqueur du match",
           "kickoff": "2026-05-28T18:15:00+00:00",
           "odds": 1.83,
-          "outcome": "pending"
+          "outcome": "loss",
+          "result": {
+            "score_text": "Berrettini bat Rinderknech 6-4 6-4 6-4",
+            "summary": "Berrettini trop régulier au service, Rinder dépassé en night session.",
+            "bet_outcome": "Sélection perdue : Rinderknech battu en 3 sets nets."
+          }
         }
       ]
     }
@@ -669,26 +684,26 @@
   "stats": {
     "total_picks": 11,
     "won": 8,
-    "lost": 2,
-    "pending": 1,
-    "profit": 50.9,
-    "roi_percent": 101.8,
-    "average_odds": 2.409,
-    "win_rate": 80.0,
+    "lost": 3,
+    "pending": 0,
+    "profit": 43.29,
+    "roi_percent": 75.14,
+    "average_odds": 2.406,
+    "win_rate": 72.73,
     "starting_bankroll": 5.0,
-    "current_bankroll": 55.9,
-    "progression_percent": 1018.0,
-    "drawdown_max": 5.0,
-    "current_streak": 2,
+    "current_bankroll": 48.29,
+    "progression_percent": 865.8,
+    "drawdown_max": 7.61,
+    "current_streak": -1,
     "best_streak": 3,
     "worst_streak": -1,
     "total_stake_played": 57.61,
-    "pending_stake": 7.61,
+    "pending_stake": 0,
     "avg_stake": 5.24,
     "max_stake": 7.61,
     "max_odds_won": 3.1,
     "max_profit_single": 10.5,
-    "max_loss_single": -5.0
+    "max_loss_single": -7.61
   },
-  "generated_at": "2026-05-28T11:04:52.206762+00:00"
+  "generated_at": "2026-05-28T22:17:20.602788+00:00"
 }

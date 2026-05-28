@@ -223,14 +223,14 @@ TRANSLATIONS: dict[str, dict] = {
             {
                 "pick": "Naomi Osaka to win",
                 "home_country": "CRO",
-                "away_country": "JPN",
+                "away_country": "JPN","score_text": "Osaka def. Vekic 7-6 6-4", "summary": "Osaka solid in 2 sets on Chatrier.", "bet_outcome": "Selection won: Osaka victorious."
             },
             {
                 "pick": "Arthur Rinderknech to win",
                 "home_country": "FRA",
-                "away_country": "ITA",
+                "away_country": "ITA","score_text": "Berrettini def. Rinderknech 6-4 6-4 6-4", "summary": "Berrettini too consistent on serve, Rinder outclassed in the night session.", "bet_outcome": "Selection lost: Rinderknech beaten in straight sets."
             },
-        ],
+        ],"score_text": "1 selection won out of 2 — Osaka OK, Rinderknech lost", "summary": "Combo lost: Osaka def. Vekic 7-6 6-4 (leg 1 OK), Berrettini def. Rinderknech 6-4 6-4 6-4 (leg 2 missed).", "bet_outcome": "Bet lost: combo 1/2 (at least one selection missed). Net -7.61 EUR."
     },
 }
 

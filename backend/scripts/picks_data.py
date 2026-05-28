@@ -649,7 +649,7 @@ PICKS: list[Pick] = [
             "https://www.rotowire.com/tennis/",
         ],
         "stake": 7.61,
-        "outcome": "pending",
+        "outcome": "loss",
         "legs": [
             {
                 "sport": "tennis",
@@ -659,7 +659,7 @@ PICKS: list[Pick] = [
                 "pick": "Naomi Osaka vainqueure du match",
                 "kickoff": "2026-05-28T09:00:00+00:00",
                 "odds": 1.30,
-                "outcome": "pending",
+                "outcome": "win","result": {"score_text": "Osaka bat Vekic 7-6 6-4", "summary": "Osaka solide en 2 sets sur Chatrier.", "bet_outcome": "Sélection gagnée : Osaka victorieuse."}
             },
             {
                 "sport": "tennis",
@@ -669,8 +669,8 @@ PICKS: list[Pick] = [
                 "pick": "Arthur Rinderknech vainqueur du match",
                 "kickoff": "2026-05-28T18:15:00+00:00",
                 "odds": 1.83,
-                "outcome": "pending",
+                "outcome": "loss","result": {"score_text": "Berrettini bat Rinderknech 6-4 6-4 6-4", "summary": "Berrettini trop régulier au service, Rinder dépassé en night session.", "bet_outcome": "Sélection perdue : Rinderknech battu en 3 sets nets."}
             },
-        ],
+        ],"result": {"score_home": "1/2", "score_text": "1 sélection gagnée sur 2 — Osaka OK, Rinderknech KO", "summary": "Combo perdu : Osaka bat Vekic 7-6 6-4 (leg 1 OK), Berrettini bat Rinderknech 6-4 6-4 6-4 (leg 2 raté).", "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée). Net -7,61€."}
     },
 ]
