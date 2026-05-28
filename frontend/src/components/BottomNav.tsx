@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
+import { fetchDay } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 
 interface Tab {
@@ -13,6 +14,25 @@ interface Tab {
 export function BottomNav() {
   const router = useRouter();
   const { t } = useI18n();
+  const [hasPickToday, setHasPickToday] = useState(false);
+
+  // Fetch once au mount — BottomNav reste monté entre les nav, donc on
+  // évite de refetch à chaque changement de route. SW caché côté
+  // network-first → coût quasi nul.
+  useEffect(() => {
+    let cancelled = false;
+    const iso = new Date().toISOString().slice(0, 10);
+    fetchDay(iso)
+      .then((d) => {
+        if (!cancelled) setHasPickToday(!!d?.safe_pick);
+      })
+      .catch(() => {
+        /* ignore */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const leftTabs: Tab[] = [
     {
@@ -91,18 +111,32 @@ export function BottomNav() {
         {/* Bouton central → /today (pari du jour), couleur cyan brand
             (v6) — etoile = identite forte "le pick du jour a ne pas rater".
             v6.9 : shadow réduite + halo subtil pour ne pas dominer la palette
-            sobre nouvelle génération. Garde le brand cyan plein. */}
+            sobre nouvelle génération. Garde le brand cyan plein.
+            v7.0 : ajout du dot vert pulsant en haut-droite si un pick est
+            disponible aujourd'hui (signal "il y a quelque chose à voir"). */}
         <div className="flex justify-center -mt-7 relative">
           <Link
             href="/today"
             className="nav-pulse relative w-14 h-14 rounded-full flex items-center justify-center text-white ring-4 ring-bg-base transition bg-accent-blue shadow-md shadow-accent-blue/20 hover:shadow-accent-blue/40"
-            aria-label={t("nav.todayPick")}
+            aria-label={hasPickToday ? t("nav.todayPickPending") : t("nav.todayPick")}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
               <circle cx="12" cy="12" r="10" />
               <circle cx="12" cy="12" r="6" />
               <circle cx="12" cy="12" r="2" fill="currentColor" />
             </svg>
+            {hasPickToday && (
+              <>
+                <span
+                  aria-hidden
+                  className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-accent-green ring-2 ring-bg-base"
+                />
+                <span
+                  aria-hidden
+                  className="absolute top-0.5 right-0.5 w-3 h-3 rounded-full bg-accent-green animate-ping opacity-60"
+                />
+              </>
+            )}
           </Link>
           {todayActive && (
             <span
