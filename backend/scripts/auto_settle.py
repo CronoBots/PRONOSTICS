@@ -88,9 +88,9 @@ def _aggregate_combo(leg_outcomes: list[str]) -> str:
 
 
 def _remap_spec_for_sport(spec: BetSpec, sport: str) -> BetSpec:
-    """The parser defaults ML to tennis_match_winner — re-tag based on
-    pick.sport so basketball/football MLs use the correct market."""
-    if spec.market == "tennis_match_winner":
+    """The parser defaults ML to tennis_match_winner / generic_ml — re-tag
+    based on pick.sport so basketball/football MLs use the correct market."""
+    if spec.market in ("tennis_match_winner", "generic_ml"):
         if sport == "basketball":
             return BetSpec(
                 market="basket_team_ml",
@@ -104,6 +104,18 @@ def _remap_spec_for_sport(spec: BetSpec, sport: str) -> BetSpec:
         if sport == "football":
             return BetSpec(
                 market="football_ml_regulation",
+                target=spec.target,
+                threshold=spec.threshold,
+                direction=spec.direction,
+                n_sets=spec.n_sets,
+                extra=spec.extra,
+                raw_label=spec.raw_label,
+            )
+        # tennis / fallback: generic_ml must become tennis_match_winner so
+        # the tennis rule (which handles retired/walkover) applies.
+        if spec.market == "generic_ml":
+            return BetSpec(
+                market="tennis_match_winner",
                 target=spec.target,
                 threshold=spec.threshold,
                 direction=spec.direction,

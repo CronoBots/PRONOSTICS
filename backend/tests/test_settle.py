@@ -39,7 +39,10 @@ def test_parse_compound_ml_btts_fr():
         "Liverpool ML + Both Teams To Score (combo simple maison)"
     )
     assert len(specs) == 2
-    assert specs[0].market == "football_ml_regulation"
+    # "Liverpool ML" alone has no regulation qualifier → generic_ml.
+    # auto_settle._remap_spec_for_sport remaps to football_ml_regulation
+    # when pick.sport == "football".
+    assert specs[0].market == "generic_ml"
     assert specs[0].target == "Liverpool"
     assert specs[1].market == "football_btts"
 
@@ -70,7 +73,10 @@ def test_parse_thunder_ml_plus_over():
     specs = parse_pick_label_full("Thunder ML + Over 215.5 total points (combo)")
     assert len(specs) == 2
     assert specs[0].target == "Thunder"
-    assert specs[0].market in {"tennis_match_winner", "football_ml_regulation"}
+    # "Thunder ML" has no regulation qualifier → generic_ml (F2).
+    # auto_settle._remap_spec_for_sport remaps to basket_team_ml when
+    # pick.sport == "basketball".
+    assert specs[0].market == "generic_ml"
     assert specs[1].market == "basket_total_points"
     assert specs[1].direction == "over"
     assert specs[1].threshold == 215.5
@@ -154,6 +160,103 @@ def test_parse_unknown_market():
     spec = parse_pick_label("complete gibberish nonsense")
     # Falls through to ML pattern catching nothing, then unknown
     assert spec.market in {"unknown", "tennis_match_winner"}
+
+
+# --- F2: sport-aware ML disambiguation ------------------------------------
+
+
+def test_parse_thunder_bare_ml_is_generic():
+    """F2: bare 'Team ML' (no qualifier) must NOT be tagged
+    football_ml_regulation — it's generic_ml until auto_settle remaps it
+    by pick.sport."""
+    spec = parse_pick_label("Thunder ML")
+    assert spec.market == "generic_ml"
+    assert spec.target == "Thunder"
+
+
+def test_parse_wolves_bare_ml_is_generic():
+    spec = parse_pick_label("Wolves ML")
+    assert spec.market == "generic_ml"
+    assert spec.target == "Wolves"
+
+
+def test_parse_tottenham_ml_90min_only_is_regulation():
+    """Tightened regex still recognises 'ML 90 min' without parens."""
+    spec = parse_pick_label("Tottenham ML 90 min")
+    assert spec.market == "football_ml_regulation"
+    assert spec.target == "Tottenham"
+
+
+def test_parse_ml_regulation_alt_phrasing():
+    """ML (regulation) and ML (regular time) — both EN forms."""
+    s1 = parse_pick_label("Arsenal ML (regulation)")
+    s2 = parse_pick_label("Arsenal ML (regular time)")
+    assert s1.market == "football_ml_regulation"
+    assert s2.market == "football_ml_regulation"
+
+
+def test_remap_generic_ml_basketball():
+    """F2 (d): generic_ml + sport='basketball' → basket_team_ml."""
+    from auto_settle import _remap_spec_for_sport
+
+    spec = BetSpec(market="generic_ml", target="Thunder", raw_label="Thunder ML")
+    remapped = _remap_spec_for_sport(spec, "basketball")
+    assert remapped.market == "basket_team_ml"
+    assert remapped.target == "Thunder"
+
+
+def test_remap_generic_ml_football():
+    """F2 (d): generic_ml + sport='football' → football_ml_regulation."""
+    from auto_settle import _remap_spec_for_sport
+
+    spec = BetSpec(market="generic_ml", target="Liverpool", raw_label="Liverpool ML")
+    remapped = _remap_spec_for_sport(spec, "football")
+    assert remapped.market == "football_ml_regulation"
+
+
+def test_remap_football_ml_regulation_stable():
+    """F2: explicit football_ml_regulation is left untouched."""
+    from auto_settle import _remap_spec_for_sport
+
+    spec = BetSpec(
+        market="football_ml_regulation",
+        target="Tottenham",
+        raw_label="Tottenham ML 90 min",
+    )
+    remapped = _remap_spec_for_sport(spec, "football")
+    assert remapped.market == "football_ml_regulation"
+
+
+# --- F12: EN 'in exactly N sets' ------------------------------------------
+
+
+def test_parse_en_in_exactly_n_sets():
+    spec = parse_pick_label("Bautista Agut in exactly 2 sets", lang="en")
+    assert spec.market == "tennis_exact_sets"
+    assert spec.n_sets == 2
+    assert spec.target == "Bautista Agut"
+
+
+def test_parse_en_in_n_sets_exactly():
+    spec = parse_pick_label("Bautista Agut in 2 sets exactly", lang="en")
+    assert spec.market == "tennis_exact_sets"
+    assert spec.n_sets == 2
+
+
+# --- F13: tennis_exact_sets with n_sets=None voids -----------------------
+
+
+def test_rule_exact_sets_n_sets_none_voids():
+    spec = BetSpec(market="tennis_exact_sets", target="Báez", n_sets=None)
+    score = MatchScore(
+        status="final",
+        home_team="Báez",
+        away_team="Cobolli",
+        home_score=3,
+        away_score=0,
+        set_scores=[(6, 3), (6, 4), (6, 2)],
+    )
+    assert apply_rule(spec, score) == "void"
 
 
 # ============================================================================

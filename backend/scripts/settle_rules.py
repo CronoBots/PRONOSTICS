@@ -32,6 +32,7 @@ Market = Literal[
     "basket_team_ml",
     "basket_total_points",
     "basket_player_points",
+    "generic_ml",
     "unknown",
 ]
 
@@ -78,11 +79,30 @@ class MatchScore:
 # Annotation parenthétique interne (notes de curation auteur)
 _ANNOTATION_RE = re.compile(r"\s*\([^)]*\b(?:combo|maison)\b[^)]*\)\s*", re.IGNORECASE)
 
-# ML 90 min / temps réglementaire / regulation time
+# ML 90 min / temps réglementaire / regulation time (qualifier REQUIRED — F2)
+# Without an explicit qualifier we cannot claim regulation-time; fall through
+# to the generic ML pattern below and let auto_settle resolve by sport.
+# Accepts:
+#   "Tottenham ML 90 min"
+#   "Tottenham ML 90 min (temps réglementaire)"
+#   "Tottenham ML (temps réglementaire)"
+#   "Tottenham ML (regulation)" / "(regular time)"
+#   "Liverpool vainqueur (90 min)" / "vainqueur du match (temps réglementaire)"
+#   "Liverpool to win in regulation" / "to win in regular time"
 _ML_REG_RE = re.compile(
-    r"^(.+?)\s+(?:ML(?:\s+90\s*min)?\s*(?:\(temps\s+r[eé]glementaire\))?"
-    r"|vainqueur(?:\s+du\s+match)?\s+\(?\s*(?:90\s*min|temps\s+r[eé]glementaire)\s*\)?"
-    r"|to win in (?:regulation|regular time))\s*$",
+    r"^(.+?)\s+(?:"
+    r"ML\s+90\s*min(?:\s*\(\s*(?:temps\s+r[eé]glementaire|regulation|regular\s+time)\s*\))?"
+    r"|ML\s*\(\s*(?:temps\s+r[eé]glementaire|regulation|regular\s+time)\s*\)"
+    r"|vainqueur(?:e)?(?:s)?(?:\s+du\s+match)?\s+\(?\s*(?:90\s*min|temps\s+r[eé]glementaire)\s*\)?"
+    r"|to win in (?:regulation|regular time)"
+    r")\s*$",
+    re.IGNORECASE,
+)
+
+# Generic ML (no qualifier) — sport disambiguation happens in auto_settle.
+# Matches "Thunder ML", "Wolves ML", "Liverpool ML" etc.
+_ML_GENERIC_RE = re.compile(
+    r"^(.+?)\s+ML\s*$",
     re.IGNORECASE,
 )
 
@@ -93,9 +113,12 @@ _ML_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Win in N sets exactly
+# Win in N sets exactly. Accepts:
+#   FR: "X en 2 sets" / "X en 2 sets exactement"
+#   EN: "X in 2 sets" / "X in 2 sets exactly" / "X in exactly 2 sets" (F12)
 _SETS_RE = re.compile(
-    r"^(.+?)\s+(?:in|en)\s+(\d)\s+sets?(?:\s+(?:exactement|exactly))?$",
+    r"^(.+?)\s+(?:in|en)\s+(?:exactement|exactly)?\s*(\d)\s+sets?"
+    r"(?:\s+(?:exactement|exactly))?$",
     re.IGNORECASE,
 )
 
@@ -183,7 +206,7 @@ def _parse_single_spec(fragment: str, lang: Literal["fr", "en"] = "fr") -> BetSp
     raw = fragment
     text = fragment.strip()
 
-    # 1. ML 90 min / regulation
+    # 1. ML 90 min / regulation (REQUIRES explicit qualifier — F2)
     m = _ML_REG_RE.match(text)
     if m:
         return BetSpec(
@@ -192,9 +215,20 @@ def _parse_single_spec(fragment: str, lang: Literal["fr", "en"] = "fr") -> BetSp
             raw_label=raw,
         )
 
-    # 2. BTTS
+    # 1b. BTTS — checked BEFORE generic ML so "X + BTTS" compound legs split
+    # correctly. (BTTS has no "ML" suffix so order doesn't matter here, but
+    # keep next to ML for clarity.)
     if _BTTS_RE.match(text):
         return BetSpec(market="football_btts", raw_label=raw)
+
+    # 2. Generic ML (no qualifier) — sport disambiguated by auto_settle. (F2)
+    m = _ML_GENERIC_RE.match(text)
+    if m:
+        return BetSpec(
+            market="generic_ml",
+            target=m.group(1).strip(),
+            raw_label=raw,
+        )
 
     # 3. Sets exact
     m = _SETS_RE.match(text)
@@ -425,6 +459,10 @@ def apply_rule(spec: BetSpec, score: MatchScore) -> Outcome:  # noqa: C901
 
     # ---- tennis_exact_sets ----------------------------------------
     if market == "tennis_exact_sets":
+        # Defensive: n_sets must be set; otherwise the question is malformed
+        # and we cannot answer it. (F13)
+        if spec.n_sets is None:
+            return "void"
         # ALWAYS void on retired/walkover regardless of stage
         if score.status in {"retired", "walkover"}:
             return "void"
@@ -536,6 +574,11 @@ def apply_rule(spec: BetSpec, score: MatchScore) -> Outcome:  # noqa: C901
             return "void"
         is_over = pts > spec.threshold
         return "win" if (is_over == (spec.direction == "over")) else "loss"
+
+    # ---- generic_ml (caller should remap by sport before reaching here) -
+    # If we ever do reach apply_rule with generic_ml, treat as un-settleable.
+    if market == "generic_ml":
+        return "void"
 
     # ---- unknown --------------------------------------------------
     return "void"
