@@ -142,5 +142,53 @@ def main() -> int:
     return 0
 
 
+def probe_production_fetch():
+    """Call auto_settle._fetch_match_score with the exact J11 leg
+    parameters and trace what happens."""
+    import sys as _sys
+    from pathlib import Path
+    _sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import auto_settle
+
+    print("\n" + "=" * 80)
+    print("PRODUCTION CALL — auto_settle._fetch_match_score for J11 Osaka leg")
+    print("=" * 80)
+
+    # Monkey-patch _espn_get to log each call
+    original_espn_get = auto_settle._espn_get
+    def traced_get(path):
+        result = original_espn_get(path)
+        if result is None:
+            print(f"  [_espn_get] path={path!r} → None (error)")
+        else:
+            events = result.get("events", [])
+            print(f"  [_espn_get] path={path!r} → {len(events)} events")
+        return result
+    auto_settle._espn_get = traced_get
+
+    # Mimic the J11 Osaka leg call
+    score = auto_settle._fetch_match_score(
+        home="Donna Vekic",
+        away="Naomi Osaka",
+        kickoff_iso="2026-05-28T09:00:00+00:00",
+        sport="tennis",
+        league_str="Roland Garros — 2e tour",
+    )
+    print(f"\n  RESULT: {score}")
+
+    # Repeat for Rinderknech leg
+    print("\n  --- Rinderknech leg ---")
+    score2 = auto_settle._fetch_match_score(
+        home="Arthur Rinderknech",
+        away="Matteo Berrettini",
+        kickoff_iso="2026-05-28T18:15:00+00:00",
+        sport="tennis",
+        league_str="Roland Garros — 2e tour",
+    )
+    print(f"\n  RESULT: {score2}")
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    rc = main()
+    probe_production_fetch()
+    sys.exit(rc)
