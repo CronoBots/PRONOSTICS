@@ -340,18 +340,19 @@ function BetRow({
                           {t(parsed.typeKey, parsed.typeParams)}
                         </div>
                       )}
-                      {/* Convention layout v6.10 (style Unibet receipt) :
-                            1) matchup · 2) date + heure · 3) tournoi */}
-                      <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
+                      {/* Convention layout v6.11 (Option A) :
+                            matchup white/55+medium, date white/40,
+                            tournoi white/40+italic — hiérarchie nette */}
+                      <div className="text-[11px] text-white/55 font-medium mt-0.5 leading-snug">
                         {matchup}
                       </div>
                       {dateTimeLabel && (
-                        <div className="text-[11px] text-white/30 mt-0.5 leading-snug">
+                        <div className="text-[11px] text-white/40 mt-0.5 leading-snug">
                           {dateTimeLabel}
                         </div>
                       )}
                       {pick.match.league && (
-                        <div className="text-[11px] text-white/30 mt-0.5 leading-snug truncate">
+                        <div className="text-[11px] text-white/40 italic mt-0.5 leading-snug truncate">
                           {pick.match.league}
                         </div>
                       )}
@@ -744,21 +745,21 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
             {t(typeKey, typeParams)}
           </div>
         )}
-        {/* Convention layout v6.10 (style Unibet receipt) :
-              1) matchup (joueurs / équipes)
-              2) date + heure
-              3) tournoi (league)
-            Chacun sur sa propre ligne pour scan vertical. */}
-        <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
+        {/* Convention layout v6.11 (Option A — hiérarchie typo) :
+              1) matchup → white/55 + font-medium (contexte clé visible)
+              2) date + heure → white/40 (repère temporel neutre)
+              3) tournoi → white/40 + italic (nom propre / lieu)
+            3 niveaux visuels distincts au lieu du gris uniforme précédent. */}
+        <div className="text-[11px] text-white/55 font-medium mt-0.5 leading-snug">
           {matchup}
         </div>
         {dateTimeLabel && (
-          <div className="text-[11px] text-white/30 mt-0.5 leading-snug">
+          <div className="text-[11px] text-white/40 mt-0.5 leading-snug">
             {dateTimeLabel}
           </div>
         )}
         {leg.league && (
-          <div className="text-[11px] text-white/30 mt-0.5 leading-snug truncate">
+          <div className="text-[11px] text-white/40 italic mt-0.5 leading-snug truncate">
             {leg.league}
           </div>
         )}
