@@ -128,20 +128,75 @@ def _remap_spec_for_sport(spec: BetSpec, sport: str) -> BetSpec:
 
 
 # ---------------------------------------------------------------------------
-# Provider — SofaScore wrapper
+# Provider — ESPN unofficial API (v1.2: replaces SofaScore)
 # ---------------------------------------------------------------------------
+# ESPN's public scoreboard endpoint passes from GitHub Actions cloud IPs
+# (probe_providers.py confirmed 200 for tennis ATP/WTA, NBA, UEFA soccer).
+# SofaScore returned 403 from the same runner. No API key needed.
 
 
-_SOFA = None
+_ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports"
+
+# Map a (sport, free-text league string) to the ESPN league slug(s) to
+# query. For tennis we always try both ATP and WTA. For football we infer
+# from the pick's league string.
+_FOOTBALL_LEAGUE_MAP = [
+    ("premier league",      "eng.1"),
+    ("la liga",             "esp.1"),
+    ("primera división",    "esp.1"),
+    ("bundesliga",          "ger.1"),
+    ("serie a",             "ita.1"),
+    ("ligue 1",             "fra.1"),
+    ("champions league",    "uefa.champions"),
+    ("europa league",       "uefa.europa"),
+    ("conference league",   "uefa.europa.conf"),
+]
 
 
-def _sofa():
-    global _SOFA
-    if _SOFA is None:
-        from sofascore import SofaScore  # imported lazily
+def _espn_leagues_for(sport: str, league_str: str) -> list[str]:
+    """Return the list of ESPN league slugs to query for this pick."""
+    if sport == "tennis":
+        return ["tennis/atp", "tennis/wta"]
+    if sport == "basketball":
+        return ["basketball/nba"]
+    if sport == "football":
+        ls = (league_str or "").lower()
+        for needle, slug in _FOOTBALL_LEAGUE_MAP:
+            if needle in ls:
+                return [f"soccer/{slug}"]
+        # Unknown football league → try the most common ones as fallback
+        return [
+            "soccer/eng.1", "soccer/esp.1", "soccer/ita.1",
+            "soccer/ger.1", "soccer/fra.1",
+            "soccer/uefa.champions", "soccer/uefa.europa",
+        ]
+    return []
 
-        _SOFA = SofaScore()
-    return _SOFA
+
+def _espn_get(path: str) -> dict | None:
+    """GET an ESPN endpoint. Returns parsed JSON or None on any failure."""
+    import urllib.request
+    import urllib.error
+
+    url = f"{_ESPN_BASE}/{path}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+            ),
+            "Accept": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read())
+    except (urllib.error.HTTPError, urllib.error.URLError, json.JSONDecodeError):
+        return None
+    except Exception:
+        return None
 
 
 def _strip_accents(s: str) -> str:
@@ -153,140 +208,196 @@ def _strip_accents(s: str) -> str:
 
 
 def _name_match(a: str, b: str) -> bool:
+    """Loose name match — strip accents + lowercase + substring contains.
+    Handles 'Naomi Osaka' vs 'N. Osaka', 'Báez' vs 'Baez', etc."""
     if not a or not b:
         return False
     norm = lambda s: re.sub(r"[^a-z0-9 ]", "", _strip_accents(s).lower()).strip()
     na, nb = norm(a), norm(b)
-    return na in nb or nb in na
+    if not na or not nb:
+        return False
+    # Match if either is contained in the other, OR if all words of one
+    # appear in the other (handles "Naomi Osaka" vs "Osaka").
+    if na in nb or nb in na:
+        return True
+    wa, wb = set(na.split()), set(nb.split())
+    if wa and wb and (wa.issubset(wb) or wb.issubset(wa)):
+        return True
+    # Last-name match (most reliable for tennis): if the LONGEST word in
+    # one is in the other's word list, accept.
+    longest_a = max(wa, key=len, default="")
+    longest_b = max(wb, key=len, default="")
+    if longest_a and longest_a in wb:
+        return True
+    if longest_b and longest_b in wa:
+        return True
+    return False
+
+
+def _competitor_name(comp: dict) -> str:
+    """ESPN competitors can be athletes (tennis) or teams (team sports)."""
+    if comp.get("athlete"):
+        return comp["athlete"].get("displayName", "")
+    if comp.get("team"):
+        return comp["team"].get("displayName", "")
+    return ""
 
 
 def _fetch_match_score(
-    home: str, away: str, kickoff_iso: str, sport: str
+    home: str, away: str, kickoff_iso: str, sport: str, league_str: str = ""
 ) -> Optional[MatchScore]:
-    """Find a SofaScore event matching home/away/kickoff_iso and convert
-    it to a MatchScore. Returns None on any failure (ambiguous, missing,
+    """Find an ESPN event matching home/away/kickoff_iso and convert it
+    to a MatchScore. Returns None on any failure (ambiguous, missing,
     API error)."""
-    # F10: pace API requests (not settlements). Every call to the provider
-    # waits 15s; legs that early-out before reaching apply_rule no longer
-    # bypass the rate limit.
-    time.sleep(15)
-    try:
-        sport_slug = {"tennis": "tennis", "football": "football", "basketball": "basketball"}.get(
-            sport
-        )
-        if sport_slug is None:
-            return None
-        date_part = kickoff_iso.split("T")[0]
-        sofa = _sofa()
-        events = sofa.scheduled_events(sport_slug, date=date_part)
-    except Exception:
+    # F10: pace API requests. 1s between ESPN calls is plenty (no
+    # documented limit, but we stay conservative).
+    time.sleep(1)
+    date_part = kickoff_iso.split("T")[0].replace("-", "")  # ESPN expects YYYYMMDD
+    leagues = _espn_leagues_for(sport, league_str)
+    if not leagues:
         return None
 
+    all_events: list[dict] = []
+    for league_slug in leagues:
+        data = _espn_get(f"{league_slug}/scoreboard?dates={date_part}")
+        if not data:
+            continue
+        all_events.extend(data.get("events", []))
+
     candidates = []
-    for ev in events:
-        h = ev.get("homeTeam", {}).get("name", "")
-        a = ev.get("awayTeam", {}).get("name", "")
-        if (
-            (_name_match(home, h) or _name_match(h, home))
-            and (_name_match(away, a) or _name_match(a, away))
-        ):
+    for ev in all_events:
+        competitors = (
+            ev.get("competitions", [{}])[0].get("competitors", [])
+            if ev.get("competitions") else []
+        )
+        names = [_competitor_name(c) for c in competitors]
+        if len(names) < 2:
+            continue
+        # ESPN's "homeAway" can be unreliable for tennis — match either
+        # orientation as a same-pair fixture.
+        pair_match = (
+            (_name_match(home, names[0]) and _name_match(away, names[1]))
+            or (_name_match(home, names[1]) and _name_match(away, names[0]))
+        )
+        if pair_match:
             candidates.append(ev)
+
     if not candidates:
         return None
     if len(candidates) > 1:
-        # F5: spec is explicit — return None on ambiguity. Closest-kickoff
-        # heuristic risked picking the wrong fixture (e.g. a doubleheader
-        # or two teams playing different competitions on the same date).
         print(
             f"[auto-settle] AMBIGUOUS match for {home} vs {away} on "
             f"{kickoff_iso}: {len(candidates)} candidates — skipping.",
             file=sys.stderr,
         )
         return None
-    ev = candidates[0]
-    return _event_to_score(ev, sport)
+    return _event_to_score(candidates[0], sport, home, away)
 
 
-def _event_to_score(ev: dict, sport: str) -> Optional[MatchScore]:
-    status = (ev.get("status") or {}).get("type") or "unknown"
-    status_map = {
-        "finished": "final",
-        "ended": "final",
-        "inprogress": "in_progress",
-        "postponed": "postponed",
-        "canceled": "postponed",
-        "interrupted": "in_progress",
-    }
-    mapped = status_map.get(status, "in_progress")
+def _event_to_score(ev: dict, sport: str, want_home: str = "", want_away: str = "") -> Optional[MatchScore]:
+    """Map an ESPN event dict to our MatchScore dataclass.
 
-    home = ev.get("homeTeam", {}).get("name", "")
-    away = ev.get("awayTeam", {}).get("name", "")
-    hsc = ev.get("homeScore", {})
-    asc = ev.get("awayScore", {})
+    want_home/want_away: the pick's perspective (we re-orient the score so
+    `home_score` matches the player/team the pick called "home_team", to
+    keep the rules.apply_rule logic provider-agnostic).
+    """
+    status_obj = ev.get("status", {}).get("type", {})
+    status_name = (status_obj.get("name") or "").lower()
+    status_completed = bool(status_obj.get("completed"))
+
+    if "postponed" in status_name or "canceled" in status_name or "cancelled" in status_name:
+        mapped = "postponed"
+    elif "final" in status_name or status_completed:
+        mapped = "final"
+    elif "halftime" in status_name or "progress" in status_name or "delayed" in status_name:
+        mapped = "in_progress"
+    else:
+        mapped = "in_progress"
+
+    competition = (ev.get("competitions") or [{}])[0]
+    competitors = competition.get("competitors", [])
+    if len(competitors) < 2:
+        return None
+
+    # Re-orient so competitors[0] is the pick's "home_team" perspective.
+    c0, c1 = competitors[0], competitors[1]
+    if want_home and _name_match(want_home, _competitor_name(c1)):
+        c0, c1 = c1, c0
+
+    home = _competitor_name(c0)
+    away = _competitor_name(c1)
 
     started_at: Optional[datetime] = None
-    if ev.get("startTimestamp"):
+    date_str = ev.get("date")
+    if date_str:
         try:
-            started_at = datetime.fromtimestamp(ev["startTimestamp"], tz=timezone.utc)
+            started_at = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
         except Exception:
             started_at = None
 
+    # Retirement / walkover detection for tennis
     if sport == "tennis":
-        # Tennis: SofaScore exposes period1Score, period2Score, etc.
+        note = (status_obj.get("description") or "").lower() + " " + status_name
+        if re.search(r"\b(ret|retired|w\.?o\.?|walkover)\b", note, re.IGNORECASE):
+            mapped = "retired"
+
+    try:
+        c0_total = int(c0.get("score", 0) or 0)
+        c1_total = int(c1.get("score", 0) or 0)
+    except (TypeError, ValueError):
+        c0_total = c1_total = 0
+
+    if sport == "tennis":
+        # ESPN tennis linescores = per-set games for each competitor.
+        c0_sets = c0.get("linescores") or []
+        c1_sets = c1.get("linescores") or []
         set_scores = []
-        for i in range(1, 6):
-            h_set = hsc.get(f"period{i}")
-            a_set = asc.get(f"period{i}")
-            if h_set is None or a_set is None:
-                break
-            set_scores.append((int(h_set), int(a_set)))
-        # F14: word-boundary retirement detection (substring 'ret' was
-        # fragile — would have matched "interrupted", "returned", etc.)
-        if ev.get("winnerCode") and status == "finished":
-            note = (ev.get("statusDescription") or "")
-            if re.search(
-                r"\b(ret|retired|w\.?o\.?|walkover)\b", note, re.IGNORECASE
-            ):
-                mapped = "retired"
+        for i in range(min(len(c0_sets), len(c1_sets))):
+            try:
+                h_g = int(c0_sets[i].get("value", 0))
+                a_g = int(c1_sets[i].get("value", 0))
+                set_scores.append((h_g, a_g))
+            except (TypeError, ValueError):
+                continue
+        # For tennis, "score" at the top level = sets won. So home_score
+        # = c0_total (sets won by the home_team perspective).
         return MatchScore(
             status=mapped,
             home_team=home,
             away_team=away,
-            home_score=hsc.get("current"),
-            away_score=asc.get("current"),
+            home_score=c0_total,
+            away_score=c1_total,
             set_scores=set_scores or None,
             started_at=started_at,
         )
 
     if sport == "football":
-        # F6: regulation_score MUST be period1 + period2 only — do NOT fall
-        # back to "current" which silently includes ET + penalties on
-        # cup/playoff matches. If period1/period2 are absent, AND any ET/
-        # penalties signal is present, leave regulation_score=None so the
-        # caller routes to skipped_no_data instead of settling wrong.
-        has_p1 = hsc and ("period1" in hsc) and ("period1" in asc)
-        has_p2 = hsc and ("period2" in hsc) and ("period2" in asc)
-        et_or_pen_present = any(
-            (hsc.get(k) is not None) or (asc.get(k) is not None)
-            for k in ("period1OT", "extra1", "extra2", "overtime", "penalty", "penalties")
-        ) if (hsc and asc) else False
+        # ESPN soccer linescores typically = [1st half, 2nd half, ET1, ET2].
+        c0_periods = c0.get("linescores") or []
+        c1_periods = c1.get("linescores") or []
+
+        def _safe_int(x):
+            try:
+                return int(x.get("value", 0))
+            except Exception:
+                return 0
 
         reg: Optional[tuple[int, int]] = None
-        if has_p1 and has_p2:
+        et_present = len(c0_periods) > 2 or len(c1_periods) > 2
+        if len(c0_periods) >= 2 and len(c1_periods) >= 2:
             reg = (
-                int(hsc.get("period1") or 0) + int(hsc.get("period2") or 0),
-                int(asc.get("period1") or 0) + int(asc.get("period2") or 0),
+                _safe_int(c0_periods[0]) + _safe_int(c0_periods[1]),
+                _safe_int(c1_periods[0]) + _safe_int(c1_periods[1]),
             )
-        elif hsc and asc and hsc.get("current") is not None and not et_or_pen_present:
-            # Safe fallback only when no ET/pens markers are present.
-            reg = (hsc.get("current"), asc.get("current"))
-        # else: reg stays None → caller routes to skipped_no_data (F6)
+        elif not et_present and mapped == "final":
+            # Fallback to total score when no ET signal
+            reg = (c0_total, c1_total)
         return MatchScore(
             status=mapped,
             home_team=home,
             away_team=away,
-            home_score=hsc.get("current"),
-            away_score=asc.get("current"),
+            home_score=c0_total,
+            away_score=c1_total,
             regulation_score=reg,
             started_at=started_at,
         )
@@ -296,9 +407,9 @@ def _event_to_score(ev: dict, sport: str) -> Optional[MatchScore]:
             status=mapped,
             home_team=home,
             away_team=away,
-            home_score=hsc.get("current"),
-            away_score=asc.get("current"),
-            player_points=None,  # Player props un-settleable without extra fetch
+            home_score=c0_total,
+            away_score=c1_total,
+            player_points=None,  # ESPN scoreboard doesn't include per-player; need separate endpoint
             started_at=started_at,
         )
 
@@ -498,6 +609,7 @@ def _settle_one_leg(leg: dict) -> tuple[Optional[str], Optional[MatchScore], lis
         leg.get("away_team", ""),
         leg.get("kickoff", ""),
         sport,
+        leg.get("league", ""),
     )
     if score is None:
         return None, None, specs, "no_data"

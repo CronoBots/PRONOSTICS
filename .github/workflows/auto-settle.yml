@@ -1,36 +1,36 @@
 name: Auto-settle pending picks
 
-# Settlement REMINDER pipeline (v1.1 — pivot from auto-settle to
-# manual-settle-with-smart-reminders, after SofaScore proved blocked by
-# Cloudflare from GitHub Actions IPs).
+# v1.2 — provider swap (SofaScore → ESPN unofficial).
 #
-# - Every 2 hours: runs in REMINDER mode — pings the operator on
-#   Telegram with the list of pending picks past kickoff+2h that still
-#   need manual settlement per CLAUDE.md §1. No provider call, no file
-#   mutation.
-# - workflow_dispatch can still trigger shadow / live / dry-run /
-#   reminder for testing or for when a working provider is wired.
+# SofaScore was blocked by Cloudflare from GitHub Actions cloud IPs
+# (probe_providers.py confirmed 403). ESPN's public scoreboard endpoint
+# passes (200) from the same runners — covers tennis ATP/WTA, NBA, UEFA
+# soccer, all major football leagues. No API key needed.
 #
-# Why every 2h (not 30 min like before): manual settlement is the
-# bottleneck. Pinging every 30 min would over-notify; once every 2h
-# matches the natural cadence of "match ended, scroll Telegram, settle."
+# - Every 2h: SHADOW mode (writes proposals to backend/data/auto_settle/<date>.json
+#   + Telegram admin diff via TELEGRAM_ADMIN_CHAT_ID, NO mutation of
+#   picks_data.py). Operator reviews proposals; flips to live when confident.
+# - workflow_dispatch with mode=live: actually mutates picks_data.py +
+#   picks_translations_en.py, regenerates history.json, commits + pushes.
+# - mode=reminder: legacy fallback (provider-less, just pings list of
+#   due picks). Kept for when ESPN is down.
 #
-# See CLAUDE.md §12 for full documentation of all modes.
+# See CLAUDE.md §12 for full documentation.
 
 on:
   schedule:
-    - cron: "0 */2 * * *"  # every 2 hours (00:00, 02:00, 04:00, ...)
+    - cron: "0 */2 * * *"  # every 2 hours
   workflow_dispatch:
     inputs:
       mode:
-        description: "Mode (reminder | shadow | live | dry-run)"
+        description: "Mode (shadow | live | reminder | dry-run)"
         type: choice
         required: true
-        default: "reminder"
+        default: "shadow"
         options:
-          - reminder
           - shadow
           - live
+          - reminder
           - dry-run
 
 permissions:
@@ -59,8 +59,10 @@ jobs:
         id: m
         run: |
           MODE="${{ github.event.inputs.mode }}"
-          # Default cron path → reminder (provider blocked, see header comment)
-          if [ -z "$MODE" ]; then MODE="reminder"; fi
+          # v1.2: provider is ESPN (passes from GH runners). Default
+          # cron mode = shadow (compute proposals + admin diff, no
+          # write). Promote to live via workflow_dispatch when ready.
+          if [ -z "$MODE" ]; then MODE="shadow"; fi
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
       - name: Run settlement
         working-directory: backend
