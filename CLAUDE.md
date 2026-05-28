@@ -374,3 +374,106 @@ changes. Don't accumulate — commit often, push often.
   `HistoryList` patterns. The reference is /paris.
 - "Did the user ask for jargon (`ML 90 min`)?" → Translate to the
   full form (`Vainqueur du match (temps réglementaire)`).
+
+---
+
+## 12. Auto-settlement protocol (v1)
+
+The auto-settle pipeline is a SECOND layer on top of §1 — manual
+settlement still works exactly as before. Auto-settle proposes
+outcomes; the operator promotes them to live writes by flipping the
+workflow mode.
+
+### Pipeline files
+
+```
+backend/scripts/
+  settle_rules.py    ← parser + per-market rules (pure, no I/O)
+  settle_ast.py      ← libcst writer for picks_data.py + picks_translations_en.py
+  auto_settle.py     ← CLI entry point (dry-run | shadow | live)
+
+backend/data/auto_settle/
+  <YYYY-MM-DD>.json  ← shadow-mode proposal log (committed)
+  .notified.json     ← dedupe state for Telegram admin pings
+
+.github/workflows/
+  auto-settle.yml    ← cron */30 + workflow_dispatch
+```
+
+### Modes
+
+| Mode      | Writes to picks_data.py? | Default? |
+|-----------|--------------------------|----------|
+| dry-run   | no — stdout only         | no       |
+| shadow    | no — proposal JSON + Telegram admin diff | YES (cron) |
+| live      | YES — libcst edit + build_history.py + git commit | manual only |
+
+The cron runs SHADOW every 30 minutes. Going LIVE requires a
+manual `workflow_dispatch` with `mode=live` from the operator.
+Shadow proposals are written to
+`backend/data/auto_settle/<date>.json` for review.
+
+### Markets covered
+
+| Sport      | Market                       | settle_rules market key   |
+|------------|------------------------------|---------------------------|
+| tennis     | match winner                 | `tennis_match_winner`     |
+| tennis     | win in N sets exactly        | `tennis_exact_sets`       |
+| tennis     | total games over/under       | `tennis_total_games`      |
+| football   | match winner (90 min)        | `football_ml_regulation`  |
+| football   | both teams to score          | `football_btts`           |
+| basketball | team moneyline               | `basket_team_ml`          |
+| basketball | total points over/under      | `basket_total_points`     |
+| basketball | player points over/under     | `basket_player_points`    |
+
+Anything else (handicaps, asian lines, props beyond points, etc.)
+falls into `market="unknown"` and is logged to `skipped_unknown[]`
+without ever touching the pick.
+
+### Combo aggregation rule (deviation from industry standard)
+
+NEXBET house rule for combos:
+
+- All legs won → combo wins
+- Any leg voided → **whole combo voided**
+- Otherwise → combo lost
+
+This deviates from the standard bookmaker behaviour, which would
+remove the voided leg from the parlay and recompute the residual
+odds on the remaining legs. The user has explicitly chosen the
+above semantics for now; revisit before promoting v1 → v2.
+
+### Provider
+
+Data: `backend/scripts/sofascore.py` (existing in-repo client).
+The original task spec mentioned BallDontLie, but BallDontLie
+doesn't cover tennis and SofaScore is already integrated and
+multi-sport, so we use SofaScore. Rate-paced at 1 request every
+15s in `auto_settle.py::_settle_one_leg` (we have very low daily
+volume — 1 to 3 picks per day).
+
+### Failure handling
+
+- Unparseable label (`market="unknown"`) → logged to
+  `skipped_unknown[]`, never modifies the pick, Telegram admin
+  ping with the offending label.
+- Provider returned no data → `skipped_no_data[]`, retries on the
+  next cron tick, admin ping ONLY ONCE per pick per day (state in
+  `.notified.json`).
+- Live-mode mutation raised → file reverted via `git checkout --`,
+  admin alert with traceback, exit code 1 (loud).
+- After every successful AST write, `auto_settle.py` reloads
+  `picks_data` to verify import safety before continuing.
+
+### When in doubt
+
+- "Did the operator ask for auto-settle to publish to Telegram?"
+  → No. Auto-settle ONLY pings the admin (proposal diffs). The
+  user-facing Telegram publish flow (`publish_telegram.py`) is
+  still its own job (cron 06:00 UTC for result-yesterday).
+- "Should I add a new market to the parser?" → Add the regex to
+  `settle_rules.py`, add the rule to `apply_rule`, add a test in
+  `tests/test_settle.py`, then add to the markets table above.
+- "What if SofaScore changes their API?" → The provider helper
+  `_fetch_match_score` is the only coupling point. Update there
+  and the rest of the pipeline is untouched.

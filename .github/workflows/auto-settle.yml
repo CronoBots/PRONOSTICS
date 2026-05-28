@@ -1,0 +1,63 @@
+name: Auto-settle pending picks
+
+# End-to-end auto-settlement pipeline (v1, shadow-by-default).
+#
+# - Every 30 minutes: runs in SHADOW mode (writes proposals to
+#   backend/data/auto_settle/<date>.json + Telegram admin diff, NO
+#   mutation of picks_data.py).
+# - workflow_dispatch with mode=live: actually mutates picks_data.py,
+#   regenerates history.json, commits + pushes.
+#
+# See CLAUDE.md §12 for full documentation.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"  # every 30 minutes
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode (shadow | live | dry-run)"
+        type: choice
+        required: true
+        default: "shadow"
+        options:
+          - shadow
+          - live
+          - dry-run
+
+permissions:
+  contents: write
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install -r backend/requirements.txt
+      - name: Determine mode
+        id: m
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then MODE="shadow"; fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+      - name: Run settlement
+        working-directory: backend
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        run: |
+          git config user.email "auto-settle@nexbet.dev"
+          git config user.name "NEXBET Auto-Settle"
+          case "${{ steps.m.outputs.mode }}" in
+            dry-run) python scripts/auto_settle.py --dry-run ;;
+            shadow)  python scripts/auto_settle.py ;;
+            live)    python scripts/auto_settle.py --live && git push ;;
+            *) echo "unknown mode"; exit 1 ;;
+          esac
