@@ -183,8 +183,11 @@ function BetRow({
   // Heure seule : "13:00" — intégrée à la ligne du tournoi (la date est
   // déjà visible dans le header du jour "Lundi 25" qui groupe les paris).
   const kickoffDate = pick.match.kickoff ? new Date(pick.match.kickoff) : null;
-  const timeLabel = kickoffDate
-    ? kickoffDate.toLocaleTimeString(localeForLang(lang), {
+  const dateTimeLabel = kickoffDate
+    ? kickoffDate.toLocaleString(localeForLang(lang), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       })
@@ -274,7 +277,7 @@ function BetRow({
             </div>
             <div className="text-xs text-white/55 mb-3">
               ⏱ {t("status.pendingLabel").replace("⏳ ", "")}
-              {timeLabel && <span className="text-white/40"> · {timeLabel}</span>}
+              {dateTimeLabel && <span className="text-white/40"> · {dateTimeLabel}</span>}
             </div>
 
             {/* Placeholders floutés — sans emoji sport pour ne pas révéler la
@@ -339,12 +342,21 @@ function BetRow({
                           {t(parsed.typeKey, parsed.typeParams)}
                         </div>
                       )}
+                      {/* Convention layout v6.10 (style Unibet receipt) :
+                            1) matchup · 2) date + heure · 3) tournoi */}
                       <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
                         {matchup}
-                        {timeLabel && (
-                          <span className="text-white/30"> · {timeLabel}</span>
-                        )}
                       </div>
+                      {dateTimeLabel && (
+                        <div className="text-[11px] text-white/30 mt-0.5 leading-snug">
+                          {dateTimeLabel}
+                        </div>
+                      )}
+                      {pick.match.league && (
+                        <div className="text-[11px] text-white/30 mt-0.5 leading-snug truncate">
+                          {pick.match.league}
+                        </div>
+                      )}
                       {pick.result?.score_text && (
                         <div
                           className={`text-[11px] mt-1 leading-snug ${
@@ -678,6 +690,7 @@ interface LegRowData {
   pick: string;
   odds: number;
   sport: string;
+  league?: string;
   home_team: string;
   away_team: string;
   outcome: "win" | "loss" | "void" | "pending";
@@ -705,8 +718,12 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
   const { t, lang } = useI18n();
   const { entity, typeKey, typeParams } = parsePickLabel(leg.pick, lang);
   const matchup = `${leg.home_team} — ${leg.away_team}`;
-  const timeLabel = leg.kickoff
-    ? new Date(leg.kickoff).toLocaleTimeString(localeForLang(lang), {
+  const kickoffDate = leg.kickoff ? new Date(leg.kickoff) : null;
+  const dateTimeLabel = kickoffDate
+    ? kickoffDate.toLocaleString(localeForLang(lang), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       })
@@ -729,10 +746,24 @@ function LegRow({ leg, index: _index }: { leg: LegRowData; index?: number }) {
             {t(typeKey, typeParams)}
           </div>
         )}
+        {/* Convention layout v6.10 (style Unibet receipt) :
+              1) matchup (joueurs / équipes)
+              2) date + heure
+              3) tournoi (league)
+            Chacun sur sa propre ligne pour scan vertical. */}
         <div className="text-[11px] text-white/35 mt-0.5 leading-snug">
           {matchup}
-          {timeLabel && <span className="text-white/30"> · {timeLabel}</span>}
         </div>
+        {dateTimeLabel && (
+          <div className="text-[11px] text-white/30 mt-0.5 leading-snug">
+            {dateTimeLabel}
+          </div>
+        )}
+        {leg.league && (
+          <div className="text-[11px] text-white/30 mt-0.5 leading-snug truncate">
+            {leg.league}
+          </div>
+        )}
         {leg.result?.score_text && (
           <div
             className={`text-[11px] mt-1 leading-snug ${
