@@ -39,6 +39,18 @@ export default function App({ Component, pageProps }: AppProps) {
     if (bottom && bottom !== "0px") root.style.setProperty("--safe-bottom", bottom);
   }, []);
 
+  // Service worker — offline + cache versionné. Enregistré seulement en
+  // prod (en dev Next sert tout via HMR et le SW pollue le cache).
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+    if (!("serviceWorker" in navigator)) return;
+    const base = process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
+    const swUrl = `${base}/sw.js`;
+    navigator.serviceWorker.register(swUrl, { scope: `${base}/` }).catch(() => {
+      /* silently ignore — SW est un nice-to-have, pas un blocant */
+    });
+  }, []);
+
   // App-feel mobile : empêche le pinch-zoom iOS Safari (qui ignore
   // user-scalable=no depuis iOS 10) + double-tap zoom. Le viewport meta
   // tag ne suffit pas, il faut bloquer les events gesturestart côté JS.
