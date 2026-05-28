@@ -206,6 +206,32 @@ TRANSLATIONS: dict[str, dict] = {
             },
         ],
     },
+    # J11 — May 28, 2026 — COMBO 2 legs RG R2 Day 5 (Osaka + Rinderknech) — PENDING
+    "2026-05-28": {
+        "league": "Roland Garros — Second round",
+        "pick": "2-leg tennis parlay — Roland Garros R2 Day 5",
+        "headline": (
+            "Day 5 RG combo: two clay-court favourites with value on "
+            "the 2.38 combined price. Osaka (4× Grand Slam champion) "
+            "faces Vekic with a clean 1-0 H2H and a stylistic edge on "
+            "clay. Rinderknech (ATP #25, home favourite) takes on "
+            "Berrettini (ATP #105, returning from injuries) in the "
+            "Chatrier night session — crowd factor expected to tip "
+            "the scales. Combined model probability ~43%."
+        ),
+        "legs": [
+            {
+                "pick": "Naomi Osaka to win",
+                "home_country": "CRO",
+                "away_country": "JPN",
+            },
+            {
+                "pick": "Arthur Rinderknech to win",
+                "home_country": "FRA",
+                "away_country": "ITA",
+            },
+        ],
+    },
 }
 
 
