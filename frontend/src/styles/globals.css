@@ -168,6 +168,29 @@ a:active {
 }
 
 /* ============================================================
+   card-press : feedback tactile pour les cartes cliquables
+   (DayCard, BetRow). N'applique le scale QUE sur les devices
+   avec pointer-fine (desktop avec souris). Sur mobile/touch,
+   pas de feedback visuel pour éviter les "false positives"
+   pendant le scroll (un touchstart pour scroller déclenche
+   sinon le visual press, ce qui est trompeur).
+   -webkit-tap-highlight-color transparent supprime aussi le
+   gris natif iOS qui surligne les zones touchées au scroll.
+   ============================================================ */
+.card-press {
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s ease-out, border-color 0.15s ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-press:active {
+    transform: scale(0.99);
+  }
+  .card-press:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* ============================================================
    THEME-AWARE OVERRIDES pour les utilities text/border/bg-white/X
    ------------------------------------------------------------
    En light mode, on remappe les classes opacity-based de Tailwind

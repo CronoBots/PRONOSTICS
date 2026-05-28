@@ -252,9 +252,7 @@ function BetRow({
     return null;
   })();
 
-  const wrapperClass = `w-full block text-left ${
-    asDiv ? "" : "transition-transform duration-100 ease-out active:scale-[0.99] hover:bg-white/[0.02]"
-  }`;
+  const wrapperClass = `w-full block text-left ${asDiv ? "" : "card-press"}`;
   const handleClick = () => (isLocked ? router.push("/premium") : onClick());
 
   const body = (
@@ -827,7 +825,7 @@ function DayCard({ day, onPickClick }: { day: DayBucket; onPickClick: (p: Histor
       <button
         type="button"
         onClick={() => handlePickClick(pick)}
-        className={`${cardClass} transition-transform duration-100 ease-out active:scale-[0.99] hover:border-white/15`}
+        className={`${cardClass} card-press`}
       >
         {bar}
         <div className="flex-1 min-w-0">
