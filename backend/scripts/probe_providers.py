@@ -28,11 +28,12 @@ def _get(url: str, headers: dict | None = None) -> tuple[int, str, dict | str | 
     req = urllib.request.Request(url, headers=h)
     try:
         with urllib.request.urlopen(req, timeout=10) as r:
-            body = r.read()[:4000].decode("utf-8", errors="replace")
+            body_bytes = r.read()  # FULL body — was truncated at 4000B before
+            body_str = body_bytes.decode("utf-8", errors="replace")
             try:
-                return r.status, "ok", json.loads(body)
+                return r.status, "ok", json.loads(body_str)
             except json.JSONDecodeError:
-                return r.status, "ok-not-json", body[:200]
+                return r.status, "ok-not-json", body_str[:300]
     except urllib.error.HTTPError as e:
         return e.code, f"http-error", str(e)
     except urllib.error.URLError as e:
