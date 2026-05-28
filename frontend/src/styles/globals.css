@@ -137,6 +137,29 @@ a:active {
   transform: scale(0.97);
 }
 
+/* A11y : focus visible clavier — ring cyan AX (couleur de marque) avec
+   léger offset pour ne pas rogner les cards. :focus-visible n'apparaît
+   que pour la nav clavier, pas pour les clics souris (sinon ring qui
+   reste affiché parasiterait le design). */
+button:focus,
+a:focus,
+[role="button"]:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
 /* Override : éléments qui ne doivent PAS scaler au tap (ex: logo bannière,
    cards cliquables sur lesquelles le mini-bond casse la lisibilité) */
 .no-tap-shift,
@@ -326,8 +349,23 @@ a:active {
   animation: pageTransition 0.22s cubic-bezier(0.2, 0, 0.2, 1);
 }
 @media (prefers-reduced-motion: reduce) {
-  .page-transition {
-    animation: none;
+  .page-transition,
+  .page-fade,
+  .animate-slideUp,
+  .animate-fade-in,
+  .animate-ping {
+    animation: none !important;
+  }
+  /* On garde la transition de couleur (pas mouvement) mais on coupe
+     les transforms et les durées agressives — confort des utilisateurs
+     sensibles au mouvement (vertige, troubles vestibulaires). */
+  button,
+  a {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  button:active:not(:disabled),
+  a:active {
+    transform: none;
   }
 }
 
