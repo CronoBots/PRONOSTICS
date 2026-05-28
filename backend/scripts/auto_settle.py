@@ -294,16 +294,30 @@ def _fetch_match_score(
                 if pair_match:
                     candidates.append(comp)
 
-    if not candidates:
+    # Dedupe by competition.id — ESPN returns the same tournament event
+    # under both tennis/atp and tennis/wta for Grand Slams, so each match
+    # appears in 2 candidate lists with the same competition.id. Counting
+    # without dedupe → false ambiguity → silent None.
+    seen_ids: set[str] = set()
+    unique: list[dict] = []
+    for c in candidates:
+        cid = str(c.get("id", ""))
+        if cid and cid in seen_ids:
+            continue
+        if cid:
+            seen_ids.add(cid)
+        unique.append(c)
+
+    if not unique:
         return None
-    if len(candidates) > 1:
+    if len(unique) > 1:
         print(
             f"[auto-settle] AMBIGUOUS match for {home} vs {away} on "
-            f"{kickoff_iso}: {len(candidates)} candidates — skipping.",
+            f"{kickoff_iso}: {len(unique)} candidates — skipping.",
             file=sys.stderr,
         )
         return None
-    return _event_to_score(candidates[0], sport, home, away)
+    return _event_to_score(unique[0], sport, home, away)
 
 
 def _event_to_score(ev: dict, sport: str, want_home: str = "", want_away: str = "") -> Optional[MatchScore]:
