@@ -3,11 +3,9 @@
 Covers:
 - Parser (settle_rules.parse_pick_label / parse_pick_label_full)
 - Rules (settle_rules.apply_rule) per market
+- Combo aggregation (auto_settle._aggregate_combo)
 - AST round-trip (settle_ast.update_pick_outcome)
 - Replay (every settled pick in picks_data — outcome must match)
-
-Combo aggregation tests are added in a later commit when
-auto_settle.py lands.
 """
 
 from __future__ import annotations
@@ -475,7 +473,37 @@ def test_rule_player_props_absent_voids():
 
 
 # ============================================================================
-# 3. AST round-trip — settle_ast.update_pick_outcome
+# 3. Combo aggregation — auto_settle._aggregate_combo
+# ============================================================================
+
+
+def _import_aggregator():
+    from auto_settle import _aggregate_combo
+
+    return _aggregate_combo
+
+
+@pytest.mark.parametrize(
+    "legs,expected",
+    [
+        (["win", "win", "win"], "win"),
+        (["win", "win"], "win"),
+        (["win", "loss"], "loss"),
+        (["loss", "win"], "loss"),
+        (["win", "void"], "void"),
+        (["loss", "void"], "void"),
+        (["void", "void"], "void"),
+        (["win", "win", "loss"], "loss"),
+        (["win", "loss", "void"], "void"),
+    ],
+)
+def test_combo_aggregate(legs, expected):
+    agg = _import_aggregator()
+    assert agg(legs) == expected
+
+
+# ============================================================================
+# 4. AST round-trip — settle_ast.update_pick_outcome
 # ============================================================================
 
 
@@ -569,7 +597,7 @@ def test_ast_invalid_date_raises(temp_picks_data):
 
 
 # ============================================================================
-# 4. Replay tests — canned MatchScore from existing result.score_text
+# 5. Replay tests — canned MatchScore from existing result.score_text
 # ============================================================================
 
 
