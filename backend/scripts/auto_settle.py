@@ -803,15 +803,98 @@ def _git_revert_files() -> None:
     return
 
 
+def _reminder_mode() -> int:
+    """Settlement reminder — bypasses the provider entirely.
+
+    Walks picks_data.PICKS for pending picks (and pending legs of combos)
+    whose kickoff is more than 2h in the past. Sends ONE Telegram admin
+    ping listing them so the operator settles manually per CLAUDE.md §1.
+
+    Rationale: SofaScore (and most public sports APIs) block cloud IPs
+    via Cloudflare. Until we wire a paying provider or run from a
+    residential IP, the most valuable thing this cron can do is remind
+    the operator "go settle these N picks now."
+
+    Dedupe: one ping per pick per outcome state. Re-runs of the cron
+    won't spam — the same pending pick on the same day is only flagged
+    once. Once the operator settles, outcome != "pending" → drops off.
+    """
+    importlib.reload(picks_data)
+    now_iso = datetime.now(timezone.utc).isoformat(timespec="minutes")
+    due: list[dict] = []
+    for pick in picks_data.PICKS:
+        if pick.get("outcome") != "pending":
+            continue
+        if not _is_due(pick):
+            continue
+        # Build a compact human label per pick. For combos, list each
+        # still-pending leg so the operator sees the actual work to do.
+        legs_pending = []
+        for leg in pick.get("legs", []) or []:
+            if leg.get("outcome") == "pending":
+                legs_pending.append(
+                    f"{leg.get('home_team','?')} vs {leg.get('away_team','?')}"
+                )
+        due.append({
+            "date": pick["date"],
+            "sport": pick.get("sport", "?"),
+            "league": pick.get("league", "?"),
+            "label": pick.get("pick", "?"),
+            "kickoff": pick["kickoff"],
+            "legs_pending": legs_pending,
+        })
+
+    if not due:
+        print(f"[reminder] {now_iso} — no pending picks past kickoff+2h")
+        return 0
+
+    # Dedupe: pings only when the (date → label) tuple changes from the
+    # previous notification. A re-run on the same pending state is a no-op.
+    notified = _load_notified()
+    fresh = [
+        p for p in due
+        if notified.get(f"{p['date']}::reminder") != p["label"]
+    ]
+    if not fresh:
+        print(f"[reminder] {now_iso} — {len(due)} due picks, all already notified")
+        return 0
+
+    lines = [f"📋 *Settlement reminder* — {len(due)} pick(s) à régler"]
+    for p in due:
+        lines.append("")
+        lines.append(f"*{p['date']}* · {p['sport']} · {p['league']}")
+        lines.append(f"  → {p['label']}")
+        if p["legs_pending"]:
+            for leg in p["legs_pending"]:
+                lines.append(f"     · {leg}")
+    lines.append("")
+    lines.append("Settle manuellement per CLAUDE.md §1, puis re-run le workflow.")
+    _try_send_admin("\n".join(lines))
+
+    for p in due:
+        notified[f"{p['date']}::reminder"] = p["label"]
+    _save_notified(notified)
+    print(f"[reminder] {now_iso} — pinged admin with {len(due)} due pick(s)")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="NEXBET auto-settlement")
     ap.add_argument("--dry-run", action="store_true", help="compute + log, no writes")
     ap.add_argument("--live", action="store_true", help="apply writes + commit")
+    ap.add_argument(
+        "--reminder",
+        action="store_true",
+        help="bypass provider, just Telegram-ping pending picks past kickoff+2h",
+    )
     args = ap.parse_args()
 
-    if args.dry_run and args.live:
-        print("ERROR: --dry-run and --live are exclusive", file=sys.stderr)
+    if sum([args.dry_run, args.live, args.reminder]) > 1:
+        print("ERROR: --dry-run, --live, --reminder are mutually exclusive", file=sys.stderr)
         return 2
+
+    if args.reminder:
+        return _reminder_mode()
 
     try:
         report = _gather_proposals()

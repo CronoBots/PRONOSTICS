@@ -1216,3 +1216,60 @@ def test_replay_j10_combo():
     ]
     outcomes = [apply_rule(s, sc) for s, sc in zip(specs, scores)]
     assert outcomes == ["win", "win"]
+
+
+# ---------------------------------------------------------------------------
+# Reminder mode (v1.1) — bypasses provider, just Telegram-pings pending picks
+# ---------------------------------------------------------------------------
+
+
+def test_reminder_mode_pings_pending_due_picks(monkeypatch, tmp_path):
+    """Reminder mode walks PICKS, finds pending past kickoff+2h,
+    builds the admin message, and dedupes via .notified.json."""
+    import auto_settle
+
+    # Redirect .notified.json to a fresh tmp path
+    notified_path = tmp_path / ".notified.json"
+    monkeypatch.setattr(auto_settle, "NOTIFIED_FILE", notified_path)
+
+    # Capture admin pings instead of sending
+    sent = []
+    monkeypatch.setattr(auto_settle, "_try_send_admin", lambda text: sent.append(text))
+
+    # Reload picks_data so the live module state matches the file
+    import importlib
+    import picks_data
+    importlib.reload(picks_data)
+
+    code = auto_settle._reminder_mode()
+    assert code == 0
+    # There is at least one pending pick past kickoff+2h (J11 from today's
+    # fixtures), so we must have pinged exactly once.
+    assert len(sent) == 1
+    msg = sent[0]
+    assert "Settlement reminder" in msg
+    assert "Settle manuellement" in msg
+
+    # Re-run: dedupe should prevent a second ping for the same state.
+    sent.clear()
+    code2 = auto_settle._reminder_mode()
+    assert code2 == 0
+    assert sent == []
+
+
+def test_reminder_mode_no_pending_no_ping(monkeypatch, tmp_path):
+    """When no pick matches the criteria, reminder is a silent no-op."""
+    import auto_settle
+
+    notified_path = tmp_path / ".notified.json"
+    monkeypatch.setattr(auto_settle, "NOTIFIED_FILE", notified_path)
+
+    sent = []
+    monkeypatch.setattr(auto_settle, "_try_send_admin", lambda text: sent.append(text))
+
+    # Force _is_due to always return False (simulates "no pick due yet")
+    monkeypatch.setattr(auto_settle, "_is_due", lambda pick: False)
+
+    code = auto_settle._reminder_mode()
+    assert code == 0
+    assert sent == []

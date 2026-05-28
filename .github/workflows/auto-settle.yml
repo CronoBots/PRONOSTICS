@@ -1,26 +1,34 @@
 name: Auto-settle pending picks
 
-# End-to-end auto-settlement pipeline (v1, shadow-by-default).
+# Settlement REMINDER pipeline (v1.1 — pivot from auto-settle to
+# manual-settle-with-smart-reminders, after SofaScore proved blocked by
+# Cloudflare from GitHub Actions IPs).
 #
-# - Every 30 minutes: runs in SHADOW mode (writes proposals to
-#   backend/data/auto_settle/<date>.json + Telegram admin diff, NO
-#   mutation of picks_data.py).
-# - workflow_dispatch with mode=live: actually mutates picks_data.py,
-#   regenerates history.json, commits + pushes.
+# - Every 2 hours: runs in REMINDER mode — pings the operator on
+#   Telegram with the list of pending picks past kickoff+2h that still
+#   need manual settlement per CLAUDE.md §1. No provider call, no file
+#   mutation.
+# - workflow_dispatch can still trigger shadow / live / dry-run /
+#   reminder for testing or for when a working provider is wired.
 #
-# See CLAUDE.md §12 for full documentation.
+# Why every 2h (not 30 min like before): manual settlement is the
+# bottleneck. Pinging every 30 min would over-notify; once every 2h
+# matches the natural cadence of "match ended, scroll Telegram, settle."
+#
+# See CLAUDE.md §12 for full documentation of all modes.
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # every 30 minutes
+    - cron: "0 */2 * * *"  # every 2 hours (00:00, 02:00, 04:00, ...)
   workflow_dispatch:
     inputs:
       mode:
-        description: "Mode (shadow | live | dry-run)"
+        description: "Mode (reminder | shadow | live | dry-run)"
         type: choice
         required: true
-        default: "shadow"
+        default: "reminder"
         options:
+          - reminder
           - shadow
           - live
           - dry-run
@@ -51,7 +59,8 @@ jobs:
         id: m
         run: |
           MODE="${{ github.event.inputs.mode }}"
-          if [ -z "$MODE" ]; then MODE="shadow"; fi
+          # Default cron path → reminder (provider blocked, see header comment)
+          if [ -z "$MODE" ]; then MODE="reminder"; fi
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
       - name: Run settlement
         working-directory: backend
@@ -70,6 +79,22 @@ jobs:
           git config user.email "auto-settle@nexbet.dev"
           git config user.name "NEXBET Auto-Settle"
           case "${{ steps.m.outputs.mode }}" in
+            reminder)
+              python scripts/auto_settle.py --reminder
+              # Persist .notified.json so dedupe works across runs (else
+              # the operator gets the same ping every 2h until they settle).
+              cd "$GITHUB_WORKSPACE"
+              if ! git diff --quiet -- backend/data/auto_settle/.notified.json 2>/dev/null; then
+                git add backend/data/auto_settle/.notified.json
+                git commit -m "[auto] reminder dedupe state $(date -u +%Y-%m-%dT%H:%M)"
+                # Retry-on-conflict (operator might have just pushed)
+                for i in 1 2 3; do
+                  git pull --rebase origin "$BRANCH" || true
+                  if git push origin "HEAD:$BRANCH"; then break; fi
+                  sleep $((5 * i))
+                done
+              fi
+              ;;
             dry-run) python scripts/auto_settle.py --dry-run ;;
             shadow)  python scripts/auto_settle.py ;;
             live)

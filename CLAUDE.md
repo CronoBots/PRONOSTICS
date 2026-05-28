@@ -377,12 +377,21 @@ changes. Don't accumulate — commit often, push often.
 
 ---
 
-## 12. Auto-settlement protocol (v1)
+## 12. Auto-settlement protocol (v1.1 — reminder pivot)
 
-The auto-settle pipeline is a SECOND layer on top of §1 — manual
-settlement still works exactly as before. Auto-settle proposes
-outcomes; the operator promotes them to live writes by flipping the
-workflow mode.
+The pipeline is a SECOND layer on top of §1 — manual settlement still
+works exactly as before. The DEFAULT cron mode is now `reminder` (not
+`shadow`): the cron pings the admin on Telegram with the list of pending
+picks past kickoff+2h that still need manual settlement per §1. No
+provider call, no file mutation.
+
+**Why the pivot**: SofaScore (and most public sports APIs) block
+cloud IPs via Cloudflare. From GitHub Actions runners + most cloud
+infras, scheduled_events returns 403 even with cloudscraper or
+curl_cffi (the IP block is enforced before TLS negotiation). The
+shadow/live modes are kept in the codebase for future use — wire a
+paying provider (api-tennis.com, api-football.com, BallDontLie+key) or
+a residential proxy, then flip the cron default back to `shadow`.
 
 ### Pipeline files
 
@@ -390,28 +399,34 @@ workflow mode.
 backend/scripts/
   settle_rules.py    ← parser + per-market rules (pure, no I/O)
   settle_ast.py      ← libcst writer for picks_data.py + picks_translations_en.py
-  auto_settle.py     ← CLI entry point (dry-run | shadow | live)
+  auto_settle.py     ← CLI entry point (reminder | dry-run | shadow | live)
 
 backend/data/auto_settle/
   <YYYY-MM-DD>.json  ← shadow-mode proposal log (committed)
   .notified.json     ← dedupe state for Telegram admin pings
 
 .github/workflows/
-  auto-settle.yml    ← cron */30 + workflow_dispatch
+  auto-settle.yml    ← cron 0 */2 + workflow_dispatch
 ```
 
 ### Modes
 
-| Mode      | Writes to picks_data.py? | Default? |
-|-----------|--------------------------|----------|
-| dry-run   | no — stdout only         | no       |
-| shadow    | no — proposal JSON + Telegram admin diff | YES (cron) |
-| live      | YES — libcst edit + build_history.py + git commit | manual only |
+| Mode      | Calls provider? | Writes to picks_data.py? | Default? |
+|-----------|-----------------|--------------------------|----------|
+| reminder  | no              | no — just Telegram ping  | YES (cron) |
+| dry-run   | yes             | no — stdout only         | no       |
+| shadow    | yes             | no — proposal JSON + Telegram admin diff | no |
+| live      | yes             | YES — libcst edit + build_history.py + git commit | manual only |
 
-The cron runs SHADOW every 30 minutes. Going LIVE requires a
-manual `workflow_dispatch` with `mode=live` from the operator.
-Shadow proposals are written to
-`backend/data/auto_settle/<date>.json` for review.
+The cron runs REMINDER every 2 hours. Reminder mode never calls
+SofaScore — it walks `picks_data.PICKS`, finds pending picks past
+kickoff+2h, and pings the operator on Telegram (`TELEGRAM_ADMIN_CHAT_ID`)
+with the list. Operator settles manually per §1.
+
+`shadow` / `live` require an unblocked provider (currently SofaScore
+is blocked by Cloudflare from cloud IPs — see header note). To use
+them, trigger `workflow_dispatch` with `mode=shadow` (test) or
+`mode=live` (apply).
 
 ### Markets covered
 
