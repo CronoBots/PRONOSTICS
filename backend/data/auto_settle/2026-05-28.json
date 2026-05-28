@@ -21,8 +21,8 @@
           "result": {
             "score_home": "6-7 4-6",
             "score_away": "",
-            "score_text": "Naomi Osaka bat Donna Vekic 6-7 4-6",
-            "summary": "Match terminé — Naomi Osaka bat Donna Vekic 6-7 4-6.",
+            "score_text": "Naomi Osaka bat Donna Vekic 7-6 6-4",
+            "summary": "Match terminé — Naomi Osaka bat Donna Vekic 7-6 6-4.",
             "bet_outcome": "Pari gagné : conditions du pronostic remplies."
           }
         },
@@ -31,8 +31,8 @@
           "result": {
             "score_home": "4-6 4-6 4-6",
             "score_away": "",
-            "score_text": "Matteo Berrettini bat Arthur Rinderknech 4-6 4-6 4-6",
-            "summary": "Match terminé — Matteo Berrettini bat Arthur Rinderknech 4-6 4-6 4-6.",
+            "score_text": "Matteo Berrettini bat Arthur Rinderknech 6-4 6-4 6-4",
+            "summary": "Match terminé — Matteo Berrettini bat Arthur Rinderknech 6-4 6-4 6-4.",
             "bet_outcome": "Pari perdu : conditions du pronostic non remplies."
           }
         }
@@ -41,16 +41,16 @@
         {
           "outcome": "win",
           "result": {
-            "score_text": "Naomi Osaka def. Donna Vekic 6-7 4-6",
-            "summary": "Match finished — Naomi Osaka def. Donna Vekic 6-7 4-6.",
+            "score_text": "Naomi Osaka def. Donna Vekic 7-6 6-4",
+            "summary": "Match finished — Naomi Osaka def. Donna Vekic 7-6 6-4.",
             "bet_outcome": "Bet won: prediction conditions met."
           }
         },
         {
           "outcome": "loss",
           "result": {
-            "score_text": "Matteo Berrettini def. Arthur Rinderknech 4-6 4-6 4-6",
-            "summary": "Match finished — Matteo Berrettini def. Arthur Rinderknech 4-6 4-6 4-6.",
+            "score_text": "Matteo Berrettini def. Arthur Rinderknech 6-4 6-4 6-4",
+            "summary": "Match finished — Matteo Berrettini def. Arthur Rinderknech 6-4 6-4 6-4.",
             "bet_outcome": "Bet lost: prediction conditions not met."
           }
         }
