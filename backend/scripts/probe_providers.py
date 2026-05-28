@@ -86,7 +86,7 @@ def main() -> int:
     print("DEEP DIVE — tennis on 2026-05-28 (target: Osaka, Vekic, Rinderknech, Berrettini)")
     print("=" * 80)
     for tour in ("atp", "wta"):
-        for date in ("20260528", "20260527", "20260529"):
+        for date in ("20260528",):
             url = f"https://site.api.espn.com/apis/site/v2/sports/tennis/{tour}/scoreboard?dates={date}"
             code, status, payload = _get(url)
             if not isinstance(payload, dict):
@@ -94,19 +94,43 @@ def main() -> int:
                 continue
             events = payload.get("events", [])
             print(f"\n  {tour.upper()} {date}: {len(events)} events")
-            for ev in events[:25]:
-                name = ev.get("name", "?")
-                st = (ev.get("status", {}) or {}).get("type", {})
-                comps = (ev.get("competitions", [{}])[0] or {}).get("competitors", [])
-                names = []
-                scores = []
-                for c in comps:
-                    n = (c.get("athlete") or c.get("team") or {}).get("displayName", "?")
-                    names.append(n)
-                    sc = c.get("score", "?")
-                    ls = [str(p.get("value", "?")) for p in (c.get("linescores") or [])]
-                    scores.append(f"{n}={sc}({'-'.join(ls) if ls else 'no-sets'})")
-                print(f"    [{st.get('name','?')}] {' / '.join(scores)}")
+            for ev in events:
+                print(f"    EVENT top-level keys: {list(ev.keys())}")
+                print(f"    EVENT name: {ev.get('name','?')!r}")
+                print(f"    EVENT date: {ev.get('date','?')!r}")
+                print(f"    EVENT status: {ev.get('status',{})}")
+                comps = ev.get("competitions") or []
+                print(f"    EVENT competitions count: {len(comps)}")
+                for ci, comp in enumerate(comps[:3]):
+                    print(f"      [comp{ci}] keys: {list(comp.keys())}")
+                    print(f"      [comp{ci}] competitors count: {len(comp.get('competitors') or [])}")
+                    for c in (comp.get("competitors") or [])[:4]:
+                        ckeys = list(c.keys())
+                        ath = c.get("athlete") or {}
+                        tm = c.get("team") or {}
+                        print(f"        competitor keys={ckeys} athlete={ath.get('displayName')!r} team={tm.get('displayName')!r} score={c.get('score')!r} ls={[p.get('value') for p in (c.get('linescores') or [])]}")
+                # Dump raw first 1500 chars for inspection
+                raw = json.dumps(ev, indent=2)[:1500]
+                print(f"    EVENT raw (first 1500 chars):\n{raw}")
+
+    # ========================================================================
+    # CORE API v2 — different shape, often more granular (match-by-match)
+    # ========================================================================
+    print("\n" + "=" * 80)
+    print("CORE API v2 — tennis events index (any tour, recent)")
+    print("=" * 80)
+    for tour in ("atp", "wta"):
+        url = f"https://sports.core.api.espn.com/v2/sports/tennis/leagues/{tour}/events?dates=20260528"
+        code, status, payload = _get(url)
+        print(f"\n  {tour.upper()} 20260528 core-api: status={code}")
+        if isinstance(payload, dict):
+            print(f"    keys: {list(payload.keys())}")
+            items = payload.get("items", [])
+            print(f"    items count: {len(items)}")
+            for it in items[:5]:
+                print(f"      item: {it}")
+        elif isinstance(payload, str):
+            print(f"    body[:300]: {payload[:300]}")
     return 0
 
 
