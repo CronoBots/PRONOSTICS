@@ -838,17 +838,132 @@ def _write_shadow_report(report: dict) -> Path:
     return out_path
 
 
-def _build_telegram_diff(report: dict) -> str:
-    lines = ["*Auto-settle proposal — shadow mode*"]
-    for p in report["proposed"]:
-        lines.append(
-            f"- {p['date']} → {p['outcome']} ({p['result'].get('score_text','')[:60]})"
-        )
-    for p in report["skipped_unknown"]:
-        lines.append(f"- {p['date']} unparseable: `{p['label']}`")
-    for p in report["skipped_no_data"]:
-        lines.append(f"- {p['date']} no data: {p['label']}")
+_FR_MONTHS = [
+    "janvier", "février", "mars", "avril", "mai", "juin",
+    "juillet", "août", "septembre", "octobre", "novembre", "décembre",
+]
+_FR_DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+_SPORT_EMOJI = {"tennis": "🎾", "football": "⚽", "basketball": "🏀", "combo": "🎯"}
+_OUTCOME_EMOJI = {"win": "🟢", "loss": "🔴", "void": "⚪", "pending": "🟡"}
+_OUTCOME_LABEL_FR = {"win": "GAGNÉ", "loss": "PERDU", "void": "VOID", "pending": "EN COURS"}
+
+
+def _format_fr_date(iso: str) -> str:
+    """'2026-05-28' → 'Jeudi 28 mai 2026'."""
+    try:
+        d = datetime.fromisoformat(iso).date()
+        return f"{_FR_DAYS[d.weekday()].capitalize()} {d.day} {_FR_MONTHS[d.month-1]} {d.year}"
+    except Exception:
+        return iso
+
+
+def _find_pick(date: str) -> Optional[dict]:
+    """Look up the pick metadata in picks_data.PICKS by date."""
+    try:
+        for p in picks_data.PICKS:
+            if p.get("date") == date:
+                return p
+    except Exception:
+        pass
+    return None
+
+
+def _format_proposal(p: dict, mode_tag: str) -> str:
+    """Render a proposal as a multi-line Telegram message.
+
+    Format: header (outcome + day#), date+sport+league, per-leg breakdown
+    (with scores), financials (stake, odds, P/L), mode tag.
+    """
+    pick = _find_pick(p["date"]) or {}
+    sport = pick.get("sport", "?")
+    league = pick.get("league", "?")
+    stake = float(pick.get("stake", 0) or 0)
+    odds = float(pick.get("odds", 0) or 0)
+    outcome = p["outcome"]
+
+    # Day number — count this pick's index in PICKS (1-based)
+    day_n = "?"
+    try:
+        for i, q in enumerate(picks_data.PICKS, start=1):
+            if q.get("date") == p["date"]:
+                day_n = str(i)
+                break
+    except Exception:
+        pass
+
+    if outcome == "win":
+        net = round(stake * (odds - 1), 2)
+        net_str = f"+{net:.2f}€"
+    elif outcome == "loss":
+        net_str = f"-{stake:.2f}€"
+    else:
+        net_str = "0.00€ (mise remboursée)"
+
+    bet_kind = "Combiné" if pick.get("legs") else "Pari simple"
+    header = f"{_OUTCOME_EMOJI.get(outcome,'❔')} *J{day_n} — {bet_kind} {_OUTCOME_LABEL_FR.get(outcome, outcome.upper())}*"
+
+    lines = [header]
+    lines.append(f"📅 {_format_fr_date(p['date'])}")
+    lines.append(f"{_SPORT_EMOJI.get(sport,'🎯')} {league}")
+    lines.append("")
+
+    # Per-leg breakdown for combos
+    legs = p.get("legs") or []
+    if legs and pick.get("legs"):
+        wins = sum(1 for l in legs if l.get("outcome") == "win")
+        lines.append(f"*Sélections ({wins}/{len(legs)})*")
+        for idx, (leg_settle, leg_meta) in enumerate(zip(legs, pick["legs"]), start=1):
+            le_out = leg_settle.get("outcome", "?")
+            emoji = _OUTCOME_EMOJI.get(le_out, "❔")
+            home_t = leg_meta.get("home_team", "?")
+            away_t = leg_meta.get("away_team", "?")
+            score_text = (leg_settle.get("result") or {}).get("score_text", "")
+            # Strip the long "X bat Y A-B C-D" prefix if present, keep just scores
+            short_score = score_text
+            for prefix in [f"{home_t} bat {away_t} ", f"{away_t} bat {home_t} "]:
+                if prefix in score_text:
+                    short_score = score_text.replace(prefix, "")
+                    break
+            lines.append(f"  {emoji} {home_t} vs {away_t}")
+            if score_text:
+                lines.append(f"      _{score_text}_")
+    else:
+        # Single bet
+        lines.append(f"*Pick* : _{pick.get('pick', '?')}_")
+        score_text = (p["result"] or {}).get("score_text", "")
+        if score_text:
+            lines.append(f"*Résultat* : _{score_text}_")
+
+    lines.append("")
+    lines.append(f"💰 Mise *{stake:.2f}€* · Cote *{odds:.2f}*")
+    lines.append(f"📊 Net P/L : *{net_str}*")
+    lines.append("")
+    lines.append(f"_— {mode_tag}_")
+
     return "\n".join(lines)
+
+
+def _build_telegram_diff(report: dict, mode: str = "shadow") -> str:
+    mode_tag = "Proposition shadow (rien n'est écrit)" if mode == "shadow" else f"Auto-settle ({mode})"
+    blocks: list[str] = []
+
+    for p in report["proposed"]:
+        blocks.append(_format_proposal(p, mode_tag))
+
+    for p in report["skipped_unknown"]:
+        blocks.append(
+            f"❓ *Pari illisible — {p['date']}*\n"
+            f"Le parser ne reconnaît pas : `{p['label']}`\n"
+            f"_→ Settle manuellement per CLAUDE.md §1._"
+        )
+    for p in report["skipped_no_data"]:
+        blocks.append(
+            f"❓ *Données indisponibles — {p['date']}*\n"
+            f"Pas de score trouvé pour : `{p['label']}`\n"
+            f"_→ Match peut-être encore en cours, ou inconnu d'ESPN. Retry au prochain cron._"
+        )
+
+    return "\n\n———\n\n".join(blocks) if blocks else ""
 
 
 def _is_file_dirty(path: Path) -> bool:
@@ -1078,7 +1193,7 @@ def main() -> int:
             if notified.get(f"{p['date']}::no_data") != p.get("label", "")
         ]
         if new_proposals or new_unknown or new_no_data:
-            diff = _build_telegram_diff(report)
+            diff = _build_telegram_diff(report, mode="shadow")
             _try_send_admin(diff)
             for p in report["proposed"]:
                 notified[p["date"]] = p["outcome"]
