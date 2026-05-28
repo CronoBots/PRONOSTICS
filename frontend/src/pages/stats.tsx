@@ -6,6 +6,7 @@ import { AnalyzerPeriode } from "@/components/AnalyzerPeriode";
 import { AnalyzerSport } from "@/components/AnalyzerSport";
 import { Header } from "@/components/Header";
 import { Skeleton } from "@/components/Skeleton";
+import { StatsNarrative } from "@/components/StatsNarrative";
 import { fetchHistory } from "@/lib/dataSource";
 import { useI18n } from "@/lib/i18n";
 import { History, HistoryPick, HistoryStats } from "@/lib/types";
@@ -170,6 +171,8 @@ export default function StatsPage() {
                 {/* StatsHero retiré v6.6 — le graphique est sur la home, et
                     bankroll/win rate sont désormais dans les stat tiles de
                     la home. Pas de duplication ici. */}
+
+                <StatsNarrative stats={stats} picks={picks} />
 
                 {/* Grille flat — tous les KPI cumules */}
                 <div className="grid grid-cols-2 gap-2 md:gap-3 mb-6">

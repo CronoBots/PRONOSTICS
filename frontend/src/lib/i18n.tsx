@@ -593,6 +593,21 @@ const fr: Dict = {
   // Stats page sub-tabs (overview = current /stats KPI content;
   // general/period/sport come from the Analyzer components fused into /stats)
   "stats.tab.overview": "Aperçu",
+  // Narrative banner (top of /stats overview)
+  "stats.narrative.streakHot": "{n} paris remportés d'affilée",
+  "stats.narrative.streakHotSub": "Série en cours · ne casse pas le rythme",
+  "stats.narrative.bigOdds": "Plus grosse cote remportée : {odds}",
+  "stats.narrative.bigOddsSub": "On joue safe, mais on encaisse fort quand ça tombe",
+  "stats.narrative.bigProfit": "Plus gros gain : +{amount}€",
+  "stats.narrative.bigProfitSub": "Un seul pari · {odds} de cote · ça paye",
+  "stats.narrative.bestStreak": "Meilleure série : {n} victoires consécutives",
+  "stats.narrative.bestStreakSub": "Le record à battre",
+  "stats.narrative.cleanStart": "{n} paris analysés depuis le J1",
+  "stats.narrative.cleanStartSub": "Discipline first · 1 value bet par jour",
+  "stats.narrative.firstWin": "Premier pari remporté",
+  "stats.narrative.firstWinSub": "Le début de l'histoire",
+  "stats.narrative.warmup": "L'algorithme s'échauffe",
+  "stats.narrative.warmupSub": "Reviens demain pour le prochain pick",
   // Analyzer sub-tabs (consumed inside /stats since v4 — analyzer page removed)
   "analyzer.titleTab": "Analyses — NEXBET",
   "analyzer.title": "Analyses",
@@ -1357,6 +1372,20 @@ const en: Dict = {
   // Stats page sub-tabs (overview = current /stats KPI content;
   // general/period/sport come from the Analyzer components fused into /stats)
   "stats.tab.overview": "Overview",
+  "stats.narrative.streakHot": "{n} bets won in a row",
+  "stats.narrative.streakHotSub": "Live streak · don't break the rhythm",
+  "stats.narrative.bigOdds": "Biggest odds cashed: {odds}",
+  "stats.narrative.bigOddsSub": "Safe play, but when it lands it lands big",
+  "stats.narrative.bigProfit": "Biggest single profit: +€{amount}",
+  "stats.narrative.bigProfitSub": "One bet · {odds} odds · paid off",
+  "stats.narrative.bestStreak": "Best streak: {n} wins in a row",
+  "stats.narrative.bestStreakSub": "Record to beat",
+  "stats.narrative.cleanStart": "{n} bets analysed since day one",
+  "stats.narrative.cleanStartSub": "Discipline first · one value bet a day",
+  "stats.narrative.firstWin": "First bet won",
+  "stats.narrative.firstWinSub": "The story starts here",
+  "stats.narrative.warmup": "The algorithm is warming up",
+  "stats.narrative.warmupSub": "Come back tomorrow for the next pick",
   // Analyzer sub-tabs (consumed inside /stats since v4 — analyzer page removed)
   "analyzer.titleTab": "Insights — NEXBET",
   "analyzer.title": "Insights",
