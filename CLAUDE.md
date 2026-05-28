@@ -460,10 +460,33 @@ volume — 1 to 3 picks per day).
 - Provider returned no data → `skipped_no_data[]`, retries on the
   next cron tick, admin ping ONLY ONCE per pick per day (state in
   `.notified.json`).
-- Live-mode mutation raised → file reverted via `git checkout --`,
-  admin alert with traceback, exit code 1 (loud).
+- Live-mode mutation raised → in-memory snapshot/restore reverts
+  `picks_data.py` + `picks_translations_en.py` to their pre-edit
+  bytes (NOT `git checkout --` — that would wipe operator WIP).
+  Admin alert with traceback, exit code 1 (loud).
 - After every successful AST write, `auto_settle.py` reloads
   `picks_data` to verify import safety before continuing.
+- Live mode aborts upfront if either source file has uncommitted
+  changes (operator edit in progress).
+
+### Telegram secrets (mandatory for live notifications)
+
+Two distinct chat IDs MUST be configured as GitHub Actions secrets:
+
+| Secret                    | Used by                          | What it is                       |
+|---------------------------|----------------------------------|----------------------------------|
+| `TELEGRAM_BOT_TOKEN`      | both                             | bot token (BotFather)            |
+| `TELEGRAM_CHANNEL_ID`     | `publish_telegram.py`            | **public** subscriber channel (starts with -100…) |
+| `TELEGRAM_ADMIN_CHAT_ID`  | `auto_settle.py::_try_send_admin`| **operator's private chat** — receives shadow proposals |
+
+Safety rationale (F3): shadow-mode proposal diffs contain predicted
+outcomes hours before the official result post. If those leaked to
+the public channel, free subscribers would see Premium-tier value
+ahead of paying ones. `auto_settle.py` POSTs directly to the
+Telegram API with `chat_id=TELEGRAM_ADMIN_CHAT_ID` and NEVER
+imports `publish_telegram.send_message`. If `TELEGRAM_ADMIN_CHAT_ID`
+is unset, admin pings fall back to stderr — never to the public
+channel.
 
 ### When in doubt
 

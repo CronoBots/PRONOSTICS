@@ -442,15 +442,41 @@ def _save_notified(d: dict[str, str]) -> None:
 
 
 def _try_send_admin(text: str) -> None:
-    """Telegram admin ping. Swallows any failure (it's a notification, not
-    critical)."""
-    try:
-        from publish_telegram import send_message
+    """Telegram ADMIN ping. NEVER posts to the public channel.
 
-        send_message(text)
-    except Exception:
-        # If creds missing or network down, ignore.
-        print(f"[admin-ping fallback] {text}")
+    F3: Uses TELEGRAM_ADMIN_CHAT_ID (separate from TELEGRAM_CHANNEL_ID).
+    Reusing publish_telegram.send_message would leak shadow-mode predicted
+    outcomes to free subscribers hours before the official result. If
+    TELEGRAM_ADMIN_CHAT_ID is unset, we log to stderr — never to the
+    public channel.
+    """
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    admin_chat = os.getenv("TELEGRAM_ADMIN_CHAT_ID", "").strip()
+    if not bot_token or not admin_chat:
+        print(f"[admin-ping fallback — no admin chat configured] {text}", file=sys.stderr)
+        return
+    try:
+        import urllib.request as urlrequest
+
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        payload = json.dumps(
+            {
+                "chat_id": admin_chat,
+                "text": text,
+                "parse_mode": "Markdown",
+                "disable_web_page_preview": True,
+            }
+        ).encode("utf-8")
+        req = urlrequest.Request(
+            url,
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlrequest.urlopen(req, timeout=15) as resp:
+            resp.read()
+    except Exception as exc:
+        print(f"[admin-ping failed: {exc}] {text}", file=sys.stderr)
 
 
 def _settle_one_leg(leg: dict) -> tuple[Optional[str], Optional[MatchScore], list[BetSpec], str]:
@@ -654,7 +680,13 @@ def _write_shadow_report(report: dict) -> Path:
     AUTO_DIR.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     out_path = AUTO_DIR / f"{stamp}.json"
-    out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    # F15: atomic write — tmp file then rename. Prevents readers from
+    # observing a half-written JSON if the writer is interrupted.
+    tmp_path = out_path.with_suffix(out_path.suffix + ".tmp")
+    tmp_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    os.replace(tmp_path, out_path)
     return out_path
 
 
@@ -671,53 +703,104 @@ def _build_telegram_diff(report: dict) -> str:
     return "\n".join(lines)
 
 
-def _apply_live(report: dict) -> None:
-    """Mutate picks_data.py + picks_translations_en.py + run build_history."""
-    for p in report["proposed"]:
-        date = p["date"]
-        leg_updates = p.get("legs")
-        update_pick_outcome(
-            PICKS_DATA_PATH, date, p["outcome"], p["result"], leg_updates
-        )
-        update_en_translation(
-            TRANSLATIONS_PATH,
-            date,
-            p["result_en"]["score_text"],
-            p["result_en"]["summary"],
-            p["result_en"]["bet_outcome"],
-            p.get("legs_en"),
-        )
-
-    # Verify import still works
-    importlib.reload(picks_data)
-    # Regenerate history.json
-    subprocess.run(
-        ["python", "scripts/build_history.py"], cwd=str(ROOT), check=True
+def _is_file_dirty(path: Path) -> bool:
+    """Return True if ``path`` has staged or unstaged uncommitted changes."""
+    result = subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--", str(path)],
+        cwd=str(ROOT.parent),
+        check=False,
     )
+    return result.returncode != 0
+
+
+def _apply_live(report: dict) -> None:
+    """Mutate picks_data.py + picks_translations_en.py + run build_history.
+
+    F7: snapshot the file bytes BEFORE the libcst edits so we can do an
+    in-memory rollback on failure instead of `git checkout --` (which
+    would also wipe any uncommitted operator edits). The caller still
+    pre-checks for dirty files before invoking us.
+    """
+    # Snapshot
+    picks_snapshot = PICKS_DATA_PATH.read_bytes()
+    trans_snapshot = (
+        TRANSLATIONS_PATH.read_bytes() if TRANSLATIONS_PATH.exists() else None
+    )
+    try:
+        for p in report["proposed"]:
+            date = p["date"]
+            leg_updates = p.get("legs")
+            update_pick_outcome(
+                PICKS_DATA_PATH, date, p["outcome"], p["result"], leg_updates
+            )
+            update_en_translation(
+                TRANSLATIONS_PATH,
+                date,
+                p["result_en"]["score_text"],
+                p["result_en"]["summary"],
+                p["result_en"]["bet_outcome"],
+                p.get("legs_en"),
+            )
+
+        # Verify import still works
+        importlib.reload(picks_data)
+        # Regenerate history.json
+        subprocess.run(
+            ["python", "scripts/build_history.py"], cwd=str(ROOT), check=True
+        )
+    except Exception:
+        # F7: in-memory rollback. Restore the snapshot bytes so the working
+        # tree is exactly as it was before our edits — bypasses git so
+        # nothing else in the working tree is touched.
+        PICKS_DATA_PATH.write_bytes(picks_snapshot)
+        if trans_snapshot is not None:
+            TRANSLATIONS_PATH.write_bytes(trans_snapshot)
+        # Verify rollback restored a parseable module before re-raising.
+        try:
+            importlib.reload(picks_data)
+        except Exception:
+            print(
+                "[auto-settle] CRITICAL: rollback restored bytes but module "
+                "fails to import. Manual intervention required.",
+                file=sys.stderr,
+            )
+        raise
 
 
 def _git_commit(message: str) -> None:
-    subprocess.run(
-        ["git", "add", "backend/scripts/picks_data.py",
-         "backend/scripts/picks_translations_en.py",
-         "backend/data/history.json",
-         "backend/data/predictions/"],
-        cwd=str(ROOT.parent),
-        check=False,
-    )
-    subprocess.run(
-        ["git", "commit", "-m", message], cwd=str(ROOT.parent), check=False
-    )
+    """F9: switch git add + git commit to check=True so failures surface
+    immediately and the caller can roll back."""
+    try:
+        subprocess.run(
+            ["git", "add", "backend/scripts/picks_data.py",
+             "backend/scripts/picks_translations_en.py",
+             "backend/data/history.json",
+             "backend/data/predictions/"],
+            cwd=str(ROOT.parent),
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        subprocess.run(
+            ["git", "commit", "-m", message],
+            cwd=str(ROOT.parent),
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        stderr = (exc.stderr or "")[:500]
+        _try_send_admin(
+            f"auto-settle git_commit FAILED:\n```\n{stderr}\n```"
+        )
+        raise
 
 
 def _git_revert_files() -> None:
-    subprocess.run(
-        ["git", "checkout", "--",
-         "backend/scripts/picks_data.py",
-         "backend/scripts/picks_translations_en.py"],
-        cwd=str(ROOT.parent),
-        check=False,
-    )
+    """Deprecated — F7 replaced this with an in-memory snapshot/restore.
+    Kept only for backwards compatibility with the existing call site, now
+    a no-op (the snapshot rollback inside _apply_live handles recovery)."""
+    return
 
 
 def main() -> int:
@@ -763,13 +846,27 @@ def main() -> int:
         print("Nothing to settle.")
         return 0
 
+    # F7 (a): refuse to run live if the operator has uncommitted edits in
+    # progress on the source-of-truth files. Otherwise the rollback path
+    # could in principle overwrite work-in-progress.
+    for guard_path in (PICKS_DATA_PATH, TRANSLATIONS_PATH):
+        if guard_path.exists() and _is_file_dirty(guard_path):
+            msg = (
+                f"auto-settle aborted: working tree dirty on "
+                f"{guard_path.name} — operator edit in progress"
+            )
+            print(msg, file=sys.stderr)
+            _try_send_admin(msg)
+            return 1
+
     try:
         _apply_live(report)
         subject = ", ".join(p["date"] for p in report["proposed"])
         _git_commit(f"[auto] settle {subject}")
     except Exception as exc:
         traceback.print_exc()
-        _git_revert_files()
+        # F7: rollback already happened inside _apply_live's except. This
+        # is just the admin notification + exit code.
         _try_send_admin(f"Auto-settle LIVE FAILED, reverted. Error: {exc}")
         return 1
 

@@ -1039,6 +1039,92 @@ def test_event_to_score_tennis_retirement_word_boundary():
     assert score.status == "final"  # NOT retired
 
 
+def test_admin_ping_uses_admin_chat_not_public_channel(monkeypatch):
+    """F3: _try_send_admin must NOT call publish_telegram.send_message.
+    It posts directly to api.telegram.org with TELEGRAM_ADMIN_CHAT_ID."""
+    import auto_settle
+
+    # Force the env vars
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "fake-token")
+    monkeypatch.setenv("TELEGRAM_ADMIN_CHAT_ID", "12345")
+    # If anyone ever re-imports publish_telegram.send_message and tries to
+    # call it, fail loudly.
+    import publish_telegram
+
+    def _explode(*a, **k):
+        raise AssertionError(
+            "_try_send_admin must NOT use publish_telegram.send_message"
+        )
+
+    monkeypatch.setattr(publish_telegram, "send_message", _explode)
+
+    # Patch the network call so we don't actually hit Telegram.
+    sent = {}
+
+    def fake_urlopen(req, timeout=15):
+        sent["url"] = req.full_url
+        sent["body"] = req.data
+
+        class _R:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            def read(self):
+                return b'{"ok":true}'
+
+        return _R()
+
+    import urllib.request as urlrequest
+
+    monkeypatch.setattr(urlrequest, "urlopen", fake_urlopen)
+
+    auto_settle._try_send_admin("test message")
+
+    assert sent.get("url", "").startswith("https://api.telegram.org/botfake-token/")
+    import json as _json
+
+    body = _json.loads(sent["body"].decode("utf-8"))
+    assert body["chat_id"] == "12345"
+
+
+def test_admin_ping_no_admin_chat_falls_back_to_stderr(monkeypatch, capsys):
+    """F3: when TELEGRAM_ADMIN_CHAT_ID is unset, fall back to stderr —
+    NEVER to the public channel."""
+    import auto_settle
+
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "fake-token")
+    monkeypatch.delenv("TELEGRAM_ADMIN_CHAT_ID", raising=False)
+
+    import publish_telegram
+
+    def _explode(*a, **k):
+        raise AssertionError("must not post to public channel as fallback")
+
+    monkeypatch.setattr(publish_telegram, "send_message", _explode)
+
+    auto_settle._try_send_admin("test fallback")
+    captured = capsys.readouterr()
+    assert "test fallback" in captured.err
+
+
+def test_write_shadow_report_atomic(tmp_path, monkeypatch):
+    """F15: shadow report writes go through a .tmp + os.replace."""
+    import auto_settle
+
+    monkeypatch.setattr(auto_settle, "AUTO_DIR", tmp_path)
+    report = {"proposed": [{"date": "2026-05-28", "outcome": "win"}], "skipped_unknown": [], "skipped_no_data": []}
+    out_path = auto_settle._write_shadow_report(report)
+    assert out_path.exists()
+    # The .tmp must NOT linger after success.
+    assert not out_path.with_suffix(out_path.suffix + ".tmp").exists()
+    import json as _json
+
+    assert _json.loads(out_path.read_text())["proposed"][0]["date"] == "2026-05-28"
+
+
 def test_event_to_score_tennis_retirement_real_ret():
     """F14: a genuine 'ret.' must mark retired."""
     import auto_settle
