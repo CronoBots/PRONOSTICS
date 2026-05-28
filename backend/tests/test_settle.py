@@ -11,7 +11,7 @@ Covers:
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -831,6 +831,230 @@ REPLAY_CASES = [
         "loss",
     ),
 ]
+
+
+# ============================================================================
+# 6. auto_settle routing — F1 / F4 / F5 / F6 / F14
+# ============================================================================
+
+
+def test_settle_one_leg_basket_player_prop_no_box_score(monkeypatch):
+    """F1: when a basket player prop has no player_points, leg routes to
+    no_data (not silent void)."""
+    import auto_settle
+
+    fake_score = MatchScore(
+        status="final",
+        home_team="Minnesota Timberwolves",
+        away_team="OKC Thunder",
+        home_score=121,
+        away_score=107,
+        player_points=None,
+    )
+    monkeypatch.setattr(auto_settle, "_fetch_match_score", lambda *a, **k: fake_score)
+    monkeypatch.setattr(auto_settle, "_try_send_admin", lambda *a, **k: None)
+
+    leg = {
+        "pick": "Wolves ML + Edwards Over 28.5 pts",
+        "sport": "basketball",
+        "home_team": "Minnesota Timberwolves",
+        "away_team": "OKC Thunder",
+        "kickoff": "2026-05-23T22:00:00Z",
+    }
+    outcome, score, specs, reason = auto_settle._settle_one_leg(leg)
+    assert outcome is None
+    assert reason == "no_player_box_score"
+
+
+def test_settle_one_leg_basket_player_prop_with_data(monkeypatch):
+    """F1 inverse: player_points present → normal settlement."""
+    import auto_settle
+
+    fake_score = MatchScore(
+        status="final",
+        home_team="Minnesota Timberwolves",
+        away_team="OKC Thunder",
+        home_score=121,
+        away_score=107,
+        player_points={"Anthony Edwards": 41},
+    )
+    monkeypatch.setattr(auto_settle, "_fetch_match_score", lambda *a, **k: fake_score)
+
+    leg = {
+        "pick": "Wolves ML + Edwards Over 28.5 pts",
+        "sport": "basketball",
+        "home_team": "Minnesota Timberwolves",
+        "away_team": "OKC Thunder",
+        "kickoff": "2026-05-23T22:00:00Z",
+    }
+    outcome, score, specs, reason = auto_settle._settle_one_leg(leg)
+    assert outcome == "win"
+    assert reason == "ok"
+
+
+def test_settle_one_leg_postponed_within_grace(monkeypatch):
+    """F4: postponed < 48h → no_data, NOT void."""
+    import auto_settle
+
+    now = datetime.now(timezone.utc)
+    fake_score = MatchScore(
+        status="postponed",
+        home_team="Liverpool",
+        away_team="Crystal Palace",
+        started_at=now,  # postponed just now
+    )
+    monkeypatch.setattr(auto_settle, "_fetch_match_score", lambda *a, **k: fake_score)
+
+    leg = {
+        "pick": "Liverpool ML 90 min",
+        "sport": "football",
+        "home_team": "Liverpool",
+        "away_team": "Crystal Palace",
+        "kickoff": now.isoformat().replace("+00:00", "Z"),
+    }
+    outcome, score, specs, reason = auto_settle._settle_one_leg(leg)
+    assert outcome is None
+    assert reason == "postponed_grace"
+
+
+def test_settle_one_leg_postponed_past_grace(monkeypatch):
+    """F4: postponed > 48h → goes through apply_rule (returns void)."""
+    import auto_settle
+
+    long_ago = datetime.now(timezone.utc) - timedelta(hours=72)
+    fake_score = MatchScore(
+        status="postponed",
+        home_team="Liverpool",
+        away_team="Crystal Palace",
+        started_at=long_ago,
+    )
+    monkeypatch.setattr(auto_settle, "_fetch_match_score", lambda *a, **k: fake_score)
+
+    leg = {
+        "pick": "Liverpool ML 90 min",
+        "sport": "football",
+        "home_team": "Liverpool",
+        "away_team": "Crystal Palace",
+        "kickoff": long_ago.isoformat().replace("+00:00", "Z"),
+    }
+    outcome, score, specs, reason = auto_settle._settle_one_leg(leg)
+    assert outcome == "void"
+    assert reason == "ok"
+
+
+def test_fetch_match_score_ambiguous_returns_none(monkeypatch):
+    """F5: multiple candidates → return None (not closest-pick)."""
+    import auto_settle
+
+    class FakeSofa:
+        def scheduled_events(self, slug, date):
+            return [
+                {
+                    "homeTeam": {"name": "Liverpool"},
+                    "awayTeam": {"name": "Crystal Palace"},
+                    "startTimestamp": 1700000000,
+                },
+                {
+                    "homeTeam": {"name": "Liverpool FC U21"},
+                    "awayTeam": {"name": "Crystal Palace U21"},
+                    "startTimestamp": 1700001000,
+                },
+            ]
+
+    monkeypatch.setattr(auto_settle, "_sofa", lambda: FakeSofa())
+    monkeypatch.setattr(auto_settle.time, "sleep", lambda *_: None)
+
+    result = auto_settle._fetch_match_score(
+        "Liverpool", "Crystal Palace", "2026-05-18T15:00:00Z", "football"
+    )
+    assert result is None
+
+
+def test_event_to_score_football_with_et_omits_regulation(monkeypatch):
+    """F6: SofaScore event with ET/pens MUST NOT use 'current' as regulation."""
+    import auto_settle
+
+    ev = {
+        "status": {"type": "finished"},
+        "homeTeam": {"name": "Real Madrid"},
+        "awayTeam": {"name": "Liverpool"},
+        # 90 min was 1-1; ET added one goal each; pens decided it.
+        "homeScore": {"current": 2, "period1": 0, "period2": 1, "extra1": 1, "penalty": 4},
+        "awayScore": {"current": 2, "period1": 1, "period2": 0, "extra1": 1, "penalty": 3},
+        "startTimestamp": 1700000000,
+    }
+    score = auto_settle._event_to_score(ev, "football")
+    # period1+period2 sum is the regulation result (1-1)
+    assert score.regulation_score == (1, 1)
+
+
+def test_event_to_score_football_et_without_periods_voids_regulation():
+    """F6: if ET markers present but period1/period2 absent → reg=None."""
+    import auto_settle
+
+    ev = {
+        "status": {"type": "finished"},
+        "homeTeam": {"name": "Real Madrid"},
+        "awayTeam": {"name": "Liverpool"},
+        # Only 'current' (which already includes ET) — no period split.
+        "homeScore": {"current": 2, "penalty": 4},
+        "awayScore": {"current": 2, "penalty": 3},
+        "startTimestamp": 1700000000,
+    }
+    score = auto_settle._event_to_score(ev, "football")
+    assert score.regulation_score is None
+
+
+def test_event_to_score_football_90min_only_uses_current_safe():
+    """F6 happy path: no ET markers, no period1/2 → safe fallback to current."""
+    import auto_settle
+
+    ev = {
+        "status": {"type": "finished"},
+        "homeTeam": {"name": "Liverpool"},
+        "awayTeam": {"name": "Crystal Palace"},
+        "homeScore": {"current": 3},
+        "awayScore": {"current": 1},
+        "startTimestamp": 1700000000,
+    }
+    score = auto_settle._event_to_score(ev, "football")
+    assert score.regulation_score == (3, 1)
+
+
+def test_event_to_score_tennis_retirement_word_boundary():
+    """F14: 'interrupted' must NOT trigger retired-status (word boundary)."""
+    import auto_settle
+
+    ev = {
+        "status": {"type": "finished"},
+        "homeTeam": {"name": "Player A"},
+        "awayTeam": {"name": "Player B"},
+        "homeScore": {"current": 1, "period1": 6, "period2": 4},
+        "awayScore": {"current": 1, "period1": 4, "period2": 6},
+        "startTimestamp": 1700000000,
+        "winnerCode": 1,
+        "statusDescription": "match was interrupted then finished",
+    }
+    score = auto_settle._event_to_score(ev, "tennis")
+    assert score.status == "final"  # NOT retired
+
+
+def test_event_to_score_tennis_retirement_real_ret():
+    """F14: a genuine 'ret.' must mark retired."""
+    import auto_settle
+
+    ev = {
+        "status": {"type": "finished"},
+        "homeTeam": {"name": "Player A"},
+        "awayTeam": {"name": "Player B"},
+        "homeScore": {"current": 1, "period1": 6, "period2": 4},
+        "awayScore": {"current": 0, "period1": 4, "period2": 0},
+        "startTimestamp": 1700000000,
+        "winnerCode": 1,
+        "statusDescription": "Player B ret.",
+    }
+    score = auto_settle._event_to_score(ev, "tennis")
+    assert score.status == "retired"
 
 
 @pytest.mark.parametrize("date,specs,score,expected", REPLAY_CASES)

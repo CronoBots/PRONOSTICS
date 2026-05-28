@@ -166,6 +166,10 @@ def _fetch_match_score(
     """Find a SofaScore event matching home/away/kickoff_iso and convert
     it to a MatchScore. Returns None on any failure (ambiguous, missing,
     API error)."""
+    # F10: pace API requests (not settlements). Every call to the provider
+    # waits 15s; legs that early-out before reaching apply_rule no longer
+    # bypass the rate limit.
+    time.sleep(15)
     try:
         sport_slug = {"tennis": "tennis", "football": "football", "basketball": "basketball"}.get(
             sport
@@ -190,16 +194,15 @@ def _fetch_match_score(
     if not candidates:
         return None
     if len(candidates) > 1:
-        # Pick the closest kickoff
-        try:
-            ts_target = int(
-                datetime.fromisoformat(kickoff_iso.replace("Z", "+00:00")).timestamp()
-            )
-        except Exception:
-            return None
-        candidates.sort(
-            key=lambda e: abs((e.get("startTimestamp") or 0) - ts_target)
+        # F5: spec is explicit — return None on ambiguity. Closest-kickoff
+        # heuristic risked picking the wrong fixture (e.g. a doubleheader
+        # or two teams playing different competitions on the same date).
+        print(
+            f"[auto-settle] AMBIGUOUS match for {home} vs {away} on "
+            f"{kickoff_iso}: {len(candidates)} candidates — skipping.",
+            file=sys.stderr,
         )
+        return None
     ev = candidates[0]
     return _event_to_score(ev, sport)
 
@@ -237,11 +240,13 @@ def _event_to_score(ev: dict, sport: str) -> Optional[MatchScore]:
             if h_set is None or a_set is None:
                 break
             set_scores.append((int(h_set), int(a_set)))
-        # Check for retirement
+        # F14: word-boundary retirement detection (substring 'ret' was
+        # fragile — would have matched "interrupted", "returned", etc.)
         if ev.get("winnerCode") and status == "finished":
-            # SofaScore may also signal retirement via 'note' or 'finalResultOnly'
-            note = (ev.get("statusDescription") or "").lower()
-            if "ret" in note or "w.o" in note or "walkover" in note:
+            note = (ev.get("statusDescription") or "")
+            if re.search(
+                r"\b(ret|retired|w\.?o\.?|walkover)\b", note, re.IGNORECASE
+            ):
                 mapped = "retired"
         return MatchScore(
             status=mapped,
@@ -254,14 +259,28 @@ def _event_to_score(ev: dict, sport: str) -> Optional[MatchScore]:
         )
 
     if sport == "football":
-        # Regulation score is period1 + period2 sum
-        h_reg = (hsc.get("period1") or 0) + (hsc.get("period2") or 0) if hsc else None
-        a_reg = (asc.get("period1") or 0) + (asc.get("period2") or 0) if asc else None
-        reg = None
-        if hsc and asc and ("period1" in hsc or "period2" in hsc):
-            reg = (h_reg, a_reg)
-        elif hsc and asc and hsc.get("current") is not None:
+        # F6: regulation_score MUST be period1 + period2 only — do NOT fall
+        # back to "current" which silently includes ET + penalties on
+        # cup/playoff matches. If period1/period2 are absent, AND any ET/
+        # penalties signal is present, leave regulation_score=None so the
+        # caller routes to skipped_no_data instead of settling wrong.
+        has_p1 = hsc and ("period1" in hsc) and ("period1" in asc)
+        has_p2 = hsc and ("period2" in hsc) and ("period2" in asc)
+        et_or_pen_present = any(
+            (hsc.get(k) is not None) or (asc.get(k) is not None)
+            for k in ("period1OT", "extra1", "extra2", "overtime", "penalty", "penalties")
+        ) if (hsc and asc) else False
+
+        reg: Optional[tuple[int, int]] = None
+        if has_p1 and has_p2:
+            reg = (
+                int(hsc.get("period1") or 0) + int(hsc.get("period2") or 0),
+                int(asc.get("period1") or 0) + int(asc.get("period2") or 0),
+            )
+        elif hsc and asc and hsc.get("current") is not None and not et_or_pen_present:
+            # Safe fallback only when no ET/pens markers are present.
             reg = (hsc.get("current"), asc.get("current"))
+        # else: reg stays None → caller routes to skipped_no_data (F6)
         return MatchScore(
             status=mapped,
             home_team=home,
@@ -457,6 +476,57 @@ def _settle_one_leg(leg: dict) -> tuple[Optional[str], Optional[MatchScore], lis
     if score is None:
         return None, None, specs, "no_data"
 
+    # F4: enforce 48h postponed grace BEFORE apply_rule. apply_rule always
+    # returns "void" on postponed status; we want to keep the pick pending
+    # until 48h have elapsed since the originally scheduled kickoff so the
+    # operator can manually decide. Past 48h: fall straight through to
+    # apply_rule which voids on the postponed status (we don't run the
+    # data-availability checks below since the match never happened).
+    if score.status == "postponed":
+        now = datetime.now(timezone.utc)
+        ref = score.started_at
+        if ref is None:
+            try:
+                ref = datetime.fromisoformat(
+                    (leg.get("kickoff") or "").replace("Z", "+00:00")
+                )
+            except Exception:
+                ref = None
+        if ref is None or (now - ref) < timedelta(hours=48):
+            return None, score, specs, "postponed_grace"
+        outcomes = [apply_rule(s, score) for s in specs]
+        if all(o == "win" for o in outcomes):
+            outcome = "win"
+        elif any(o == "void" for o in outcomes):
+            outcome = "void"
+        else:
+            outcome = "loss"
+        return outcome, score, specs, "ok"
+
+    # F1: basket_player_points requires score.player_points; without it
+    # apply_rule would return "void" silently and the whole compound
+    # single auto-voids. Route to skipped_no_data so an operator settles
+    # it manually.
+    for spec in specs:
+        if spec.market == "basket_player_points" and not score.player_points:
+            _try_send_admin(
+                f"manual settlement required: {label} "
+                "(basket player prop, box score unavailable)"
+            )
+            return None, score, specs, "no_player_box_score"
+
+    # F6: football_ml_regulation needs an explicit regulation_score (not a
+    # fallback to current which may include ET/pens). If regulation_score
+    # is None for a football leg, route to skipped_no_data so the operator
+    # can settle manually rather than risk wrong settlement.
+    for spec in specs:
+        if spec.market == "football_ml_regulation" and score.regulation_score is None:
+            _try_send_admin(
+                f"manual settlement required: {label} "
+                "(football ML — regulation score unavailable, ET/pens suspected)"
+            )
+            return None, score, specs, "no_regulation_score"
+
     outcomes = [apply_rule(s, score) for s in specs]
     # AND-aggregate (compound singles are conjunctions)
     if all(o == "win" for o in outcomes):
@@ -466,7 +536,6 @@ def _settle_one_leg(leg: dict) -> tuple[Optional[str], Optional[MatchScore], lis
     else:
         outcome = "loss"
 
-    time.sleep(15)  # rate-limit pace
     return outcome, score, specs, "ok"
 
 
