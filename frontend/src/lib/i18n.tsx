@@ -771,6 +771,15 @@ const fr: Dict = {
   "common.add": "Ajouter",
   "common.edit": "Modifier",
   "common.update": "Mettre à jour",
+  // Install hint (PWA iOS)
+  "install.iosTitle": "Installe NEXBET sur ton iPhone",
+  "install.iosBody": "Pour une vraie app : tape l'icône de partage en bas, puis « Sur l'écran d'accueil ».",
+  "install.iosShare": "Partager",
+  "install.iosAdd": "Sur l'écran d'accueil",
+  "install.dismiss": "Plus tard",
+  "install.androidTitle": "Installe NEXBET",
+  "install.androidBody": "Garde l'app à portée — accès direct, mode plein écran, pas de notif intrusive.",
+  "install.cta": "Installer",
 };
 
 const en: Dict = {
@@ -1526,6 +1535,15 @@ const en: Dict = {
   "common.add": "Add",
   "common.edit": "Edit",
   "common.update": "Update",
+  // Install hint (PWA iOS)
+  "install.iosTitle": "Install NEXBET on your iPhone",
+  "install.iosBody": "Get the real app feel: tap the share icon at the bottom, then \"Add to Home Screen\".",
+  "install.iosShare": "Share",
+  "install.iosAdd": "Add to Home Screen",
+  "install.dismiss": "Later",
+  "install.androidTitle": "Install NEXBET",
+  "install.androidBody": "Keep the app one tap away — full screen, native feel, no intrusive notifications.",
+  "install.cta": "Install",
 };
 
 const DICTS: Record<Lang, Dict> = { fr, en };
