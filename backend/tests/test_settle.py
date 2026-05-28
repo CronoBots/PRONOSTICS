@@ -3,10 +3,11 @@
 Covers:
 - Parser (settle_rules.parse_pick_label / parse_pick_label_full)
 - Rules (settle_rules.apply_rule) per market
+- AST round-trip (settle_ast.update_pick_outcome)
 - Replay (every settled pick in picks_data — outcome must match)
 
-AST round-trip + combo aggregation tests are added in subsequent
-commits as settle_ast.py and auto_settle.py land.
+Combo aggregation tests are added in a later commit when
+auto_settle.py lands.
 """
 
 from __future__ import annotations
@@ -474,7 +475,101 @@ def test_rule_player_props_absent_voids():
 
 
 # ============================================================================
-# 3. Replay tests — canned MatchScore from existing result.score_text
+# 3. AST round-trip — settle_ast.update_pick_outcome
+# ============================================================================
+
+
+@pytest.fixture
+def temp_picks_data(tmp_path):
+    """Copy picks_data.py to a temp dir + return its Path."""
+    import shutil
+
+    src = ROOT / "scripts" / "picks_data.py"
+    dst = tmp_path / "picks_data.py"
+    shutil.copy(src, dst)
+    return dst
+
+
+def test_ast_update_pending_outcome(temp_picks_data):
+    from settle_ast import update_pick_outcome
+
+    update_pick_outcome(
+        temp_picks_data,
+        date="2026-05-28",
+        outcome="win",
+        result={
+            "score_home": "2/2",
+            "score_text": "2 sélections gagnées sur 2",
+            "summary": "Test summary.",
+            "bet_outcome": "Pari gagné test.",
+        },
+        leg_updates=[
+            {
+                "outcome": "win",
+                "result": {
+                    "score_text": "Osaka bat Vekic 6-3 6-2",
+                    "summary": "Test leg 1",
+                    "bet_outcome": "Jambe gagnée test.",
+                },
+            },
+            {
+                "outcome": "win",
+                "result": {
+                    "score_text": "Rinderknech bat Berrettini 6-4 6-4 6-3",
+                    "summary": "Test leg 2",
+                    "bet_outcome": "Jambe gagnée test.",
+                },
+            },
+        ],
+    )
+
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("tmp_pd", temp_picks_data)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    target = next(p for p in mod.PICKS if p["date"] == "2026-05-28")
+    assert target["outcome"] == "win"
+    assert target["result"]["score_text"] == "2 sélections gagnées sur 2"
+    assert target["legs"][0]["outcome"] == "win"
+    assert target["legs"][1]["outcome"] == "win"
+
+    j1 = next(p for p in mod.PICKS if p["date"] == "2026-05-18")
+    assert j1["outcome"] == "win"
+    assert j1["result"]["score_text"] == "Liverpool 3 - 1 Crystal Palace"
+
+
+def test_ast_update_idempotent(temp_picks_data):
+    from settle_ast import update_pick_outcome
+
+    payload = {
+        "score_home": "1/1",
+        "score_text": "Idempotent test",
+        "summary": "Test",
+        "bet_outcome": "Test",
+    }
+    update_pick_outcome(temp_picks_data, "2026-05-28", "win", payload)
+    content1 = temp_picks_data.read_text()
+    update_pick_outcome(temp_picks_data, "2026-05-28", "win", payload)
+    content2 = temp_picks_data.read_text()
+    assert content1 == content2
+
+
+def test_ast_invalid_date_raises(temp_picks_data):
+    from settle_ast import update_pick_outcome
+
+    with pytest.raises(ValueError):
+        update_pick_outcome(
+            temp_picks_data,
+            "1900-01-01",
+            "win",
+            {"score_text": "x", "summary": "x", "bet_outcome": "x"},
+        )
+
+
+# ============================================================================
+# 4. Replay tests — canned MatchScore from existing result.score_text
 # ============================================================================
 
 
