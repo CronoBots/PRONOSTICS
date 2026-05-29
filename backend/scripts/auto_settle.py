@@ -1063,11 +1063,6 @@ def _git_commit(message: str) -> None:
         raise
 
 
-def _git_revert_files() -> None:
-    """Deprecated — F7 replaced this with an in-memory snapshot/restore.
-    Kept only for backwards compatibility with the existing call site, now
-    a no-op (the snapshot rollback inside _apply_live handles recovery)."""
-    return
 
 
 def _reminder_mode() -> int:
