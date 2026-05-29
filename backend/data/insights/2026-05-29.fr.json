@@ -1,0 +1,97 @@
+{
+  "date": "2026-05-29",
+  "sport": "combo",
+  "league": "Roland Garros — 3e tour (combiné 2 paris)",
+  "pick_label": "Combiné 2 paris Tennis RG R3 — marchés alternatifs (deM Set HC + Andreeva 2-0)",
+  "headline": "Combo RG R3 — De Minaur -1.5 sets + Andreeva 2-0, pivot marchés alternatifs (cote 2.16, EV +18%)",
+  "odds": 2.16,
+  "stake": 5.0,
+  "model_probability": 0.546,
+  "market_implied": 0.463,
+  "ev_pct": 17.9,
+  "potential_return": 10.8,
+  "potential_profit": 5.8,
+  "legs": [
+    {
+      "home_team": "Alex de Minaur",
+      "away_team": "Jakub Mensik",
+      "pick_label": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
+      "kickoff": "2026-05-29T11:50:00+00:00",
+      "odds": 1.49,
+      "model_probability": 0.739,
+      "market_implied": 0.671,
+      "ev_pct": 10.1
+    },
+    {
+      "home_team": "Mirra Andreeva",
+      "away_team": "Marie Bouzkova",
+      "pick_label": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
+      "kickoff": "2026-05-29T11:30:00+00:00",
+      "odds": 1.45,
+      "model_probability": 0.739,
+      "market_implied": 0.69,
+      "ev_pct": 7.2
+    }
+  ],
+  "sections": {
+    "🎯 La situation aujourd'hui": [
+      "Jour 6 de Roland Garros 2026, 3e tour. changement d'angle: les cotes des pari sur le vainqueur se sont effondrées au matin (Andreeva 1.14, De Minaur 1.25, combo @ 1.42 = rentabilité négative) post-Sinner surprise hier. On bascule sur les marchés alternatifs où la rentabilité subsiste.",
+      "Combo 2 sélections avec cote totale 2.16 et probabilité combinée estimée 54.6%."
+    ],
+    "📊 Pourquoi on y croit (par sélection)": [
+      "**Sélection 1 — Alex de Minaur (Australien #7 ATP) Set Handicap -1.5 @ 1.49** vs Jakub Mensik (#21 ATP). Set handicap -1.5 = deM doit gagner 3-0 ou 3-1 (best-of-5). historique face-à-face 5-0 deM, et écart physique massif: deM a reçu un walkover au R2 (donc 1h52 cumulé total), Mensik a joué un 5-setter au R2 (~7h cumulé). Modèle deM 80% match win (Dimers). Estimation deM -1.5 sets ~70% (Mensik peut chiper 1 set sur son service mais 2 = improbable).",
+      "**Sélection 2 — Mirra Andreeva (Russe #8 WTA, 19 ans) Pari de Set 2-0 @ 1.45** vs Marie Bouzkova (#27 WTA). Andreeva historique face-à-face 4-0 vs Bouzkova, et **aucun de leurs 4 matchs n'est allé en 3 sets** — signal empirique fort. Andreeva en forme de feu sur terre (17 victoires sur clay 2026, finale Madrid, SF Stuttgart, QF Rome). Estimation Andreeva 2-0 ~78%."
+    ],
+    "🎰 Le détail du pari": [
+      "2 sélections à 1.49 × 1.45 = **cote totale 2.16** (Unibet).",
+      "Probabilité combinée estimée: 0.70 × 0.78 ≈ 0.546 → marge calculé +18% sur la cote 2.16.",
+      "Mise: 5€ — gain potentiel +5,80€ si validé (return 10,80€).",
+      "Risque: si deM 0-2 cède 2 sets OU Andreeva tombe en 3 sets, tout le combo perd. (tennis R2+ fatigue): signal favorable côté deM (walkover R2), neutre côté Andreeva."
+    ]
+  },
+  "risk_flags": [
+    {
+      "code": "AB-4",
+      "context": "2 jambes max"
+    },
+    {
+      "code": "AB-7",
+      "context": "flag fatigue R2 — deM avantage net (walkover)"
+    },
+    {
+      "code": "AB-9",
+      "context": "aucun joueur engagé dans un pari pending"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.bleachernation.com/picks/2026/05/28/de-minaur-vs-mensik-prediction-at-the-roland-garros-friday-may-29/",
+      "name": "Bleacher Nation"
+    },
+    {
+      "url": "https://www.dimers.com/news/alex-de-minaur-vs-jakub-mensik-tennis-prediction-french-open-2026-ac",
+      "name": "Dimers"
+    },
+    {
+      "url": "https://www.thestatszone.com/mirra-andreeva-vs-marie-bouzkova-preview-prediction-2026-french-open-third-round-192991",
+      "name": "The Stats Zone"
+    },
+    {
+      "url": "https://www.si.com/betting/mirra-andreeva-vs-marie-bouzkova-prediction-odds-for-french-open-round-3-01ksr8k3wv9c",
+      "name": "Sports Illustrated"
+    },
+    {
+      "url": "https://www.olympics.com/en/news/roland-garros-2026-full-order-of-play-friday-29-may-all-matches-complete-schedule",
+      "name": "Olympics"
+    }
+  ],
+  "verdict": {
+    "tone": "green",
+    "key": "bonCoup",
+    "params": {
+      "prob": 55,
+      "ev": 17.9,
+      "odds": 2.16
+    }
+  }
+}

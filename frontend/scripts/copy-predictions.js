@@ -60,6 +60,7 @@ function copyHistory() {
 }
 
 function copyInsights() {
+  // Copies all <date>.json, <date>.fr.json, <date>.en.json (v2 i18n).
   const src = path.join(BACKEND_DATA, "insights");
   const dest = path.join(PUBLIC_DATA, "insights");
   fs.mkdirSync(dest, { recursive: true });

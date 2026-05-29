@@ -156,25 +156,48 @@ def main() -> None:
             f"Today → {sp['home_team']} vs {sp['away_team']} | {sp['pick']} @ {sp['odds']} "
             f"({sp['kind']}, EV {sp['expected_value']*100:+.1f}%)"
         )
-        # Auto-generate AI insights JSON for the pending pick so the
-        # frontend <MatchInsights> always has fresh data after settle
-        # cycles. Best-effort: failures don't block history regen.
+        # Auto-translate the pending pick's rationale FR→EN if missing,
+        # then generate FR + EN AI insights JSONs. Best-effort: failures
+        # don't block history regen.
         try:
-            import generate_insights  # noqa: E402
+            import picks_translations_en  # noqa: E402
 
             pick = next(
                 (p for p in picks_data.PICKS if p["date"] == date),
                 None,
             )
             if pick:
-                ins = generate_insights.build_insights(pick)
+                # Trigger MyMemory translation if EN rationale missing
+                tr = picks_translations_en.TRANSLATIONS.get(pick["date"], {})
+                if not tr.get("rationale"):
+                    try:
+                        import translate_pick  # noqa: E402
+                        print(f"Translate → fetching EN for {pick['date']}…")
+                        translate_pick.main_for_date(pick["date"])
+                        import importlib
+                        importlib.reload(picks_translations_en)
+                    except Exception as exc:
+                        print(f"Translate → SKIPPED ({type(exc).__name__}: {exc})")
+
+                # Now build FR + EN insights JSONs
+                import generate_insights  # noqa: E402
+
                 generate_insights.INSIGHTS_DIR.mkdir(parents=True, exist_ok=True)
-                out = generate_insights.INSIGHTS_DIR / f"{pick['date']}.json"
-                out.write_text(
-                    json.dumps(ins, indent=2, ensure_ascii=False),
-                    encoding="utf-8",
+                ins_fr = generate_insights.build_insights(pick)
+                (generate_insights.INSIGHTS_DIR / f"{pick['date']}.fr.json").write_text(
+                    json.dumps(ins_fr, indent=2, ensure_ascii=False), encoding="utf-8",
                 )
-                print(f"Insights → {out.name}")
+                pick_en = picks_translations_en.translate_pick(pick)
+                ins_en = generate_insights.build_insights(pick_en)
+                (generate_insights.INSIGHTS_DIR / f"{pick['date']}.en.json").write_text(
+                    json.dumps(ins_en, indent=2, ensure_ascii=False), encoding="utf-8",
+                )
+                # Legacy alias (FR)
+                (generate_insights.INSIGHTS_DIR / f"{pick['date']}.json").write_text(
+                    json.dumps(ins_fr, indent=2, ensure_ascii=False), encoding="utf-8",
+                )
+                en_ok = ins_fr["sections"] != ins_en["sections"]
+                print(f"Insights → {pick['date']}.{{fr,en}}.json (EN translated: {en_ok})")
         except Exception as exc:
             print(f"Insights → SKIPPED ({type(exc).__name__}: {exc})")
     else:

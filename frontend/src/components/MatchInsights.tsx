@@ -59,16 +59,25 @@ function basePath(): string {
   return process.env.NEXT_PUBLIC_RESOLVED_BASE_PATH || "";
 }
 
-export async function fetchInsights(date: string): Promise<InsightsPayload | null> {
-  try {
-    const r = await fetch(`${basePath()}/data/insights/${date}.json`, {
-      cache: "no-store",
-    });
-    if (!r.ok) return null;
-    return (await r.json()) as InsightsPayload;
-  } catch {
-    return null;
+export async function fetchInsights(
+  date: string,
+  lang: "fr" | "en" = "fr",
+): Promise<InsightsPayload | null> {
+  // Try locale-specific file first, fall back to the legacy unsuffixed
+  // file (FR by convention) if the locale variant isn't there yet.
+  const tries = [
+    `${basePath()}/data/insights/${date}.${lang}.json`,
+    `${basePath()}/data/insights/${date}.json`,
+  ];
+  for (const url of tries) {
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      if (r.ok) return (await r.json()) as InsightsPayload;
+    } catch {
+      /* try next */
+    }
   }
+  return null;
 }
 
 function ProbabilityGauge({ value, label, hint }: { value: number; label: string; hint?: string }) {
@@ -148,13 +157,13 @@ function RationaleSection({ title, lines }: { title: string; lines: string[] }) 
 }
 
 export function MatchInsights({ date }: { date: string }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [data, setData] = useState<InsightsPayload | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    fetchInsights(date).then((d) => {
+    fetchInsights(date, lang).then((d) => {
       if (!cancelled) {
         setData(d);
         setLoading(false);
@@ -163,7 +172,7 @@ export function MatchInsights({ date }: { date: string }) {
     return () => {
       cancelled = true;
     };
-  }, [date]);
+  }, [date, lang]);
 
   if (loading) {
     return (

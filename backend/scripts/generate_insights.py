@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import picks_data  # noqa: E402
+import picks_translations_en  # noqa: E402
 
 INSIGHTS_DIR = ROOT / "data" / "insights"
 
@@ -87,7 +88,11 @@ _PROSE_REPLACEMENTS = [
 ]
 
 
-def _clean_prose(text: str) -> str:
+def _clean_prose(text: str, lang: str = "fr") -> str:
+    """Strip trader jargon. FR-only — the dictionary maps French
+    jargon to French plain language, so leave EN untouched."""
+    if lang != "fr":
+        return text.strip()
     out = text
     for pat, repl in _PROSE_REPLACEMENTS:
         out = pat.sub(repl, out)
@@ -204,21 +209,32 @@ def _leg_insights(leg: dict, pick: dict) -> dict[str, Any]:
     }
 
 
-def build_insights(pick: dict) -> dict[str, Any]:
-    """Generate the full insights payload for a pick."""
+def build_insights(pick: dict, lang: str = "fr") -> dict[str, Any]:
+    """Generate the full insights payload for a pick in the requested
+    locale. The rationale prose is taken as-is from the pick (FR if it's
+    the source picks_data entry, EN if translated via picks_translations_en).
+    Only the FR variant gets jargon scrubbing applied to its prose."""
     odds = float(pick.get("odds", 0))
     stake = float(pick.get("stake", 0))
     model_prob = float(pick.get("model_probability", 0))
 
     raw_sections = _parse_rationale_sections(pick.get("rationale", []))
     # Rename headers + scrub jargon. Drop sections we've explicitly mapped
-    # to None (already covered by the risk-flags block).
+    # to None (already covered by the risk-flags block). FR-only headers
+    # are mapped to friendlier FR; EN headers come through as-is.
     sections: dict[str, list[str]] = {}
     for title, lines in raw_sections.items():
-        friendly = _FRIENDLY_SECTION_TITLES.get(title, title)
-        if friendly is None:
-            continue
-        cleaned_lines = [_clean_prose(ln) for ln in lines if ln.strip()]
+        if lang == "fr":
+            friendly = _FRIENDLY_SECTION_TITLES.get(title, title)
+            if friendly is None:
+                continue
+        else:
+            # EN: skip the "Anti-bias checks applied" section (covered by
+            # risk flags); use the title verbatim otherwise.
+            if "Anti-bias" in title or "🚨" in title:
+                continue
+            friendly = title
+        cleaned_lines = [_clean_prose(ln, lang=lang) for ln in lines if ln.strip()]
         if cleaned_lines:
             sections[friendly] = cleaned_lines
 
@@ -297,16 +313,36 @@ def main() -> int:
         print("No matching pick found.", file=sys.stderr)
         return 1
 
-    insights = build_insights(pick)
     INSIGHTS_DIR.mkdir(parents=True, exist_ok=True)
-    out = INSIGHTS_DIR / f"{pick['date']}.json"
-    out.write_text(json.dumps(insights, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"Insights → {out}")
+
+    # FR (source) JSON
+    insights_fr = build_insights(pick, lang="fr")
+    out_fr = INSIGHTS_DIR / f"{pick['date']}.fr.json"
+    out_fr.write_text(json.dumps(insights_fr, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    # EN (overlay) JSON — applies picks_translations_en.translate_pick
+    # to the pick before parsing rationale into sections. Everything
+    # else (legs, finance, verdict, risk codes) is identical.
+    pick_en = picks_translations_en.translate_pick(pick)
+    insights_en = build_insights(pick_en, lang="en")
+    out_en = INSIGHTS_DIR / f"{pick['date']}.en.json"
+    out_en.write_text(json.dumps(insights_en, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    # Legacy alias — keep <date>.json as a copy of the FR file so any
+    # consumer still using the old name doesn't break. Drop later.
+    legacy = INSIGHTS_DIR / f"{pick['date']}.json"
+    legacy.write_text(json.dumps(insights_fr, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    print(f"Insights → {out_fr.name} + {out_en.name}")
     print(
-        f"  pick: {pick['date']} · model {insights['model_probability']:.0%} · "
-        f"odds {insights['odds']:.2f} · EV {insights['ev_pct']:+.1f}%"
+        f"  pick: {pick['date']} · model {insights_fr['model_probability']:.0%} · "
+        f"odds {insights_fr['odds']:.2f} · EV {insights_fr['ev_pct']:+.1f}%"
     )
-    print(f"  legs: {len(insights['legs'])} · sources: {len(insights['sources'])} · risks: {len(insights['risk_flags'])}")
+    print(
+        f"  legs: {len(insights_fr['legs'])} · sources: {len(insights_fr['sources'])}"
+        f" · risks: {len(insights_fr['risk_flags'])}"
+        f" · EN rationale: {'YES' if insights_fr['sections'] != insights_en['sections'] else 'NO (fallback to FR)'}"
+    )
     return 0
 
 
