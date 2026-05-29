@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 
 import { Avatar } from "@/components/Avatar";
+import { DevPremiumToggle } from "@/components/DevPremiumToggle";
 import { Sheet, SheetOption } from "@/components/Sheet";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/lib/auth";
@@ -82,6 +83,7 @@ export default function ComptePage() {
         </Head>
         <main className="w-full max-w-md md:max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-10 lg:py-16 text-center">
           <h1 className="text-lg lg:text-2xl font-bold mb-6">{t("account.title")}</h1>
+          <DevPremiumToggle />
           <div className="bg-bg-card border border-white/10 rounded-2xl p-6 mt-6">
             <p className="text-white/70 mb-4">
               {t("account.loginToManage")}
@@ -136,6 +138,8 @@ export default function ComptePage() {
         <h1 className="text-center text-base lg:text-2xl font-semibold lg:font-bold text-white/80 lg:text-white mb-6">
           {t("account.title")}
         </h1>
+
+        <DevPremiumToggle />
 
         {/* Bloc identité */}
         <div className="bg-bg-card border border-white/10 rounded-2xl p-4 flex items-center gap-4 mb-4">
