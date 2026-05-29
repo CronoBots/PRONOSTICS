@@ -100,14 +100,14 @@ function buildOverviewTiles(stats: HistoryStats, t: TFn): StatRow[] {
 }
 
 export default function StatsPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("overview");
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory().then((h) => {
+    fetchHistory(lang).then((h) => {
       if (cancelled) return;
       setHistory(h);
       setLoading(false);
@@ -115,7 +115,7 @@ export default function StatsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   const stats = history?.stats;
   const picks = history?.picks ?? [];

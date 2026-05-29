@@ -33,11 +33,23 @@ def compute_profit(stake: float, odds: float, outcome: str) -> float:
     return 0.0
 
 
-def build_history() -> dict:
+def build_history(lang: str = "fr") -> dict:
+    """Build the history payload in the requested locale.
+
+    lang="fr" → source-of-truth picks_data.PICKS as-is.
+    lang="en" → applies picks_translations_en.translate_pick() to every
+    pick + the league/headline/rationale/legs translations carried in
+    picks_translations_en.TRANSLATIONS. Numeric fields (odds, stake,
+    profit, bankroll_after, model_probability, EV) stay locale-agnostic.
+    """
+    import picks_translations_en  # noqa: E402
+
     picks_out = []
     bankroll = picks_data.STARTING_BANKROLL
 
-    for p in picks_data.PICKS:
+    for raw in picks_data.PICKS:
+        # For EN, overlay the translation file's strings on the FR source.
+        p = picks_translations_en.translate_pick(raw) if lang == "en" else raw
         odds = p["odds"]
         outcome = p["outcome"]
         stake = p.get("stake", picks_data.STAKE)
@@ -132,25 +144,50 @@ def build_today_payload(history: dict) -> tuple[str, dict] | None:
 
 
 def main() -> None:
-    history = build_history()
-    save_history(history)
-    s = history["stats"]
+    # FR — source of truth, written to history.json (legacy alias) AND
+    # history.fr.json. The frontend prefers history.<lang>.json first
+    # and falls back to history.json if absent (smooth migration).
+    history_fr = build_history(lang="fr")
+    save_history(history_fr)
+    # Also write the .fr.json variant
+    fr_path = DATA_DIR / "history.fr.json"
+    fr_path.write_text(json.dumps(history_fr, indent=2, ensure_ascii=False, default=str))
+    # EN overlay
+    history_en = build_history(lang="en")
+    en_path = DATA_DIR / "history.en.json"
+    en_path.write_text(json.dumps(history_en, indent=2, ensure_ascii=False, default=str))
+
+    s = history_fr["stats"]
     print(
         f"History → {s['total_picks']} picks ({s['won']}V/{s['lost']}D/{s['pending']}P), "
         f"win rate {s['win_rate']}%, profit {s['profit']:+.2f}€, "
         f"ROI {s['roi_percent']:+.2f}%, bankroll {s['current_bankroll']:.2f}€"
     )
+    print(f"  wrote history.json + history.fr.json + history.en.json")
 
-    today = build_today_payload(history)
+    today_fr = build_today_payload(history_fr)
+    today_en = build_today_payload(history_en)
     pred_dir = DATA_DIR / "predictions"
     pred_dir.mkdir(parents=True, exist_ok=True)
-    # Purge des anciens predictions/*.json (un seul actif = le pick pending courant)
+    # Purge anciens predictions (un pending = 3 fichiers : <date>.json + .fr.json + .en.json)
     for old in pred_dir.glob("*.json"):
         old.unlink()
-    if today:
-        date, payload = today
+    if today_fr:
+        date, payload_fr = today_fr
+        # Legacy alias (FR) — still produced for back-compat
+        (pred_dir / f"{date}.json").write_text(
+            json.dumps(payload_fr, indent=2, ensure_ascii=False),
+        )
+        (pred_dir / f"{date}.fr.json").write_text(
+            json.dumps(payload_fr, indent=2, ensure_ascii=False),
+        )
+        if today_en:
+            _, payload_en = today_en
+            (pred_dir / f"{date}.en.json").write_text(
+                json.dumps(payload_en, indent=2, ensure_ascii=False),
+            )
+        payload = payload_fr
         out_path = pred_dir / f"{date}.json"
-        out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
         sp = payload["safe_pick"]
         print(
             f"Today → {sp['home_team']} vs {sp['away_team']} | {sp['pick']} @ {sp['odds']} "

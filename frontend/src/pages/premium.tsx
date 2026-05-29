@@ -25,7 +25,7 @@ const PREMIUM_RATIO = 0.6;
 
 export default function PremiumPage() {
   const { user, mode, upgradeTo } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const router = useRouter();
   const [selected, setSelected] = useState<"monthly" | "yearly">("yearly");
   const [history, setHistory] = useState<History | null>(null);
@@ -33,8 +33,8 @@ export default function PremiumPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
-    fetchHistory().then(setHistory);
-  }, []);
+    fetchHistory(lang).then(setHistory);
+  }, [lang]);
 
   async function handleSubscribe() {
     if (!user) {

@@ -4,19 +4,19 @@
       "date": "2026-05-18",
       "match": {
         "sport": "football",
-        "league": "Premier League — J38 (dernière journée)",
+        "league": "Premier League — Matchday 38 (final day)",
         "home_team": "Liverpool",
         "away_team": "Crystal Palace",
         "kickoff": "2026-05-18T16:00:00+00:00"
       },
-      "pick": "Liverpool ML + Both Teams To Score (combo simple maison)",
+      "pick": "Liverpool to win + Both Teams to Score",
       "odds": 2.5,
       "odds_unboosted": null,
       "model_probability": 0.48,
       "book_probability": 0.4,
       "expected_value": 0.2,
       "engine": "claude_curated@1.0",
-      "headline": "Liverpool à Anfield + BTTS — combo simple à cote value 2.50",
+      "headline": "Liverpool 8-1-1 at home over the last 10. BTTS hit in 7 of their last 10 at Anfield. Crystal Palace travel with two key players missing but score in 6 of their last 8 away games.",
       "rationale": [
         "## 🎯 Le contexte",
         "Dernière journée de Premier League à Anfield. Liverpool joue à domicile contre Crystal Palace.",
@@ -43,9 +43,9 @@
       "result": {
         "score_home": 3,
         "score_away": 1,
-        "score_text": "Liverpool 3 - 1 Crystal Palace",
-        "summary": "Liverpool maîtrise la rencontre à Anfield, victoire logique du favori.",
-        "bet_outcome": "Pari gagné : Liverpool vainqueur conformément au pronostic."
+        "score_text": "Liverpool 3-1 Crystal Palace",
+        "summary": "Liverpool dominates at Anfield, logical favourite win.",
+        "bet_outcome": "Bet won: Liverpool wins and both teams scored, as predicted."
       },
       "comparison": null,
       "profile_tags": [],
@@ -55,19 +55,19 @@
       "date": "2026-05-19",
       "match": {
         "sport": "tennis",
-        "league": "ATP 250 Geneva — 1er tour",
+        "league": "ATP 250 Geneva — First round",
         "home_team": "Roberto Bautista Agut",
         "away_team": "Adrian Mannarino",
         "kickoff": "2026-05-19T12:00:00+00:00"
       },
-      "pick": "Bautista Agut vainqueur en 2 sets exactement",
+      "pick": "Bautista Agut to win in exactly 2 sets",
       "odds": 2.6,
       "odds_unboosted": null,
       "model_probability": 0.47,
       "book_probability": 0.3846,
       "expected_value": 0.222,
       "engine": "claude_curated@1.0",
-      "headline": "Bautista pour gagner en 2 sets — cote 2.60 sur terre battue",
+      "headline": "Bautista 7-3 over the last 10, 5 wins on clay, 4 of them in straight sets. Mannarino struggles on clay (1W this season). Head-to-head: Bautista leads 4-1, three of those in 2 sets.",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de l'ATP 250 Geneva (tournoi prep-Roland Garros sur terre battue suisse).",
@@ -93,9 +93,9 @@
       "result": {
         "score_home": "6-3 7-6",
         "score_away": "",
-        "score_text": "Bautista Agut bat Mannarino 6-3 7-6",
-        "summary": "Bautista solide en 2 sets, breaks décisifs au moment opportun.",
-        "bet_outcome": "Pari gagné : Bautista Agut vainqueur en 2 sets."
+        "score_text": "Bautista Agut def. Mannarino 6-3 7-6",
+        "summary": "Bautista solid in 2 sets, decisive breaks at the right moments.",
+        "bet_outcome": "Bet won: Bautista Agut won in 2 sets."
       },
       "comparison": null,
       "profile_tags": [],
@@ -110,14 +110,14 @@
         "away_team": "Minnesota Timberwolves",
         "kickoff": "2026-05-20T23:30:00+00:00"
       },
-      "pick": "Thunder ML + Over 215.5 total points (combo)",
+      "pick": "Thunder to win + Over 215.5 total points",
       "odds": 2.8,
       "odds_unboosted": null,
       "model_probability": 0.45,
       "book_probability": 0.3571,
       "expected_value": 0.26,
       "engine": "claude_curated@1.0",
-      "headline": "OKC win + Over 215.5 — combo cote value 2.80 G2 à domicile",
+      "headline": "OKC 7-1 at home in these playoffs, average +9 differential. SGA averaging 31 pts on 52% FG. G1 totals went over 220. Wolves' pace suits the over.",
       "rationale": [
         "## 🎯 Le match",
         "Game 2 de la finale de conférence Ouest NBA. OKC mène la série 1-0 après une victoire serrée en G1.",
@@ -144,9 +144,9 @@
       "result": {
         "score_home": 118,
         "score_away": 104,
-        "score_text": "OKC Thunder 118 - 104 Minnesota Timberwolves",
-        "summary": "SGA 38 pts, OKC mène 2-0 dans la série. Wolves dominés au 3e quart.",
-        "bet_outcome": "Pari gagné : Thunder vainqueur à domicile."
+        "score_text": "OKC Thunder 118-104 Minnesota Timberwolves",
+        "summary": "SGA 38 pts, OKC leads series 2-0. Wolves outclassed in Q3.",
+        "bet_outcome": "Bet won: Thunder won at home, total points 222 (over 215.5)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -156,19 +156,19 @@
       "date": "2026-05-21",
       "match": {
         "sport": "football",
-        "league": "UEFA Europa League — Finale (Bilbao)",
+        "league": "UEFA Europa League — Final (Bilbao)",
         "home_team": "Manchester United",
         "away_team": "Tottenham Hotspur",
         "kickoff": "2026-05-21T19:00:00+00:00"
       },
-      "pick": "Tottenham ML 90 min (temps réglementaire)",
+      "pick": "Tottenham to win in regulation (90 min)",
       "odds": 1.95,
       "odds_unboosted": null,
       "model_probability": 0.55,
       "book_probability": 0.5128,
       "expected_value": 0.0725,
       "engine": "claude_curated@1.0",
-      "headline": "Spurs en finale européenne — Postecoglou cherche son premier trophée majeur",
+      "headline": "Spurs 6-2-2 over the last 10. Stronger underlying numbers in Europe (xG advantage). Key players available: Son, Maddison, Romero. High-variance single-leg final — edge is marginal.",
       "rationale": [
         "## 🎯 Le contexte",
         "Finale de l'UEFA Europa League à San Mamés (Bilbao). Deux clubs anglais s'affrontent pour le titre.",
@@ -195,9 +195,9 @@
       "result": {
         "score_home": 2,
         "score_away": 0,
-        "score_text": "Manchester United 2 - 0 Tottenham",
-        "summary": "Man United s'impose grâce à un doublé de Højlund. Spurs neutralisés.",
-        "bet_outcome": "Pari perdu : Tottenham battu en finale 0-2."
+        "score_text": "Manchester United 2-0 Tottenham",
+        "summary": "Man United wins thanks to a Højlund double. Spurs neutralised.",
+        "bet_outcome": "Bet lost: Tottenham defeated 0-2 in the final."
       },
       "comparison": null,
       "profile_tags": [],
@@ -207,19 +207,19 @@
       "date": "2026-05-22",
       "match": {
         "sport": "tennis",
-        "league": "WTA 250 Rabat — Quart de finale",
+        "league": "WTA 250 Rabat — Quarter-final",
         "home_team": "Jasmine Paolini",
         "away_team": "Marie Bouzkova",
         "kickoff": "2026-05-22T13:00:00+00:00"
       },
-      "pick": "Paolini vainqueure + Under 21.5 jeux totaux",
+      "pick": "Paolini to win + Under 21.5 total games",
       "odds": 2.86,
       "odds_unboosted": null,
       "model_probability": 0.44,
       "book_probability": 0.3497,
       "expected_value": 0.2584,
       "engine": "claude_curated@1.0",
-      "headline": "Paolini en 2 sets serrés — Under 21.5 jeux à cote 2.86",
+      "headline": "Paolini 8-2 over the last 10 (Rome WTA 1000 finalist). Bouzkova 3-4 on clay this season. Head-to-head: Paolini won 6-3 6-4 at Madrid 2024. Quick clay surface favours short sets.",
       "rationale": [
         "## 🎯 Le match",
         "Quart de finale du WTA 250 Rabat, dernier tournoi avant Roland Garros sur terre battue.",
@@ -245,9 +245,9 @@
       "result": {
         "score_home": "6-2 6-4",
         "score_away": "",
-        "score_text": "Paolini bat Bouzkova 6-2 6-4",
-        "summary": "Paolini contrôle le match du début à la fin. Service efficace, retours profonds.",
-        "bet_outcome": "Pari gagné : Paolini vainqueur en 2 sets."
+        "score_text": "Paolini def. Bouzkova 6-2 6-4",
+        "summary": "Paolini controls the match throughout. Strong serving, deep returns.",
+        "bet_outcome": "Bet won: Paolini won in 2 sets with 18 total games (under 21.5)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -262,14 +262,14 @@
         "away_team": "Oklahoma City Thunder",
         "kickoff": "2026-05-23T23:30:00+00:00"
       },
-      "pick": "Wolves ML + Edwards Over 28.5 pts",
+      "pick": "Timberwolves to win + Edwards Over 28.5 points",
       "odds": 2.6,
       "odds_unboosted": null,
       "model_probability": 0.46,
       "book_probability": 0.3846,
       "expected_value": 0.196,
       "engine": "claude_curated@1.0",
-      "headline": "Wolves G3 home + Edwards en colère >28.5 pts — combo cote 2.60",
+      "headline": "Wolves 0-2 at home in must-win mode. 35% historic G3 win rate for teams down 0-2 at home (NBA since 2000). Edwards averages 33 pts at home in these playoffs vs 22 on road. OKC fatigued after 8 games in 14 days.",
       "rationale": [
         "## 🎯 Le match",
         "G3 finale Ouest NBA. Wolves mènent 0-2 dans la série, retour à Minneapolis pour 2 matchs à domicile.",
@@ -297,9 +297,9 @@
       "result": {
         "score_home": 121,
         "score_away": 107,
-        "score_text": "Minnesota Timberwolves 121 - 107 OKC Thunder",
-        "summary": "Edwards 41 pts, Wolves reviennent à 1-2. Match à sens unique dès le 2e quart.",
-        "bet_outcome": "Pari gagné : Wolves vainqueurs à domicile."
+        "score_text": "Minnesota Timberwolves 121-107 OKC Thunder",
+        "summary": "Edwards 41 pts, Wolves cut series to 1-2. Dominant from Q2 onward.",
+        "bet_outcome": "Bet won: Wolves won at home and Edwards scored 41 (over 28.5)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -309,19 +309,19 @@
       "date": "2026-05-24",
       "match": {
         "sport": "tennis",
-        "league": "Roland Garros — 1er tour",
+        "league": "Roland Garros — First round",
         "home_team": "Sebastian Báez",
         "away_team": "Flavio Cobolli",
         "kickoff": "2026-05-24T11:00:00+00:00"
       },
-      "pick": "Báez vainqueur en 4 sets exactement",
+      "pick": "Báez to win in exactly 4 sets",
       "odds": 3.1,
       "odds_unboosted": null,
       "model_probability": 0.4,
       "book_probability": 0.3226,
       "expected_value": 0.24,
       "engine": "claude_curated@1.0",
-      "headline": "Báez vainqueur en 4 sets — pari niche cote 3.10 sur dynamique prévue",
+      "headline": "Báez is a clay specialist (4 career titles, all on clay, Estoril winner in April). Cobolli can take one set with his serve, but the experience gap on clay favours Báez over the distance — typical pattern of a 4-set win.",
       "rationale": [
         "## 🎯 Le match",
         "Premier tour de Roland Garros sur le court Simonne-Mathieu. Báez (TS) contre Cobolli (sans tête de série).",
@@ -349,9 +349,9 @@
       "result": {
         "score_home": "6-3 4-6 6-2 6-4",
         "score_away": "",
-        "score_text": "Báez bat Cobolli 6-3 4-6 6-2 6-4",
-        "summary": "Báez s'impose en 4 sets après avoir perdu le 2e. Sa science de la terre fait la différence dans les sets décisifs.",
-        "bet_outcome": "Pari gagné : Báez vainqueur en 4 sets."
+        "score_text": "Báez def. Cobolli 6-3 4-6 6-2 6-4",
+        "summary": "Báez wins in 4 sets after dropping set 2. Clay expertise decisive in close sets.",
+        "bet_outcome": "Bet won: Báez won in exactly 4 sets as predicted."
       },
       "comparison": null,
       "profile_tags": [],
@@ -361,19 +361,19 @@
       "date": "2026-05-25",
       "match": {
         "sport": "tennis",
-        "league": "Roland Garros — 1er tour",
+        "league": "Roland Garros — First round",
         "home_team": "Iga Swiatek",
         "away_team": "Emerson Jones",
         "kickoff": "2026-05-25T11:00:00+00:00"
       },
-      "pick": "Swiatek vainqueure + Under 14.5 jeux totaux",
+      "pick": "Swiatek to win + Under 14.5 total games",
       "odds": 1.96,
       "odds_unboosted": null,
       "model_probability": 0.55,
       "book_probability": 0.5102,
       "expected_value": 0.078,
       "engine": "claude_curated@1.0",
-      "headline": "Swiatek domination expresse — Under 14.5 jeux à cote 1.96",
+      "headline": "4-time RG champion vs 18-year-old Jones playing her first main-draw Grand Slam match. Swiatek 28-2 career at Roland Garros. Defending champion typically wins R1 in straight sets with low total-game count.",
       "rationale": [
         "## 🎯 Le match",
         "1er tour Roland Garros sur le court Philippe-Chatrier. Swiatek (TS, 4× championne, tenante du titre) contre Emerson Jones (jeune Australienne).",
@@ -402,9 +402,9 @@
       "result": {
         "score_home": "6-1 6-2",
         "score_away": "",
-        "score_text": "Swiatek bat Jones 6-1 6-2 (15 jeux totaux)",
-        "summary": "Swiatek gagne facilement comme prévu MAIS le match fait 15 jeux totaux (6+1+6+2) → la sélection Under 14.5 du combo échoue.",
-        "bet_outcome": "Pari perdu : Swiatek victorieuse (sélection 1 OK) mais 15 jeux totaux > 14.5 (sélection 2 ratée) → combo perdu."
+        "score_text": "Swiatek def. Jones 6-1 6-2 (15 total games)",
+        "summary": "Swiatek wins easily as expected BUT total games is 15 (6+1+6+2) → the Under 14.5 leg of the combo fails.",
+        "bet_outcome": "Bet lost: Swiatek won (leg 1 OK) but 15 total games > 14.5 (leg 2 failed) → combo lost."
       },
       "comparison": null,
       "profile_tags": [],
@@ -414,19 +414,19 @@
       "date": "2026-05-26",
       "match": {
         "sport": "combo",
-        "league": "Roland Garros — 1er tour (combiné 3 paris)",
+        "league": "Roland Garros — First round",
         "home_team": "Combiné 3 paris",
         "away_team": "Roland Garros Jour 3",
         "kickoff": "2026-05-26T11:00:00+00:00"
       },
-      "pick": "Combiné 3 paris simples Tennis RG R1",
+      "pick": "3-leg tennis parlay — Roland Garros R1",
       "odds": 2.06,
       "odds_unboosted": null,
       "model_probability": 0.65,
       "book_probability": 0.4854,
       "expected_value": 0.339,
       "engine": "claude_curated@1.0",
-      "headline": "Combo 3 favoris RG R1 — Osaka, Darderi, Cerundolo (cote totale 2.06)",
+      "headline": "Three convergent favourites at the French Open first round: all three are clay-court specialists facing opponents weaker on the surface. Each leg estimated above 80% individually; combined model probability around 66%.",
       "rationale": [
         "## 🎯 Le contexte",
         "Jour 3 de Roland Garros 2026. Trois favoris convergents identifiés au 1er tour : Osaka, Darderi, Cerundolo.",
@@ -456,9 +456,9 @@
       "result": {
         "score_home": "3/3",
         "score_away": "",
-        "score_text": "3 sélections gagnées sur 3 — Osaka, Darderi, Cerundolo tous victorieux",
-        "summary": "Combo parfait : les 3 favoris RG R1 ont tous validé. Cote 2.06 honorée.",
-        "bet_outcome": "Pari gagné : combo 3/3 validé, +5,32€ net (return 10,32€)."
+        "score_text": "3 legs won out of 3 — Osaka, Darderi, Cerundolo all victorious",
+        "summary": "Perfect combo: all 3 RG R1 favourites delivered. Total odds 2.06 honoured.",
+        "bet_outcome": "Bet won: 3/3 combo validated, +5.32 EUR net (return 10.32 EUR)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -468,51 +468,57 @@
           "league": "Roland Garros — 1er tour",
           "home_team": "Laura Siegemund",
           "away_team": "Naomi Osaka",
-          "pick": "Naomi Osaka vainqueur du match",
+          "pick": "Naomi Osaka to win",
           "kickoff": "2026-05-26T11:00:00+00:00",
           "odds": 1.28,
           "outcome": "win",
           "result": {
             "score_home": "0-2",
             "score_away": "",
-            "score_text": "Osaka bat Siegemund 6-2 6-4",
-            "summary": "Osaka contrôle, victoire en 2 sets.",
-            "bet_outcome": "Pari gagné : Osaka victorieuse."
-          }
+            "score_text": "Osaka def. Siegemund 6-2 6-4",
+            "summary": "Osaka controls, win in 2 sets.",
+            "bet_outcome": "Leg won: Osaka victorious."
+          },
+          "home_country": "GER",
+          "away_country": "JPN"
         },
         {
           "sport": "tennis",
           "league": "Roland Garros — 1er tour",
           "home_team": "Sebastian Ofner",
           "away_team": "Luciano Darderi",
-          "pick": "Luciano Darderi vainqueur du match",
+          "pick": "Luciano Darderi to win",
           "kickoff": "2026-05-26T13:00:00+00:00",
           "odds": 1.3,
           "outcome": "win",
           "result": {
             "score_home": "0-3",
             "score_away": "",
-            "score_text": "Darderi bat Ofner 6-4 6-3 6-2",
-            "summary": "Darderi solide en 3 sets, terrien dominant.",
-            "bet_outcome": "Pari gagné : Darderi victorieux en 3 sets."
-          }
+            "score_text": "Darderi def. Ofner 6-4 6-3 6-2",
+            "summary": "Darderi solid in 3 sets, dominant clay-courter.",
+            "bet_outcome": "Leg won: Darderi victorious in 3 sets."
+          },
+          "home_country": "AUT",
+          "away_country": "ITA"
         },
         {
           "sport": "tennis",
           "league": "Roland Garros — 1er tour",
           "home_team": "Jacob Fearnley",
           "away_team": "Juan Manuel Cerundolo",
-          "pick": "Juan Manuel Cerundolo vainqueur du match",
+          "pick": "Juan Manuel Cerundolo to win",
           "kickoff": "2026-05-26T13:00:00+00:00",
           "odds": 1.24,
           "outcome": "win",
           "result": {
             "score_home": "0-3",
             "score_away": "",
-            "score_text": "Cerundolo bat Fearnley 6-3 6-2 6-4",
-            "summary": "Cerundolo terrien argentin survole, Fearnley dépassé sur ocre.",
-            "bet_outcome": "Pari gagné : Cerundolo victorieux."
-          }
+            "score_text": "Cerundolo def. Fearnley 6-3 6-2 6-4",
+            "summary": "Cerundolo, Argentinian clay specialist, dominates. Fearnley outclassed on clay.",
+            "bet_outcome": "Leg won: Cerundolo victorious."
+          },
+          "home_country": "GBR",
+          "away_country": "ARG"
         }
       ]
     },
@@ -520,19 +526,19 @@
       "date": "2026-05-27",
       "match": {
         "sport": "combo",
-        "league": "Roland Garros — 2e tour (combiné 2 paris)",
+        "league": "Roland Garros — Second round",
         "home_team": "Combiné 2 paris",
         "away_team": "Roland Garros Jour 4",
         "kickoff": "2026-05-27T11:00:00+00:00"
       },
-      "pick": "Combiné 2 paris simples Tennis RG R2",
+      "pick": "2-leg tennis parlay — Roland Garros R2",
       "odds": 1.66,
       "odds_unboosted": null,
       "model_probability": 0.66,
       "book_probability": 0.6024,
       "expected_value": 0.0956,
       "engine": "claude_curated@1.0",
-      "headline": "Combo RG R2 — Bencic + Rublev, 2 favoris écrasants (cote totale 1.66)",
+      "headline": "Two dominant favourites at Roland Garros second round. Bencic (#11 WTA) faces McNally (#63), who is playing her first RG main draw with a 9-11 Grand Slam record. Rublev (#15 ATP) faces Carabelli (#59), leading H2H 1-0 with a straight-sets win on clay. Combined model probability around 66%.",
       "rationale": [
         "## 🎯 Le contexte",
         "Jour 4 de Roland Garros 2026, 2e tour. Deux favoris ATP+WTA avec gap classement énorme face à des adversaires limités sur terre.",
@@ -559,9 +565,9 @@
       "bankroll_after": 55.9,
       "result": {
         "score_home": "2/2",
-        "score_text": "2 sélections gagnées sur 2 — Bencic et Rublev tous deux victorieux",
-        "summary": "Combo parfait : Bencic 2-0 et Rublev 3-0. Cote totale 1.66 honorée.",
-        "bet_outcome": "Pari gagné : combo 2/2 validé, +3,30€ net (return 8,30€)."
+        "score_text": "2 legs won out of 2 — Bencic and Rublev both victorious",
+        "summary": "Perfect combo: Bencic 2-0 and Rublev 3-0. Combined odds 1.66 honoured.",
+        "bet_outcome": "Bet won: 2/2 combo validated, +3.30 EUR net (return 8.30 EUR)."
       },
       "comparison": null,
       "profile_tags": [],
@@ -571,30 +577,34 @@
           "league": "Roland Garros — 2e tour",
           "home_team": "Belinda Bencic",
           "away_team": "Caty McNally",
-          "pick": "Belinda Bencic vainqueure du match",
+          "pick": "Belinda Bencic to win",
           "kickoff": "2026-05-27T11:00:00+00:00",
           "odds": 1.29,
           "outcome": "win",
           "result": {
-            "score_text": "Bencic bat McNally 6-4 6-0",
-            "summary": "Bencic dominante, victoire en 2 sets nets.",
-            "bet_outcome": "Jambe gagnée : Bencic victorieuse en 2 sets."
-          }
+            "score_text": "Bencic def. McNally 6-4 6-0",
+            "summary": "Bencic dominant, win in 2 sets.",
+            "bet_outcome": "Leg won: Bencic victorious in 2 sets."
+          },
+          "home_country": "SUI",
+          "away_country": "USA"
         },
         {
           "sport": "tennis",
           "league": "Roland Garros — 2e tour",
           "home_team": "Andrey Rublev",
           "away_team": "Camilo Ugo Carabelli",
-          "pick": "Andrey Rublev vainqueur du match",
+          "pick": "Andrey Rublev to win",
           "kickoff": "2026-05-27T13:00:00+00:00",
           "odds": 1.29,
           "outcome": "win",
           "result": {
-            "score_text": "Rublev bat Carabelli 6-1 6-3 6-4",
-            "summary": "Rublev solide en 3 sets, gap de classement confirmé.",
-            "bet_outcome": "Jambe gagnée : Rublev victorieux en 3 sets."
-          }
+            "score_text": "Rublev def. Carabelli 6-1 6-3 6-4",
+            "summary": "Rublev solid in 3 sets, ranking gap confirmed.",
+            "bet_outcome": "Leg won: Rublev victorious in 3 sets."
+          },
+          "home_country": "RUS",
+          "away_country": "ARG"
         }
       ]
     },
@@ -602,19 +612,19 @@
       "date": "2026-05-28",
       "match": {
         "sport": "combo",
-        "league": "Roland Garros — 2e tour (combiné 2 paris)",
+        "league": "Roland Garros — Second round",
         "home_team": "Combiné 2 paris",
         "away_team": "Roland Garros Jour 5",
         "kickoff": "2026-05-28T09:00:00+00:00"
       },
-      "pick": "Combiné 2 paris simples Tennis RG R2 Day 5",
+      "pick": "2-leg tennis parlay — Roland Garros R2 Day 5",
       "odds": 2.38,
       "odds_unboosted": null,
       "model_probability": 0.43,
       "book_probability": 0.4202,
       "expected_value": 0.0234,
       "engine": "claude_curated@1.0",
-      "headline": "Combo RG Day 5 — Osaka + Rinderknech, value sur double favori (cote 2.38)",
+      "headline": "Day 5 RG combo: two clay-court favourites with value on the 2.38 combined price. Osaka (4× Grand Slam champion) faces Vekic with a clean 1-0 H2H and a stylistic edge on clay. Rinderknech (ATP #25, home favourite) takes on Berrettini (ATP #105, returning from injuries) in the Chatrier night session — crowd factor expected to tip the scales. Combined model probability ~43%.",
       "rationale": [
         "## 🎯 Le contexte",
         "Jour 5 de Roland Garros 2026, 2e tour. Combo 2 sélections sur 2 favoris avec edge calculé sur la cote totale 2.38.",
@@ -641,9 +651,9 @@
       "bankroll_after": 48.29,
       "result": {
         "score_home": "1/2",
-        "score_text": "1 sélection gagnée sur 2 — Osaka OK, Rinderknech KO",
-        "summary": "Combo perdu : Osaka bat Vekic 7-6 6-4 (leg 1 OK), Berrettini bat Rinderknech 6-4 6-4 6-4 (leg 2 raté).",
-        "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée). Net -7,61€."
+        "score_text": "1 selection won out of 2 — Osaka OK, Rinderknech lost",
+        "summary": "Combo lost: Osaka def. Vekic 7-6 6-4 (leg 1 OK), Berrettini def. Rinderknech 6-4 6-4 6-4 (leg 2 missed).",
+        "bet_outcome": "Bet lost: combo 1/2 (at least one selection missed). Net -7.61 EUR."
       },
       "comparison": null,
       "profile_tags": [],
@@ -653,30 +663,34 @@
           "league": "Roland Garros — 2e tour",
           "home_team": "Donna Vekic",
           "away_team": "Naomi Osaka",
-          "pick": "Naomi Osaka vainqueure du match",
+          "pick": "Naomi Osaka to win",
           "kickoff": "2026-05-28T09:00:00+00:00",
           "odds": 1.3,
           "outcome": "win",
           "result": {
-            "score_text": "Osaka bat Vekic 7-6 6-4",
-            "summary": "Osaka solide en 2 sets sur Chatrier.",
-            "bet_outcome": "Sélection gagnée : Osaka victorieuse."
-          }
+            "score_text": "Osaka def. Vekic 7-6 6-4",
+            "summary": "Osaka solid in 2 sets on Chatrier.",
+            "bet_outcome": "Selection won: Osaka victorious."
+          },
+          "home_country": "CRO",
+          "away_country": "JPN"
         },
         {
           "sport": "tennis",
           "league": "Roland Garros — 2e tour",
           "home_team": "Arthur Rinderknech",
           "away_team": "Matteo Berrettini",
-          "pick": "Arthur Rinderknech vainqueur du match",
+          "pick": "Arthur Rinderknech to win",
           "kickoff": "2026-05-28T18:15:00+00:00",
           "odds": 1.83,
           "outcome": "loss",
           "result": {
-            "score_text": "Berrettini bat Rinderknech 6-4 6-4 6-4",
-            "summary": "Berrettini trop régulier au service, Rinder dépassé en night session.",
-            "bet_outcome": "Sélection perdue : Rinderknech battu en 3 sets nets."
-          }
+            "score_text": "Berrettini def. Rinderknech 6-4 6-4 6-4",
+            "summary": "Berrettini too consistent on serve, Rinder outclassed in the night session.",
+            "bet_outcome": "Selection lost: Rinderknech beaten in straight sets."
+          },
+          "home_country": "FRA",
+          "away_country": "ITA"
         }
       ]
     },
@@ -684,35 +698,35 @@
       "date": "2026-05-29",
       "match": {
         "sport": "combo",
-        "league": "Roland Garros — 3e tour (combiné 2 paris)",
+        "league": "Roland Garros — Third round",
         "home_team": "Combiné 2 paris",
         "away_team": "Roland Garros Jour 6",
         "kickoff": "2026-05-29T11:30:00+00:00"
       },
-      "pick": "Combiné 2 paris Tennis RG R3 — marchés alternatifs (deM Set HC + Andreeva 2-0)",
+      "pick": "2-leg tennis parlay — Roland Garros R3 (alternative markets)",
       "odds": 2.16,
       "odds_unboosted": null,
       "model_probability": 0.546,
       "book_probability": 0.463,
       "expected_value": 0.1794,
       "engine": "claude_curated@1.0",
-      "headline": "Combo RG R3 — De Minaur -1.5 sets + Andreeva 2-0, pivot marchés alternatifs (cote 2.16, EV +18%)",
+      "headline": "Pivot from match winners (value killed post-Sinner upset) to alternative markets. De Minaur Set Handicap -1.5 (wins 3-0 or 3-1 — backed by H2H 5-0 + walkover R2 vs Mensik's 7h cumulative) combined with Andreeva 2-0 straight sets (H2H 4-0, never went 3 sets). Combined model probability ~54.6%, edge +18% on combined odds 2.16.",
       "rationale": [
-        "## 🎯 Le contexte",
-        "Jour 6 de Roland Garros 2026, 3e tour. Pivot stratégique : les cotes des match-winners se sont effondrées au matin (Andreeva 1.14, De Minaur 1.25, combo @ 1.42 = EV NÉGATIF) post-Sinner upset hier. On bascule sur les marchés alternatifs où la value subsiste.",
-        "Combo 2 sélections (AB-4 v4.7 : pas de 3+ sélections) avec cote totale 2.16 et probabilité combinée estimée 54.6%.",
-        "## 📊 L'analyse des 2 sélections",
-        "**Sélection 1 — Alex de Minaur (Australien #7 ATP) Set Handicap -1.5 @ 1.49** vs Jakub Mensik (#21 ATP). Set handicap -1.5 = deM doit gagner 3-0 ou 3-1 (best-of-5). H2H 5-0 deM, et écart physique massif : deM a reçu un walkover au R2 (donc 1h52 cumulé total), Mensik a joué un 5-setter au R2 (~7h cumulé). Modèle deM 80% match win (Dimers). Estimation deM -1.5 sets ~70% (Mensik peut chiper 1 set sur son service mais 2 = improbable).",
-        "**Sélection 2 — Mirra Andreeva (Russe #8 WTA, 19 ans) Pari de Set 2-0 @ 1.45** vs Marie Bouzkova (#27 WTA). Andreeva H2H 4-0 vs Bouzkova, et **aucun de leurs 4 matchs n'est allé en 3 sets** — signal empirique fort. Andreeva en forme de feu sur terre (17 victoires sur clay 2026, finale Madrid, SF Stuttgart, QF Rome). Estimation Andreeva 2-0 ~78%.",
-        "## 🎰 Le pari",
-        "2 sélections à 1.49 × 1.45 = **cote totale 2.16** (Unibet).",
-        "Probabilité combinée estimée : 0.70 × 0.78 ≈ 0.546 → edge calculé +18% sur la cote 2.16.",
-        "Mise : 5€ — gain potentiel +5,80€ si validé (return 10,80€).",
-        "Risque : si deM 0-2 cède 2 sets OU Andreeva tombe en 3 sets, tout le combo perd. AB-7 (tennis R2+ fatigue) : signal favorable côté deM (walkover R2), neutre côté Andreeva.",
-        "## 🚨 Anti-bias appliqués",
-        "AB-4 : 2 jambes max ✅",
-        "AB-7 : flag fatigue R2 — deM avantage net (walkover) ✅",
-        "AB-9 : aucun joueur engagé dans un pari pending ✅"
+        "## 🎯 The context",
+        "Day 6 of Roland Garros 2026, third round. Strategic pivot: match-winner odds collapsed this morning (Andreeva 1.14, De Minaur 1.25, combo @ 1.42 = NEGATIVE EV) after yesterday's Sinner upset. We shift to alternative markets where value remains.",
+        "2-selection combo (AB-4 v4.7: no 3+ selections) at combined odds 2.16 with estimated joint probability 54.6%.",
+        "## 📊 Analysis of the 2 selections",
+        "**Selection 1 — Alex de Minaur (Australian, ATP #7) Set Handicap -1.5 @ 1.49** vs Jakub Mensik (ATP #21). Set handicap -1.5 = deM must win 3-0 or 3-1 (best-of-5). Head-to-head 5-0 deM, and massive physical gap: deM received an R2 walkover (so 1h52 cumulative total), Mensik played a 5-setter in R2 (~7h cumulative). Model deM 80% match win (Dimers). Estimate deM -1.5 sets ~70% (Mensik can steal 1 set on his serve but 2 = unlikely).",
+        "**Selection 2 — Mirra Andreeva (Russian, WTA #8, 19 years old) Set Betting 2-0 @ 1.45** vs Marie Bouzkova (WTA #27). Andreeva head-to-head 4-0 vs Bouzkova, and **none of their 4 matches went 3 sets** — strong empirical signal. Andreeva on fire on clay (17 clay wins in 2026, Madrid final, Stuttgart SF, Rome QF). Estimate Andreeva 2-0 ~78%.",
+        "## 🎰 The bet",
+        "2 selections at 1.49 × 1.45 = **combined odds 2.16** (Unibet).",
+        "Estimated joint probability: 0.70 × 0.78 ≈ 0.546 → calculated edge +18% on the 2.16 line.",
+        "Stake: 5€ — potential gain +5.80€ if validated (return 10.80€).",
+        "Risk: if deM 0-2 drops 2 sets OR Andreeva goes to 3 sets, the whole combo loses. AB-7 (tennis R2+ fatigue): signal favourable for deM (R2 walkover), neutral for Andreeva.",
+        "## 🚨 Anti-bias checks applied",
+        "AB-4: 2 legs maximum ✅",
+        "AB-7: R2 fatigue flag — deM clear advantage (walkover) ✅",
+        "AB-9: no player already engaged in a pending bet ✅"
       ],
       "sources": [
         "https://www.bleachernation.com/picks/2026/05/28/de-minaur-vs-mensik-prediction-at-the-roland-garros-friday-may-29/",
@@ -734,20 +748,24 @@
           "league": "Roland Garros — 3e tour",
           "home_team": "Alex de Minaur",
           "away_team": "Jakub Mensik",
-          "pick": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
+          "pick": "Alex de Minaur Set Handicap -1.5 (wins 3-0 or 3-1)",
           "kickoff": "2026-05-29T11:50:00+00:00",
           "odds": 1.49,
-          "outcome": "pending"
+          "outcome": "pending",
+          "home_country": "AUS",
+          "away_country": "CZE"
         },
         {
           "sport": "tennis",
           "league": "Roland Garros — 3e tour",
           "home_team": "Mirra Andreeva",
           "away_team": "Marie Bouzkova",
-          "pick": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
+          "pick": "Mirra Andreeva to win in straight sets (2-0)",
           "kickoff": "2026-05-29T11:30:00+00:00",
           "odds": 1.45,
-          "outcome": "pending"
+          "outcome": "pending",
+          "home_country": "RUS",
+          "away_country": "CZE"
         }
       ]
     }
@@ -776,5 +794,5 @@
     "max_profit_single": 10.5,
     "max_loss_single": -7.61
   },
-  "generated_at": "2026-05-29T16:41:31.464032+00:00"
+  "generated_at": "2026-05-29T16:41:31.466636+00:00"
 }

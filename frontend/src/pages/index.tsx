@@ -107,7 +107,7 @@ interface ChartOptions {
 
 export default function Home() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const statInfos = useStatInfos();
   const [history, setHistory] = useState<History | null>(null);
   const [hasPickToday, setHasPickToday] = useState(false);
@@ -125,7 +125,7 @@ export default function Home() {
   useEffect(() => {
     let cancelled = false;
     const todayIso = new Date().toISOString().slice(0, 10);
-    Promise.all([fetchHistory(), fetchDay(todayIso)]).then(([h, d]) => {
+    Promise.all([fetchHistory(lang), fetchDay(todayIso, lang)]).then(([h, d]) => {
       if (cancelled) return;
       setHistory(h);
       setHasPickToday(!!d?.safe_pick);
@@ -134,7 +134,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   // Détecte si des filtres sont actifs (sauvegardés en localStorage)
   useEffect(() => {

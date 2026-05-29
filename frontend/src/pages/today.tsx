@@ -20,11 +20,11 @@ export default function TodayPage() {
   const [date, setDate] = useState(todayIso());
   const [loading, setLoading] = useState(true);
   const { user, ready } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([fetchHistory(), fetchDay(date)]).then(([h, d]) => {
+    Promise.all([fetchHistory(lang), fetchDay(date, lang)]).then(([h, d]) => {
       if (cancelled) return;
       setDay(d);
       setHistory(h);
@@ -37,7 +37,7 @@ export default function TodayPage() {
     return () => {
       cancelled = true;
     };
-  }, [date]);
+  }, [date, lang]);
 
   const isPremium = ready && user?.isPremium;
   const isLocked = ready && (!user || !user.isPremium);

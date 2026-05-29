@@ -13,7 +13,7 @@ interface Tab {
 
 export function BottomNav() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [hasPickToday, setHasPickToday] = useState(false);
 
   // Fetch once au mount — BottomNav reste monté entre les nav, donc on
@@ -22,7 +22,7 @@ export function BottomNav() {
   useEffect(() => {
     let cancelled = false;
     const iso = new Date().toISOString().slice(0, 10);
-    fetchDay(iso)
+    fetchDay(iso, lang)
       .then((d) => {
         if (!cancelled) setHasPickToday(!!d?.safe_pick);
       })
@@ -32,7 +32,7 @@ export function BottomNav() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   const leftTabs: Tab[] = [
     {

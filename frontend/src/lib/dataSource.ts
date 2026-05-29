@@ -21,12 +21,21 @@ async function fetchJson<T>(path: string): Promise<T | null> {
   }
 }
 
-export function fetchHistory(): Promise<History | null> {
-  return fetchJson<History>("/data/history.json");
+export function fetchHistory(lang: "fr" | "en" = "fr"): Promise<History | null> {
+  // v2: try lang-specific first, fall back to the legacy unsuffixed
+  // (FR-by-convention) file for backwards compat with old deployments.
+  return fetchJson<History>(`/data/history.${lang}.json`).then(
+    (h) => h ?? fetchJson<History>("/data/history.json"),
+  );
 }
 
-export function fetchDay(date: string): Promise<DayPayload | null> {
-  return fetchJson<DayPayload>(`/data/predictions/${date}.json`);
+export function fetchDay(
+  date: string,
+  lang: "fr" | "en" = "fr",
+): Promise<DayPayload | null> {
+  return fetchJson<DayPayload>(`/data/predictions/${date}.${lang}.json`).then(
+    (d) => d ?? fetchJson<DayPayload>(`/data/predictions/${date}.json`),
+  );
 }
 
 export function fetchAvailableDates(): Promise<{ dates: string[] } | null> {

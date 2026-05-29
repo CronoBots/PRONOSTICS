@@ -37,7 +37,7 @@ interface Props {
 }
 
 export function PlusMenu({ showAccountSection = false }: Props) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [history, setHistory] = useState<History | null>(null);
   const [open, setOpen] = useState<SheetKey | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -50,7 +50,7 @@ export function PlusMenu({ showAccountSection = false }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory().then((h) => {
+    fetchHistory(lang).then((h) => {
       if (cancelled) return;
       setHistory(h);
     });
@@ -62,7 +62,7 @@ export function PlusMenu({ showAccountSection = false }: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   function saveNotes(v: string) {
     setNotes(v);

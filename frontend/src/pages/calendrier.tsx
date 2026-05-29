@@ -8,7 +8,7 @@ import { buildMonthGrid, DayCell } from "@/lib/stats";
 import { History } from "@/lib/types";
 
 export default function CalendrierPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { months: MONTH_NAMES, days } = useDateLabels();
   // useDateLabels.days est ordonné Dim→Sam (indice 0=Dimanche). La grille
   // calendrier est ordonnée Lun→Dim → on réordonne et abrège (initiale uppercase).
@@ -24,7 +24,7 @@ export default function CalendrierPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory().then((h) => {
+    fetchHistory(lang).then((h) => {
       if (cancelled) return;
       setHistory(h);
       setLoading(false);
@@ -32,7 +32,7 @@ export default function CalendrierPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   const grid = useMemo(() => {
     if (!history) return null;

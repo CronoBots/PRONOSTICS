@@ -32,14 +32,14 @@ const NAV_ITEMS: NavItem[] = [
  */
 export function DesktopHeader() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { user } = useAuth();
   const [hasPendingPick, setHasPendingPick] = useState(false);
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory()
+    fetchHistory(lang)
       .then((h) => {
         if (cancelled || !h) return;
         setHasPendingPick(h.picks.some((p) => p.outcome === "pending"));
@@ -51,7 +51,7 @@ export function DesktopHeader() {
     return () => {
       cancelled = true;
     };
-  }, [router.asPath]);
+  }, [router.asPath, lang]);
 
   const todayActive = router.pathname === "/today";
 

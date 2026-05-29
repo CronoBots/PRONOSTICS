@@ -14,11 +14,11 @@ export default function ParisPage() {
   const [history, setHistory] = useState<History | null>(null);
   const [loading, setLoading] = useState(true);
   const [betType, setBetType] = useState<BetTypeFilter>("all");
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   useEffect(() => {
     let cancelled = false;
-    fetchHistory().then((h) => {
+    fetchHistory(lang).then((h) => {
       if (cancelled) return;
       setHistory(h);
       setLoading(false);
@@ -26,7 +26,7 @@ export default function ParisPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [lang]);
 
   const picks = history?.picks ?? [];
 
