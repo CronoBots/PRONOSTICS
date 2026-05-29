@@ -59,6 +59,19 @@ function copyHistory() {
   return true;
 }
 
+function copyInsights() {
+  const src = path.join(BACKEND_DATA, "insights");
+  const dest = path.join(PUBLIC_DATA, "insights");
+  fs.mkdirSync(dest, { recursive: true });
+  if (!fs.existsSync(src)) return 0;
+  const files = fs.readdirSync(src).filter((f) => f.endsWith(".json"));
+  for (const file of files) {
+    fs.copyFileSync(path.join(src, file), path.join(dest, file));
+  }
+  return files.length;
+}
+
 const n = copyPredictions();
 const ok = copyHistory();
-console.log(`[copy-data] predictions copiées: ${n}, history: ${ok ? "ok" : "vide"}`);
+const i = copyInsights();
+console.log(`[copy-data] predictions copiées: ${n}, history: ${ok ? "ok" : "vide"}, insights: ${i}`);

@@ -156,6 +156,27 @@ def main() -> None:
             f"Today → {sp['home_team']} vs {sp['away_team']} | {sp['pick']} @ {sp['odds']} "
             f"({sp['kind']}, EV {sp['expected_value']*100:+.1f}%)"
         )
+        # Auto-generate AI insights JSON for the pending pick so the
+        # frontend <MatchInsights> always has fresh data after settle
+        # cycles. Best-effort: failures don't block history regen.
+        try:
+            import generate_insights  # noqa: E402
+
+            pick = next(
+                (p for p in picks_data.PICKS if p["date"] == date),
+                None,
+            )
+            if pick:
+                ins = generate_insights.build_insights(pick)
+                generate_insights.INSIGHTS_DIR.mkdir(parents=True, exist_ok=True)
+                out = generate_insights.INSIGHTS_DIR / f"{pick['date']}.json"
+                out.write_text(
+                    json.dumps(ins, indent=2, ensure_ascii=False),
+                    encoding="utf-8",
+                )
+                print(f"Insights → {out.name}")
+        except Exception as exc:
+            print(f"Insights → SKIPPED ({type(exc).__name__}: {exc})")
     else:
         print("Today → aucun pick pending dans picks_data.PICKS")
 

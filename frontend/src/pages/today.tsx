@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
+import { MatchInsights } from "@/components/MatchInsights";
 import { PickDetail, pickFromSafe } from "@/components/PickDetail";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/lib/auth";
@@ -74,7 +75,10 @@ export default function TodayPage() {
         )}
 
         {!loading && day?.safe_pick && isPremium && (
-          <PickDetail pick={pickFromSafe(day.safe_pick)} variant="today" />
+          <div className="space-y-5">
+            <PickDetail pick={pickFromSafe(day.safe_pick)} variant="today" />
+            <MatchInsights date={day.date} />
+          </div>
         )}
       </main>
 
