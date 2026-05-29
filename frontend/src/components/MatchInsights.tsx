@@ -16,6 +16,13 @@ interface SourceInsight {
   name: string;
 }
 
+interface RiskFlag {
+  code: string;
+  title: string;
+  description: string;
+  context: string | null;
+}
+
 interface Verdict {
   tone: "green" | "yellow" | "red";
   label: string;
@@ -37,7 +44,7 @@ interface InsightsPayload {
   potential_profit: number;
   legs: LegInsight[];
   sections: Record<string, string[]>;
-  risk_flags: string[];
+  risk_flags: RiskFlag[];
   sources: SourceInsight[];
   verdict: Verdict;
 }
@@ -64,7 +71,7 @@ export async function fetchInsights(date: string): Promise<InsightsPayload | nul
   }
 }
 
-function ProbabilityGauge({ value, label }: { value: number; label: string }) {
+function ProbabilityGauge({ value, label, hint }: { value: number; label: string; hint?: string }) {
   // value 0..1, render a horizontal bar with the percentage
   const pct = Math.max(0, Math.min(1, value)) * 100;
   return (
@@ -83,6 +90,7 @@ function ProbabilityGauge({ value, label }: { value: number; label: string }) {
           style={{ width: `${pct}%` }}
         />
       </div>
+      {hint && <div className="text-[10px] text-white/40 mt-1.5 leading-snug">{hint}</div>}
     </div>
   );
 }
@@ -104,12 +112,12 @@ function LegCard({ leg, index }: { leg: LegInsight; index: number }) {
       </div>
       <div className="text-[11px] text-white/55 mb-3 italic">{leg.pick_label}</div>
       <div className="grid grid-cols-2 gap-3">
-        <ProbabilityGauge value={leg.model_probability} label="Modèle" />
-        <ProbabilityGauge value={leg.market_implied} label="Marché" />
+        <ProbabilityGauge value={leg.model_probability} label="Notre estimation" />
+        <ProbabilityGauge value={leg.market_implied} label="Selon la cote" />
       </div>
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
-        <div className="text-[11px] text-white/40">
-          Edge {edge >= 0 ? "+" : ""}
+        <div className={`text-[11px] ${edge >= 0 ? "text-accent-blue" : "text-accent-red"}`}>
+          Notre avantage : {edge >= 0 ? "+" : ""}
           {(edge * 100).toFixed(1)} pts
         </div>
         <div
@@ -117,7 +125,7 @@ function LegCard({ leg, index }: { leg: LegInsight; index: number }) {
             leg.ev_pct >= 0 ? "text-accent-green" : "text-accent-red"
           }`}
         >
-          EV {leg.ev_pct >= 0 ? "+" : ""}
+          Rentabilité {leg.ev_pct >= 0 ? "+" : ""}
           {leg.ev_pct.toFixed(1)}%
         </div>
       </div>
@@ -189,21 +197,39 @@ export function MatchInsights({ date }: { date: string }) {
       {/* Probability + finance grid */}
       <div className="bg-bg-card border border-white/[0.06] rounded-3xl p-5">
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <ProbabilityGauge value={data.model_probability} label="Proba modèle" />
-          <ProbabilityGauge value={data.market_implied} label="Proba marché" />
+          <ProbabilityGauge
+            value={data.model_probability}
+            label="Notre estimation"
+            hint="Chances de gagner d'après notre analyse"
+          />
+          <ProbabilityGauge
+            value={data.market_implied}
+            label="Selon la cote"
+            hint="Chances déduites du prix du bookmaker"
+          />
         </div>
-        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/[0.06]">
+        <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              Edge
+              Notre avantage
             </div>
-            <div className="text-base font-bold text-accent-blue tabular-nums">
-              +{edgePoints} pts
+            <div
+              className={`text-base font-bold tabular-nums ${
+                data.model_probability >= data.market_implied
+                  ? "text-accent-blue"
+                  : "text-accent-red"
+              }`}
+            >
+              {data.model_probability >= data.market_implied ? "+" : ""}
+              {edgePoints} pts
+            </div>
+            <div className="text-[10px] text-white/40 leading-snug mt-0.5">
+              écart vs marché
             </div>
           </div>
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              EV
+              Rentabilité
             </div>
             <div
               className={`text-base font-bold tabular-nums ${
@@ -213,13 +239,19 @@ export function MatchInsights({ date }: { date: string }) {
               {data.ev_pct >= 0 ? "+" : ""}
               {data.ev_pct.toFixed(1)}%
             </div>
+            <div className="text-[10px] text-white/40 leading-snug mt-0.5">
+              attendue sur la durée
+            </div>
           </div>
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              Net P/L
+              Gain net
             </div>
             <div className="text-base font-bold text-white tabular-nums">
               +{data.potential_profit.toFixed(2)}€
+            </div>
+            <div className="text-[10px] text-white/40 leading-snug mt-0.5">
+              si tu gagnes
             </div>
           </div>
         </div>
@@ -248,17 +280,35 @@ export function MatchInsights({ date }: { date: string }) {
         </div>
       )}
 
-      {/* Risk flags */}
+      {/* Risk flags = "ce qu'on a vérifié pour limiter le risque" */}
       {data.risk_flags.length > 0 && (
         <div className="bg-yellow-500/[0.06] border border-yellow-400/25 rounded-2xl p-4">
-          <div className="text-[11px] uppercase tracking-wider text-yellow-300 font-bold mb-2 flex items-center gap-2">
-            <span>⚠️</span>
-            <span>Garde-fous</span>
+          <div className="text-[11px] uppercase tracking-wider text-yellow-300 font-bold mb-1 flex items-center gap-2">
+            <span>🛡️</span>
+            <span>Ce qu'on a vérifié pour limiter le risque</span>
           </div>
-          <ul className="space-y-1.5">
+          <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+            Avant de proposer ce pari, on passe une checklist anti-piège. Voici les points contrôlés ici :
+          </p>
+          <ul className="space-y-3">
             {data.risk_flags.map((flag, i) => (
-              <li key={i} className="text-[12px] text-white/70 leading-snug">
-                — {flag}
+              <li key={i} className="flex items-start gap-2.5">
+                <span className="text-accent-green mt-0.5 shrink-0">✓</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13px] font-semibold text-white leading-snug">
+                    {flag.title}
+                  </div>
+                  {flag.description && (
+                    <div className="text-[11px] text-white/55 leading-relaxed mt-0.5">
+                      {flag.description}
+                    </div>
+                  )}
+                  {flag.context && flag.context !== flag.title && (
+                    <div className="text-[11px] text-yellow-300/70 leading-relaxed mt-1 italic">
+                      → Sur ce pari : {flag.context}
+                    </div>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

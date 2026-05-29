@@ -55,11 +55,30 @@
     ]
   },
   "risk_flags": [
-    "AB-4 v4",
-    "AB-7 (tennis R2+ fatigue) : signal favorable côté deM (walkover R2), neutre côté Andreeva",
-    "AB-4 : 2 jambes max ✅",
-    "AB-7 : flag fatigue R2 — deM avantage net (walkover) ✅",
-    "AB-9 : aucun joueur engagé dans un pari pending ✅"
+    {
+      "code": "AB-4",
+      "title": "Combo limité à 2 sélections maximum",
+      "description": "Chaque sélection ajoutée multiplie le risque. À partir de 3 jambes, la probabilité de tout valider chute trop fort pour rester rentable.",
+      "context": "v4"
+    },
+    {
+      "code": "AB-7",
+      "title": "Vérification fatigue au tour précédent",
+      "description": "Si un joueur a fait un marathon au tour d'avant (5 sets, 3h+), sa cote ne reflète pas sa baisse de forme. On regarde toujours.",
+      "context": "(tennis R2+ fatigue) : signal favorable côté deM (walkover R2), neutre côté Andreeva"
+    },
+    {
+      "code": "AB-9",
+      "title": "Pas de réutilisation d'un joueur déjà engagé",
+      "description": "Si un joueur figure déjà dans un pari en cours, on ne le remet pas dans un nouveau le même jour — pour éviter que deux paris dépendent du même résultat.",
+      "context": "aucun joueur engagé dans un pari pending ✅"
+    },
+    {
+      "code": "WARN",
+      "title": "🚨 Anti-bias appliqués",
+      "description": "",
+      "context": null
+    }
   ],
   "sources": [
     {
@@ -85,7 +104,7 @@
   ],
   "verdict": {
     "tone": "green",
-    "label": "VALUE FORTE",
-    "text": "EV +17.9% — pari bien priced."
+    "label": "BON COUP",
+    "text": "Sur 100 paris similaires, tu en gagnerais en moyenne 55 et tu finirais en bénéfice d'environ 18% de ta mise. Le bookmaker sous-estime nos chances."
   }
 }

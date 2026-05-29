@@ -91,26 +91,70 @@ def _humanize_source(url: str) -> str:
     return m.group(1) if m else url
 
 
-def _extract_risk_flags(rationale: list[str]) -> list[str]:
-    """Find anti-bias mentions + warning emojis in rationale."""
-    flags: list[str] = []
+_AB_DESCRIPTIONS = {
+    "AB-1": {
+        "title": "Pas de pari sur un top-10 en warm-up Grand Chelem",
+        "description": "Les meilleurs joueurs gardent leurs jambes pour le tournoi majeur. Leur cote n'intègre pas cette baisse de motivation.",
+    },
+    "AB-3": {
+        "title": "Méfiance avec un outsider en feu en playoffs",
+        "description": "Les équipes underdog qui surperforment en playoffs sont souvent surcotées — le marché extrapole trop vite.",
+    },
+    "AB-4": {
+        "title": "Combo limité à 2 sélections maximum",
+        "description": "Chaque sélection ajoutée multiplie le risque. À partir de 3 jambes, la probabilité de tout valider chute trop fort pour rester rentable.",
+    },
+    "AB-5": {
+        "title": "Pas de MLB à cote > 2.50 sans analyse du lanceur",
+        "description": "Les paris baseball dépendent du pitcher du jour. Sans cette analyse spécifique, on s'abstient.",
+    },
+    "AB-7": {
+        "title": "Vérification fatigue au tour précédent",
+        "description": "Si un joueur a fait un marathon au tour d'avant (5 sets, 3h+), sa cote ne reflète pas sa baisse de forme. On regarde toujours.",
+    },
+    "AB-8": {
+        "title": "H2H croisé sur 2 sources pour un pari handicap",
+        "description": "Les stats face-à-face sont parfois fausses sur une seule source. On croise pour éviter les fausses tendances.",
+    },
+    "AB-9": {
+        "title": "Pas de réutilisation d'un joueur déjà engagé",
+        "description": "Si un joueur figure déjà dans un pari en cours, on ne le remet pas dans un nouveau le même jour — pour éviter que deux paris dépendent du même résultat.",
+    },
+}
+
+
+def _extract_risk_flags(rationale: list[str]) -> list[dict]:
+    """Find anti-bias mentions in rationale and return plain-language
+    title + description objects. Falls back to the raw text for warning
+    lines that aren't a recognised AB code."""
+    flags: list[dict] = []
+    seen_codes: set[str] = set()
     joined = "\n".join(rationale)
     # AB-X flags
-    for m in re.finditer(r"\bAB-\d\b[^.\n]*\.?", joined):
-        flags.append(m.group(0).strip().rstrip("."))
-    # Explicit warnings
+    for m in re.finditer(r"\b(AB-\d)\b\s*[:\-—]?\s*([^\n.]*)\.?", joined):
+        code, context = m.group(1), m.group(2).strip()
+        if code in seen_codes:
+            continue
+        seen_codes.add(code)
+        meta = _AB_DESCRIPTIONS.get(code, {})
+        flags.append({
+            "code": code,
+            "title": meta.get("title") or context or code,
+            "description": meta.get("description") or "",
+            "context": context if context else None,
+        })
+    # Explicit warnings (⚠️/🚨) not tied to an AB code
     for line in rationale:
         if re.search(r"⚠️|🚨", line):
-            cleaned = re.sub(r"^[*\s]+", "", line).strip()
-            if len(cleaned) > 5 and cleaned not in flags:
-                flags.append(cleaned)
-    # Dedupe + cap
-    seen, out = set(), []
-    for f in flags:
-        if f not in seen:
-            seen.add(f)
-            out.append(f)
-    return out[:5]
+            cleaned = re.sub(r"^[*\s#]+", "", line).strip()
+            if len(cleaned) > 5 and not any(f["title"] == cleaned for f in flags):
+                flags.append({
+                    "code": "WARN",
+                    "title": cleaned,
+                    "description": "",
+                    "context": None,
+                })
+    return flags[:6]
 
 
 def _compute_ev_pct(probability: float, odds: float) -> float:
@@ -178,15 +222,47 @@ def build_insights(pick: dict) -> dict[str, Any]:
 
 
 def _build_verdict(model: float, odds: float) -> dict[str, str]:
-    """Produce a short label + tone (green/yellow/red) for the EV."""
+    """Produce a short label + tone (green/yellow/red) + plain-language
+    explanation for non-experts."""
     ev_pct = _compute_ev_pct(model, odds)
     if ev_pct >= 15:
-        return {"tone": "green", "label": "VALUE FORTE", "text": f"EV +{ev_pct}% — pari bien priced."}
+        return {
+            "tone": "green",
+            "label": "BON COUP",
+            "text": (
+                f"Sur 100 paris similaires, tu en gagnerais en moyenne "
+                f"{int(round(model * 100))} et tu finirais en bénéfice "
+                f"d'environ {ev_pct:.0f}% de ta mise. Le bookmaker "
+                f"sous-estime nos chances."
+            ),
+        }
     if ev_pct >= 5:
-        return {"tone": "yellow", "label": "VALUE MODÉRÉE", "text": f"EV +{ev_pct}% — marge acceptable."}
+        return {
+            "tone": "yellow",
+            "label": "OK",
+            "text": (
+                f"Petite marge en notre faveur ({ev_pct:.1f}% sur la durée). "
+                f"Pari acceptable si tu joues régulièrement, sans surenchère."
+            ),
+        }
     if ev_pct >= 0:
-        return {"tone": "yellow", "label": "BREAK-EVEN", "text": f"EV +{ev_pct}% — marginalement positif."}
-    return {"tone": "red", "label": "NÉGATIVE EV", "text": f"EV {ev_pct}% — le marché te bat sur cette ligne."}
+        return {
+            "tone": "yellow",
+            "label": "À LA LIMITE",
+            "text": (
+                f"L'écart entre notre analyse et la cote est trop fin "
+                f"({ev_pct:.1f}%). Mieux vaut passer ou diviser la mise."
+            ),
+        }
+    return {
+        "tone": "red",
+        "label": "À ÉVITER",
+        "text": (
+            f"La cote ({odds:.2f}) est trop courte pour ta probabilité "
+            f"de gain ({int(round(model * 100))}%). À long terme, ce type "
+            f"de pari te fait perdre de l'argent. Skip."
+        ),
+    }
 
 
 def main() -> int:
