@@ -134,69 +134,46 @@ def _humanize_source(url: str) -> str:
     return m.group(1) if m else url
 
 
-_AB_DESCRIPTIONS = {
-    "AB-1": {
-        "title": "Pas de pari sur un top-10 en warm-up Grand Chelem",
-        "description": "Les meilleurs joueurs gardent leurs jambes pour le tournoi majeur. Leur cote n'intègre pas cette baisse de motivation.",
-    },
-    "AB-3": {
-        "title": "Méfiance avec un outsider en feu en playoffs",
-        "description": "Les équipes underdog qui surperforment en playoffs sont souvent surcotées — le marché extrapole trop vite.",
-    },
-    "AB-4": {
-        "title": "Combo limité à 2 sélections maximum",
-        "description": "Chaque sélection ajoutée multiplie le risque. À partir de 3 jambes, la probabilité de tout valider chute trop fort pour rester rentable.",
-    },
-    "AB-5": {
-        "title": "Pas de MLB à cote > 2.50 sans analyse du lanceur",
-        "description": "Les paris baseball dépendent du pitcher du jour. Sans cette analyse spécifique, on s'abstient.",
-    },
-    "AB-7": {
-        "title": "Vérification fatigue au tour précédent",
-        "description": "Si un joueur a fait un marathon au tour d'avant (5 sets, 3h+), sa cote ne reflète pas sa baisse de forme. On regarde toujours.",
-    },
-    "AB-8": {
-        "title": "H2H croisé sur 2 sources pour un pari handicap",
-        "description": "Les stats face-à-face sont parfois fausses sur une seule source. On croise pour éviter les fausses tendances.",
-    },
-    "AB-9": {
-        "title": "Pas de réutilisation d'un joueur déjà engagé",
-        "description": "Si un joueur figure déjà dans un pari en cours, on ne le remet pas dans un nouveau le même jour — pour éviter que deux paris dépendent du même résultat.",
-    },
-}
-
-
 def _extract_risk_flags(rationale: list[str]) -> list[dict]:
-    """Find anti-bias mentions in rationale and return plain-language
-    title + description objects. Falls back to the raw text for warning
-    lines that aren't a recognised AB code."""
+    """Extract anti-bias mentions as locale-agnostic structured records.
+
+    Output format: [{code, context}] where code is the i18n key suffix
+    (e.g. "AB-4") and context is the pick-specific note from the agent.
+    The frontend renders title + description from i18n keys
+    `insights.risk.<code>.title` / `.description`, and shows the
+    context as a separate "Sur ce pari : <ctx>" line.
+
+    Unrecognised ⚠️/🚨 lines get code "WARN" with the raw line as context.
+    """
     flags: list[dict] = []
     seen_codes: set[str] = set()
     joined = "\n".join(rationale)
-    # AB-X flags
-    for m in re.finditer(r"\b(AB-\d)\b\s*[:\-—]?\s*([^\n.]*)\.?", joined):
+    # Line-by-line: the agent's dedicated "🚨 Anti-bias appliqués"
+    # section has one AB-N per line in a clean "AB-N : context ✅" form.
+    # That's our primary source. Strip the leading code + separator and
+    # trailing markers/punctuation.
+    line_pat = re.compile(
+        r"^\s*\**\s*(AB-\d)\b(?:\s+v\d+(?:\.\d+){0,2})?\s*[:\-—]\s*(.+?)\s*[✅✓]?\s*\.?\s*\**\s*$"
+    )
+    for line in rationale:
+        m = line_pat.match(line)
+        if not m:
+            continue
         code, context = m.group(1), m.group(2).strip()
         if code in seen_codes:
             continue
         seen_codes.add(code)
-        meta = _AB_DESCRIPTIONS.get(code, {})
-        flags.append({
-            "code": code,
-            "title": meta.get("title") or context or code,
-            "description": meta.get("description") or "",
-            "context": context if context else None,
-        })
-    # Explicit warnings (⚠️/🚨) not tied to an AB code
+        flags.append({"code": code, "context": context or None})
     for line in rationale:
+        # Skip section headers (## …) — they're not warnings.
+        if line.lstrip().startswith("##"):
+            continue
         if re.search(r"⚠️|🚨", line):
             cleaned = re.sub(r"^[*\s#]+", "", line).strip()
-            if len(cleaned) > 5 and not any(f["title"] == cleaned for f in flags):
-                flags.append({
-                    "code": "WARN",
-                    "title": cleaned,
-                    "description": "",
-                    "context": None,
-                })
+            if len(cleaned) > 5 and not any(
+                (f.get("context") or "") == cleaned for f in flags
+            ):
+                flags.append({"code": "WARN", "context": cleaned})
     return flags[:6]
 
 
@@ -275,47 +252,30 @@ def build_insights(pick: dict) -> dict[str, Any]:
     }
 
 
-def _build_verdict(model: float, odds: float) -> dict[str, str]:
-    """Produce a short label + tone (green/yellow/red) + plain-language
-    explanation for non-experts."""
+def _build_verdict(model: float, odds: float) -> dict[str, Any]:
+    """Produce a locale-agnostic verdict structure.
+
+    Output: {tone, key, params} — frontend renders via
+    `t(\"insights.verdict.${key}.label\")` and the equivalent .text key
+    with {prob, ev, odds} interpolations.
+    """
     ev_pct = _compute_ev_pct(model, odds)
     if ev_pct >= 15:
-        return {
-            "tone": "green",
-            "label": "BON COUP",
-            "text": (
-                f"Sur 100 paris similaires, tu en gagnerais en moyenne "
-                f"{int(round(model * 100))} et tu finirais en bénéfice "
-                f"d'environ {ev_pct:.0f}% de ta mise. Le bookmaker "
-                f"sous-estime nos chances."
-            ),
-        }
-    if ev_pct >= 5:
-        return {
-            "tone": "yellow",
-            "label": "OK",
-            "text": (
-                f"Petite marge en notre faveur ({ev_pct:.1f}% sur la durée). "
-                f"Pari acceptable si tu joues régulièrement, sans surenchère."
-            ),
-        }
-    if ev_pct >= 0:
-        return {
-            "tone": "yellow",
-            "label": "À LA LIMITE",
-            "text": (
-                f"L'écart entre notre analyse et la cote est trop fin "
-                f"({ev_pct:.1f}%). Mieux vaut passer ou diviser la mise."
-            ),
-        }
+        key, tone = "bonCoup", "green"
+    elif ev_pct >= 5:
+        key, tone = "ok", "yellow"
+    elif ev_pct >= 0:
+        key, tone = "limite", "yellow"
+    else:
+        key, tone = "eviter", "red"
     return {
-        "tone": "red",
-        "label": "À ÉVITER",
-        "text": (
-            f"La cote ({odds:.2f}) est trop courte pour ta probabilité "
-            f"de gain ({int(round(model * 100))}%). À long terme, ce type "
-            f"de pari te fait perdre de l'argent. Skip."
-        ),
+        "tone": tone,
+        "key": key,
+        "params": {
+            "prob": int(round(model * 100)),
+            "ev": round(ev_pct, 1),
+            "odds": round(odds, 2),
+        },
     }
 
 

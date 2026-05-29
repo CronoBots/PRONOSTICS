@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useI18n } from "@/lib/i18n";
+
 interface LegInsight {
   home_team: string;
   away_team: string;
@@ -18,15 +20,13 @@ interface SourceInsight {
 
 interface RiskFlag {
   code: string;
-  title: string;
-  description: string;
   context: string | null;
 }
 
 interface Verdict {
   tone: "green" | "yellow" | "red";
-  label: string;
-  text: string;
+  key: "bonCoup" | "ok" | "limite" | "eviter";
+  params: { prob: number; ev: number; odds: number };
 }
 
 interface InsightsPayload {
@@ -96,6 +96,7 @@ function ProbabilityGauge({ value, label, hint }: { value: number; label: string
 }
 
 function LegCard({ leg, index }: { leg: LegInsight; index: number }) {
+  const { t } = useI18n();
   const edge = leg.model_probability - leg.market_implied;
   return (
     <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
@@ -112,12 +113,12 @@ function LegCard({ leg, index }: { leg: LegInsight; index: number }) {
       </div>
       <div className="text-[11px] text-white/55 mb-3 italic">{leg.pick_label}</div>
       <div className="grid grid-cols-2 gap-3">
-        <ProbabilityGauge value={leg.model_probability} label="Notre estimation" />
-        <ProbabilityGauge value={leg.market_implied} label="Selon la cote" />
+        <ProbabilityGauge value={leg.model_probability} label={t("insights.leg.estimation")} />
+        <ProbabilityGauge value={leg.market_implied} label={t("insights.leg.market")} />
       </div>
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
         <div className={`text-[11px] ${edge >= 0 ? "text-accent-blue" : "text-accent-red"}`}>
-          Notre avantage : {edge >= 0 ? "+" : ""}
+          {t("insights.leg.advantage")} : {edge >= 0 ? "+" : ""}
           {(edge * 100).toFixed(1)} pts
         </div>
         <div
@@ -125,7 +126,7 @@ function LegCard({ leg, index }: { leg: LegInsight; index: number }) {
             leg.ev_pct >= 0 ? "text-accent-green" : "text-accent-red"
           }`}
         >
-          Rentabilité {leg.ev_pct >= 0 ? "+" : ""}
+          {t("insights.leg.rentability")} {leg.ev_pct >= 0 ? "+" : ""}
           {leg.ev_pct.toFixed(1)}%
         </div>
       </div>
@@ -147,6 +148,7 @@ function RationaleSection({ title, lines }: { title: string; lines: string[] }) 
 }
 
 export function MatchInsights({ date }: { date: string }) {
+  const { t } = useI18n();
   const [data, setData] = useState<InsightsPayload | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -175,6 +177,12 @@ export function MatchInsights({ date }: { date: string }) {
   if (!data) return null;
 
   const edgePoints = ((data.model_probability - data.market_implied) * 100).toFixed(1);
+  const verdictLabel = t(`insights.verdict.${data.verdict.key}.label`);
+  const verdictText = t(`insights.verdict.${data.verdict.key}.text`, {
+    prob: String(data.verdict.params.prob),
+    ev: String(data.verdict.params.ev),
+    odds: String(data.verdict.params.odds),
+  });
 
   return (
     <div className="space-y-4">
@@ -182,16 +190,16 @@ export function MatchInsights({ date }: { date: string }) {
       <div className={`rounded-3xl border-2 p-5 ${TONE_BG[data.verdict.tone]}`}>
         <div className="flex items-center gap-2 mb-2">
           <div className="text-[10px] uppercase tracking-widest font-bold opacity-80">
-            AI Insights
+            {t("insights.badge")}
           </div>
           <div className="text-[10px] uppercase tracking-wider font-bold border border-current/40 px-2 py-0.5 rounded-full">
-            {data.verdict.label}
+            {verdictLabel}
           </div>
         </div>
         <div className="text-base font-bold text-white mb-1">
           {data.headline || data.pick_label}
         </div>
-        <div className="text-[13px] opacity-90">{data.verdict.text}</div>
+        <div className="text-[13px] opacity-90">{verdictText}</div>
       </div>
 
       {/* Probability + finance grid */}
@@ -199,19 +207,19 @@ export function MatchInsights({ date }: { date: string }) {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <ProbabilityGauge
             value={data.model_probability}
-            label="Notre estimation"
-            hint="Chances de gagner d'après notre analyse"
+            label={t("insights.estimation")}
+            hint={t("insights.estimation.hint")}
           />
           <ProbabilityGauge
             value={data.market_implied}
-            label="Selon la cote"
-            hint="Chances déduites du prix du bookmaker"
+            label={t("insights.market")}
+            hint={t("insights.market.hint")}
           />
         </div>
         <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/[0.06]">
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              Notre avantage
+              {t("insights.advantage")}
             </div>
             <div
               className={`text-base font-bold tabular-nums ${
@@ -224,12 +232,12 @@ export function MatchInsights({ date }: { date: string }) {
               {edgePoints} pts
             </div>
             <div className="text-[10px] text-white/40 leading-snug mt-0.5">
-              écart vs marché
+              {t("insights.advantage.hint")}
             </div>
           </div>
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              Rentabilité
+              {t("insights.rentability")}
             </div>
             <div
               className={`text-base font-bold tabular-nums ${
@@ -240,18 +248,18 @@ export function MatchInsights({ date }: { date: string }) {
               {data.ev_pct.toFixed(1)}%
             </div>
             <div className="text-[10px] text-white/40 leading-snug mt-0.5">
-              attendue sur la durée
+              {t("insights.rentability.hint")}
             </div>
           </div>
           <div>
             <div className="text-[9px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
-              Gain net
+              {t("insights.netGain")}
             </div>
             <div className="text-base font-bold text-white tabular-nums">
               +{data.potential_profit.toFixed(2)}€
             </div>
             <div className="text-[10px] text-white/40 leading-snug mt-0.5">
-              si tu gagnes
+              {t("insights.netGain.hint")}
             </div>
           </div>
         </div>
@@ -261,7 +269,7 @@ export function MatchInsights({ date }: { date: string }) {
       {data.legs.length > 0 && (
         <div>
           <div className="text-[11px] uppercase tracking-wider text-white/45 font-semibold mb-2 px-1">
-            Sélections du combo
+            {t("insights.legs.title")}
           </div>
           <div className="space-y-2">
             {data.legs.map((leg, i) => (
@@ -283,34 +291,45 @@ export function MatchInsights({ date }: { date: string }) {
       {/* Risk flags = "ce qu'on a vérifié pour limiter le risque" */}
       {data.risk_flags.length > 0 && (
         <div className="bg-yellow-500/[0.06] border border-yellow-400/25 rounded-2xl p-4">
-          <div className="text-[11px] uppercase tracking-wider text-yellow-300 font-bold mb-1 flex items-center gap-2">
-            <span>🛡️</span>
-            <span>Ce qu'on a vérifié pour limiter le risque</span>
+          <div className="text-[11px] uppercase tracking-wider text-yellow-300 font-bold mb-1">
+            {t("insights.risk.title")}
           </div>
           <p className="text-[11px] text-white/45 leading-relaxed mb-3">
-            Avant de proposer ce pari, on passe une checklist anti-piège. Voici les points contrôlés ici :
+            {t("insights.risk.intro")}
           </p>
           <ul className="space-y-3">
-            {data.risk_flags.map((flag, i) => (
-              <li key={i} className="flex items-start gap-2.5">
-                <span className="text-accent-green mt-0.5 shrink-0">✓</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-semibold text-white leading-snug">
-                    {flag.title}
+            {data.risk_flags.map((flag, i) => {
+              const title = t(`insights.risk.${flag.code}.title`);
+              const description = t(`insights.risk.${flag.code}.description`);
+              // If the i18n lookup returned the key itself, the code is
+              // unknown (e.g. WARN) — fall back to context-as-title.
+              const titleResolved = title.startsWith("insights.risk.")
+                ? flag.context || flag.code
+                : title;
+              const descResolved = description.startsWith("insights.risk.")
+                ? ""
+                : description;
+              return (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="text-accent-green mt-0.5 shrink-0">✓</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-semibold text-white leading-snug">
+                      {titleResolved}
+                    </div>
+                    {descResolved && (
+                      <div className="text-[11px] text-white/55 leading-relaxed mt-0.5">
+                        {descResolved}
+                      </div>
+                    )}
+                    {flag.context && flag.context !== titleResolved && (
+                      <div className="text-[11px] text-yellow-300/70 leading-relaxed mt-1 italic">
+                        {t("insights.risk.context", { ctx: flag.context })}
+                      </div>
+                    )}
                   </div>
-                  {flag.description && (
-                    <div className="text-[11px] text-white/55 leading-relaxed mt-0.5">
-                      {flag.description}
-                    </div>
-                  )}
-                  {flag.context && flag.context !== flag.title && (
-                    <div className="text-[11px] text-yellow-300/70 leading-relaxed mt-1 italic">
-                      → Sur ce pari : {flag.context}
-                    </div>
-                  )}
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
@@ -319,10 +338,10 @@ export function MatchInsights({ date }: { date: string }) {
       {data.sources.length > 0 && (
         <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
           <div className="text-[11px] uppercase tracking-wider text-white/45 font-semibold mb-1.5">
-            🔎 Ce pari a été croisé avec {data.sources.length} sources
+            {t("insights.sources.title", { n: String(data.sources.length) })}
           </div>
           <p className="text-[11px] text-white/45 leading-relaxed mb-3">
-            On ne décide rien sur une seule analyse. Voici les sites de pronostics consultés pour ce pari (tu peux cliquer pour lire chacun) :
+            {t("insights.sources.intro")}
           </p>
           <div className="flex flex-wrap gap-2">
             {data.sources.map((s, i) => (
