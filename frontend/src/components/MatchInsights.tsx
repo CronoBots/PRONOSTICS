@@ -318,9 +318,12 @@ export function MatchInsights({ date }: { date: string }) {
       {/* Sources */}
       {data.sources.length > 0 && (
         <div className="bg-bg-card border border-white/[0.06] rounded-2xl p-4">
-          <div className="text-[11px] uppercase tracking-wider text-white/45 font-semibold mb-3">
-            Sources croisées ({data.sources.length})
+          <div className="text-[11px] uppercase tracking-wider text-white/45 font-semibold mb-1.5">
+            🔎 Ce pari a été croisé avec {data.sources.length} sources
           </div>
+          <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+            On ne décide rien sur une seule analyse. Voici les sites de pronostics consultés pour ce pari (tu peux cliquer pour lire chacun) :
+          </p>
           <div className="flex flex-wrap gap-2">
             {data.sources.map((s, i) => (
               <a
@@ -330,7 +333,7 @@ export function MatchInsights({ date }: { date: string }) {
                 rel="noopener noreferrer"
                 className="text-[11px] px-2.5 py-1 rounded-full bg-bg-elevated border border-white/[0.08] text-white/70 hover:text-white hover:border-white/20 transition-colors"
               >
-                {s.name}
+                {s.name} ↗
               </a>
             ))}
           </div>

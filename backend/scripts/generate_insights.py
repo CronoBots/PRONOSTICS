@@ -51,6 +51,49 @@ def _parse_rationale_sections(rationale: list[str]) -> dict[str, list[str]]:
     return {k: v for k, v in sections.items() if v}
 
 
+# Maps the agent's emoji-prefixed section headers to friendlier titles
+# that read naturally for someone who's never bet before.
+_FRIENDLY_SECTION_TITLES = {
+    "🎯 Le contexte": "🎯 La situation aujourd'hui",
+    "🎯 Le match": "🎯 Le match en question",
+    "📊 L'analyse": "📊 Pourquoi on y croit",
+    "📊 L'analyse des 2 sélections": "📊 Pourquoi on y croit (par sélection)",
+    "📊 L'analyse des 3 sélections": "📊 Pourquoi on y croit (par sélection)",
+    "🎰 Le pari": "🎰 Le détail du pari",
+    "🚨 Anti-bias appliqués": None,  # Already covered by the risk flags section
+}
+
+
+# Lightweight jargon scrub on the rationale prose — strips parenthetical
+# AB-X annotations and replaces a small set of betting-trader terms with
+# their plain-language equivalents.
+_PROSE_REPLACEMENTS = [
+    (re.compile(r"\(AB-\d[^)]*\)"), ""),
+    (re.compile(r"\bAB-\d\b\s*:?\s*"), ""),
+    (re.compile(r"\bv\d\.\d+(\.\d+)?\b", re.IGNORECASE), ""),
+    (re.compile(r"\bEV NÉGATIF\b", re.IGNORECASE), "rentabilité négative"),
+    (re.compile(r"\bEV POSITIF\b", re.IGNORECASE), "rentabilité positive"),
+    (re.compile(r"\bEV\b(?=\s*[+-]?\d|\s*\W*$)"), "rentabilité de"),
+    (re.compile(r"\bEV\b"), "rentabilité"),
+    (re.compile(r"\bedge\b", re.IGNORECASE), "marge"),
+    (re.compile(r"\bvalue\b", re.IGNORECASE), "rentabilité"),
+    (re.compile(r"\bH2H\b"), "historique face-à-face"),
+    (re.compile(r"\bkickoff\b", re.IGNORECASE), "début du match"),
+    (re.compile(r"\bmatch-winner(s)?\b", re.IGNORECASE), r"pari sur le vainqueur"),
+    (re.compile(r"\bupset\b", re.IGNORECASE), "surprise"),
+    (re.compile(r"\bpivot stratégique\b", re.IGNORECASE), "changement d'angle"),
+    (re.compile(r"\s{2,}"), " "),
+    (re.compile(r"\s+([,.;:])"), r"\1"),
+]
+
+
+def _clean_prose(text: str) -> str:
+    out = text
+    for pat, repl in _PROSE_REPLACEMENTS:
+        out = pat.sub(repl, out)
+    return out.strip()
+
+
 _SOURCE_DISPLAY = {
     "dimers.com": "Dimers",
     "statsinsider": "Stats Insider",
@@ -190,7 +233,18 @@ def build_insights(pick: dict) -> dict[str, Any]:
     stake = float(pick.get("stake", 0))
     model_prob = float(pick.get("model_probability", 0))
 
-    sections = _parse_rationale_sections(pick.get("rationale", []))
+    raw_sections = _parse_rationale_sections(pick.get("rationale", []))
+    # Rename headers + scrub jargon. Drop sections we've explicitly mapped
+    # to None (already covered by the risk-flags block).
+    sections: dict[str, list[str]] = {}
+    for title, lines in raw_sections.items():
+        friendly = _FRIENDLY_SECTION_TITLES.get(title, title)
+        if friendly is None:
+            continue
+        cleaned_lines = [_clean_prose(ln) for ln in lines if ln.strip()]
+        if cleaned_lines:
+            sections[friendly] = cleaned_lines
+
     risk_flags = _extract_risk_flags(pick.get("rationale", []))
 
     sources = [
