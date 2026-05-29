@@ -409,24 +409,33 @@ backend/data/auto_settle/
   auto-settle.yml    ← cron 0 */2 + workflow_dispatch
 ```
 
-### Modes
+### Modes (v1.3 — daily auto-live + Telegram chain)
 
-| Mode      | Calls provider? | Writes to picks_data.py? | Default? |
-|-----------|-----------------|--------------------------|----------|
-| reminder  | no              | no — just Telegram ping  | YES (cron) |
-| dry-run   | yes             | no — stdout only         | no       |
-| shadow    | yes             | no — proposal JSON + Telegram admin diff | no |
-| live      | yes             | YES — libcst edit + build_history.py + git commit | manual only |
+| Mode      | Calls provider? | Writes to picks_data.py? | Cron trigger |
+|-----------|-----------------|--------------------------|--------------|
+| reminder  | no              | no — just Telegram ping  | manual only  |
+| dry-run   | yes             | no — stdout only         | manual only  |
+| shadow    | yes             | no — proposal JSON + admin diff | every 2h (`0 */2 * * *`) |
+| live      | yes             | YES — libcst edit + build_history.py + git commit + chained Telegram channel publish | daily 06:00 UTC (`0 6 * * *`) |
 
-The cron runs REMINDER every 2 hours. Reminder mode never calls
-SofaScore — it walks `picks_data.PICKS`, finds pending picks past
-kickoff+2h, and pings the operator on Telegram (`TELEGRAM_ADMIN_CHAT_ID`)
-with the list. Operator settles manually per §1.
+**v1.3 auto-live chain**: at 06:00 UTC the cron runs auto_settle.py
+in live mode. By that hour every match started 24h+ ago is finished.
+Live mode:
+1. Refuses to half-settle a day — aborts if any pick is in
+   `skipped_unknown` OR `skipped_no_data` (data gap). Sends an admin
+   ping; operator settles the missing pick manually (§1), re-runs
+   `mode=live` via workflow_dispatch.
+2. On clean settlement, commits + pushes.
+3. Chains into `publish_telegram.py --result <yesterday>` so subscribers
+   get the daily result post automatically.
 
-`shadow` / `live` require an unblocked provider (currently SofaScore
-is blocked by Cloudflare from cloud IPs — see header note). To use
-them, trigger `workflow_dispatch` with `mode=shadow` (test) or
-`mode=live` (apply).
+Shadow stays at every 2h for audit-trail proposals (admin DM via
+`TELEGRAM_ADMIN_CHAT_ID`) — never touches picks_data.py.
+
+Provider: **ESPN unofficial API** (v1.2 swap). SofaScore was blocked
+by Cloudflare from GitHub Actions IPs (probe confirmed 403). ESPN
+passes (200) for tennis ATP/WTA, NBA, UEFA soccer, top-5 football
+leagues. No API key needed.
 
 ### Markets covered
 

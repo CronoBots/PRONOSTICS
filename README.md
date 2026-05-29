@@ -4,11 +4,34 @@
 
 # PRONOSTICS — NEXBET
 
+<p align="center">
+  <a href="https://github.com/cronobots/pronostics/actions/workflows/tests.yml"><img src="https://github.com/cronobots/pronostics/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
+  <a href="https://github.com/cronobots/pronostics/actions/workflows/auto-settle.yml"><img src="https://github.com/cronobots/pronostics/actions/workflows/auto-settle.yml/badge.svg" alt="Auto-settle" /></a>
+  <a href="https://github.com/cronobots/pronostics/actions/workflows/deploy-pages.yml"><img src="https://github.com/cronobots/pronostics/actions/workflows/deploy-pages.yml/badge.svg" alt="Deploy" /></a>
+  <a href="https://cronobots.github.io/pronostics/"><img src="https://img.shields.io/badge/site-live-success" alt="Site live" /></a>
+</p>
+
 Plateforme de pronostics sportifs quotidiens. Le backend Python agrège des matchs
 via WebSearch sur sources whitelistées + APIs (Football-Data.org, API-Football,
 The Odds API quand quota dispo), calcule des probabilités via la méthodologie
 **NEXBET v4.6**, et expose les résultats via un frontend Next.js déployé en
 statique sur GitHub Pages.
+
+## 🚀 Quick start (opérateur)
+
+| Tâche | Commande |
+|---|---|
+| Voir les stats live | https://cronobots.github.io/pronostics/ |
+| Ajouter un pick | `python backend/scripts/add_pick.py --file new.yaml --commit` |
+| Régler un pari manuellement (fallback) | éditer `picks_data.py` → `python backend/scripts/build_history.py` → commit |
+| Forcer une analyse aujourd'hui | déclencher cron `daily-candidates.yml` via Actions UI |
+| Re-publier un résultat sur Telegram | déclencher `telegram-daily.yml` avec `mode=result-date` |
+
+**Settlement = entièrement automatisé** :
+- Toutes les 2h → mode shadow (proposals admin + audit trail)
+- Tous les jours 06h00 UTC → mode live (écrit dans `picks_data.py`, run `build_history.py`, commit, publie le résultat sur Telegram channel public)
+
+Voir [CLAUDE.md §12](CLAUDE.md) pour le protocole complet.
 
 ## 🟦 Identité visuelle (logo AX cyan — 25/05/2026)
 

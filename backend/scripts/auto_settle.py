@@ -1208,6 +1208,24 @@ def main() -> int:
         print("Nothing to settle.")
         return 0
 
+    # v1.3 SAFETY: in live mode, refuse to half-settle a day. If any pick
+    # has skipped_unknown OR skipped_no_data, abort with an admin ping so
+    # the operator can settle the missing pick manually before live can
+    # run. Prevents the workflow from committing partial results that
+    # would then race with a manual edit.
+    if report["skipped_unknown"] or report["skipped_no_data"]:
+        unparseable = [p["date"] for p in report["skipped_unknown"]]
+        no_data = [p["date"] for p in report["skipped_no_data"]]
+        msg = (
+            "auto-settle live ABORTED — some picks have data gaps.\n"
+            f"unparseable: {unparseable}\n"
+            f"no_data: {no_data}\n"
+            "Settle these manually first (CLAUDE.md §1), then re-run live."
+        )
+        print(msg, file=sys.stderr)
+        _try_send_admin(msg)
+        return 1
+
     # F7 (a): refuse to run live if the operator has uncommitted edits in
     # progress on the source-of-truth files. Otherwise the rollback path
     # could in principle overwrite work-in-progress.

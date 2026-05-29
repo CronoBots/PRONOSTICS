@@ -1,25 +1,37 @@
 name: Auto-settle pending picks
 
-# v1.2 — provider swap (SofaScore → ESPN unofficial).
+# v1.3 — automation upgrade : daily auto-live + Telegram channel publish.
 #
-# SofaScore was blocked by Cloudflare from GitHub Actions cloud IPs
-# (probe_providers.py confirmed 403). ESPN's public scoreboard endpoint
-# passes (200) from the same runners — covers tennis ATP/WTA, NBA, UEFA
-# soccer, all major football leagues. No API key needed.
+# Provider: ESPN unofficial API (validated from GitHub Actions IPs).
+# Covers tennis ATP/WTA, NBA, UEFA soccer, top-5 leagues. No API key.
 #
-# - Every 2h: SHADOW mode (writes proposals to backend/data/auto_settle/<date>.json
-#   + Telegram admin diff via TELEGRAM_ADMIN_CHAT_ID, NO mutation of
-#   picks_data.py). Operator reviews proposals; flips to live when confident.
-# - workflow_dispatch with mode=live: actually mutates picks_data.py +
-#   picks_translations_en.py, regenerates history.json, commits + pushes.
-# - mode=reminder: legacy fallback (provider-less, just pings list of
-#   due picks). Kept for when ESPN is down.
+# Three triggers, three behaviors:
+#
+# 1. Every 2h (cron "0 */2") → SHADOW
+#    Computes proposals + admin diff via TELEGRAM_ADMIN_CHAT_ID.
+#    No mutation of picks_data.py. Audit trail in
+#    backend/data/auto_settle/<date>.json.
+#
+# 2. Daily 06:00 UTC (cron "0 6") → LIVE
+#    By this hour, every match started 24h+ ago is finished. Settles
+#    everything, commits, then chains into Telegram channel publish
+#    (publish_telegram.py --result yesterday) so subscribers get the
+#    daily result post WITHOUT manual intervention.
+#
+# 3. workflow_dispatch → operator picks: shadow / live / reminder / dry-run
+#
+# Safety: live mode aborts if any pick has skipped_unknown OR
+# skipped_no_data (would mean ESPN didn't have the data). Operator
+# settles those manually via §1 protocol.
 #
 # See CLAUDE.md §12 for full documentation.
 
 on:
   schedule:
-    - cron: "0 */2 * * *"  # every 2 hours
+    # Shadow every 2h — proposals + admin diff
+    - cron: "0 */2 * * *"
+    # Live once daily at 06:00 UTC — actual settlement + Telegram channel
+    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -36,10 +48,10 @@ on:
 permissions:
   contents: write
 
-# F8: serialize live runs so overlapping crons can't race on git push.
-# Shadow runs are also serialized to prevent doubled admin pings.
+# Serialize so concurrent crons don't race on git push or split-brain
+# state on picks_data.py.
 concurrency:
-  group: auto-settle-live
+  group: auto-settle
   cancel-in-progress: false
 
 jobs:
@@ -59,22 +71,26 @@ jobs:
         id: m
         run: |
           MODE="${{ github.event.inputs.mode }}"
-          # v1.2: provider is ESPN (passes from GH runners). Default
-          # cron mode = shadow (compute proposals + admin diff, no
-          # write). Promote to live via workflow_dispatch when ready.
-          if [ -z "$MODE" ]; then MODE="shadow"; fi
+          if [ -z "$MODE" ]; then
+            # Auto mode based on cron schedule. 06:00 UTC → live ;
+            # any other cron tick → shadow.
+            CRON="${{ github.event.schedule }}"
+            if [ "$CRON" = "0 6 * * *" ]; then
+              MODE="live"
+            else
+              MODE="shadow"
+            fi
+          fi
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo "Selected mode: $MODE"
       - name: Run settlement
         working-directory: backend
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          # F3: Public channel for result posts (publish_telegram.py).
+          # Public subscriber channel (publish_telegram.py).
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          # F3: Separate admin chat for shadow-mode proposal diffs.
-          # MUST be configured as a GitHub Actions secret (operator's
-          # personal chat ID, not the subscriber channel). If absent,
-          # auto_settle.py logs to stderr instead — NEVER falls back to
-          # the public channel.
+          # Separate operator DM for shadow proposal diffs. If absent,
+          # auto_settle.py logs to stderr — NEVER falls back to channel.
           TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           BRANCH: ${{ github.ref_name }}
         run: |
@@ -83,13 +99,10 @@ jobs:
           case "${{ steps.m.outputs.mode }}" in
             reminder)
               python scripts/auto_settle.py --reminder
-              # Persist .notified.json so dedupe works across runs (else
-              # the operator gets the same ping every 2h until they settle).
               cd "$GITHUB_WORKSPACE"
               if ! git diff --quiet -- backend/data/auto_settle/.notified.json 2>/dev/null; then
                 git add backend/data/auto_settle/.notified.json
                 git commit -m "[auto] reminder dedupe state $(date -u +%Y-%m-%dT%H:%M)"
-                # Retry-on-conflict (operator might have just pushed)
                 for i in 1 2 3; do
                   git pull --rebase origin "$BRANCH" || true
                   if git push origin "HEAD:$BRANCH"; then break; fi
@@ -100,10 +113,6 @@ jobs:
             dry-run) python scripts/auto_settle.py --dry-run ;;
             shadow)
               python scripts/auto_settle.py
-              # Persist the shadow proposal JSON + .notified.json so we
-              # have an audit trail of the day's proposals AND the dedupe
-              # works across runs (else every cron re-pings the same
-              # proposal for hours).
               cd "$GITHUB_WORKSPACE"
               if ! git diff --quiet -- backend/data/auto_settle/ 2>/dev/null; then
                 git add backend/data/auto_settle/
@@ -116,18 +125,34 @@ jobs:
               fi
               ;;
             live)
-              python scripts/auto_settle.py --live || exit 1
-              # F8: retry push with rebase to recover from concurrent
-              # commits to the same branch (e.g. operator manual push).
+              # Live mode = mutate picks_data.py + picks_translations_en.py
+              # + run build_history.py + commit. Exits non-zero on failure
+              # (the in-memory snapshot/restore inside auto_settle.py
+              # handles file rollback).
+              python scripts/auto_settle.py --live
+              SETTLE_RC=$?
+              if [ $SETTLE_RC -ne 0 ]; then
+                echo "auto-settle live failed (rc=$SETTLE_RC) — aborting push + Telegram chain"
+                exit $SETTLE_RC
+              fi
+              # Push with retry-on-conflict.
               for i in 1 2 3; do
                 git pull --rebase origin "$BRANCH" || true
                 if git push origin "HEAD:$BRANCH"; then
-                  exit 0
+                  break
+                fi
+                if [ $i -eq 3 ]; then
+                  echo "auto-settle: push failed after 3 retries"
+                  exit 1
                 fi
                 sleep $((5 * i))
               done
-              echo "auto-settle: push failed after 3 retries"
-              exit 1
+              # Chain into Telegram channel publish for the just-settled
+              # results (yesterday's picks per local UTC). publish_telegram
+              # gracefully no-ops if there's nothing to publish.
+              YESTERDAY=$(date -u -d "yesterday" +%Y-%m-%d)
+              echo "Publishing result for $YESTERDAY to Telegram channel"
+              python scripts/publish_telegram.py --result "$YESTERDAY" || true
               ;;
             *) echo "unknown mode"; exit 1 ;;
           esac
