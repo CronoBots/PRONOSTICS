@@ -395,8 +395,16 @@ def _event_to_score(ev: dict, sport: str, want_home: str = "", want_away: str = 
                 set_scores.append((h_g, a_g))
             except (TypeError, ValueError):
                 continue
-        # For tennis, "score" at the top level = sets won. So home_score
-        # = c0_total (sets won by the home_team perspective).
+        # For tennis, ESPN's competitor .score field is often empty
+        # or a non-numeric string in finished singles matches → c0_total
+        # and c1_total both fall to 0 and the downstream "home_won"
+        # check breaks. Fall back to deriving sets won from the
+        # per-set tally when the totals look bogus (i.e. both zero
+        # while set_scores show actual play).
+        h_sets = sum(1 for h, a in set_scores if h > a)
+        a_sets = sum(1 for h, a in set_scores if a > h)
+        if set_scores and c0_total == 0 and c1_total == 0:
+            c0_total, c1_total = h_sets, a_sets
         return MatchScore(
             status=mapped,
             home_team=home,
@@ -519,13 +527,14 @@ def _format_score_text(
 ) -> str:
     if sport == "tennis" and score.set_scores:
         sep = "bat" if lang == "fr" else "def."
-        home_won = (
-            score.home_score is not None
-            and score.away_score is not None
-            and score.home_score > score.away_score
-        )
-        # Always render set scores from the WINNER's perspective so the
-        # phrase "X bat Y 7-6 6-4" reads correctly (7-6 = X took the set).
+        # ESPN's competitor .score field is unreliable for tennis (often
+        # missing / non-numeric → both ends up at 0). Derive the winner
+        # from the actual per-set tally so the phrase orientation stays
+        # consistent with the score numbers. F-fix observed on J12
+        # (Andreeva 6-4 6-2 → narrative said "Bouzkova bat Andreeva").
+        home_sets = sum(1 for h, a in score.set_scores if h > a)
+        away_sets = sum(1 for h, a in score.set_scores if a > h)
+        home_won = home_sets > away_sets
         if home_won:
             sets_str = " ".join(f"{h}-{a}" for h, a in score.set_scores)
             return f"{score.home_team} {sep} {score.away_team} {sets_str}"
