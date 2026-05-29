@@ -78,7 +78,7 @@ export function PickDetail({ pick, variant = "today" }: Props) {
         <div className="text-sm text-white/50 flex items-center gap-2 flex-wrap">
           <span className="text-lg">{SPORT_EMOJIS[pick.sport] || ""}</span>
           <span className="font-medium text-white/70">
-            {SPORT_LABELS[pick.sport] || pick.sport}
+            {pick.sport === "combo" ? t("sport.combo") : SPORT_LABELS[pick.sport] || pick.sport}
           </span>
           <span className="text-white/20">·</span>
           <span className="capitalize">{fmtKickoff(pick.kickoff, locale)}</span>

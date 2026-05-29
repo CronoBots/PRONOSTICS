@@ -10,6 +10,7 @@ import {
 } from "recharts";
 
 import { CHART_COLORS } from "@/lib/chartColors";
+import { useI18n } from "@/lib/i18n";
 import { statsBySport } from "@/lib/stats";
 import { HistoryPick } from "@/lib/types";
 
@@ -25,6 +26,7 @@ const TOOLTIP_STYLE = {
 };
 
 export function AnalyzerSport({ picks }: Props) {
+  const { t } = useI18n();
   const rows = statsBySport(picks);
   const successRows = rows.map((r) => ({
     ...r,
@@ -113,7 +115,7 @@ export function AnalyzerSport({ picks }: Props) {
               />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
-                formatter={(v: number) => [`${v.toFixed(2)} €`, "Bénéfice"]}
+                formatter={(v: number) => [`${v.toFixed(2)} €`, t("chart.profit")]}
               />
               <Bar dataKey="profit" radius={[4, 4, 0, 0]}>
                 {rows.map((r) => (
@@ -151,7 +153,7 @@ export function AnalyzerSport({ picks }: Props) {
               />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
-                formatter={(v: number) => [`${v}%`, "Réussite"]}
+                formatter={(v: number) => [`${v}%`, t("chart.winRate")]}
               />
               <Bar dataKey="success_rate" radius={[4, 4, 0, 0]}>
                 {successRows.map((r) => {

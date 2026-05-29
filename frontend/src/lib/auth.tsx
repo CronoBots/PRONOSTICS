@@ -285,7 +285,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!pseudo) return { ok: false, error: "Pseudo requis" };
     if (!email.includes("@")) return { ok: false, error: "Email invalide" };
     if (password.length < 6) {
-      return { ok: false, error: "Mot de passe : 6 caractères minimum" };
+      // i18n: caller does t("auth.error.passwordTooShort") if it wants the
+      // localised string; the error code is also returned for non-UI consumers.
+      return { ok: false, error: "auth.error.passwordTooShort" };
     }
 
     if (mode === "supabase" && supabase) {

@@ -79,25 +79,25 @@ export function PlusMenu({ showAccountSection = false }: Props) {
   return (
     <>
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-0">
-        <Section title="Outils">
+        <Section title={t("plus.section.tools")}>
           <RowLink icon="🎯" label={t("perso.title")} href="/mes-paris" />
-          <Row icon="🧮" label="Simulateur de mise" onClick={() => setOpen("simulateur")} />
-          <Row icon="📊" label="Calculateur Kelly" onClick={() => setOpen("kelly")} />
-          <Row icon="📝" label="Bloc notes" onClick={() => setOpen("notes")} />
+          <Row icon="🧮" label={t("plus.tool.stake")} onClick={() => setOpen("simulateur")} />
+          <Row icon="📊" label={t("plus.tool.kelly")} onClick={() => setOpen("kelly")} />
+          <Row icon="📝" label={t("plus.tool.notes")} onClick={() => setOpen("notes")} />
         </Section>
 
-        <Section title="Partager">
-          <Row icon="🔗" label="Partager la plateforme" onClick={() => setOpen("share")} />
-          <Row icon="</>" label="Code d'intégration" onClick={() => setOpen("embed")} />
+        <Section title={t("plus.section.share")}>
+          <Row icon="🔗" label={t("plus.share.platform")} onClick={() => setOpen("share")} />
+          <Row icon="</>" label={t("plus.share.embed")} onClick={() => setOpen("embed")} />
         </Section>
 
-        <Section title="Infos">
-          <Row icon="📖" label="Lexique" onClick={() => setOpen("lexique")} />
-          <Row icon="❓" label="Comment ça marche" onClick={() => setOpen("howto")} />
-          <Row icon="👋" label="Revoir l'intro" onClick={replayOnboarding} />
-          <Row icon="🆘" label="Jeu responsable" onClick={() => setOpen("responsible")} />
-          <Row icon="⚖️" label="Mentions légales" onClick={() => setOpen("legal")} />
-          <Row icon="🛡️" label="Politique de confidentialité" onClick={() => setOpen("privacy")} />
+        <Section title={t("plus.section.info")}>
+          <Row icon="📖" label={t("plus.info.lexicon")} onClick={() => setOpen("lexique")} />
+          <Row icon="❓" label={t("plus.info.howto")} onClick={() => setOpen("howto")} />
+          <Row icon="👋" label={t("plus.info.replayIntro")} onClick={replayOnboarding} />
+          <Row icon="🆘" label={t("plus.info.responsible")} onClick={() => setOpen("responsible")} />
+          <Row icon="⚖️" label={t("plus.info.legal")} onClick={() => setOpen("legal")} />
+          <Row icon="🛡️" label={t("plus.info.privacy")} onClick={() => setOpen("privacy")} />
         </Section>
 
         {showAccountSection && (
@@ -108,80 +108,67 @@ export function PlusMenu({ showAccountSection = false }: Props) {
         )}
       </div>
 
-      <InfoSheet title="Simulateur de mise" open={open === "simulateur"} onClose={() => setOpen(null)}>
+      <InfoSheet title={t("plus.tool.stake")} open={open === "simulateur"} onClose={() => setOpen(null)}>
         <StakeSimulator picks={picks} defaultStake={5} defaultStartingBankroll={startingBankroll} />
       </InfoSheet>
 
-      <InfoSheet title="Calculateur Kelly" open={open === "kelly"} onClose={() => setOpen(null)}>
+      <InfoSheet title={t("plus.tool.kelly")} open={open === "kelly"} onClose={() => setOpen(null)}>
         <KellyCalculator />
       </InfoSheet>
 
-      <InfoSheet title="Bloc notes" open={open === "notes"} onClose={() => setOpen(null)}>
-        <p className="text-xs text-white/50">
-          Tes notes personnelles (stratégies, hypothèses, contraintes). Sauvegardées
-          localement sur ce navigateur.
-        </p>
+      <InfoSheet title={t("plus.tool.notes")} open={open === "notes"} onClose={() => setOpen(null)}>
+        <p className="text-xs text-white/50">{t("plus.notes.intro")}</p>
         <textarea
           value={notes}
           onChange={(e) => saveNotes(e.target.value)}
-          placeholder="Ex: ne pas miser le dimanche soir, max 3% bankroll par pari…"
+          placeholder={t("plus.notes.placeholder")}
           className="w-full h-40 mt-2 bg-bg-elevated border border-white/10 rounded-xl p-3 text-sm focus:outline-none focus:border-accent-green/40 resize-none"
         />
         <div className="text-[11px] text-white/40 mt-1 text-right">
-          {notes.length} caractères · sauvegarde automatique
+          {t("plus.notes.charCount", { n: String(notes.length) })}
         </div>
       </InfoSheet>
 
-      <InfoSheet title="Partager la plateforme" open={open === "share"} onClose={() => setOpen(null)}>
-        <p>Diffuse le lien pour faire connaître l'app :</p>
+      <InfoSheet title={t("plus.share.platform")} open={open === "share"} onClose={() => setOpen(null)}>
+        <p>{t("plus.share.intro")}</p>
         <ShareBox text="https://cronobots.github.io/PRONOSTICS/" />
-        <p className="text-xs text-white/50 mt-3">
-          Plus d'utilisateurs = plus de données, plus de confiance dans le track record public.
-        </p>
+        <p className="text-xs text-white/50 mt-3">{t("plus.share.footer")}</p>
       </InfoSheet>
 
-      <InfoSheet title="Code d'intégration" open={open === "embed"} onClose={() => setOpen(null)}>
-        <p>Embarque la page d'historique sur ton site :</p>
+      <InfoSheet title={t("plus.share.embed")} open={open === "embed"} onClose={() => setOpen(null)}>
+        <p>{t("plus.embed.intro")}</p>
         <ShareBox text='<iframe src="https://cronobots.github.io/PRONOSTICS/paris" width="100%" height="600" frameborder="0"></iframe>' />
       </InfoSheet>
 
-      <InfoSheet title="Lexique" open={open === "lexique"} onClose={() => setOpen(null)}>
-        <Lex term="Cote (décimale)">Multiplicateur du gain. Cote 2.73 = pour 1€ misé tu touches 2.73€.</Lex>
-        <Lex term="Cote boostée">Promo du bookmaker qui augmente la cote normale temporairement.</Lex>
-        <Lex term="Mise">Combien tu paries. Si tu perds, tu perds la mise.</Lex>
-        <Lex term="EV (Expected Value)">Espérance de gain en %. Positive = pari statistiquement rentable.</Lex>
-        <Lex term="Value bet">Pari où notre estimation de probabilité dépasse celle du bookmaker.</Lex>
-        <Lex term="ROI">(Bénéfice / Mises totales) × 100. Rendement par euro misé.</Lex>
-        <Lex term="Bankroll">Capital total dédié aux paris (à gérer comme un compte de trading).</Lex>
-        <Lex term="Drawdown">Plus grosse baisse depuis un pic de bankroll.</Lex>
-        <Lex term="H2H">Historique des confrontations directes.</Lex>
+      <InfoSheet title={t("plus.info.lexicon")} open={open === "lexique"} onClose={() => setOpen(null)}>
+        <Lex term={t("plus.lex.odds")}>{t("plus.lex.odds.def")}</Lex>
+        <Lex term={t("plus.lex.boostedOdds")}>{t("plus.lex.boostedOdds.def")}</Lex>
+        <Lex term={t("plus.lex.stake")}>{t("plus.lex.stake.def")}</Lex>
+        <Lex term={t("plus.lex.ev")}>{t("plus.lex.ev.def")}</Lex>
+        <Lex term={t("plus.lex.valueBet")}>{t("plus.lex.valueBet.def")}</Lex>
+        <Lex term={t("plus.lex.roi")}>{t("plus.lex.roi.def")}</Lex>
+        <Lex term={t("plus.lex.bankroll")}>{t("plus.lex.bankroll.def")}</Lex>
+        <Lex term={t("plus.lex.drawdown")}>{t("plus.lex.drawdown.def")}</Lex>
+        <Lex term={t("plus.lex.h2h")}>{t("plus.lex.h2h.def")}</Lex>
       </InfoSheet>
 
-      <InfoSheet title="Comment ça marche" open={open === "howto"} onClose={() => setOpen(null)}>
+      <InfoSheet title={t("plus.info.howto")} open={open === "howto"} onClose={() => setOpen(null)}>
         <ol className="space-y-2 list-decimal list-inside text-sm">
-          <li>Chaque jour, <strong>NEXBET (l'IA)</strong> analyse les matchs disponibles (foot, basket, tennis).</li>
-          <li>Sources croisées : forme récente, blessures, H2H, statistiques avancées.</li>
-          <li>Identification du <strong>value bet</strong> du jour : cote 1.50–2.00 + probabilité estimée supérieure à celle du bookmaker.</li>
-          <li>Le pick est publié avant le match, avec rationale détaillée et sources vérifiables.</li>
-          <li>L'historique est mis à jour quotidiennement avec les résultats.</li>
-          <li>Premium débloque le pick du jour + l'analyse complète.</li>
+          {["s1", "s2", "s3", "s4", "s5", "s6"].map((k) => (
+            <li key={k} dangerouslySetInnerHTML={{ __html: t(`plus.howto.${k}`).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />
+          ))}
         </ol>
       </InfoSheet>
 
-      <InfoSheet title="Jeu responsable" open={open === "responsible"} onClose={() => setOpen(null)}>
-        <p className="text-sm font-semibold text-white/90 mb-2">
-          Les paris sportifs sont un loisir, pas un revenu.
-        </p>
+      <InfoSheet title={t("plus.info.responsible")} open={open === "responsible"} onClose={() => setOpen(null)}>
+        <p className="text-sm font-semibold text-white/90 mb-2">{t("plus.responsible.headline")}</p>
         <ul className="space-y-2 text-xs text-white/70 leading-relaxed">
-          <li>✅ <strong>Ne mise que ce que tu peux perdre</strong> sans impacter ton budget vital (loyer, factures, alimentation).</li>
-          <li>✅ <strong>Fixe-toi une limite</strong> hebdomadaire ou mensuelle stricte et tiens-la.</li>
-          <li>✅ <strong>Ne chasse jamais tes pertes</strong> — si tu perds, accepte et arrête pour la journée.</li>
-          <li>✅ <strong>Prends des pauses régulières</strong> (1 jour sans pari par semaine minimum).</li>
-          <li>⛔ <strong>Interdit aux moins de 18 ans</strong> (21 ans dans certains pays).</li>
-          <li>⛔ Ne parie pas si tu as bu, fumé, ou si tu te sens stressé / triste.</li>
+          {["r1", "r2", "r3", "r4", "r5", "r6"].map((k) => (
+            <li key={k} dangerouslySetInnerHTML={{ __html: t(`plus.responsible.${k}`).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />
+          ))}
         </ul>
         <div className="mt-4 p-3 rounded-xl bg-accent-red/10 border border-accent-red/20">
-          <p className="text-xs font-semibold text-accent-red mb-2">Besoin d'aide ? Tu n'es pas seul.</p>
+          <p className="text-xs font-semibold text-accent-red mb-2">{t("plus.responsible.helpTitle")}</p>
           <ul className="text-xs text-white/70 space-y-1.5">
             <li>🇫🇷 <strong>Joueurs Info Service</strong> : 09 74 75 13 13 (8h-2h, 7j/7, anonyme)</li>
             <li>🇧🇪 <strong>BeGambleAware</strong> : 0800 35 777 (gratuit, 24h/24)</li>
@@ -189,37 +176,25 @@ export function PlusMenu({ showAccountSection = false }: Props) {
             <li>🇨🇦 <strong>Jeu : aide et référence</strong> : 1 800 461-0140</li>
           </ul>
         </div>
-        <p className="text-[10px] text-white/40 mt-4 italic">
-          NEXBET est un service d'analyse statistique informatif. Nous ne prenons aucun pari
-          et ne touchons aucune commission sur les mises placées chez les bookmakers.
-        </p>
+        <p className="text-[10px] text-white/40 mt-4 italic">{t("plus.responsible.footer")}</p>
       </InfoSheet>
 
-      <InfoSheet title="Mentions légales" open={open === "legal"} onClose={() => setOpen(null)}>
+      <InfoSheet title={t("plus.info.legal")} open={open === "legal"} onClose={() => setOpen(null)}>
         <p className="text-xs">
-          <strong>Service</strong> : NEXBET · Trust the Algorithm<br />
-          <strong>Éditeur</strong> : CronoBots<br />
-          <strong>Hébergement</strong> : GitHub Pages<br />
-          <strong>Contact</strong> : via la page Compte
+          <strong>{t("plus.legal.service")}</strong> : NEXBET · Trust the Algorithm<br />
+          <strong>{t("plus.legal.publisher")}</strong> : CronoBots<br />
+          <strong>{t("plus.legal.host")}</strong> : GitHub Pages<br />
+          <strong>{t("plus.legal.contact")}</strong> : {t("plus.legal.contactValue")}
         </p>
-        <p className="text-xs text-white/50 mt-3">
-          Contenu informatif uniquement. Les paris sportifs comportent un risque de perte
-          financière et d'addiction. Ne pariez que ce que vous pouvez perdre. Interdit aux mineurs.
-        </p>
+        <p className="text-xs text-white/50 mt-3">{t("plus.legal.disclaimer")}</p>
         <p className="text-xs text-white/50 mt-2">
           🆘 Joueurs Info Service (FR) : 09 74 75 13 13 — BeGambleAware (BE) : 0800 35 777
         </p>
       </InfoSheet>
 
-      <InfoSheet title="Politique de confidentialité" open={open === "privacy"} onClose={() => setOpen(null)}>
-        <p className="text-xs">
-          Données collectées : email + pseudo + abonnement (Phase 2 via Supabase). Aucun
-          tracking publicitaire, aucune revente de données.
-        </p>
-        <p className="text-xs text-white/50 mt-2">
-          Tu peux supprimer ton compte à tout moment depuis la page Compte. Toutes les
-          données associées sont effacées sous 30 jours.
-        </p>
+      <InfoSheet title={t("plus.info.privacy")} open={open === "privacy"} onClose={() => setOpen(null)}>
+        <p className="text-xs">{t("plus.privacy.p1")}</p>
+        <p className="text-xs text-white/50 mt-2">{t("plus.privacy.p2")}</p>
       </InfoSheet>
 
       {showOnboarding && <Onboarding forceShow onClose={() => setShowOnboarding(false)} />}

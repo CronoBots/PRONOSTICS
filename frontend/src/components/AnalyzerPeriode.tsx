@@ -9,6 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { useI18n } from "@/lib/i18n";
 import { statsByDayOfWeek } from "@/lib/stats";
 import { HistoryPick } from "@/lib/types";
 
@@ -24,6 +25,7 @@ const tooltipStyle = {
 };
 
 export function AnalyzerPeriode({ picks }: Props) {
+  const { t } = useI18n();
   const rows = statsByDayOfWeek(picks);
 
   return (
@@ -55,7 +57,7 @@ export function AnalyzerPeriode({ picks }: Props) {
               />
               <Tooltip
                 contentStyle={tooltipStyle}
-                formatter={(v: number) => [`${v.toFixed(2)} €`, "Bénéfice"]}
+                formatter={(v: number) => [`${v.toFixed(2)} €`, t("chart.profit")]}
               />
               <Bar dataKey="profit" radius={[4, 4, 0, 0]}>
                 {rows.map((r) => (
@@ -100,7 +102,7 @@ export function AnalyzerPeriode({ picks }: Props) {
                 formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
               />
               <Bar dataKey="roi" fill="#5b8def" radius={[4, 4, 0, 0]} name="ROI" />
-              <Bar dataKey="win_rate" fill="#ff9d3d" radius={[4, 4, 0, 0]} name="Réussite %" />
+              <Bar dataKey="win_rate" fill="#ff9d3d" radius={[4, 4, 0, 0]} name={t("chart.winRatePct")} />
             </BarChart>
           </ResponsiveContainer>
         </div>

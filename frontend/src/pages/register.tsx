@@ -46,7 +46,17 @@ export default function RegisterPage() {
       showToast(t("auth.toastAccountCreated"), { type: "success", duration: 3000 });
       router.push("/");
     } else {
-      setError(res.error ?? t("auth.errGeneric"));
+      // res.error may be a raw string from Supabase OR an i18n key
+      // (e.g. "auth.error.passwordTooShort"). Try resolving via t() —
+      // if the key isn't found, t() returns the key unchanged, so we
+      // fall back to the original string.
+      const errKey = res.error;
+      if (errKey) {
+        const resolved = t(errKey);
+        setError(resolved.startsWith("auth.error.") ? errKey : resolved);
+      } else {
+        setError(t("auth.errGeneric"));
+      }
     }
   }
 

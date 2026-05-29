@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 
+import { useI18n } from "@/lib/i18n";
+
 /**
  * Calculateur de Kelly Criterion — formule classique pour optimiser
  * la mise selon ton edge réel sur un pari.
@@ -37,6 +39,7 @@ export function KellyCalculator() {
       ev: ev * 100,
     };
   }, [bankroll, odds, probability, fraction]);
+  const { t } = useI18n();
 
   return (
     <section className="bg-bg-card border border-white/[0.06] rounded-2xl p-5 shadow-card">
@@ -56,7 +59,7 @@ export function KellyCalculator() {
         />
         <Field label="Cote" suffix="" value={odds} onChange={setOdds} step="0.01" />
         <Field
-          label="Proba estimée"
+          label={t("kelly.estProb")}
           suffix="%"
           value={probability}
           onChange={setProbability}
