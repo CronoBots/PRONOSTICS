@@ -673,4 +673,70 @@ PICKS: list[Pick] = [
             },
         ],"result": {"score_home": "1/2", "score_text": "1 sélection gagnée sur 2 — Osaka OK, Rinderknech KO", "summary": "Combo perdu : Osaka bat Vekic 7-6 6-4 (leg 1 OK), Berrettini bat Rinderknech 6-4 6-4 6-4 (leg 2 raté).", "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée). Net -7,61€."}
     },
+    # ──────────────────────────────────────────────────────────────────
+    # J12 — Vendredi 29 mai 2026 — COMBO marchés alternatifs RG R3 Day 6
+    # Pivot vs match-winners (value tuée post-Sinner upset) :
+    # Set Handicap deM -1.5 + Pari de Set Andreeva 2-0. Cote 2.16, EV +18%.
+    # Mise 5€ (discipline routine).
+    # ──────────────────────────────────────────────────────────────────
+    {
+        "date": "2026-05-29",
+        "sport": "combo",
+        "league": "Roland Garros — 3e tour (combiné 2 paris)",
+        "home_team": "Combiné 2 paris",
+        "away_team": "Roland Garros Jour 6",
+        "kickoff": "2026-05-29T11:30:00+00:00",
+        "pick": "Combiné 2 paris Tennis RG R3 — marchés alternatifs (deM Set HC + Andreeva 2-0)",
+        "odds": 2.16,
+        "model_probability": 0.546,
+        "headline": "Combo RG R3 — De Minaur -1.5 sets + Andreeva 2-0, pivot marchés alternatifs (cote 2.16, EV +18%)",
+        "rationale": [
+            "## 🎯 Le contexte",
+            "Jour 6 de Roland Garros 2026, 3e tour. Pivot stratégique : les cotes des match-winners se sont effondrées au matin (Andreeva 1.14, De Minaur 1.25, combo @ 1.42 = EV NÉGATIF) post-Sinner upset hier. On bascule sur les marchés alternatifs où la value subsiste.",
+            "Combo 2 sélections (AB-4 v4.7 : pas de 3+ sélections) avec cote totale 2.16 et probabilité combinée estimée 54.6%.",
+            "## 📊 L'analyse des 2 sélections",
+            "**Sélection 1 — Alex de Minaur (Australien #7 ATP) Set Handicap -1.5 @ 1.49** vs Jakub Mensik (#21 ATP). Set handicap -1.5 = deM doit gagner 3-0 ou 3-1 (best-of-5). H2H 5-0 deM, et écart physique massif : deM a reçu un walkover au R2 (donc 1h52 cumulé total), Mensik a joué un 5-setter au R2 (~7h cumulé). Modèle deM 80% match win (Dimers). Estimation deM -1.5 sets ~70% (Mensik peut chiper 1 set sur son service mais 2 = improbable).",
+            "**Sélection 2 — Mirra Andreeva (Russe #8 WTA, 19 ans) Pari de Set 2-0 @ 1.45** vs Marie Bouzkova (#27 WTA). Andreeva H2H 4-0 vs Bouzkova, et **aucun de leurs 4 matchs n'est allé en 3 sets** — signal empirique fort. Andreeva en forme de feu sur terre (17 victoires sur clay 2026, finale Madrid, SF Stuttgart, QF Rome). Estimation Andreeva 2-0 ~78%.",
+            "## 🎰 Le pari",
+            "2 sélections à 1.49 × 1.45 = **cote totale 2.16** (Unibet).",
+            "Probabilité combinée estimée : 0.70 × 0.78 ≈ 0.546 → edge calculé +18% sur la cote 2.16.",
+            "Mise : 5€ — gain potentiel +5,80€ si validé (return 10,80€).",
+            "Risque : si deM 0-2 cède 2 sets OU Andreeva tombe en 3 sets, tout le combo perd. AB-7 (tennis R2+ fatigue) : signal favorable côté deM (walkover R2), neutre côté Andreeva.",
+            "## 🚨 Anti-bias appliqués",
+            "AB-4 : 2 jambes max ✅",
+            "AB-7 : flag fatigue R2 — deM avantage net (walkover) ✅",
+            "AB-9 : aucun joueur engagé dans un pari pending ✅",
+        ],
+        "sources": [
+            "https://www.bleachernation.com/picks/2026/05/28/de-minaur-vs-mensik-prediction-at-the-roland-garros-friday-may-29/",
+            "https://www.dimers.com/news/alex-de-minaur-vs-jakub-mensik-tennis-prediction-french-open-2026-ac",
+            "https://www.thestatszone.com/mirra-andreeva-vs-marie-bouzkova-preview-prediction-2026-french-open-third-round-192991",
+            "https://www.si.com/betting/mirra-andreeva-vs-marie-bouzkova-prediction-odds-for-french-open-round-3-01ksr8k3wv9c",
+            "https://www.olympics.com/en/news/roland-garros-2026-full-order-of-play-friday-29-may-all-matches-complete-schedule",
+        ],
+        "stake": 5.0,
+        "outcome": "pending",
+        "legs": [
+            {
+                "sport": "tennis",
+                "league": "Roland Garros — 3e tour",
+                "home_team": "Alex de Minaur",
+                "away_team": "Jakub Mensik",
+                "pick": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
+                "kickoff": "2026-05-29T11:50:00+00:00",
+                "odds": 1.49,
+                "outcome": "pending",
+            },
+            {
+                "sport": "tennis",
+                "league": "Roland Garros — 3e tour",
+                "home_team": "Mirra Andreeva",
+                "away_team": "Marie Bouzkova",
+                "pick": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
+                "kickoff": "2026-05-29T11:30:00+00:00",
+                "odds": 1.45,
+                "outcome": "pending",
+            },
+        ],
+    },
 ]

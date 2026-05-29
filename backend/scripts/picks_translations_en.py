@@ -232,6 +232,31 @@ TRANSLATIONS: dict[str, dict] = {
             },
         ],"score_text": "1 selection won out of 2 — Osaka OK, Rinderknech lost", "summary": "Combo lost: Osaka def. Vekic 7-6 6-4 (leg 1 OK), Berrettini def. Rinderknech 6-4 6-4 6-4 (leg 2 missed).", "bet_outcome": "Bet lost: combo 1/2 (at least one selection missed). Net -7.61 EUR."
     },
+    # J12 — May 29, 2026 — COMBO RG R3 alternative markets (pending)
+    "2026-05-29": {
+        "league": "Roland Garros — Third round",
+        "pick": "2-leg tennis parlay — Roland Garros R3 (alternative markets)",
+        "headline": (
+            "Pivot from match winners (value killed post-Sinner upset) "
+            "to alternative markets. De Minaur Set Handicap -1.5 (wins "
+            "3-0 or 3-1 — backed by H2H 5-0 + walkover R2 vs Mensik's "
+            "7h cumulative) combined with Andreeva 2-0 straight sets "
+            "(H2H 4-0, never went 3 sets). Combined model probability "
+            "~54.6%, edge +18% on combined odds 2.16."
+        ),
+        "legs": [
+            {
+                "pick": "Alex de Minaur Set Handicap -1.5 (wins 3-0 or 3-1)",
+                "home_country": "AUS",
+                "away_country": "CZE",
+            },
+            {
+                "pick": "Mirra Andreeva to win in straight sets (2-0)",
+                "home_country": "RUS",
+                "away_country": "CZE",
+            },
+        ],
+    },
 }
 
 
