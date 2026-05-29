@@ -26,6 +26,7 @@ from typing import Any, Literal, Optional
 Market = Literal[
     "tennis_match_winner",
     "tennis_exact_sets",
+    "tennis_set_handicap",
     "tennis_total_games",
     "football_ml_regulation",
     "football_btts",
@@ -115,10 +116,25 @@ _ML_RE = re.compile(
 
 # Win in N sets exactly. Accepts:
 #   FR: "X en 2 sets" / "X en 2 sets exactement"
+#       "X gagne 2-0" / "X gagne 3-0" / "X gagne 3-1"   ← new
 #   EN: "X in 2 sets" / "X in 2 sets exactly" / "X in exactly 2 sets" (F12)
+#       "X wins 2-0" / "X wins 3-1"                      ← new
+# For "gagne N-M" we count the explicit set tally as the exact total.
 _SETS_RE = re.compile(
     r"^(.+?)\s+(?:in|en)\s+(?:exactement|exactly)?\s*(\d)\s+sets?"
-    r"(?:\s+(?:exactement|exactly))?$",
+    r"(?:\s+(?:exactement|exactly))?(?:\s*\([^)]*\))?\s*$",
+    re.IGNORECASE,
+)
+_SETS_SCORE_RE = re.compile(
+    r"^(.+?)\s+(?:gagne|wins)\s+(\d)-(\d)(?:\s*\([^)]*\))?\s*$",
+    re.IGNORECASE,
+)
+
+# Tennis set handicap: "X Set Handicap -1.5" / "X Set Handicap +1.5"
+# Often suffixed with a friendly "(wins 3-0 or 3-1)" gloss — strip it.
+_SET_HANDICAP_RE = re.compile(
+    r"^(.+?)\s+Set\s+Handicap\s+([+-]?\d+\.?\d*)"
+    r"(?:\s*\([^)]*\))?\s*$",
     re.IGNORECASE,
 )
 
@@ -237,6 +253,29 @@ def _parse_single_spec(fragment: str, lang: Literal["fr", "en"] = "fr") -> BetSp
             market="tennis_exact_sets",
             target=_strip_win_suffix(m.group(1).strip()),
             n_sets=int(m.group(2)),
+            raw_label=raw,
+        )
+
+    # 3b. Sets explicit score "X gagne 2-0" / "X wins 3-1" — same market as
+    # exact_sets, n_sets = sum of the two set tallies.
+    m = _SETS_SCORE_RE.match(text)
+    if m:
+        n_sets = int(m.group(2)) + int(m.group(3))
+        return BetSpec(
+            market="tennis_exact_sets",
+            target=_strip_win_suffix(m.group(1).strip()),
+            n_sets=n_sets,
+            raw_label=raw,
+        )
+
+    # 3c. Set handicap "X Set Handicap -1.5" — target wins by at least
+    # ceil(|threshold|) sets if negative, or covers a +N.5 spot if positive.
+    m = _SET_HANDICAP_RE.match(text)
+    if m:
+        return BetSpec(
+            market="tennis_set_handicap",
+            target=m.group(1).strip(),
+            threshold=float(m.group(2)),
             raw_label=raw,
         )
 
@@ -483,6 +522,34 @@ def apply_rule(spec: BetSpec, score: MatchScore) -> Outcome:  # noqa: C901
         if spec.n_sets is None:
             return "loss"
         return "win" if len(score.set_scores) == spec.n_sets else "loss"
+
+    # ---- tennis_set_handicap --------------------------------------
+    # "X Set Handicap -1.5" : target's sets minus 1.5 must exceed opponent's.
+    # Bo5 example: -1.5 = win 3-0 or 3-1 (cover by ≥ 2 sets) ; +1.5 = lose
+    # by at most 1 set OR win outright (cover by ≥ 0 sets after spotting 1.5).
+    if market == "tennis_set_handicap":
+        if score.status in {"retired", "walkover"}:
+            return "void"
+        if score.status != "final":
+            return "void"
+        if not score.set_scores or spec.threshold is None:
+            return "void"
+        side = _resolve_side(spec.target or "", score)
+        if side is None:
+            return "void"
+        home_sets = sum(1 for h, a in score.set_scores if h > a)
+        away_sets = sum(1 for h, a in score.set_scores if a > h)
+        if side == "home":
+            target_sets, opp_sets = home_sets, away_sets
+        else:
+            target_sets, opp_sets = away_sets, home_sets
+        # spread = target − opponent + threshold ; > 0 → win.
+        spread = target_sets - opp_sets + spec.threshold
+        if spread > 0:
+            return "win"
+        if spread == 0:
+            return "void"  # push — rare with .5 thresholds
+        return "loss"
 
     # ---- tennis_total_games ---------------------------------------
     if market == "tennis_total_games":
