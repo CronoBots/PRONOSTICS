@@ -1,12 +1,62 @@
 {
-  "proposed": [],
-  "skipped_unknown": [
+  "proposed": [
     {
-      "_unsettleable": true,
-      "reason": "unparseable",
-      "label": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
-      "date": "2026-05-29"
+      "date": "2026-05-29",
+      "outcome": "loss",
+      "result": {
+        "score_home": "1/2",
+        "score_text": "1 sélections gagnées sur 2",
+        "summary": "Combo : 1/2 sélections validées.",
+        "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée)."
+      },
+      "result_en": {
+        "score_home": "1/2",
+        "score_text": "1 selections won out of 2",
+        "summary": "Combo: 1/2 selections validated.",
+        "bet_outcome": "Bet lost: combo 1/2 (at least one selection failed)."
+      },
+      "legs": [
+        {
+          "outcome": "loss",
+          "result": {
+            "score_home": "6-0 2-6 2-6 3-6",
+            "score_away": "",
+            "score_text": "Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3",
+            "summary": "Match terminé — Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3.",
+            "bet_outcome": "Pari perdu : conditions du pronostic non remplies."
+          }
+        },
+        {
+          "outcome": "win",
+          "result": {
+            "score_home": "6-4 6-2",
+            "score_away": "",
+            "score_text": "Marie Bouzkova bat Mirra Andreeva 4-6 2-6",
+            "summary": "Match terminé — Marie Bouzkova bat Mirra Andreeva 4-6 2-6.",
+            "bet_outcome": "Pari gagné : conditions du pronostic remplies."
+          }
+        }
+      ],
+      "legs_en": [
+        {
+          "outcome": "loss",
+          "result": {
+            "score_text": "Jakub Mensik def. Alex de Minaur 0-6 6-2 6-2 6-3",
+            "summary": "Match finished — Jakub Mensik def. Alex de Minaur 0-6 6-2 6-2 6-3.",
+            "bet_outcome": "Bet lost: prediction conditions not met."
+          }
+        },
+        {
+          "outcome": "win",
+          "result": {
+            "score_text": "Marie Bouzkova def. Mirra Andreeva 4-6 2-6",
+            "summary": "Match finished — Marie Bouzkova def. Mirra Andreeva 4-6 2-6.",
+            "bet_outcome": "Bet won: prediction conditions met."
+          }
+        }
+      ]
     }
   ],
+  "skipped_unknown": [],
   "skipped_no_data": []
 }
