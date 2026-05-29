@@ -31,8 +31,8 @@
           "result": {
             "score_home": "6-4 6-2",
             "score_away": "",
-            "score_text": "Marie Bouzkova bat Mirra Andreeva 4-6 2-6",
-            "summary": "Match terminé — Marie Bouzkova bat Mirra Andreeva 4-6 2-6.",
+            "score_text": "Mirra Andreeva bat Marie Bouzkova 6-4 6-2",
+            "summary": "Match terminé — Mirra Andreeva bat Marie Bouzkova 6-4 6-2.",
             "bet_outcome": "Pari gagné : conditions du pronostic remplies."
           }
         }
@@ -49,8 +49,8 @@
         {
           "outcome": "win",
           "result": {
-            "score_text": "Marie Bouzkova def. Mirra Andreeva 4-6 2-6",
-            "summary": "Match finished — Marie Bouzkova def. Mirra Andreeva 4-6 2-6.",
+            "score_text": "Mirra Andreeva def. Marie Bouzkova 6-4 6-2",
+            "summary": "Match finished — Mirra Andreeva def. Marie Bouzkova 6-4 6-2.",
             "bet_outcome": "Bet won: prediction conditions met."
           }
         }
