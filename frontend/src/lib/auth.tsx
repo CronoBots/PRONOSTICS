@@ -43,11 +43,40 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
   resendConfirmation: (email: string) => Promise<{ ok: boolean; error?: string }>;
   requestPasswordReset: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  /** Dev-only : force-flip Premium status sans passer par login/checkout.
+   *  Persiste dans localStorage et override l'auth réelle. */
+  devTogglePremium: () => void;
+  /** Dev-only : set the override to a specific state directly. */
+  devSetPremium: (next: "premium" | "free" | null) => void;
+  /** True quand l'override dev est actif (UI peut afficher un badge). */
+  devOverride: "premium" | "free" | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const STORAGE_KEY = "pronostics.auth.user";
+const DEV_OVERRIDE_KEY = "pronostics.dev.premiumOverride";
+
+function readDevOverride(): "premium" | "free" | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const v = localStorage.getItem(DEV_OVERRIDE_KEY);
+    if (v === "premium" || v === "free") return v;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function writeDevOverride(v: "premium" | "free" | null): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (v) localStorage.setItem(DEV_OVERRIDE_KEY, v);
+    else localStorage.removeItem(DEV_OVERRIDE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
 
 // ============================================================================
 // Helpers Supabase
@@ -102,9 +131,54 @@ async function loadAuthUserFromSupabase(session: Session): Promise<AuthUser> {
 // ============================================================================
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [rawUser, setRawUser] = useState<AuthUser | null>(null);
   const [ready, setReady] = useState(false);
+  const [devOverride, setDevOverride] = useState<"premium" | "free" | null>(null);
   const mode = isSupabaseEnabled() ? "supabase" : "mock";
+
+  // Compose the effective user: if a dev override is active, layer it on top
+  // of the real auth state. If no real user but override = "premium", spawn
+  // a synthetic dev user so the Premium UI can be exercised without login.
+  const user: AuthUser | null = (() => {
+    if (!devOverride) return rawUser;
+    if (rawUser) {
+      return { ...rawUser, isPremium: devOverride === "premium" };
+    }
+    if (devOverride === "premium") {
+      return {
+        id: "dev-preview",
+        email: "dev@nexbet.local",
+        pseudo: "Dev preview",
+        isPremium: true,
+        plan: "monthly",
+        subscriptionEnd: null,
+      };
+    }
+    return null;
+  })();
+
+  // Aliased setter so existing code paths in the bootstrap / login fns
+  // continue to work unchanged.
+  const setUser = setRawUser;
+
+  useEffect(() => {
+    setDevOverride(readDevOverride());
+  }, []);
+
+  function devTogglePremium() {
+    const current = readDevOverride();
+    let next: "premium" | "free" | null;
+    if (current === null) next = "premium";
+    else if (current === "premium") next = "free";
+    else next = null;
+    writeDevOverride(next);
+    setDevOverride(next);
+  }
+
+  function devSetPremium(next: "premium" | "free" | null) {
+    writeDevOverride(next);
+    setDevOverride(next);
+  }
 
   // Initialisation : récupère la session existante + écoute les changements
   useEffect(() => {
@@ -358,6 +432,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshUser,
         resendConfirmation,
         requestPasswordReset,
+        devTogglePremium,
+        devSetPremium,
+        devOverride,
       }}
     >
       {children}

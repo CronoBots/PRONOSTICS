@@ -8,6 +8,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
+import { DevPremiumToggle } from "@/components/DevPremiumToggle";
 import { PlusMenu } from "@/components/PlusMenu";
 import { useI18n } from "@/lib/i18n";
 
@@ -29,6 +30,8 @@ export default function PlusPage() {
           </Link>
           <h1 className="text-lg lg:text-2xl font-bold tracking-tight">{t("plus.title")}</h1>
         </div>
+
+        <DevPremiumToggle />
 
         {/* Sections (Outils, Partager, Infos) + section "Mon compte" */}
         <PlusMenu showAccountSection />
