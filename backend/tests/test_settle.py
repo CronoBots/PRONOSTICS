@@ -1264,6 +1264,7 @@ def test_reminder_mode_pings_pending_due_picks(monkeypatch, tmp_path):
     """Reminder mode walks PICKS, finds pending past kickoff+2h,
     builds the admin message, and dedupes via .notified.json."""
     import auto_settle
+    import picks_data
 
     # Redirect .notified.json to a fresh tmp path
     notified_path = tmp_path / ".notified.json"
@@ -1273,15 +1274,35 @@ def test_reminder_mode_pings_pending_due_picks(monkeypatch, tmp_path):
     sent = []
     monkeypatch.setattr(auto_settle, "_try_send_admin", lambda text: sent.append(text))
 
-    # Reload picks_data so the live module state matches the file
-    import importlib
-    import picks_data
-    importlib.reload(picks_data)
+    # Inject a synthetic pending pick with a kickoff well in the past, so
+    # the test doesn't depend on whether picks_data.py currently has a
+    # pending entry (J11 was settled, so without this monkeypatch the
+    # test would fail on real PICKS).
+    fake_picks = [
+        {
+            "date": "2026-05-28",
+            "sport": "tennis",
+            "league": "Roland Garros — 2e tour (test fixture)",
+            "kickoff": "2026-05-28T09:00:00+00:00",
+            "pick": "Fake test pending combo",
+            "outcome": "pending",
+            "legs": [
+                {
+                    "home_team": "Player A",
+                    "away_team": "Player B",
+                    "outcome": "pending",
+                },
+            ],
+        },
+    ]
+    monkeypatch.setattr(picks_data, "PICKS", fake_picks)
+    # _reminder_mode calls importlib.reload(picks_data) at the top which
+    # would wipe our monkeypatch — neuter it for the duration of the test.
+    monkeypatch.setattr(auto_settle.importlib, "reload", lambda m: m)
 
     code = auto_settle._reminder_mode()
     assert code == 0
-    # There is at least one pending pick past kickoff+2h (J11 from today's
-    # fixtures), so we must have pinged exactly once.
+    # Synthetic pending pick → exactly one ping.
     assert len(sent) == 1
     msg = sent[0]
     assert "Settlement reminder" in msg
