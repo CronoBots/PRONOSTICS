@@ -731,7 +731,14 @@ PICKS: list[Pick] = [
             "https://www.olympics.com/en/news/roland-garros-2026-full-order-of-play-friday-29-may-all-matches-complete-schedule",
         ],
         "stake": 5.0,
-        "outcome": "pending",
+        "outcome": "loss",
+        "profit": -5.0,
+        "result": {
+            "score_home": "1/2",
+            "score_text": "1 sélection gagnée sur 2 — Andreeva 2-0 OK, De Minaur -1.5 sets KO",
+            "summary": "Combo perdu : Mensik crée la surprise et bat De Minaur 0-6 6-2 6-2 6-3 (jambe De Minaur -1.5 ratée). Andreeva bat Bouzkova 6-4 6-2 (jambe 2-0 OK) mais sans incidence.",
+            "bet_outcome": "Pari perdu : combo 1/2 (De Minaur battu en 4 sets par Mensik). Net -5,00€.",
+        },
         "legs": [
             {
                 "sport": "tennis",
@@ -741,7 +748,12 @@ PICKS: list[Pick] = [
                 "pick": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
                 "kickoff": "2026-05-29T11:50:00+00:00",
                 "odds": 1.49,
-                "outcome": "pending",
+                "outcome": "loss",
+                "result": {
+                    "score_text": "Mensik bat De Minaur 0-6 6-2 6-2 6-3",
+                    "summary": "Mensik renverse après un 6-0 encaissé, gagne 3-1.",
+                    "bet_outcome": "Sélection perdue : De Minaur battu, handicap -1.5 sets non couvert.",
+                },
             },
             {
                 "sport": "tennis",
@@ -751,7 +763,12 @@ PICKS: list[Pick] = [
                 "pick": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
                 "kickoff": "2026-05-29T11:30:00+00:00",
                 "odds": 1.45,
-                "outcome": "pending",
+                "outcome": "win",
+                "result": {
+                    "score_text": "Andreeva bat Bouzkova 6-4 6-2",
+                    "summary": "Andreeva 2-0 net, 5-0 H2H tous en deux sets.",
+                    "bet_outcome": "Sélection gagnée : Andreeva en 2 sets exactement.",
+                },
             },
         ],
     },
