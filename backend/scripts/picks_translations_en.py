@@ -261,7 +261,7 @@ TRANSLATIONS: dict[str, dict] = {
             "**Selection 1 — Alex de Minaur (Australian, ATP #7) Set Handicap -1.5 @ 1.49** vs Jakub Mensik (ATP #21). Set handicap -1.5 = deM must win 3-0 or 3-1 (best-of-5). Head-to-head 5-0 deM, and massive physical gap: deM received an R2 walkover (so 1h52 cumulative total), Mensik played a 5-setter in R2 (~7h cumulative). Model deM 80% match win (Dimers). Estimate deM -1.5 sets ~70% (Mensik can steal 1 set on his serve but 2 = unlikely).",
             "**Selection 2 — Mirra Andreeva (Russian, WTA #8, 19 years old) Set Betting 2-0 @ 1.45** vs Marie Bouzkova (WTA #27). Andreeva head-to-head 4-0 vs Bouzkova, and **none of their 4 matches went 3 sets** — strong empirical signal. Andreeva on fire on clay (17 clay wins in 2026, Madrid final, Stuttgart SF, Rome QF). Estimate Andreeva 2-0 ~78%.",
             "## 🎰 The bet",
-            "2 selections at 1.49 × 1.45 = **combined odds 2.16** (Unibet).",
+            "2 selections at 1.49 × 1.45 = **combined odds 2.16**.",
             "Estimated joint probability: 0.70 × 0.78 ≈ 0.546 → calculated edge +18% on the 2.16 line.",
             "Stake: 5€ — potential gain +5.80€ if validated (return 10.80€).",
             "Risk: if deM 0-2 drops 2 sets OR Andreeva goes to 3 sets, the whole combo loses. AB-7 (tennis R2+ fatigue): signal favourable for deM (R2 walkover), neutral for Andreeva.",
