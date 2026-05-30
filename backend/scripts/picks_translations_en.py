@@ -281,7 +281,7 @@ TRANSLATIONS: dict[str, dict] = {
                 "home_country": "RUS",
                 "away_country": "CZE",
             },
-        ],
+        ],"score_text": "1 selections won out of 2", "summary": "Combo: 1/2 selections validated.", "bet_outcome": "Bet lost: combo 1/2 (at least one selection failed)."
     },
 }
 

@@ -722,10 +722,15 @@
         "https://www.olympics.com/en/news/roland-garros-2026-full-order-of-play-friday-29-may-all-matches-complete-schedule"
       ],
       "stake": 5.0,
-      "outcome": "pending",
-      "profit": 0.0,
-      "bankroll_after": 48.29,
-      "result": null,
+      "outcome": "loss",
+      "profit": -5.0,
+      "bankroll_after": 43.29,
+      "result": {
+        "score_home": "1/2",
+        "score_text": "1 sélections gagnées sur 2",
+        "summary": "Combo : 1/2 sélections validées.",
+        "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée)."
+      },
       "comparison": null,
       "profile_tags": [],
       "legs": [
@@ -737,7 +742,14 @@
           "pick": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
           "kickoff": "2026-05-29T11:50:00+00:00",
           "odds": 1.49,
-          "outcome": "pending"
+          "outcome": "loss",
+          "result": {
+            "score_home": "6-0 2-6 2-6 3-6",
+            "score_away": "",
+            "score_text": "Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3",
+            "summary": "Match terminé — Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3.",
+            "bet_outcome": "Pari perdu : conditions du pronostic non remplies."
+          }
         },
         {
           "sport": "tennis",
@@ -747,7 +759,14 @@
           "pick": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
           "kickoff": "2026-05-29T11:30:00+00:00",
           "odds": 1.45,
-          "outcome": "pending"
+          "outcome": "win",
+          "result": {
+            "score_home": "6-4 6-2",
+            "score_away": "",
+            "score_text": "Mirra Andreeva bat Marie Bouzkova 6-4 6-2",
+            "summary": "Match terminé — Mirra Andreeva bat Marie Bouzkova 6-4 6-2.",
+            "bet_outcome": "Pari gagné : conditions du pronostic remplies."
+          }
         }
       ]
     }
@@ -755,26 +774,26 @@
   "stats": {
     "total_picks": 12,
     "won": 8,
-    "lost": 3,
-    "pending": 1,
-    "profit": 43.29,
-    "roi_percent": 75.14,
-    "average_odds": 2.406,
-    "win_rate": 72.73,
+    "lost": 4,
+    "pending": 0,
+    "profit": 38.29,
+    "roi_percent": 61.16,
+    "average_odds": 2.386,
+    "win_rate": 66.67,
     "starting_bankroll": 5.0,
-    "current_bankroll": 48.29,
-    "progression_percent": 865.8,
-    "drawdown_max": 7.61,
-    "current_streak": -1,
+    "current_bankroll": 43.29,
+    "progression_percent": 765.8,
+    "drawdown_max": 12.61,
+    "current_streak": -2,
     "best_streak": 3,
-    "worst_streak": -1,
+    "worst_streak": -2,
     "total_stake_played": 62.61,
-    "pending_stake": 5.0,
+    "pending_stake": 0,
     "avg_stake": 5.22,
     "max_stake": 7.61,
     "max_odds_won": 3.1,
     "max_profit_single": 10.5,
     "max_loss_single": -7.61
   },
-  "generated_at": "2026-05-29T16:41:31.464032+00:00"
+  "generated_at": "2026-05-30T08:16:06.301060+00:00"
 }

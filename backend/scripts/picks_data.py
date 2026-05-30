@@ -731,7 +731,7 @@ PICKS: list[Pick] = [
             "https://www.olympics.com/en/news/roland-garros-2026-full-order-of-play-friday-29-may-all-matches-complete-schedule",
         ],
         "stake": 5.0,
-        "outcome": "pending",
+        "outcome": "loss",
         "legs": [
             {
                 "sport": "tennis",
@@ -741,7 +741,7 @@ PICKS: list[Pick] = [
                 "pick": "Alex de Minaur Set Handicap -1.5 (gagne 3-0 ou 3-1)",
                 "kickoff": "2026-05-29T11:50:00+00:00",
                 "odds": 1.49,
-                "outcome": "pending",
+                "outcome": "loss","result": {"score_home": "6-0 2-6 2-6 3-6", "score_away": "", "score_text": "Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3", "summary": "Match terminé — Jakub Mensik bat Alex de Minaur 0-6 6-2 6-2 6-3.", "bet_outcome": "Pari perdu : conditions du pronostic non remplies."}
             },
             {
                 "sport": "tennis",
@@ -751,8 +751,8 @@ PICKS: list[Pick] = [
                 "pick": "Mirra Andreeva gagne 2-0 (en 2 sets exactement)",
                 "kickoff": "2026-05-29T11:30:00+00:00",
                 "odds": 1.45,
-                "outcome": "pending",
+                "outcome": "win","result": {"score_home": "6-4 6-2", "score_away": "", "score_text": "Mirra Andreeva bat Marie Bouzkova 6-4 6-2", "summary": "Match terminé — Mirra Andreeva bat Marie Bouzkova 6-4 6-2.", "bet_outcome": "Pari gagné : conditions du pronostic remplies."}
             },
-        ],
+        ],"result": {"score_home": "1/2", "score_text": "1 sélections gagnées sur 2", "summary": "Combo : 1/2 sélections validées.", "bet_outcome": "Pari perdu : combo 1/2 (au moins une sélection ratée)."}
     },
 ]
