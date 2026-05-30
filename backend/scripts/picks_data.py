@@ -732,6 +732,7 @@ PICKS: list[Pick] = [
         ],
         "stake": 5.0,
         "outcome": "loss",
+        "profit": -5.0,
         "legs": [
             {
                 "sport": "tennis",
