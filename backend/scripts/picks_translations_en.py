@@ -275,11 +275,17 @@ TRANSLATIONS: dict[str, dict] = {
                 "pick": "Alex de Minaur Set Handicap -1.5 (wins 3-0 or 3-1)",
                 "home_country": "AUS",
                 "away_country": "CZE",
+                "score_text": "Mensik beats De Minaur 0-6 6-2 6-2 6-3",
+                "summary": "Mensik recovers after dropping a 6-0 first set, wins 3-1.",
+                "bet_outcome": "Selection lost: De Minaur beaten, -1.5 set handicap not covered.",
             },
             {
                 "pick": "Mirra Andreeva to win in straight sets (2-0)",
                 "home_country": "RUS",
                 "away_country": "CZE",
+                "score_text": "Andreeva beats Bouzkova 6-4 6-2",
+                "summary": "Andreeva straight sets, 5-0 H2H all in two sets.",
+                "bet_outcome": "Selection won: Andreeva in exactly two sets.",
             },
         ],"score_text": "1 selections won out of 2", "summary": "Combo: 1/2 selections validated.", "bet_outcome": "Bet lost: combo 1/2 (at least one selection failed)."
     },
